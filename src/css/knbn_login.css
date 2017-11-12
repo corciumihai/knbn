@@ -6,7 +6,7 @@ body{
 } 
 
 #controlBar{
-    height: 40px;
+    height: 30px;
     background-color: rgb(67, 86, 121);
     padding: 10px;
     -webkit-app-region: drag;

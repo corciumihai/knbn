@@ -1,21 +1,27 @@
-console.log('Hello there!');
+console.log('Sign up script loaded!');
+
 const emailRegex = new RegExp(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i);
 const nameRegex = new RegExp(/^[A-Za-z\s]+$/);
 const companyRegex = new RegExp(/^[A-Za-z0-9\s_]+$/);
 
-var nameField = document.getElementById('submit-name');
-var emailField = document.getElementById('submit-email');
-var companyField = document.getElementById('submit-company')
-var passwordField = document.getElementById('submit-password');
-var confirmField = document.getElementById('submit-confirm-password');
-var errorField = document.getElementById('error');
-fields = [nameField, emailField, companyField, passwordField, confirmField];
+const nameField = document.getElementById('submit-name');
+const emailField = document.getElementById('submit-email');
+const companyField = document.getElementById('submit-company')
+const passwordField = document.getElementById('submit-password');
+const confirmField = document.getElementById('submit-confirm-password');
+const errorField = document.getElementById('error');
+const fields = [nameField, emailField, companyField, passwordField, confirmField];
 
-var signupButton = document.getElementById('signup-button');
+const signupButton = document.getElementById('signup-button');
+signupButton.addEventListener('click', getSignupData);
+
+const ipcRenderer = require('electron').ipcRenderer;
 
 function getSignupData(){
+
     var nameState, companyState, emailState, passwordState, confirmState = false;
     errorField.style.visibility = 'hidden';
+
     //all the fields can be empty, generate an error for this
     fields.forEach(function(element) {
         errorField.classList.remove('okay');
@@ -42,6 +48,7 @@ function getSignupData(){
                     element.classList.add('validInput');
                     nameState = true;
                     break;
+
                 //checking the company text - must contain only numbers and letters
                 case companyField:
                     if(!validate(companyRegex, value)){
@@ -53,6 +60,7 @@ function getSignupData(){
                     element.classList.add('validInput');
                     companyState = true;
                     break;
+
                 //check if the email respects the format
                 case emailField:
                     if(!validate(emailRegex, value)){
@@ -65,6 +73,7 @@ function getSignupData(){
                     element.classList.add('validInput');
                     emailState = true;
                     break;
+
                 //must be at least 8 characters
                 //must have at least a uppercase letter
                 //must have at least one number
@@ -95,6 +104,7 @@ function getSignupData(){
                     element.classList.add('validInput');
                     passwordState = true;
                     break;
+                    
                 //check if the passwords match
                 case confirmField:
                     if(!(value === passwordField.value)){
@@ -115,26 +125,22 @@ function getSignupData(){
 
     }, this);
 
-    console.log(nameState);
-    console.log(emailState);
-    console.log(passwordState);
-    console.log(confirmState);
-
     if(!nameState || !emailState || !passwordState || !confirmState){
-        console.log('One of the states is invalid');
         return false;
     }
 
-    console.log('Name - ' + nameField.value);
-    console.log('Company - ' + companyField.value);
-    console.log('Email - ' + emailField.value);
-    console.log('Password - ' + passwordField.value);
-    console.log('Confirm - ' + confirmField.value);
-
+    // show the user that the data that he entered is correct
     errorField.classList.remove('error');
     errorField.classList.add('okay');
     errorField.innerHTML = 'All is good to go!'
     errorField.style.visibility = 'visible';
+
+    // send the data to the main process
+    userData = {"email": emailField.value, 
+                "password": passwordField.value, 
+                "name": nameField.value, 
+                "company": companyField.value};
+    ipcRenderer.send('user-signup', userData);
 
     return true;
 }
@@ -153,4 +159,3 @@ function valueOnChange(field, regex){
     field.classList.add('validInput');
     return true;
 }
-
