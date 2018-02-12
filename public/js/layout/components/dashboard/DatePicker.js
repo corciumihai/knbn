@@ -52,8 +52,8 @@ class DatePicker extends React.Component{
             return element.name == value;
         });
 
-        this.setState({day: found.value});
-        this.emitEndDate();
+        this.setState({day: found.value}, this.emitEndDate());
+        
     }
 
     changeMonth(value){
@@ -82,24 +82,20 @@ class DatePicker extends React.Component{
 
     render(){
         return(
-            <div class="form-group row">
+            <div class="row">
                 <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 modal-label">
-                    <span class="align-middle">Completion date</span>
+                    <span class="align-middle">Due until</span>
                 </div>
-                <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9 col-12 date-picker">
-                    {/* <div class="row"> */}
-                        <div class="container date-sliders">
-                            {/* <div class="col-xl-12 col-12">  */}
-                                <div class="row">
-                                    <DateSlider initialValue={this.state.day} allValues={this.state.daysPerMonth} unit="Day" callback={this.changeDay} />
-                                    <DateSlider initialValue={this.state.allMonths.find((element) => {
-                                            return element.value == this.state.month + 1;
-                                        }).name} allValues={this.state.allMonths} unit="Month" callback={this.changeMonth} />
-                                    <DateSlider initialValue={this.state.year} allValues={this.state.maxYears} unit="Year" callback={this.changeYear} />
-                                </div>
-                            {/* </div> */}
+                <div class="col">
+                    <div class="container date-sliders">
+                        <div class="row">
+                            <DateSlider initialValue={this.state.day} allValues={this.state.daysPerMonth} unit="Day" callback={this.changeDay} />
+                            <DateSlider initialValue={this.state.allMonths.find((element) => {
+                                    return element.value == this.state.month + 1;
+                                }).name} allValues={this.state.allMonths} unit="Month" callback={this.changeMonth} />
+                            <DateSlider initialValue={this.state.year} allValues={this.state.maxYears} unit="Year" callback={this.changeYear} />
                         </div>
-                    {/* </div> */}
+                    </div>
                 </div>
             </div>
         );

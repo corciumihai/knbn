@@ -334,9 +334,12 @@ html, body{
     overflow-x: hidden;
 }
 
-.date-slider{
-    padding: 0px 5px 0px 5px;
-}
+/* .date-slider{
+    font-size: 12px;
+    border: none;
+    background-color: white;
+    border-radius: 3px;
+} */
 
 .date-picker{
     text-align: center;
@@ -350,26 +353,36 @@ html, body{
     padding: 0;
 }
 
+.date-input{
+    font-size: 12px;
+    border: none;
+    box-shadow: none;
+}
+
+.date-input:focus{
+    box-shadow: none;
+}
+
 .date-input-description{
     color: rgb(129, 129, 129);
     font-size: 11px;
 }
 
-.date-range{
-    font-size: 12px;
+.date-input-wrapper{
+    background-color: white;
+    border-radius: 3px;
+
 }
 
-.date-picker-small-button, .date-range{
-    width:20px;
-    height: 20px;
-    float: right;
-}
-
-.date-picker-small-button{
+.date-picker-button{
     cursor: pointer;
     padding:0;
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;
+}
+
+.date-picker-button:hover{
+    background-color: rgb(170, 212, 173);
 }
 
 .date-range{
@@ -378,7 +391,7 @@ html, body{
     border-top-left-radius: 3px;
     border-bottom-left-radius: 3px;
     text-align: center;
-    padding: 0;
+    /* padding: 0; */
 }
 
 .date-picker-container{
@@ -422,7 +435,7 @@ html, body{
     text-align: center;
     box-shadow: 0px 2px 2px 0px rgb(200, 200, 200);
     border-radius: 3px;
-    flex: 1;
+    /* flex: 1; */
     cursor: pointer;
 }
 
@@ -431,12 +444,14 @@ html, body{
 }
 
 .participant-name{
-    height: 20px;
-    padding: 0;
-    border-top-left-radius: 3px;
-    border-bottom-left-radius: 3px;
-    /* text-align: center; */
-    padding-left: 10px;
+    height: 30px;
+    font-size: 12px;
+    border: none;
+    box-shadow: none;
+}
+
+.participant-name:focus{
+    box-shadow: none;
 }
 
 .participant-role{
@@ -444,12 +459,25 @@ html, body{
     color: rgb(129, 129, 129);
 }
 
-.participants-dropdown-button{
+.participant-container{
+    background-color: white;
+    border-radius: 3px;
+}
+
+.participant-dropdown-button{
     padding: 0;
     width: 20px;
-    height: 20px;
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;
+    cursor: pointer;
+}
+
+.participant-dropdown-button:hover{
+    background-color: rgb(170, 212, 173);
+}
+
+.participant-name-container{
+    padding-right: 0px;
 }
 
 .participants-container, .estimation-container{
@@ -500,4 +528,21 @@ html, body{
 .dropdown-email{
     font-size: 10px;
     color: rgb(0, 123, 255);
+}
+
+.small-pad{
+    padding: 0px 5px 0px 5px;
+}
+
+.no-pad{
+    padding: 0px 0px 0px 0px;
+}
+
+.small-tooltip{
+    font-size: 12px;
+}
+
+.participant-wrapper{
+    background-color: white;
+    border-radius: 3px;
 }

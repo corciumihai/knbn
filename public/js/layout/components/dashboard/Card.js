@@ -8,13 +8,15 @@ import InputField from './InputField';
 
 const cardSource = {
     beginDrag(props, monitor, component){
-        return component.state;
+        let data = component.props.state;
+        data.toggled = component.state.toggled;
+        return data;
     },
 
     endDrag(props, monitor, component){
         var dropResult = monitor.getDropResult();
-        if(dropResult && (dropResult.laneId !== component.state.laneId)){
-            props.removeCard(component.state.id);
+        if(dropResult && (dropResult.lane != props.laneID)){
+            props.removeCard(monitor.getItem().id);
         }        
     }
 }
@@ -25,43 +27,14 @@ class Card extends React.Component{
         super(props);
 
         this.state = {
-            id : this.props.state.id,
-            name: this.props.state.name,
-            assignedTo: this.props.state.assignedTo,
-            reportedBy: this.props.state.reportedBy,
-            project: this.props.state.project,
-            creationDate: this.props.state.creationDate,
-            modifiedDate: this.props.state.modifiedDate,
-            modifiedTime: this.props.state.modifyTime,
-            laneId: this.props.laneId,
-            description: this.props.state.description,
-            toggled: this.props.state.toggled == undefined ? false : this.props.state.toggled,
+            toggled: this.props.state.toggled != undefined ? this.props.state.toggled : false,
         }
 
         this.toggleModal = this.toggleModal.bind(this);
-        this.saveState = this.saveState.bind(this);
     }
 
     toggleModal(){
         this.setState({showModal: !this.state.showModal});
-    }
-
-    componentWillMount(){
-    }
-
-    saveState(data){
-        if(data.name)
-            this.setState({name: data.name});
-        if(data.id)
-            this.setState({id: data.id})
-        if(data.description)
-            this.setState({description: data.description});
-        if(data.assigned)
-            this.setState({assignedTo: data.assigned});
-        if(data.reporter)
-            this.setState({reportedBy: data.reporter});
-
-        this.toggleModal();
     }
 
     render(){
@@ -79,21 +52,20 @@ class Card extends React.Component{
 
                     <div class="row">
                         <div id="card-name" class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                            {this.state.name}
+                            {this.props.state.name}
                         </div>
                     </div>    
 
                     <div class=" row" id="card-header">
-                        <div id="card-project" class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-12"><a href="#">{this.state.project}</a></div>
-                        <div id="card-id" class="col-xl-7 col-lg-7 col-md-7 col-sm-7 col-12">{this.state.id}</div>
+                        <div id="card-project" class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-12"><a href="#">{this.props.state.project}</a></div>
+                        <div id="card-id" class="col-xl-7 col-lg-7 col-md-7 col-sm-7 col-12">{this.props.state.id}</div>
                     </div>     
                  
                     <div id="card-details" class="row" style={{display: this.state.toggled ? "none":""}}>
                         <div class="container">
-                            <InputField label="Last modified on" text={this.state.modifiedDate + " @ " + this.state.modifiedTime}/>
-                            <InputField label="Assigned to" text={this.state.assignedTo} />
-                            <InputField label="Reported by" text={this.state.reportedBy} />
-                            <InputField label="Description" text={this.state.description} />
+                            <InputField id={this.props.state.id} label="Assigned to" text={this.props.state.assignee} />
+                            <InputField id={this.props.state.id} label="Reported by" text={this.props.state.reporter} />
+                            <InputField id={this.props.state.id} label="Description" text={this.props.state.description} />
                         </div>
                     </div>
                     <div class="row">
@@ -114,7 +86,7 @@ class Card extends React.Component{
                         </div>
                     </div>
 
-                    <ChangeModal state={this.state} toggleModal={this.toggleModal} saveState={this.saveState}/>
+                    {/* <ChangeModal state={this.state} toggleModal={this.toggleModal} saveState={this.saveState}/> */}
                 </div>
             </div>
         );

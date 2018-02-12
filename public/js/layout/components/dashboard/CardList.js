@@ -7,18 +7,25 @@ const axios = require('axios');
 
 const target = {
     drop(props, monitor, component){
-        // get the old lane
-        var oldLaneId = monitor.getItem().laneId;
         //get card data
-        var card = monitor.getItem();
+        let card = monitor.getItem();
         
-        if(oldLaneId !== component.state.laneId){
+        if(card.laneID != props.lane){
+            card.laneID = props.lane;
+            
+            axios.post('/cards/modify', {
+                lane: card.laneID,
+                id: card.id
+            }).then((response) => {
+                console.log(response);
+            })
+
             console.log(card);
             component.pushCard(card);
             component.sortCards();
         }
 
-        return {laneId: component.state.laneId};
+        return {lane: props.lane};
     },
 
     canDrop(props, monitor, component){
@@ -40,7 +47,6 @@ class CardList extends React.Component{
         this.removeCard = this.removeCard.bind(this);
         this.pushCard = this.pushCard.bind(this);
         this.sortCards = this.sortCards.bind(this);
-        this.getCards = this.getCards.bind(this);
     }
 
     // sorting function of cards
@@ -74,9 +80,7 @@ class CardList extends React.Component{
         // if a card is pushed in this lane, add it to the state list
         this.setState(update(this.state, { 
             cardList: {$push:[card]}
-        }), () =>{
-            console.log(this.state.cardList);
-        });
+        }));
     }
 
     addClass(){
@@ -93,15 +97,10 @@ class CardList extends React.Component{
 
     }   
 
-    getCards(){
-        axios.get('/cards/' + this.props.laneId).then((response) => {
+    componentWillMount(){
+        axios.get('/cards/' + this.props.lane).then((response) => {
             this.setState({cardList: response.data});
         });
-    }
-
-    componentWillMount(){
-        this.getCards();
-        this.setState({laneId: this.props.laneId});
     }
 
     render(){
@@ -111,7 +110,7 @@ class CardList extends React.Component{
                 {   
                     this.state.cardList.length ?
                         this.state.cardList.map((card) => {
-                            return <Card key={card.id} state={card} removeCard={this.removeCard} laneId={this.props.laneId}/>
+                            return <Card key={card.id} state={card} removeCard={this.removeCard} laneID={this.props.lane}/>
                         })
                     : null
                 }

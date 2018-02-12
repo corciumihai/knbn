@@ -34,38 +34,34 @@ class Participant extends React.Component{
     render(){
         return(
             <div class="participant col-xl-6 col-12">
-                <div class="row">
-                    <div class="container participant-role">{this.props.role}</div>
-                </div>
-                <div class="row">
-                    <div class="container">
-                        <div class="select-participant container">
-                            <div class="row">
-                                <input class="participant-name col search-input" placeholder="Choose user" onChange={this.onChange} value={this.state.userName}/>
-                                <div class="participants-dropdown-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <img class="mx-auto d-block" src="./images/small-arrow-down.svg" />
-                                </div>
-                                
-                                <div class={"dropdown-menu dropdown-menu-right"}>
-                                    {   this.state.users.length ? 
-                                            this.state.users.map((element) => {
-                                                //use this for other maps as well
-                                                let boundClick = this.changeName.bind(this, element);
-                                                return  <button key={ element.email } className="dropdown-item" type="text" onClick={ boundClick }>
-                                                            <div class="row">
-                                                                <div class="col-12">{ element.name }</div>
-                                                                <div class="dropdown-email col-12">{ element.email }</div>
-                                                            </div>
-                                                        </button>                                   
-                                            })
-                                            :
-                                            <div class="col dropdown-item disabled">No users found</div>
-                                    }
-                                </div> 
-                                
-                                  
-                            </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col participant-role">{this.props.role}</div>
+                    </div>
+                    <div class="row participant-wrapper">
+                        <div class="col no-pad">
+                            <input class="form-control participant-name" placeholder="Choose user" onChange={this.onChange} value={this.state.userName}/>
                         </div>
+                        <div class="participant-dropdown-button d-flex" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img class="mx-auto d-block align-self-center" src="./images/small-arrow-down.svg" />
+                        </div>
+
+                        <div class={"dropdown-menu dropdown-menu-right"}>
+                        {   this.state.users.length ? 
+                                this.state.users.map((element) => {
+                                    //use this for other maps as well
+                                    let boundClick = this.changeName.bind(this, element);
+                                    return  <button key={ element.email } className="dropdown-item" type="text" onClick={ boundClick }>
+                                                <div class="row">
+                                                    <div class="col-12">{ element.name }</div>
+                                                    <div class="dropdown-email col-12">{ element.email }</div>
+                                                </div>
+                                            </button>                                   
+                                })
+                                :
+                                <div class="col dropdown-item disabled">No users found</div>
+                        }
+                        </div>      
                     </div>
                 </div>
             </div>

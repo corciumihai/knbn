@@ -20,24 +20,26 @@ class Participants extends React.Component{
 
     render(){
         return(
-            <div class="form-group row">
+            <div class="row">
                 <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 modal-label">
                     <span class="align-middle">Participants</span>
                 </div>
-                <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9 col-12 modal-label">
+                <div class="col modal-label">
                     <div class="container participants-container">
+                        
                         { 
                             this.state.loading ? 
-                                <div class="row">
-                                    <div class="col">Loading users..</div>
-                                </div>
+                                <div class="row"><div class="col">Loading users...</div></div>
                                 :
-                                <div class="row">
-                                    <Participant role="Reporter" users={this.state.databaseUsers} callback={this.props.setReporter} />
-                                    <Participant role="Assignee" users={this.state.databaseUsers} callback={this.props.setAssignee} />
-                                    <div class="col"><a href="#">Assign to me</a></div>
-                                </div>
+                                (
+                                    <div class="row">
+                                        <Participant role="Reporter" users={this.state.databaseUsers} callback={this.props.setReporter} />
+                                        <Participant role="Assignee" users={this.state.databaseUsers} callback={this.props.setAssignee} />
+                                        <div class="col"><a href="#">Assign to me</a></div>
+                                    </div>
+                                )
                         }
+                        
                     </div>
                 </div>
             </div>

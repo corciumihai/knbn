@@ -3,6 +3,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import CreateCard from './CreateCard';
 import CreateProject from './CreateProject';
 import CreateComponent from './CreateComponent';
+import axios from 'axios';
 
 
 class CreationModal extends React.Component{
@@ -10,69 +11,125 @@ class CreationModal extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            selectedItem: undefined,
+            items: [{name: "Card", index: 0}, {name: "Project", index: 1}, {name:"Component", index: 2}],
+            currentItem: -1,
+            data: {},
         }
 
         this.changeDropdownValue = this.changeDropdownValue.bind(this);
         this.createItem = this.createItem.bind(this);
+        this.createCard = this.createCard.bind(this);
+        this.createProject = this.createProject.bind(this);
+        this.createComponent = this.createComponent.bind(this);
+
+        this.setCardData = this.setCardData.bind(this);
+    }
+
+    shouldComponentUpdate(nextProps, nextState){
+        console.log(this.state.data, nextState.data);
+        if(this.state.data.length > 0){
+            
+            return ! this.state.data.ticketName === nextState.data.ticketName;
+            
+        }
+
+
+
+        return true;
+    }
+
+    setCardData(data){
+        this.setState({data: data}, () => {
+            // console.log(this.state.data);
+        });
     }
 
     changeDropdownValue(event){
         parent = document.getElementById('dropdownMenuButton');
         parent.textContent = event.target.text;
 
-        this.setState({selectedItem: event.target.id});
-         
+        this.setState({function: event.target.id});
     }
 
-    createItem(){
-        switch (this.state.selectedItem){
-            case 'create-card':
-                console.log('Creating card...');
-                break;
+    // send request with card data to create a card in the database
+    createCard(){
+        // if data is valid  
+        if(
+            this.state.data.ticketName.length && 
+            this.state.data.ticketId.length
+            // this.state.cardData.estimation.length && 
+            // this.state.cardData.endDate.length &&
+            // this.state.cardData.startDate.length
+         )
+        {
+            axios.post('/create/card', this.state.data).then((response) => {
+                //if response is positive
+                //clear the cardData
+                this.state.data = {};
+            });
 
-            case 'create-project':
-                console.log('Creating project...');
-                break;
-
-            case 'create-component':
-                console.log('Creating component...');
-                break;
-
-            default:
-                alert('Nothing selected')
-                break;
+            this.props.toggle();
+            // this.props.force();
         }
 
     }
 
-    render(){        
+    createProject(){
+        console.log('Creating project');
+    }
+
+    createComponent(){
+        console.log('Creating component');
+    }
+
+    createItem(){
+        switch(this.state.currentItem.index){
+            case 0:
+                this.createCard();
+                break;
+            
+            case 1:
+                this.createComponent();
+                break;
+
+            case 2: this.createProject();
+                break;
+        }
+    }
+
+    render(){       
+        console.log('rendering');
         return(
             this.props.show ? 
             (<div>
                 <Modal isOpen={this.props.show} toggle={this.props.toggle} className="change-modal">
                     <ModalHeader toggle={this.props.toggleModal}>
                         <div class="modal-name col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">Create new</div>
-
                         <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle col-xl-4" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select new instance</button>
+                            <button class="btn btn-secondary dropdown-toggle col-xl-4" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {
+                                    this.state.currentItem === -1 ? "Select new instance" : this.state.currentItem.name
+                                }
+                            </button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#" id="create-card" onClick={this.changeDropdownValue}>Card</a>
-                                <a class="dropdown-item" href="#" id="create-component" onClick={this.changeDropdownValue}>Component</a>
-                                <a class="dropdown-item" href="#" id="create-project" onClick={this.changeDropdownValue}>Project</a>
+                                {
+                                    this.state.items.map((item) => {
+                                        return <a class="dropdown-item" href="#" key={item.index} onClick={()=>{this.setState({currentItem: item})}}>{item.name}</a>
+                                    })
+                                }
                             </div>
                         </div>
                     </ModalHeader>
 
-                    {this.state.selectedItem === 'create-card' ? 
-                        <CreateCard /> : null
+                    {this.state.currentItem.index === 0 ? 
+                        <CreateCard setData={ this.setCardData } /> : null
 
                     }
-                    {this.state.selectedItem === 'create-project' ? 
+                    {this.state.currentItem.index === 1 ? 
                         <CreateProject /> : null
 
                     }
-                    {this.state.selectedItem === 'create-component' ? 
+                    {this.state.currentItem.index === 2 ? 
                         <CreateComponent /> : null
 
                     }

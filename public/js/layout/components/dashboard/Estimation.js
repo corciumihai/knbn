@@ -8,21 +8,13 @@ class Estimation extends React.Component{
 
     render(){
         return(
-            <div class="form-group row">
+            <div class="row">
                 <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 modal-label">
                     <span class="align-middle">Estimation</span>
                 </div>
-                <div class="col estimation-container">
-                    <div class="row">
-                        <div class="col-12">
-                            <input type="text" class="form-control modal-input" placeholder="Enter ticket estimated time"/>
-                        </div>
-                        <div class="col">
-                            <div class="col">
-                                <a href="#">Help</a>
-                            </div>
-                        </div>
-                    </div>
+                <div class="form-group col">
+                    <input type="text" class="form-control modal-input" onChange={this.props.onChange} placeholder="Enter ticket estimated time"/>
+                    <div class="col"><a href="/estimation-help" class="small-tooltip">Help</a></div>  
                 </div>
             </div>
         );

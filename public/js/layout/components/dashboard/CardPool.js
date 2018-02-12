@@ -18,16 +18,16 @@ class CardPool extends React.Component{
             <div class="row">
                 <Section name="Construction of Component 1 with a huge ass name that wont really fit in the section">
                     <Column columnName="BACKLOG">
-                        <CardList id="card-list-1" laneId="backlog"/>
+                        <CardList id="card-list-1" lane="backlog" force={this.forceUpdate}/>
                     </Column>
                     <Column columnName="IN PROGRESS">
-                        <CardList id="card-list-2" laneId="progress"/>
+                        <CardList id="card-list-2" lane="progress"/>
                     </Column>
                     <Column columnName="DOING">
-                        <CardList id="card-list-3" laneId="doing"/>
+                        <CardList id="card-list-3" lane="doing"/>
                     </Column>
                     <Column columnName="DONE">
-                        <CardList id="card-list-4" laneId="done"/>
+                        <CardList id="card-list-4" lane="done"/>
                     </Column>
                 </Section>
             </div>
