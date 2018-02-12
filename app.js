@@ -13,9 +13,14 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'pug');
 
 app.use(bodyParser.json());
+
 router.get('/login', function(request, response){
     response.render(path.resolve(__dirname, 'views', 'login.pug'));
 });
+
+router.get('/estimation-help', function(request, response){
+    response.render(path.resolve(__dirname, 'views', 'estimation-help.pug'))
+})
 
 router.post('/login', function(request, response){
     // verify against database and send back response
@@ -35,7 +40,7 @@ router.post('/login', function(request, response){
                 // redirect to the dashboard
                 // TODO this piece of code does not redirect correctly
                 response.redirect('/dashboard');
-                console.log('Haha');
+                // console.log('Haha');
             }
         }
         else{
@@ -51,7 +56,7 @@ router.get('/register', function(request, response){
     response.render(path.resolve(__dirname, 'views', 'register.pug'));
 })
 
-router.post('/register', function(request, response){
+router.post('/register', (request, response) => {
     // add user to database and send back response
     // TODO use a class where you can hash the password on creation of the object
     var userData = {
@@ -81,26 +86,71 @@ router.get('/dashboard', function(request, response){
 });
 
 router.get('/cards/:laneID', function(request, response){
-    var query = database.query('SELECT * from cards where laneID = ?', request.params.laneID, function(error, result, fields){
+    var query = database.query('SELECT * FROM cards WHERE laneID = ?', request.params.laneID, function(error, result, fields){
         if(error){
             console.log('Database error: ' + error);
             return;
         }
+        // console.log(result);
         response.send(result);
     });
 
 });
 
+router.post('/cards/modify', (request, response) => {
+    let query = database.query('UPDATE cards SET laneID = ? where ID = ?', [request.body.lane, request.body.id], (error, result, fields) => {
+        if(error){
+            console.log('Database error: ' + error);
+            return;
+        }
+    });
+    //send a response
+    // console.log(request.body);
+});
+
+router.get('/count', (request, response) => {
+    let query = database.query('SELECT COUNT(*) AS count FROM cards', (error, result, fields) => {
+        if(error){
+            console.log('Databse error at users: ' + error);
+            return;
+        }
+        response.send(result);
+    });
+});
+
 router.get('/users/get-users', function(request, response){
-    console.log('hit this');
-    var query = database.query('SELECT email, name from users', (error, result, fields) => {
+    // console.log('hit this');
+    var query = database.query('SELECT email, name from users', timeout = 5000, (error, result, fields) => {
         if(error){
             console.log('Databse error at users: ' + error);
             return;
         }
         response.send(result);
     })
-})
+});
+
+router.post('/create/card', (request, response) => {
+    let incomingData = request.body;
+
+    let query = database.query('INSERT INTO cards SET ?', {
+        id: incomingData.ticketId, 
+        name: incomingData.ticketName,
+        reporter: incomingData.reporter.name,
+        assignee: incomingData.assignee.name,
+        project: incomingData.project.name,
+        startDate: incomingData.startDate,
+        endDate: incomingData.endDate,
+        description: incomingData.description,
+        laneID: "backlog"
+    }, (error, result, fields) => {
+        if(error){
+            console.log('Databse error at users: ' + error);
+            return;
+        }
+        //send positive response
+    })
+
+});
 
 app.use(express.static(__dirname + '/routes'));
 app.use(router);
