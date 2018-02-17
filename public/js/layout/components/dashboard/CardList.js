@@ -16,11 +16,8 @@ const target = {
             axios.post('/cards/modify', {
                 lane: card.laneID,
                 id: card.id
-            }).then((response) => {
-                console.log(response);
-            })
+            });
 
-            console.log(card);
             component.pushCard(card);
             component.sortCards();
         }

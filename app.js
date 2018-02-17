@@ -144,12 +144,85 @@ router.post('/create/card', (request, response) => {
         laneID: "backlog"
     }, (error, result, fields) => {
         if(error){
-            console.log('Databse error at users: ' + error);
+            console.log('Database error at cards: ' + error);
             return;
         }
         //send positive response
     })
 
+});
+
+router.get('/get-projects', (request, response) => {
+    let query = database.query('SELECT * FROM projects', (error, result, fields) => {
+        if(error){
+            console.log('Database error at projects: ' + error);
+            return;
+        }
+        console.log(result);
+        response.send(result);
+    });
+});
+
+router.post('/create-project', (request, response) => {
+    let incomingData = request.body;
+    console.log(incomingData);
+    let query = database.query('INSERT INTO projects SET ?', {
+        id: incomingData.id,
+        name: incomingData.name
+    }, (error, result, fields) => {
+        if(error){
+            console.log('Database error at projects: ' + error);
+            return;
+        }
+        //send positive response
+    });
+});
+
+router.get('/count-projects', (request, response) => {
+    let query = database.query('SELECT COUNT(*) as count FROM projects', (error, result, fields) => {
+        if(error){
+            console.log('Database error at projects: ' + error);
+            return;
+        }
+        
+        response.send(result);
+    })
+});
+
+router.get('/count-components', (request, response) => {
+    let query = database.query('SELECT COUNT(*) AS count FROM components', (error, result, fields) => {
+        if(error){
+            console.log('Database error at components: ' + error);
+            return;
+        }
+        console.log(result);
+        response.send(result);
+    })
+});
+
+router.post('/create-component', (request, response) => {
+    let incomingData = request.body;
+    let query = database.query('INSERT INTO components SET ?', {
+        id: incomingData.id,
+        name: incomingData.name,
+        project: incomingData.project.id,
+    }, (error, result, fields) => {
+        if(error){
+            console.log('Database error at components: ' + error);
+            return;
+        }
+        //send positive response
+    });
+});
+
+router.get('/components', (request, response) => {
+    let query = database.query('SELECT * FROM components', (error, result, fields) => {
+        if(error){
+            console.log('Database error at components: ' + error);
+            return;
+        }
+        response.send(result);
+    });
 });
 
 app.use(express.static(__dirname + '/routes'));

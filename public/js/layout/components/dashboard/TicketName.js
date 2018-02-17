@@ -3,7 +3,7 @@ import React from 'react';
 class TicketName extends React.Component{
     constructor(props){
         super(props);
-
+        
     }
 
     render(){

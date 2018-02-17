@@ -312,12 +312,8 @@ html, body{
     border-radius: 100%;
 }
 
-#create{
-    cursor: pointer;
-}
-
 .modal-name, .dropdown-toggle, .dropdown-item, #dropdownMenuButton, .react-datepicker, .react-datepicker__current-month, .selected-date{
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .react-datepicker__day{
@@ -334,12 +330,29 @@ html, body{
     overflow-x: hidden;
 }
 
-/* .date-slider{
-    font-size: 12px;
-    border: none;
+.new-item{
+    font-size: 14px;
     background-color: white;
     border-radius: 3px;
-} */
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.new-item-dropdown:hover > .new-item-button{
+    background-color: rgb(170, 212, 173);
+    
+}
+
+.new-item-dropdown{
+    cursor: pointer;
+}
+
+.new-item-button{
+    background-color: white;
+    border-radius: 3px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
 
 .date-picker{
     text-align: center;
@@ -545,4 +558,36 @@ html, body{
 .participant-wrapper{
     background-color: white;
     border-radius: 3px;
+}
+
+.cancel{
+    font-size: 12px;
+}
+
+.create-card, .create-component{
+    font-size: 12px;
+    box-shadow: none;
+    border-radius: 3px;
+    background-color: white;
+}
+
+.create-card-error-message{
+    font-size: 12px;
+    color: red;
+    margin-bottom: 15px;
+}
+
+.project-selection{
+    background-color: white;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.project-selection:hover > .project-small-button{
+    background-color: rgb(170, 212, 173);
+}
+
+.project-name{
+    font-size: 12px;
+    text-align: center;
 }
