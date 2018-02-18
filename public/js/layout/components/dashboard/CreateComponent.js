@@ -78,7 +78,7 @@ class CreateComponent extends React.Component{
                         <span class="align-middle">Component name</span>
                     </div>
                     <div class="col">
-                        <input type="text" class="form-control modal-input" onChange={this.onChange} value={this.state.name}/>
+                        <input type="text" class="form-control modal-input" onChange={this.onChange} value={this.state.name} placeholder="Enter component name"/>
                     </div>
                 </div>
                 <ProjectName project={this.state.project} onChange={this.setProject}/>

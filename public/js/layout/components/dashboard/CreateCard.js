@@ -11,7 +11,7 @@ import AttachedFiles from './AttachedFiles';
 import TicketName from './TicketName';
 import TicketId from './TicketId';
 import Alert from './Alert';
-import Component from './Component';
+import ComponentName from './ComponentName';
 
 import axios from 'axios';
 
@@ -128,15 +128,15 @@ class CreateCard extends React.PureComponent{
             <div>
                 <ModalBody>
                     <div class="container">
-                        <Alert message={this.state.errorMessage}/>
-                        <TicketId id={this.state.ticketId} isLoading={this.state.loadingTicketCount}/>
-                        <TicketName onChange={this.updateTicketName} value={this.state.ticketName}/>
+                        <Alert message={this.state.errorMessage} />
+                        <TicketId id={this.state.ticketId} isLoading={this.state.loadingTicketCount} />
+                        <TicketName onChange={this.updateTicketName} value={this.state.ticketName} />
                         <Estimation onChange={this.onEstimationChange}/>
                         <DatePicker emitEndDate={this.getEndDate}/>
                         <ProjectName onChange={this.setProject} project={this.state.project} />
-                        <Component onChange={this.setComponent} component={this.state.component} />
-                        <Participants setReporter={this.setReporter} setAssignee={this.setAssignee}/>
-                        <Description onChange={this.onDescriptionChange} value={this.state.description}/>
+                        <ComponentName onChange={this.setComponent} component={this.state.component} project={this.state.project} />
+                        <Participants setReporter={this.setReporter} setAssignee={this.setAssignee} />
+                        <Description onChange={this.onDescriptionChange} value={this.state.description} />
                         <AttachedFiles />
                     </div>
                 </ModalBody>

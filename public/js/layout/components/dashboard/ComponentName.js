@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 
-class Component extends React.Component{
+class ComponentName extends React.Component{
     constructor(props){
         super(props);
 
@@ -16,8 +16,19 @@ class Component extends React.Component{
             this.setState({
                 loading: false,
                 components: response.data,
-            })
-        })
+            });
+        });
+    }
+
+    componentWillReceiveProps(nextProps){
+        if(nextProps.project.id){
+            axios.post('/components', nextProps.project).then((response) => {
+                this.setState({
+                    loading: false,
+                    components: response.data,
+                });
+            });
+        }
     }
 
     onChange(element){
@@ -35,7 +46,7 @@ class Component extends React.Component{
                     <div class="container">
                         {!this.state.loading ? 
                         <div class="row">
-                            <div class="col-xl-6 project-selection offset-xl-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <div class="col-xl-8 project-selection offset-xl-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <div class="container">
                                     <div class="row">
                                         <div class="col project-name">
@@ -72,4 +83,4 @@ class Component extends React.Component{
     }
 }
 
-export default Component;
+export default ComponentName;

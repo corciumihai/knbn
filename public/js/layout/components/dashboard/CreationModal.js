@@ -54,7 +54,7 @@ class CreationModal extends React.Component{
                         
                     </ModalHeader>
 
-                    {this.state.currentItem.index === 0 ? 
+                    {/* {this.state.currentItem.index === 0 ? 
                         <CreateCard toggleModal={this.props.toggle}/> : null
 
                     }
@@ -65,7 +65,7 @@ class CreationModal extends React.Component{
                     {this.state.currentItem.index === 2 ? 
                         <CreateComponent toggleModal={this.props.toggle}/> : null
 
-                    }
+                    } */}
     
                 </Modal>
             )

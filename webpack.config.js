@@ -7,7 +7,8 @@ module.exports = {
   devtool: debug ? "inline-sourcemap" : null,
   entry: {login: "./public/js/layout/Login.js",
           register: "./public/js/layout/Register.js",
-          dashboard: "./public/js/layout/Dashboard.js"},
+          dashboard: "./public/js/layout/Dashboard.js",
+          menu: "./public/js/layout/Menu.js"},
   module:{
     loaders: [
       {

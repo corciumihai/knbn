@@ -37,18 +37,20 @@ class Section extends React.Component{
 
     render(){
         return(
-            <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 col-12 offset-xl-1 offset-lg-1 offset-md-1 offset-sm-1" id="section">
-                <div class="container-fluid" id="section-head">
-                    <div class="row">
-                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                            <div class="section-toggler" onClick={this.toogleHeight}><img src="./images/arrow-up.svg"/></div>
-                            <div class="section-name">{this.props.name}</div>
+            <div class="row">
+                <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 col-12 offset-xl-1 offset-lg-1 offset-md-1 offset-sm-1" id="section">
+                    <div class="container-fluid" id="section-head">
+                        <div class="row">
+                            <div class="col">
+                                <div class="section-toggler" onClick={this.toogleHeight}><img src="./images/arrow-up.svg"/></div>
+                                <div class="section-name">{this.props.name}</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 " id="card-pool">
-                    <div class="row">
-                        {this.props.children}
+                    <div class="container-fluid" id="card-pool">
+                        <div class="row">
+                            {this.props.children}
+                        </div>
                     </div>
                 </div>
             </div>

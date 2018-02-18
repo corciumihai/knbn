@@ -158,7 +158,6 @@ router.get('/get-projects', (request, response) => {
             console.log('Database error at projects: ' + error);
             return;
         }
-        console.log(result);
         response.send(result);
     });
 });
@@ -195,7 +194,6 @@ router.get('/count-components', (request, response) => {
             console.log('Database error at components: ' + error);
             return;
         }
-        console.log(result);
         response.send(result);
     })
 });
@@ -216,7 +214,21 @@ router.post('/create-component', (request, response) => {
 });
 
 router.get('/components', (request, response) => {
-    let query = database.query('SELECT * FROM components', (error, result, fields) => {
+    let incomingData = request.body;
+    if(!incomingData.length){
+        let query = database.query('SELECT * FROM components', (error, result, fields) => {
+            if(error){
+                console.log('Database error at components: ' + error);
+                return;
+            }
+            response.send(result);
+        });
+    }
+});
+
+router.post('/components', (request, response) => {
+    let incomingData = request.body;
+    let query = database.query('SELECT * FROM components WHERE project = ?', incomingData.id, (error, result, fields) => {
         if(error){
             console.log('Database error at components: ' + error);
             return;
