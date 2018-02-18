@@ -21,7 +21,7 @@ class Menu extends React.Component{
         return(
             <div class="row">
                 <button class="btn btn-primary" id="create" onClick={this.toggleModal}>Create</button>
-                <button class="btn btn-primary" >Setup new project</button>
+                <a href='/create-project'>Setup new project</a>
                 {/* <CreationModal show={this.state.showModal} toggle={this.toggleModal} /> */}
             </div>
         );

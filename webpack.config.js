@@ -8,7 +8,8 @@ module.exports = {
   entry: {login: "./public/js/layout/Login.js",
           register: "./public/js/layout/Register.js",
           dashboard: "./public/js/layout/Dashboard.js",
-          menu: "./public/js/layout/Menu.js"},
+          menu: "./public/js/layout/Menu.js",
+          create_project: "./public/js/layout/CreateProject.js"},
   module:{
     loaders: [
       {

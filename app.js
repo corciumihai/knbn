@@ -19,7 +19,7 @@ router.get('/login', function(request, response){
 });
 
 router.get('/estimation-help', function(request, response){
-    response.render(path.resolve(__dirname, 'views', 'estimation-help.pug'))
+    response.render(path.resolve(__dirname, 'views', 'estimation-help.pug'));
 })
 
 router.post('/login', function(request, response){
@@ -235,6 +235,12 @@ router.post('/components', (request, response) => {
         }
         response.send(result);
     });
+});
+
+// create project -------------------------------------------------------------------------------------------------------------------------------------------------
+
+router.get('/create-project', (request, response) => {
+    response.render(path.resolve(__dirname, 'views', 'create_project.pug'))
 });
 
 app.use(express.static(__dirname + '/routes'));
