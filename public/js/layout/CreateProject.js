@@ -1,5 +1,10 @@
 import React from 'react';
 import ReactDom from 'react-dom';
+import ProjectName from './components/project/ProjectName';
+import AssignRoles from './components/project/AssignRoles';
+import Developers from './components/project/roles/Developers';
+import TeamLeaders from './components/project/roles/TeamLeaders';
+import Roles from './components/project/Roles';
 
 class CreateProject extends React.Component{
     constructor(props){
@@ -8,7 +13,15 @@ class CreateProject extends React.Component{
 
     render(){
         return(
-            <div class='project'>
+            <div class='col project'>
+                <div class="container">
+                    <ProjectName />
+                    <Roles/>
+                    <AssignRoles>
+                        <Developers/>
+                        <TeamLeaders/>
+                    </AssignRoles>
+                </div>
             </div>
         );
     }

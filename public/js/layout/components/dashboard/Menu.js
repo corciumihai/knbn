@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDom from 'react-dom';
-// import CreationModal from './CreationModal';
+import CreationModal from './CreationModal';
 
 class Menu extends React.Component{
     constructor(props){
@@ -19,16 +19,15 @@ class Menu extends React.Component{
 
     render(){
         return(
-            <div class="col">
-                <button class="btn btn-primary" id="create" onClick={this.toggleModal}>Create</button>
-                <a href='/create-project'>Setup new project</a>
-                {/* <CreationModal show={this.state.showModal} toggle={this.toggleModal} /> */}
+            <div class="row">
+                <div id="creation-menu">
+                    <button class="btn btn-primary" id="create" onClick={this.toggleModal}>Create</button>
+                    <CreationModal show={this.state.showModal} toggle={this.toggleModal} />
+                </div>
             </div>
         );
     }
 }
-
-ReactDom.render(<Menu/>, document.getElementById('menu'));
 
 export default Menu;
 
