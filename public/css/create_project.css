@@ -11,6 +11,10 @@ label{
     font-size: 14px;
 }
 
+.form-control{
+    border-radius: 0px;
+}
+
 .users{
     text-align: left;
 }
@@ -68,8 +72,7 @@ label{
 
 .remove-role{
     width: 30px;
-    height: 100%;
-    background-color: rgb(119, 119, 119);
+    background-color: rgb(70, 70, 70);
     cursor: pointer;
     padding: 0px;
     border-radius: 0px;
@@ -79,7 +82,12 @@ label{
 .role{
     margin: 5px 15px 5px 0px;
     border-radius: 4px;
-    border: 1px solid rgb(119, 119, 119);
+    border: 1px solid rgb(70, 70, 70);
+}
+
+.role-name{
+    word-break: break-all;
+    font-size: 13px;
 }
 
 .roles{

@@ -7,12 +7,9 @@ class Roles extends React.Component{
         super(props);
     }
 
-    // removeRole(role){
-    //     this.setState({ roles: update(this.state.roles, {$splice: [[this.state.roles.indexOf(role), 1]]}) });
-    // }
-
     render(){
         return(
+            !this.props.roles.length == 0 ? 
             <div class="roles row">
                 {
                     this.props.roles.map(role => {
@@ -20,6 +17,7 @@ class Roles extends React.Component{
                     })
                 }
             </div>
+            : null
         );
     }
 }

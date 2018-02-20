@@ -12,7 +12,10 @@ class CreateProject extends React.Component{
         super(props);
 
         this.state = {
-            roles: ["Software Developer", "Tester"],
+            roles: [],
+            developers: [],
+            teamLeaders: [],
+            projectManagers: []
         }
 
         this.addRoles = this.addRoles.bind(this);

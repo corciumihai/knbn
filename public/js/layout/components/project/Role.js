@@ -14,8 +14,8 @@ class Role extends React.Component{
     render(){
         return(
             <div class="role d-flex flex-row">
-                <div class="role-name col">{this.props.role}</div>
-                <button class="remove-role btn" onClick={this.remove}>X</button>
+                <div class="role-name col"><span class="align-self-center">{this.props.role}</span></div>
+                <button class="remove-role btn" onClick={this.remove}><img src="./images/remove.svg" class="mx-auto d-block"/></button>
             </div>
         );
     }

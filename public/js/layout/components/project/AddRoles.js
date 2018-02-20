@@ -21,6 +21,8 @@ class AddRoles extends React.Component{
             event.preventDefault();
 
             this.props.add(this.state.role.trim());
+
+            this.setState({role: ""});
         }
     }
 
