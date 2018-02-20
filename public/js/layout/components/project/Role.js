@@ -13,13 +13,9 @@ class Role extends React.Component{
 
     render(){
         return(
-            <div class="role">
-                <div class="container">
-                    <div class="row">
-                        <div class="col d-flex"><span class="align-self-center">{this.props.role}</span></div>
-                        <div class="remove-role" onClick={this.remove}>X</div>
-                    </div>
-                </div>
+            <div class="role d-flex flex-row">
+                <div class="role-name col">{this.props.role}</div>
+                <button class="remove-role btn" onClick={this.remove}>X</button>
             </div>
         );
     }
