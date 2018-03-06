@@ -4,19 +4,22 @@ class ProjectName extends React.Component{
     constructor(props){
         super(props);
 
+        this.onClick = this.onClick.bind(this);
+
+    }
+
+    onClick(event){
+        event.preventDefault();
     }
 
     render(){
         return(
-            <div class="row">
+            <div class="form-group mb-2">
                 <div class="col">
-                    <form class='project-name'>
-                        <div class="form-group">
-                            <label for="project-name">Project name</label>
-                            <input type="text" class="form-control" id="project-name" aria-describedby="project-help" placeholder="Enter project name"/>
-                            <small id="project-help" class="form-text text-muted">This is the project's name</small>
-                        </div>
-                    </form>
+                    <label for="project-name">Project name</label>
+                    <input type="text" class="form-control col" id="project-name" aria-describedby="project-help" placeholder="Enter project name"
+                        onChange={this.props.onChange} value={this.props.name}/>
+                    <small id="project-help" class="form-text text-muted">This is the project's name</small>
                 </div>
             </div>
         );

@@ -10,6 +10,7 @@ class AddRoles extends React.Component{
 
         this.onChange = this.onChange.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
+        this.onClick = this.onClick.bind(this);
     }
 
     onChange(event){
@@ -19,27 +20,31 @@ class AddRoles extends React.Component{
     onKeyDown(event){
         if(event.keyCode == 13){
             event.preventDefault();
-
             this.props.add(this.state.role.trim());
-
             this.setState({role: ""});
         }
     }
 
+    onClick(event){
+        event.preventDefault();
+        this.props.add(this.state.role.trim());
+        this.setState({role: ""});
+    }
+
     render(){
         return(
-            <div class="row">
+            <div class="form-group mb-2">
                 <div class="col">
-                    <form class='add-role'>
-                        <div class="form-group">
-                            <label for="add-role">Add roles in your project</label>
-                            <input type="text" class="form-control" id="add-role" aria-describedby="add-role-help" placeholder="Enter role" 
-                                onChange={this.onChange} onKeyDown={this.onKeyDown} value={this.state.role}/>
-                            <small id="add-role-help" class="form-text text-muted">Add your roles above</small>
-                        </div>
-                    </form>
+                    <label for="add-role">Add positions in your project</label>
+                    <input type="text" class="form-control" id="add-role" aria-describedby="add-role-help" placeholder="Enter position" 
+                        onChange={this.onChange} onKeyDown={this.onKeyDown} value={this.state.role}/>
+                    <small id="add-role-help" class="form-text text-muted" >Separate positions with ','/ Add them with 'Enter'</small>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn button mb-2 col-xl-2 col-12" onClick={this.onClick}>Add position</button>
                 </div>
             </div>
+        
         );
     }
 }
