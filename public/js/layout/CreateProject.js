@@ -7,6 +7,7 @@ import update from 'react-addons-update';
 import Person from './components/project/roles/Person'
 import PositionDropdown from './components/project/roles/PositionDropdown';
 import People from './components/project/People';
+import AddButton from './components/project/AddButton';
 
 class CreateProject extends React.Component{
     constructor(props){
@@ -14,7 +15,10 @@ class CreateProject extends React.Component{
 
         this.state = {
             positions: [],
-            people: [],
+            people: [{name:"John", position: 'Dev', index: 1}, {name:"M", position: 'Dev', index: 2}, {name:"R", position: 'Dev', index: 3},
+            {name:"John", position: 'Dev', index: 1}, {name:"M", position: 'Dev', index: 2}, {name:"R", position: 'Dev', index: 3},
+            {name:"John", position: 'Dev', index: 1}, {name:"M", position: 'Dev', index: 2}, {name:"R", position: 'Dev', index: 3},
+            {name:"John", position: 'Dev', index: 1}, {name:"M", position: 'Dev', index: 2}, {name:"R", position: 'Dev', index: 3}],
             projectName: "",
             currentPosition: "",
             currentName: "",
@@ -25,6 +29,7 @@ class CreateProject extends React.Component{
         this.changeProjectName = this.changeProjectName.bind(this);
         this.changeCurrentName = this.changeCurrentName.bind(this);
         this.changeCurrentPosition = this.changeCurrentPosition.bind(this);
+        this.addPerson = this.addPerson.bind(this);
     }
 
     addRoles(roles){
@@ -64,9 +69,30 @@ class CreateProject extends React.Component{
         this.setState({currentPosition: element});
     }
 
-    // addPerson(){
-    //     this.setState({people: update(this.state.people)})
-    // }
+    addPerson(event){
+        event.preventDefault();
+
+        // remove whitespace
+        let name = this.state.currentName.trim()
+        // check if there is anything left beside whitespace
+        if(name.length == 0 || this.state.currentPosition.length == 0){
+            console.log('User or position empty');
+            return;
+        }
+
+        // check if the person is not already in the list
+        if(this.state.people.find(element => {
+            return element.name == name && element.position == this.state.currentPosition
+        })){
+            console.log('User already in the list');
+            return;
+        }
+
+        // add person to the list
+        this.setState({people: update(this.state.people, {$push: [{name:this.state.currentName, position: this.state.currentPosition, index: this.state.people.length + 1}]})},
+            this.setState({currentName: ""}, this.setState({currentPosition: ""}))  
+        );
+    }
 
     render(){
         return(
@@ -78,9 +104,7 @@ class CreateProject extends React.Component{
                     <div class="form-group d-flex flex-wrap">
                         <Person name={this.state.currentName} changeName={this.changeCurrentName}/>
                         <PositionDropdown positions={this.state.positions} position={this.state.currentPosition} changePosition={this.changeCurrentPosition}/>
-                        <div class="col-xl-12 col-12 mb-2">
-                            <button type="submit" class="button btn button col-xl-2 col-12" onClick={this.addPerson}>Add person</button>
-                        </div>
+                        <AddButton add={this.addPerson}/>
                     </div>
                 </form>
                 <People people={this.state.people}/>
