@@ -24,6 +24,7 @@ class CreateProject extends React.Component{
             filteredUsers: [],
             loadingUsers: true,
             loadingMessage: "",
+            currentUser: {},
         }
 
         this.addRoles = this.addRoles.bind(this);
@@ -32,6 +33,7 @@ class CreateProject extends React.Component{
         this.changeCurrentName = this.changeCurrentName.bind(this);
         this.changeCurrentPosition = this.changeCurrentPosition.bind(this);
         this.addPerson = this.addPerson.bind(this);
+        this.setUser = this.setUser.bind(this);
     }
 
     componentDidMount(){
@@ -81,6 +83,13 @@ class CreateProject extends React.Component{
                                                             this.state.allUsers})
     }
 
+    setUser(user){
+        this.setState({ currentUser: user,
+                        currentName: user.name,
+                        filteredUsers: this.state.allUsers.filter(element => element.name.toLowerCase().includes(user.name.toLowerCase()
+                                                                             || element.email.toLowerCase().includes(user.email.toLowerCase())))});
+    }
+
     changeCurrentPosition(element, event){
         this.setState({currentPosition: element});
     }
@@ -119,7 +128,7 @@ class CreateProject extends React.Component{
                     <AddRoles add={this.addRoles}/>
                     <Roles roles={this.state.positions} remove={this.removeRole}/>
                     <div class="form-group d-flex flex-wrap">
-                        <Person name={this.state.currentName} changeName={this.changeCurrentName} users={this.state.filteredUsers}/>
+                        <Person name={this.state.currentName} changeName={this.changeCurrentName} users={this.state.filteredUsers} setUser={this.setUser}/>
                         <PositionDropdown positions={this.state.positions} position={this.state.currentPosition} changePosition={this.changeCurrentPosition}/>
                         <AddButton add={this.addPerson}/>
                     </div>

@@ -4,6 +4,12 @@ import PositionDropdown from './PositionDropdown';
 class Person extends React.Component{
     constructor(props){
         super(props);
+
+        this.setUser = this.setUser.bind(this);
+    }
+
+    setUser(user){
+        this.props.setUser(user);
     }
 
     render(){
@@ -19,7 +25,8 @@ class Person extends React.Component{
                     <a href="#" class="dropdown-item">No users in the system</a>
                     :
                     this.props.users.map(user => {
-                        return <a href="#" key={user.email} class="dropdown-item">{user.name}({user.email})</a>
+                        let click = this.setUser.bind(this, user);
+                        return <a href="#" key={user.email} class="dropdown-item" onClick={click}>{user.name}({user.email})</a>
                     })
                 }
             </div>
