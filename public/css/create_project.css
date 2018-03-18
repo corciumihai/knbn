@@ -11,6 +11,10 @@ label{
     font-size: 14px;
 }
 
+html, body, #project{
+    height: 100%;
+}
+
 .form-control{
     border-radius: 0px;
     min-width: 20px;
@@ -139,9 +143,11 @@ label{
 
 .roles-toggle{
     margin-top: 5px;
-    margin-bottom:5px;
+    margin-bottom: 5px;
+    height: 30px;
+    width: 30px;
     background-color: rgb(235, 235, 235);
-    border-radius: 4px;
+    border-radius: 100%;
     border: 1px solid rgb(207, 207, 207);
 }
 
@@ -159,7 +165,7 @@ label{
 }
 
 table{
-    text-align: center;
+    text-align: left;
 }
 
 .table-responsive{
@@ -173,5 +179,22 @@ table{
     background-color: rgb(243, 243, 243);
     border: 1px solid rgb(207, 207, 207);
     margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.loading{
+    font-size: 13px;
+}
+
+.container-fluid{
+    height: 100%;
+}
+
+.toggle-users{
+    border: none;
+    border-radius: 0;
+    background-color:  rgb(48, 48, 48);
+    color: white;
+    height: 100%;
     cursor: pointer;
 }

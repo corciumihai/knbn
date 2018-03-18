@@ -22,11 +22,11 @@ class Roles extends React.Component{
             !this.props.roles.length == 0 ?
                 <div class="roles col-xl-12 mb-2">
                     <div class="roles-bar row d-flex">
-                        <div class="roles-toggle ml-3">
+                        <div class="roles-toggle ml-3 d-flex justify-content-center">
                             <img src="./images/small-arrow-down.svg" class="mx-auto d-block" 
                                 onClick={this.flipToggle} style={!this.state.toggled ? {transform: "rotate(180deg)"} : {transform: "rotate(0deg)"}}/>
                         </div>
-                        <div class="col d-flex"><span class="align-self-center">Toggle Roles</span></div>
+                        <div class="col d-flex"><span class="align-self-center">Roles</span></div>
                     </div>
                     <div class="row">
                         <div class={!this.state.toggled ? "col d-flex flex-row flex-wrap" : "d-none"}>

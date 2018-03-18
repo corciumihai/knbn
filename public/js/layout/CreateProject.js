@@ -8,6 +8,7 @@ import Person from './components/project/roles/Person'
 import PositionDropdown from './components/project/roles/PositionDropdown';
 import People from './components/project/People';
 import AddButton from './components/project/AddButton';
+import axios from 'axios';
 
 class CreateProject extends React.Component{
     constructor(props){
@@ -15,13 +16,14 @@ class CreateProject extends React.Component{
 
         this.state = {
             positions: [],
-            people: [{name:"John", position: 'Dev', index: 1}, {name:"M", position: 'Dev', index: 2}, {name:"R", position: 'Dev', index: 3},
-            {name:"John", position: 'Dev', index: 1}, {name:"M", position: 'Dev', index: 2}, {name:"R", position: 'Dev', index: 3},
-            {name:"John", position: 'Dev', index: 1}, {name:"M", position: 'Dev', index: 2}, {name:"R", position: 'Dev', index: 3},
-            {name:"John", position: 'Dev', index: 1}, {name:"M", position: 'Dev', index: 2}, {name:"R", position: 'Dev', index: 3}],
+            people: [{name:"John", position: 'Dev', index: 1}, {name:"M", position: 'Dev', index: 2}, {name:"R", position: 'Dev', index: 3}],
             projectName: "",
             currentPosition: "",
             currentName: "",
+            allUsers: [],
+            filteredUsers: [],
+            loadingUsers: true,
+            loadingMessage: "",
         }
 
         this.addRoles = this.addRoles.bind(this);
@@ -30,6 +32,16 @@ class CreateProject extends React.Component{
         this.changeCurrentName = this.changeCurrentName.bind(this);
         this.changeCurrentPosition = this.changeCurrentPosition.bind(this);
         this.addPerson = this.addPerson.bind(this);
+    }
+
+    componentDidMount(){
+        // fetch all users from database
+        axios.get('/users/get-users').then(response => {
+            this.setState({loadingUsers: false, allUsers: response.data}, () => {
+                this.setState({filteredUsers: response.data}, 
+                    this.setState({loadingMessage: "Loading users..."}))
+            })
+        });
     }
 
     addRoles(roles){
@@ -62,7 +74,10 @@ class CreateProject extends React.Component{
     }
 
     changeCurrentName(event){
-        this.setState({currentName: event.target.value});
+        this.setState({
+            currentName: event.target.value,
+            filteredUsers: this.state.allUsers.filter(element => element.name.toLowerCase().includes(event.target.value.toLowerCase()
+                                                                 || element.email.toLowerCase().includes(event.target.value.toLowerCase())))})
     }
 
     changeCurrentPosition(element, event){
@@ -96,18 +111,23 @@ class CreateProject extends React.Component{
 
     render(){
         return(
+            !this.state.loadingUsers ? 
             <div class='project col-xl-6 offset-xl-3'>
                 <form>
                     <ProjectName name={this.state.name} onChange={this.changeProjectName}/>
                     <AddRoles add={this.addRoles}/>
                     <Roles roles={this.state.positions} remove={this.removeRole}/>
                     <div class="form-group d-flex flex-wrap">
-                        <Person name={this.state.currentName} changeName={this.changeCurrentName}/>
+                        <Person name={this.state.currentName} changeName={this.changeCurrentName} users={this.state.filteredUsers}/>
                         <PositionDropdown positions={this.state.positions} position={this.state.currentPosition} changePosition={this.changeCurrentPosition}/>
                         <AddButton add={this.addPerson}/>
                     </div>
                 </form>
                 <People people={this.state.people}/>
+            </div>
+            :
+            <div class="col d-flex align-items-center justify-content-center loading">
+                <div>{this.state.loadingMessage}</div>
             </div>
         );
     }
