@@ -76,8 +76,9 @@ class CreateProject extends React.Component{
     changeCurrentName(event){
         this.setState({
             currentName: event.target.value,
-            filteredUsers: this.state.allUsers.filter(element => element.name.toLowerCase().includes(event.target.value.toLowerCase()
-                                                                 || element.email.toLowerCase().includes(event.target.value.toLowerCase())))})
+            filteredUsers: event.target.value.length > 0 ?  this.state.allUsers.filter(element => element.name.toLowerCase().includes(event.target.value.toLowerCase()
+                                                                                                  || element.email.toLowerCase().includes(event.target.value.toLowerCase()))) : 
+                                                            this.state.allUsers})
     }
 
     changeCurrentPosition(element, event){
