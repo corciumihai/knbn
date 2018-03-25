@@ -107,7 +107,7 @@ class CreateProject extends React.Component{
             console.log('User already in the list');
             return;
         }
-
+        //some comment
         // add person to the list
         this.setState({ people: update(this.state.people, {$push: [{name: this.state.selectedUser.name, position: this.state.currentPosition, email: this.state.selectedUser.email}]}),
                         currentName: "",
