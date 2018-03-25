@@ -9,6 +9,7 @@ class People extends React.Component{
         }
         
         this.toggleRows = this.toggleRows.bind(this);
+        // this.remove = this.remove.bind(this);
     }
 
     toggleRows(){
@@ -25,28 +26,21 @@ class People extends React.Component{
                         <div class="toggle d-flex justify-content-center" onClick={this.toggleRows}><img src="./images/small-arrow-down.svg" class="mx-auto d-block" 
                             style={{transform: this.state.hideRows ? "rotate(180deg)": "rotate(0deg)"}}/></div>
                     </div>
-                    <table class="table table-striped table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <td scope="col">#</td>
-                                <td scope="col">Name</td>
-                                <td scope="col">Position</td>
-                            </tr>
-                        </thead>
-                        <tbody style={{display: this.state.hideRows ? "" : "none"}}>
-                        {  
-                            this.props.people.map(person => {
-                                return(
-                                <tr key={person.name}>
-                                    <th scope="row">{person.index}</th>
-                                    <td>{person.name}</td>
-                                    <td>{person.position}</td>
-                                </tr>
-                                )
-                            })
-                        }
-                        </tbody>
-                    </table>
+                    <div class={ this.state.hideRows ? "people col d-flex flex-row flex-wrap" : "d-none" }>
+                    {
+                        this.props.people.map(person => {
+                            let bound = this.props.remove.bind(this, person);
+                            return  <div class="wrap d-flex flex-column" key={person.email}>
+                                        <div class="to-close align-self-end" onClick={bound}><img src="/images/close.svg" class="mx-auto d-block"/></div>
+                                        <div class="person d-flex flex-column">
+                                            <div class="name">{person.name}</div>
+                                            <div class="divider"></div>
+                                            <div class="position">{person.position}</div>
+                                        </div>
+                                    </div>
+                        })
+                    }
+                    </div>
                 </div>
             </div>
             :
