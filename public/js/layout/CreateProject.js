@@ -16,9 +16,7 @@ class CreateProject extends React.Component{
 
         this.state = {
             positions: [],
-            people: [   {name:"John Maverick", position: 'Software Developer', email: "lol@yahoo.com"}, 
-                        {name:"Mihai Corciu", position: 'Software Developer', email: "free_roaming94@yahoo.com"}, 
-                        {name:"Raluca Pojar", position: 'Team Leader', email: "raluca@yahoo.com"}
+            people: [   
                     ],
             projectName: "",
             currentPosition: "",
@@ -122,10 +120,9 @@ class CreateProject extends React.Component{
         this.setState({ people: update(this.state.people, {$push: [{name: this.state.selectedUser.name, position: this.state.currentPosition, email: this.state.selectedUser.email}]}),
                         currentName: "",
                         currentPosition: "",
-                        filteredUsers: this.state.allUsers},
-                        () => {
-                            console.log(this.state.people);
-                        }
+                        filteredUsers: this.state.allUsers,
+                        selectedUser: {}
+                    },    
         );
     }
 
