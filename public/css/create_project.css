@@ -2,17 +2,8 @@ small, .no-roles, .error-message, .add-new-text, .users{
     font-size: 12px;
 }
 
-tbody{
-    max-height: 100px;
-    overflow: hidden;
-}
-
 label{
     font-size: 14px;
-}
-
-html, body, #project{
-    height: 100%;
 }
 
 .form-control{
@@ -91,7 +82,7 @@ html, body, #project{
     margin: 5px 15px 5px 0px;
     border-radius: 4px;
     border: 1px solid rgb(70, 70, 70);
-    background-color: rgb(241, 241, 241);
+    background-color: white;
 }
 
 .role-name{
@@ -100,7 +91,11 @@ html, body, #project{
 }
 
 .roles{
+    padding-top: 15px;
+    padding-bottom: 15px;
     border: 1px solid rgb(207, 207, 207);
+    border-radius: 4px;
+    background-color: rgb(247, 247, 247);
 }
 
 .no-roles{
@@ -164,10 +159,6 @@ html, body, #project{
     width: 100%;
 }
 
-table{
-    text-align: left;
-}
-
 .table-responsive{
     max-height: 400px;
 }
@@ -180,7 +171,7 @@ table{
     border: 1px solid rgb(207, 207, 207);
     margin-bottom: -15px;
     cursor: pointer;
-    z-index: 1;
+    z-index: 5;
 }
 
 .loading{
@@ -206,6 +197,8 @@ table{
     border-radius: 4px;
     padding-top: 15px;
     padding-bottom: 15px;
+    max-height: 350px;
+    overflow-y: auto;
 }
 
 .name, .position{
@@ -215,6 +208,7 @@ table{
 .position, .name{
     font-size: 13px;
     color: rgb(235, 235, 235);
+    word-break: break-all;
 }
 
 .position{
@@ -252,4 +246,38 @@ table{
     /* margin-right: 0px; */
     /* margin-top: -15px; */
     cursor: pointer;
+}
+
+.picture{
+    height: 30px;
+    width: 30px;
+    border-radius: 100%;
+    background-color: gray;
+}
+
+.profile-picture{
+    margin-right: 5px;
+}
+
+.no-of-people{
+    height: 18px;
+    width: 18px;
+    background-color: rgb(116, 172, 116);
+    border-radius: 100%;
+    font-size: 11px;
+    color: white;
+    text-align: center;
+    margin-bottom: -5px;
+    z-index: 100;
+}
+
+.small-text{
+    font-size: 13px;
+    font-style: italic;
+    color: gray;
+}
+
+.highlight{
+    color: rgb(214, 10, 78);
+    font-weight: bold;
 }

@@ -100,6 +100,17 @@ class CreateProject extends React.Component{
 
     addPerson(event){
         event.preventDefault();
+        // check if the selected user object has the needed attributes empty
+        if(this.state.selectedUser.name == undefined || this.state.selectedUser.email == undefined ||
+           this.state.selectedUser.name.length == 0  || this.state.selectedUser.email.length == 0){
+            console.log('No user selected');
+            return;
+        }
+        // if the selected position is empty
+        if(this.state.currentPosition.length == 0){
+            console.log('No position selected');
+            return;
+        }
         // check if the person is not already in the list
         if(this.state.people.find(element => {
             return element.email == this.state.selectedUser.email
@@ -107,7 +118,6 @@ class CreateProject extends React.Component{
             console.log('User already in the list');
             return;
         }
-        //some comment
         // add person to the list
         this.setState({ people: update(this.state.people, {$push: [{name: this.state.selectedUser.name, position: this.state.currentPosition, email: this.state.selectedUser.email}]}),
                         currentName: "",

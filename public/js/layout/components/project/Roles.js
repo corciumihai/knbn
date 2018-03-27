@@ -19,33 +19,33 @@ class Roles extends React.Component{
 
     render(){
         return(
-            !this.props.roles.length == 0 ?
-                <div class="roles col-xl-12 mb-2">
-                    <div class="roles-bar row d-flex">
-                        <div class="roles-toggle ml-3 d-flex justify-content-center">
+            <div class="row"> 
+            {!this.props.roles.length == 0 ?  
+                <div class="col">
+                    <div class="col d-flex justify-content-center">
+                        <div class="toggle d-flex justify-content-center" onClick={this.flipToggle}>
                             <img src="./images/small-arrow-down.svg" class="mx-auto d-block" 
-                                onClick={this.flipToggle} style={!this.state.toggled ? {transform: "rotate(180deg)"} : {transform: "rotate(0deg)"}}/>
+                                style={{transform: !this.state.toggled ? "rotate(180deg)": "rotate(0deg)"}}/>
                         </div>
-                        <div class="col d-flex"><span class="align-self-center">Roles</span></div>
                     </div>
-                    <div class="row">
-                        <div class={!this.state.toggled ? "col d-flex flex-row flex-wrap" : "d-none"}>
-                        {
+                    <div class="roles col-xl-12 mb-2 d-flex flex-row flex-wrap">
+                        {!this.state.toggled ? 
                             this.props.roles.map(role => {
                                 return <Role key={role} role={role} remove={this.props.remove}/>
                             })
+                            :
+                            <span class="small-text">A total of <span class="highlight">{this.props.roles.length}</span> roles are being toggled</span>
                         }
-                        </div>
                     </div>
                 </div>
                 : 
-                <div class="col mb-2">
-                    <div class="row">
-                        <div class="no-roles col">
-                            <span>No roles added yet</span>
-                        </div>
+                <div class="col">
+                    <div class="roles col mb-2">
+                    <span class="small-text">No position added yet...</span>
                     </div>
                 </div>
+            }
+            </div>
         );
     }
 }

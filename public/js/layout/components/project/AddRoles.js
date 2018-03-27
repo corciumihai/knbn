@@ -35,7 +35,7 @@ class AddRoles extends React.Component{
         return(
             <div class="form-group mb-2">
                 <div class="col">
-                    <label for="add-role">Add positions in your project</label>
+                    <label for="add-role">Add roles in your project</label>
                     <input type="text" class="form-control" id="add-role" aria-describedby="add-role-help" placeholder="Enter position" 
                         onChange={this.onChange} onKeyDown={this.onKeyDown} value={this.state.role}/>
                     <small id="add-role-help" class="form-text text-muted" >Separate positions with ','/ Add them with 'Enter'</small>
