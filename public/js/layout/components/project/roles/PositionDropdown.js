@@ -18,7 +18,7 @@ class PositionDropdown extends React.Component{
                             this.props.position
                         }
                     </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    {/* <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                         {
                             this.props.positions.length == 0 || this.props.positions == undefined ? 
                                 <a href="#" class="dropdown-item">No roles added yet</a>
@@ -28,9 +28,9 @@ class PositionDropdown extends React.Component{
                                     return <a href="#" key={role} onClick={boundClick} class="dropdown-item">{role}</a>
                                 })
                         }
-                    </div>
+                    </div> */}
                 </div>
-                <small id="title-help" class="form-text text-muted">This is the position</small>
+                <small id="title-help" class="form-text text-muted">This is your employee position in this project</small>
             </div>
         );
     }

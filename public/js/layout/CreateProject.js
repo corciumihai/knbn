@@ -142,13 +142,19 @@ class CreateProject extends React.Component{
                     <ProjectName name={this.state.name} onChange={this.changeProjectName}/>
                     <AddRoles add={this.addRoles}/>
                     <Roles roles={this.state.positions} remove={this.removeRole}/>
-                    <div class="form-group d-flex flex-wrap">
+                    <div class="form-group d-flex flex-wrap mb-2">
+                        {/* make it so that you can select multiple persons for a role */}
                         <Person name={this.state.currentName} changeName={this.changeCurrentName} users={this.state.filteredUsers} setUser={this.setUser}/>
-                        <PositionDropdown positions={this.state.positions} position={this.state.currentPosition} changePosition={this.changeCurrentPosition}/>
+                        {/* <PositionDropdown positions={this.state.positions} position={this.state.currentPosition} changePosition={this.changeCurrentPosition}/> */}
                         <AddButton add={this.addPerson}/>
                     </div>
                 </form>
                 <People people={this.state.people} remove={this.removePerson}/>
+                <div class="row">
+                    <div class="col d-flex mb-2">
+                        <button type="submit" class="next col-xl-2 offset-xl-10 col-md-4 offset-md-4 col-sm-12 col-12 button btn">Proceed</button>
+                    </div>
+                </div>
             </div>
             :
             <div class="col d-flex align-items-center justify-content-center loading">

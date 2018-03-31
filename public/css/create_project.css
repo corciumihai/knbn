@@ -1,17 +1,51 @@
-small, .no-roles, .error-message, .add-new-text, .users{
+/* small, .no-roles, .error-message, .add-new-text, .users{
     font-size: 12px;
+    color: white;
+} */
+
+small{
+    color: white !important;
 }
 
 label{
     font-size: 14px;
 }
 
+html{
+    height: 100%;
+    background: rgb(140,100,100);
+    background: linear-gradient(0deg, rgba(140,100,100,1) 0%, rgba(102,127,145,1) 100%); 
+}
+
+body{
+    background-color: transparent;
+    /* height: 100% !important;
+    background: rgb(122,62,125);
+    background: linear-gradient(103deg, rgba(122,62,125,1) 0%, rgba(175,154,154,1) 50%, rgba(125,246,206,1) 100%);  */
+}
+
 .form-control{
-    border-radius: 0px;
     min-width: 20px;
-    border: 1px solid rgb(209, 209, 209);
+    border: none;
+    border-bottom: 2px solid rgb(85, 154, 233);
     box-shadow: none;
-    font-size: 14px;
+    border-radius: 0;
+    /* background-color: rgba(15, 15, 15, 0.301); */
+    background-color: transparent;
+    color: rgb(224, 224, 224);
+    font-size: 20px;
+
+}
+
+.form-control::-moz-placeholder{
+    color: rgb(224, 224, 224);
+}
+
+.form-control:focus{
+    background: transparent;
+    /* background: linear-gradient(0deg, rgba(0,0,0,0.35896365382090334) 0%, rgba(140,200,255,0) 100%);  */
+    color: white;
+    box-shadow: none;
 }
 
 .users{
@@ -69,20 +103,30 @@ label{
     color: rgb(253, 87, 87);
 }
 
-.remove-role{
+.remove-role, .select-role{
     width: 30px;
-    background-color: rgb(70, 70, 70);
+    background-color: rgb(39, 39, 39);
     cursor: pointer;
     padding: 0px;
-    border-radius: 0px;
     color: white;
+}
+
+.remove-role{
+    border-left: 1px solid gray;
+    border-radius: 0px 4px 4px 0px;
+}
+
+
+.select-role{
+    border-right: 1px solid gray;
+    border-radius: 4px 0px 0px 4px;
 }
 
 .role{
     margin: 5px 15px 5px 0px;
     border-radius: 4px;
-    border: 1px solid rgb(70, 70, 70);
-    background-color: white;
+    background-color: rgb(39, 39, 39);
+    color: white;
 }
 
 .role-name{
@@ -93,9 +137,13 @@ label{
 .roles{
     padding-top: 15px;
     padding-bottom: 15px;
-    border: 1px solid rgb(207, 207, 207);
     border-radius: 4px;
-    background-color: rgb(247, 247, 247);
+    background-color: rgba(0, 0, 0, 0.178);
+    border: 1px solid rgb(180, 180, 180);
+}
+
+.roles > span{
+    color: white;
 }
 
 .no-roles{
@@ -104,10 +152,17 @@ label{
 }
 
 .button{
-    border-radius: 0px;
+    border-radius: 4px;
     font-size: 14px;
-    background-color: rgb(48, 48, 48);
+    background-color: transparent;
+    /* background-color: rgba(48, 48, 48, 0.301); */
+    border: 1px solid rgb(85, 151, 204);
     color: white;
+    cursor: pointer;
+}
+
+.button:hover{
+    background-color: rgba(84, 107, 150, 0.781);
 }
 
 .no-padding{
@@ -151,8 +206,10 @@ label{
 }
 
 .form-group{
-    border: 1px solid rgb(207, 207, 207);
-    background-color: rgb(250, 250, 250); 
+    border: 1px solid rgb(180, 180, 180);
+    background-color: rgba(0, 0, 0, 0.178);
+    color: white;
+    border-radius: 4px;
 }
 
 .dropdown-menu{
@@ -166,10 +223,10 @@ label{
 .toggle{
     width: 30px;
     height: 30px;
-    border-radius: 100%;
-    background-color: rgb(243, 243, 243);
-    border: 1px solid rgb(207, 207, 207);
-    margin-bottom: -15px;
+    border-radius: 4px 4px 0px 0px;
+    background-color: rgba(0, 0, 0, 0.178);
+    border: 1px solid rgb(180, 180, 180);
+    margin-bottom: -1px;
     cursor: pointer;
     z-index: 5;
 }
@@ -192,13 +249,18 @@ label{
 }
 
 .people{
-    background-color: rgb(247, 247, 247);
-    border: 1px solid rgb(207, 207, 207);
+    background-color: rgba(0, 0, 0, 0.178);
+    border: 1px solid rgb(180, 180, 180);
+    color: white;
     border-radius: 4px;
     padding-top: 15px;
     padding-bottom: 15px;
     max-height: 350px;
     overflow-y: auto;
+}
+
+.people > span{
+    color: white;
 }
 
 .name, .position{
@@ -280,4 +342,9 @@ label{
 .highlight{
     color: rgb(214, 10, 78);
     font-weight: bold;
+}
+
+.next{
+    border-radius: 4px;
+    cursor: pointer;
 }

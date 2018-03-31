@@ -31,7 +31,7 @@ class People extends React.Component{
                         :
                         null
                     }
-                    <div class={"people col d-flex flex-row flex-wrap"}>
+                    <div class={"people col d-flex flex-row flex-wrap mb-2"}>
                     {this.props.people.length ?
                         this.state.hideRows ? 
                             this.props.people.map(person => {
