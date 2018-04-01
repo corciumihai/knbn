@@ -8,6 +8,7 @@ import Person from './components/project/roles/Person'
 import PositionDropdown from './components/project/roles/PositionDropdown';
 import People from './components/project/People';
 import AddButton from './components/project/AddButton';
+import PeopleSelector from './components/project/PeopleSelector';
 import axios from 'axios';
 
 class CreateProject extends React.Component{
@@ -142,11 +143,12 @@ class CreateProject extends React.Component{
                     <ProjectName name={this.state.name} onChange={this.changeProjectName}/>
                     <AddRoles add={this.addRoles}/>
                     <Roles roles={this.state.positions} remove={this.removeRole}/>
-                    <div class="form-group d-flex flex-wrap mb-2">
+                    <div class="form-group d-flex flex-row flex-wrap mb-2">
                         {/* make it so that you can select multiple persons for a role */}
-                        <Person name={this.state.currentName} changeName={this.changeCurrentName} users={this.state.filteredUsers} setUser={this.setUser}/>
-                        {/* <PositionDropdown positions={this.state.positions} position={this.state.currentPosition} changePosition={this.changeCurrentPosition}/> */}
-                        <AddButton add={this.addPerson}/>
+                        <Person name={this.state.currentName} changeName={this.changeCurrentName} users={this.state.filteredUsers} setUser={this.setUser}>
+                            <AddButton add={this.addPerson}/>
+                        </Person>
+                        <PeopleSelector users={this.state.allUsers}/>
                     </div>
                 </form>
                 <People people={this.state.people} remove={this.removePerson}/>

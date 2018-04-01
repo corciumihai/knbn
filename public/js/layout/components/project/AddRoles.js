@@ -36,12 +36,10 @@ class AddRoles extends React.Component{
             <div class="form-group mb-2">
                 <div class="col">
                     <label for="add-role">Add roles in your project</label>
-                    <input type="text" class="form-control" id="add-role" aria-describedby="add-role-help" placeholder="Enter position" 
+                    <input type="text" class="form-control" id="add-role" aria-describedby="add-role-help" placeholder="Enter positions" 
                         onChange={this.onChange} onKeyDown={this.onKeyDown} value={this.state.role}/>
                     <small id="add-role-help" class="form-text text-muted mb-2" >Separate positions with ','/ Add them with 'Enter'</small>
-                </div>
-                <div class="col-auto">
-                    <button type="submit" class="btn button mb-2 col-xl-2 col-12" onClick={this.onClick}>Add position</button>
+                    <button type="submit" class="btn button mb-2" onClick={this.onClick}>Add position</button>
                 </div>
             </div>
         

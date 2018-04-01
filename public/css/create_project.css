@@ -348,3 +348,33 @@ body{
     border-radius: 4px;
     cursor: pointer;
 }
+
+.people-selector{
+    overflow: auto;
+}
+
+.no-users{
+    color: white;
+    font-style: italic;
+}
+
+.email, .employee-name{
+    color: white;
+    font-size: 14px;
+    text-align: center;
+}
+
+.employee-name{
+    background-color: rgb(34, 34, 34);
+    border-radius: 4px;
+    padding: 5px 5px 5px 5px;
+}
+
+.checkbox{
+    width: 15px;
+    height: 15px;
+    background-color: rgb(63, 63, 63);
+    border-radius: 100%;
+    cursor: pointer;
+    margin-left: -12px;
+}
