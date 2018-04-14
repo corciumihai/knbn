@@ -8,6 +8,8 @@ import Person from './components/project/roles/Person'
 import PositionDropdown from './components/project/roles/PositionDropdown';
 import People from './components/project/People';
 import AddButton from './components/project/AddButton';
+import SelectAllButton from './components/project/SelectAllButton';
+import DeselectAllButton from './components/project/DeselectAllButton';
 import PeopleSelector from './components/project/PeopleSelector';
 import axios from 'axios';
 
@@ -17,11 +19,10 @@ class CreateProject extends React.Component{
 
         this.state = {
             positions: [],
-            people: [   
-                    ],
+            people: [],
+            currentName: "",
             projectName: "",
             currentPosition: "",
-            currentName: "",
             allUsers: [],
             filteredUsers: [],
             loadingUsers: true,
@@ -37,6 +38,9 @@ class CreateProject extends React.Component{
         this.addPerson = this.addPerson.bind(this);
         this.setUser = this.setUser.bind(this);
         this.removePerson = this.removePerson.bind(this);
+        this.enableUser = this.enableUser.bind(this);
+        this.selectAll = this.selectAll.bind(this);
+        this.deselectAll = this.deselectAll.bind(this);
     }
 
     componentDidMount(){
@@ -81,9 +85,9 @@ class CreateProject extends React.Component{
     changeCurrentName(event){
         this.setState({
             currentName: event.target.value,
-            filteredUsers: event.target.value.length || this.state.currentName > 0 ?    this.state.allUsers.filter(element => element.name.toLowerCase().includes(event.target.value.toLowerCase()
-                                                                                            || element.email.toLowerCase().includes(event.target.value.toLowerCase()))) : 
-                                                                                        this.state.allUsers})
+            filteredUsers: event.target.value.length > 0 ? this.state.allUsers.filter(element => element.name.toLowerCase().includes(event.target.value.toLowerCase()
+                                                                                                || element.email.toLowerCase().includes(event.target.value.toLowerCase()))) : 
+                                                                                                this.state.allUsers})
     }
 
     setUser(user){
@@ -135,6 +139,46 @@ class CreateProject extends React.Component{
         
     }
 
+    enableUser(user){
+        let users = this.state.allUsers;
+        let enabledUser = users.find(item => {
+            return user.user.email == item.email;
+        });
+
+        users.splice(users.indexOf(enabledUser), 1);
+        enabledUser = {email: enabledUser.email, name: enabledUser.name, toggled: user.toggled};
+        users.push(enabledUser);
+
+        users.sort((x, y) => {
+            return (x.toggled === y.toggled)? 0 : x.toggled? -1 : 1;
+        })
+
+        this.setState({
+            allUsers: users,
+            filteredUsers: this.state.currentName.length > 0 ? this.state.allUsers.filter(element =>    element.name.toLowerCase().includes(this.state.currentName.toLowerCase()
+                                                                                                        || element.email.toLowerCase().includes(this.state.currentName.toLowerCase()))) : 
+                                                                                                        this.state.allUsers
+        });
+
+    }
+
+    selectAll(event){
+        event.preventDefault();
+        let users = this.state.filteredUsers;
+        users.forEach(user => {
+            this.enableUser({user: user, toggled: true});
+        });
+    }
+
+    deselectAll(event){
+        event.preventDefault();
+        let users = this.state.filteredUsers;
+        console.log(users);
+        users.forEach(user => {
+            this.enableUser({user: user, toggled: false});
+        });
+    }
+
     render(){
         return(
             !this.state.loadingUsers ? 
@@ -147,8 +191,10 @@ class CreateProject extends React.Component{
                         {/* make it so that you can select multiple persons for a role */}
                         <Person name={this.state.currentName} changeName={this.changeCurrentName} users={this.state.filteredUsers} setUser={this.setUser}>
                             <AddButton add={this.addPerson}/>
+                            <SelectAllButton select={this.selectAll}/>
+                            <DeselectAllButton deselect={this.deselectAll}/>
                         </Person>
-                        <PeopleSelector users={this.state.allUsers}/>
+                        <PeopleSelector users={this.state.filteredUsers} enableUser={this.enableUser}/>
                     </div>
                 </form>
                 <People people={this.state.people} remove={this.removePerson}/>
