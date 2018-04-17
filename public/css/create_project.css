@@ -4,11 +4,14 @@
 } */
 
 small{
-    color: white !important;
+    color: gray;
+    font-style: italic;
 }
 
 label{
     font-size: 14px;
+    color: gray;
+    font-style: italic;
 }
 
 html{
@@ -140,7 +143,7 @@ body{
     padding-bottom: 15px;
     border-radius: 4px;
     background-color: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgb(180, 180, 180);
+    /* border: 1px solid rgb(180, 180, 180); */
 }
 
 .roles > span{
@@ -207,7 +210,7 @@ body{
 }
 
 .form-group{
-    border: 1px solid rgb(180, 180, 180);
+    /* border: 1px solid rgb(180, 180, 180); */
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
     border-radius: 4px;
@@ -226,7 +229,7 @@ body{
     height: 30px;
     border-radius: 4px 4px 0px 0px;
     background-color: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgb(180, 180, 180);
+    /* border: 1px solid rgb(180, 180, 180); */
     margin-bottom: -1px;
     cursor: pointer;
     z-index: 5;
@@ -246,10 +249,11 @@ body{
 }
 
 .people{
-    background-color: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgb(180, 180, 180);
+    background-color: rgba(0, 0, 0, 0);
+    /* border-left: 1px solid transparent; */
     color: white;
-    border-radius: 4px;
+    text-align: center;
+    /* border-radius: 4px; */
     padding-top: 15px;
     padding-bottom: 15px;
     max-height: 350px;
@@ -330,7 +334,7 @@ body{
     z-index: 100;
 }
 
-.small-text{
+.small-muted{
     font-size: 13px;
     font-style: italic;
     color: gray;
@@ -381,4 +385,15 @@ body{
 
 .checkbox-green{
     background-color: rgb(43, 158, 43);
+}
+
+/* .disciplines{
+    max-height: inherit;
+    overflow: auto;
+} */
+
+.discipline{
+    background-color: rgb(57, 85, 117);
+    border-radius: 4px;
+    word-wrap: break-all;
 }

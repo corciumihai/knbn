@@ -7,11 +7,15 @@ import update from 'react-addons-update';
 import Person from './components/project/roles/Person'
 import PositionDropdown from './components/project/roles/PositionDropdown';
 import People from './components/project/People';
-import AddButton from './components/project/AddButton';
 import SelectAllButton from './components/project/SelectAllButton';
 import DeselectAllButton from './components/project/DeselectAllButton';
 import PeopleSelector from './components/project/PeopleSelector';
+import Group from './components/project/Group';
+import Disciplines from './components/project/Disciplines';
 import axios from 'axios';
+import Cookies from 'universal-cookie';
+
+const projectCookie = new Cookies();
 
 class CreateProject extends React.Component{
     constructor(props){
@@ -19,15 +23,13 @@ class CreateProject extends React.Component{
 
         this.state = {
             positions: [],
-            people: [],
+            currentPeople: [],
             currentName: "",
             projectName: "",
             currentPosition: "",
-            allUsers: [],
-            filteredUsers: [],
-            loadingUsers: true,
             loadingMessage: "",
             selectedUser: {},
+            disciplines: [],
         }
 
         this.addRoles = this.addRoles.bind(this);
@@ -38,19 +40,16 @@ class CreateProject extends React.Component{
         this.addPerson = this.addPerson.bind(this);
         this.setUser = this.setUser.bind(this);
         this.removePerson = this.removePerson.bind(this);
-        this.enableUser = this.enableUser.bind(this);
-        this.selectAll = this.selectAll.bind(this);
-        this.deselectAll = this.deselectAll.bind(this);
+        this.addDiscipline = this.addDiscipline.bind(this);
     }
 
     componentDidMount(){
-        // fetch all users from database
-        axios.get('/users/get-users').then(response => {
-            this.setState({loadingUsers: false, allUsers: response.data}, () => {
-                this.setState({filteredUsers: response.data}, 
-                    this.setState({loadingMessage: "Loading users..."}))
-            })
-        });
+        // fetch data from cookies
+        let disciplines = projectCookie.get('project-disciplines');
+        if(disciplines.disciplines.length > 0){
+            this.setState({disciplines: disciplines.disciplines});
+        }
+        
     }
 
     addRoles(roles){
@@ -78,8 +77,14 @@ class CreateProject extends React.Component{
         this.setState({positions: update(this.state.positions, {$splice: [[this.state.positions.indexOf(role), 1]]})});
     }
 
-    changeProjectName(event){
-        this.setState({projectName: event.target.value});
+    changeProjectName(event, cookieChange=false){
+        if(cookieChange){
+            console.log(event);
+            this.setState({projectName: event}); // if name was found in cookie
+        }
+        else{
+            this.setState({projectName: event.target.value});
+        }
     }
 
     changeCurrentName(event){
@@ -104,31 +109,7 @@ class CreateProject extends React.Component{
     addPerson(event){
         event.preventDefault();
         // check if the selected user object has the needed attributes empty
-        if(this.state.selectedUser.name == undefined || this.state.selectedUser.email == undefined ||
-           this.state.selectedUser.name.length == 0  || this.state.selectedUser.email.length == 0){
-            console.log('No user selected');
-            return;
-        }
-        // if the selected position is empty
-        if(this.state.currentPosition.length == 0){
-            console.log('No position selected');
-            return;
-        }
-        // check if the person is not already in the list
-        if(this.state.people.find(element => {
-            return element.email == this.state.selectedUser.email
-        })){
-            console.log('User already in the list');
-            return;
-        }
-        // add person to the list
-        this.setState({ people: update(this.state.people, {$push: [{name: this.state.selectedUser.name, position: this.state.currentPosition, email: this.state.selectedUser.email}]}),
-                        currentName: "",
-                        currentPosition: "",
-                        filteredUsers: this.state.allUsers,
-                        selectedUser: {}
-                    },    
-        );
+        
     }
 
     removePerson(person){
@@ -139,43 +120,9 @@ class CreateProject extends React.Component{
         
     }
 
-    enableUser(user){
-        let users = this.state.allUsers;
-        let enabledUser = users.find(item => {
-            return user.user.email == item.email;
-        });
-
-        users.splice(users.indexOf(enabledUser), 1);
-        enabledUser = {email: enabledUser.email, name: enabledUser.name, toggled: user.toggled};
-        users.push(enabledUser);
-
-        users.sort((x, y) => {
-            return (x.toggled === y.toggled)? 0 : x.toggled? -1 : 1;
-        })
-
-        this.setState({
-            allUsers: users,
-            filteredUsers: this.state.currentName.length > 0 ? this.state.allUsers.filter(element =>    element.name.toLowerCase().includes(this.state.currentName.toLowerCase()
-                                                                                                        || element.email.toLowerCase().includes(this.state.currentName.toLowerCase()))) : 
-                                                                                                        this.state.allUsers
-        });
-
-    }
-
-    selectAll(event){
-        event.preventDefault();
-        let users = this.state.filteredUsers;
-        users.forEach(user => {
-            this.enableUser({user: user, toggled: true});
-        });
-    }
-
-    deselectAll(event){
-        event.preventDefault();
-        let users = this.state.filteredUsers;
-        console.log(users);
-        users.forEach(user => {
-            this.enableUser({user: user, toggled: false});
+    addDiscipline(discipline){
+        this.setState({disciplines: update(this.state.disciplines, {$push: [discipline]})}, () => {
+            projectCookie.set('project-disciplines', {disciplines: this.state.disciplines});
         });
     }
 
@@ -184,20 +131,21 @@ class CreateProject extends React.Component{
             !this.state.loadingUsers ? 
             <div class='project col-xl-6 offset-xl-3'>
                 <form>
-                    <ProjectName name={this.state.name} onChange={this.changeProjectName}/>
-                    <AddRoles add={this.addRoles}/>
-                    <Roles roles={this.state.positions} remove={this.removeRole}/>
-                    <div class="form-group d-flex flex-row flex-wrap mb-2">
+                    <ProjectName name={this.state.projectName} onChange={this.changeProjectName}/>
+                    <Disciplines add={this.addDiscipline} disciplines={this.state.disciplines}/>
+                    {/* <div class="form-group d-flex flex-row flex-wrap mb-2">
+                        <Group/>
+                    </div> */}
+                    {/* <AddRoles add={this.addRoles}/> */}
+                    {/* <Roles roles={this.state.positions} remove={this.removeRole}/> */}
+                    {/* <div class="form-group d-flex flex-row flex-wrap mb-2"> */}
                         {/* make it so that you can select multiple persons for a role */}
-                        <Person name={this.state.currentName} changeName={this.changeCurrentName} users={this.state.filteredUsers} setUser={this.setUser}>
+                        {/* <Person name={this.state.currentName} changeName={this.changeCurrentName} users={this.state.filteredUsers} setUser={this.setUser}>
                             <AddButton add={this.addPerson}/>
-                            <SelectAllButton select={this.selectAll}/>
-                            <DeselectAllButton deselect={this.deselectAll}/>
                         </Person>
-                        <PeopleSelector users={this.state.filteredUsers} enableUser={this.enableUser}/>
-                    </div>
+                        <People people={this.state.currentPeople}/> */}
+                    {/* </div> */}
                 </form>
-                <People people={this.state.people} remove={this.removePerson}/>
                 <div class="row">
                     <div class="col d-flex mb-2">
                         <button type="submit" class="next col-xl-2 offset-xl-10 col-md-4 offset-md-4 col-sm-12 col-12 button btn">Proceed</button>

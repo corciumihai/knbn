@@ -5,6 +5,7 @@ const path = require('path');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const database = require('./database/database');
+const backupDatabase = require('./database/BackupDatabase');
 const bcrypt = require('bcrypt-nodejs');
 
 app.use(express.static('public'));
@@ -237,7 +238,7 @@ router.post('/components', (request, response) => {
     });
 });
 
-// create project -------------------------------------------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------
 
 router.get('/create-project', (request, response) => {
     response.render(path.resolve(__dirname, 'views', 'create_project.pug'))
