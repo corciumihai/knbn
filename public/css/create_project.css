@@ -36,16 +36,17 @@ body{
     /* background-color: rgba(15, 15, 15, 0.301); */
     background-color: transparent;
     color: rgb(224, 224, 224);
-    font-size: 20px;
+    font-size: 18px;
 
 }
 
 .form-control::-moz-placeholder{
-    color: rgb(224, 224, 224);
+    color: rgb(201, 201, 201);
+    font-style: italic;
 }
 
 .form-control:focus{
-    background: transparent;
+    background-color: rgba(255, 255, 255, 0.068);
     /* background: linear-gradient(0deg, rgba(0,0,0,0.35896365382090334) 0%, rgba(140,200,255,0) 100%);  */
     color: white;
     box-shadow: none;
@@ -387,13 +388,32 @@ body{
     background-color: rgb(43, 158, 43);
 }
 
-/* .disciplines{
-    max-height: inherit;
+.disciplines, .releases{
+    max-height: 250px;
     overflow: auto;
-} */
+}
 
-.discipline{
+.discipline, .release{
     background-color: rgb(57, 85, 117);
     border-radius: 4px;
     word-wrap: break-all;
+}
+
+.name{
+    padding: 0px 10px 0px 10px;
+    font-size: 14px;
+}
+
+.close{
+    cursor: pointer;
+    border-radius: 4px;
+    height: 100%;
+}
+
+.close:hover{
+    background-color: rgba(49, 49, 49, 0.459);
+}
+
+.release-date{
+    font-size: 14px;
 }
