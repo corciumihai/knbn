@@ -402,6 +402,7 @@ body{
 .name{
     padding: 0px 10px 0px 10px;
     font-size: 14px;
+    text-align: center;
 }
 
 .close{
@@ -415,5 +416,14 @@ body{
 }
 
 .release-date{
-    font-size: 14px;
+    font-size: 12px;
+    text-align: center;
+}
+
+.timestamp{
+    /* border-radius: 4px; */
+    /* background-color: rgba(49, 49, 49, 0.459); */
+    padding: 0px 10px 0px 10px;
+    color: white;
+    font-size: 11px;
 }

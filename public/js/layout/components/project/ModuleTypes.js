@@ -56,7 +56,7 @@ class ModuleTypes extends React.Component{
                     <input type="text" class="form-control col" id="discipline-name" aria-describedby="discpline-help" placeholder="Enter module type"
                         onChange={this.change} value={this.state.disciplineName}/>
                     <small id="discipline-help" class="form-text text-muted mb-2">Add the module types for your project</small>
-                    <Button onclick={this.add} text="Add module type"/>
+                    <Button onclick={this.add} text="Add type"/>
                 </div>
                 {
                     this.props.disciplines.length > 0 ?

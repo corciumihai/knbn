@@ -23,9 +23,11 @@ class CreateProject extends React.Component{
         this.changeProjectName = this.changeProjectName.bind(this);
         this.addDiscipline = this.addDiscipline.bind(this);
         this.removeDiscipline = this.removeDiscipline.bind(this);
+        this.addRelease = this.addRelease.bind(this);
+        this.removeRelease = this.removeRelease.bind(this);
     }
 
-    componentDidMount(){
+    componentWillMount(){
         // fetch data from cookies
         let projectName = projectCookie.get('project-name');
         if(projectName != undefined){
@@ -38,6 +40,13 @@ class CreateProject extends React.Component{
         if(disciplines != undefined){
             if(disciplines.disciplines.length > 0){
                 this.setState({disciplines: disciplines.disciplines});
+            }
+        }
+
+        let releases = projectCookie.get('project-releases');
+        if(releases != undefined){
+            if(releases.releases.length > 0){
+                this.setState({releases: releases.releases});
             }
         }
         
@@ -62,6 +71,12 @@ class CreateProject extends React.Component{
         });
     }
 
+    addRelease(release){
+        this.setState({releases: update(this.state.releases, {$push: [release]})}, () => {
+            projectCookie.set('project-releases', {releases: this.state.releases});
+        })
+    }
+
     removeRelease(release){
         this.setState({releases: update(this.state.releases, {$splice: [[this.state.releases.indexOf(release), 1]]})}, () => {
             projectCookie.set('project-releases', {releases: this.state.releases});
@@ -75,7 +90,7 @@ class CreateProject extends React.Component{
                 <form>
                     <ProjectName name={this.state.projectName} onChange={this.changeProjectName}/>
                     <ModuleTypes add={this.addDiscipline} remove={this.removeDiscipline} disciplines={this.state.disciplines}/>
-                    <Releases remove={this.removeRelease} releases={this.state.releases}/>
+                    <Releases remove={this.removeRelease} releases={this.state.releases} releases={this.state.releases} add={this.addRelease}/>
                 </form>
                 <div class="row">
                     <div class="col d-flex mb-2">
