@@ -1,0 +1,30 @@
+body{
+    background-color: rgb(245, 245, 245);
+}
+
+.create > .row{
+    /* margin-bottom: 15px; */
+    background: white;
+    /* padding: 15px; */
+    padding-top: 15px;
+    /* padding-bottom: 15px; */
+    box-shadow: 1px 4px 4px rgb(231, 231, 231);
+    border-radius: 4px;
+}
+
+.selection{
+    padding: 0px 0px 0px 15px;
+}
+
+.select-item{
+    text-align: center;
+}
+
+.select-item > .dropdown > .btn{
+    width: 100%;
+}
+
+.item-name > .form-group > input::-moz-placeholder{
+    font-size: 12px;
+    font-style: italic;
+}

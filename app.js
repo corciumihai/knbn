@@ -240,7 +240,11 @@ router.post('/components', (request, response) => {
 // --------------------------------------------------------------------------
 
 router.get('/create-project', (request, response) => {
-    response.render(path.resolve(__dirname, 'views', 'create_project.pug'))
+    response.render(path.resolve(__dirname, 'views', 'create_project.pug'));
+});
+
+router.get('/create', (request, response) => {
+    response.render(path.resolve(__dirname, 'views', 'create.pug'));
 });
 
 app.use(express.static(__dirname + '/routes'));
@@ -249,4 +253,3 @@ app.use(router);
 app.listen(app.get('port'), function(){
     console.log('App is listening to port ' + app.get('port'));
 });
-

@@ -9,7 +9,9 @@ module.exports = {
           register: "./public/js/layout/Register.js",
           dashboard: "./public/js/layout/Dashboard.js",
           menu: "./public/js/layout/Menu.js",
-          create_project: "./public/js/layout/CreateProject.js"},
+          create_project: "./public/js/layout/CreateProject.js",
+          create_main: "./public/js/layout/components/create/CreateMain.js",
+        },
   module:{
     loaders: [
       {

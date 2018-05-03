@@ -174,21 +174,21 @@ class Releases extends React.Component{
     render(){
         return(
             <div class="form-group mb-2 d-flex flex-xl-row flex-column">
-                <div class="col-xl-3 col-md-3 col-12">
+                <div class="col-xl-4 col-md-3 col-12">
                     <label>Planned Releases</label>
                     <input type="text" onChange={this.changeReleaseName} value={this.state.name} class="release-name form-control col" id="release-name" aria-describedby="release-help" placeholder="Enter planned release"/>
-                    <div class="col-xl-10 col-md-10 col-10 offset-xl-1 offset-md-1 offset-1">
+                    <div class="col">
                         <label class="mt-2 mb-1" >Start Date</label>
                         <div class="row">
-                                <input type="text" class="release-date form-control col-3" onChange={this.changeStartDay} value={this.state.startDay} placeholder="Day"/>
-                                <input type="text" class="release-date form-control col-4" onChange={this.changeStartMonth} value={this.state.startMonth} placeholder="Mon"/>
-                                <input type="text" class="release-date form-control col-5" onChange={this.changeStartYear} value={this.state.startYear} placeholder="Year"/>
+                            <div class="col-3 pr-1"> <input type="text" class="release-date form-control" onChange={this.changeStartDay} value={this.state.startDay} placeholder="Day"/></div>
+                            <div class="col-4 pl-1 pr-1"><input type="text" class="release-date form-control" onChange={this.changeStartMonth} value={this.state.startMonth} placeholder="Month"/></div>
+                            <div class="col-5 pl-1"><input type="text" class="release-date form-control" onChange={this.changeStartYear} value={this.state.startYear} placeholder="Year"/></div>
                         </div>
                         <label class="mt-1 mb-1" >End Date</label>
                         <div class="row">
-                            <input type="text" class="release-date form-control col-3" onChange={this.changeEndDay} value={this.state.endDay} placeholder="Day"/>
-                            <input type="text" class="release-date form-control col-4" onChange={this.changeEndMonth} value={this.state.endMonth} placeholder="Mon"/>
-                            <input type="text" class="release-date form-control col-5" onChange={this.changeEndYear} value={this.state.endYear} placeholder="Year"/>
+                            <div class="col-3 pr-1"><input type="text" class="release-date form-control" onChange={this.changeEndDay} value={this.state.endDay} placeholder="Day"/></div>
+                            <div class="col-4 pl-1 pr-1"><input type="text" class="release-date form-control" onChange={this.changeEndMonth} value={this.state.endMonth} placeholder="Month"/></div>
+                            <div class="col-5 pl-1"><input type="text" class="release-date form-control" onChange={this.changeEndYear} value={this.state.endYear} placeholder="Year"/></div>
                         </div>
                     </div>
                     <small id="release-help" class="form-text text-muted mb-2">Add planned releases for your project</small>
@@ -196,7 +196,7 @@ class Releases extends React.Component{
                 </div>
                 {
                     this.props.releases.length > 0 ?
-                    <div class="releases col-xl-9 col-md-9 col-12">   
+                    <div class="releases col-xl-8 col-md-8 col-12">   
                         <div class="row p-3">
                         { 
                             this.props.releases.map(release => {
@@ -205,7 +205,7 @@ class Releases extends React.Component{
                         }
                         </div>
                     </div>
-                :   <div class="releases col-xl-9 col-md-9 col-12 d-flex justify-content-center">
+                :   <div class="releases col-xl-8 col-md-8 col-12 d-flex justify-content-center">
                         <span class="align-self-center small-muted">No releases added yet</span>
                     </div>
                 }

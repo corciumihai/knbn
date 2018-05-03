@@ -4,6 +4,7 @@ import ProjectName from './components/project/ProjectName';
 import update from 'react-addons-update';
 import ModuleTypes from './components/project/ModuleTypes';
 import Releases from './components/project/Releases';
+import DevelopmentTime from './components/project/DevelopmentTime';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 
@@ -89,6 +90,7 @@ class CreateProject extends React.Component{
             <div class='project col-xl-6 offset-xl-3'>
                 <form>
                     <ProjectName name={this.state.projectName} onChange={this.changeProjectName}/>
+                    <DevelopmentTime/>
                     <ModuleTypes add={this.addDiscipline} remove={this.removeDiscipline} disciplines={this.state.disciplines}/>
                     <Releases remove={this.removeRelease} releases={this.state.releases} releases={this.state.releases} add={this.addRelease}/>
                 </form>

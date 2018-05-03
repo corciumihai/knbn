@@ -38,7 +38,7 @@ class Section extends React.Component{
     render(){
         return(
             <div class="row">
-                <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 col-12 offset-xl-1 offset-lg-1 offset-md-1 offset-sm-1" id="section">
+                <div class="section col-xl-10 col-lg-10 col-md-10 col-sm-10 col-12 offset-xl-1 offset-lg-1 offset-md-1 offset-sm-1">
                     <div class="container-fluid" id="section-head">
                         <div class="row">
                             <div class="col">

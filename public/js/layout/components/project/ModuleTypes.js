@@ -51,7 +51,7 @@ class ModuleTypes extends React.Component{
     render(){
         return(
             <div class="form-group mb-2 d-flex flex-xl-row flex-column">
-                <div class="col-xl-3 col-md-3 col-12">
+                <div class="col-xl-4 col-md-4 col-12">
                     <label>Component Types</label>
                     <input type="text" class="form-control col" id="discipline-name" aria-describedby="discpline-help" placeholder="Enter module type"
                         onChange={this.change} value={this.state.disciplineName}/>
@@ -60,7 +60,7 @@ class ModuleTypes extends React.Component{
                 </div>
                 {
                     this.props.disciplines.length > 0 ?
-                    <div class="disciplines col-xl-9 col-md-9 col-12">   
+                    <div class="disciplines col-xl-8 col-md-8 col-12">   
                         <div class="row p-3">
                         { 
                             this.props.disciplines.map(discipline => {
@@ -69,7 +69,7 @@ class ModuleTypes extends React.Component{
                         }
                         </div>
                     </div>
-                :   <div class="disciplines col-xl-9 col-md-9 col-12 d-flex justify-content-center">
+                :   <div class="disciplines col-xl-8 col-md-8 col-12 d-flex justify-content-center">
                         <span class="align-self-center small-muted">No disciplines added yet</span>
                     </div>
                 }

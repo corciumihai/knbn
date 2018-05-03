@@ -12,7 +12,7 @@ class Column extends React.Component{
     render(){
         return(
             <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12" id="column">
-                <div id="column-name">{this.props.columnName}</div>
+                <div class="column-name">{this.props.columnName}</div>
                 {this.props.children}
             </div>
         );

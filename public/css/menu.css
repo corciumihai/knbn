@@ -1,25 +1,26 @@
-.menu{
+/* .menu{
     padding: 10px 20px 10px 20px;
     color: white;
-}
+} */
 
 .navbar{
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.5)
+    background-color: white;
+    box-shadow: 1px 4px 4px rgb(231, 231, 231);
 }
+
 
 .nav-item{
     border-bottom: 2px solid transparent;
     border-radius: none;
     color: rgb(177, 177, 177);
-    border: 1px solid transparent;
 }
 
-.nav-link, .navbar-brand{
+/* .nav-link, .navbar-brand{
     color: white !important;
-}
+} */
 
 .nav-item:hover{
     /* background-color: rgba(255, 255, 255, 0.164); */
-    border-bottom: 1px solid rgb(82, 219, 253);
+    border-bottom: 2px solid rgb(3, 182, 226);
 }

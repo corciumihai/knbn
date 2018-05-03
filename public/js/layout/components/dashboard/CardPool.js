@@ -15,7 +15,7 @@ class CardPool extends React.Component{
     render(){
 
         return(
-            <div class="col">
+            <div class="col-xl-12">
                 <div class="container-fluid">
                     <Section name="Construction of Component 1 with a huge ass name that wont really fit in the section">
                         <Column columnName="BACKLOG">

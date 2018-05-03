@@ -6,9 +6,7 @@ import CardPool from './components/dashboard/CardPool.js';
 class Dashboard extends React.Component{
     render(){
         return(
-            <div class="row">
-                <CardPool/>
-            </div>
+            <CardPool/>
         );
     }
 }
