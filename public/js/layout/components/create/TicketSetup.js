@@ -13,7 +13,7 @@ class TicketSetup extends React.Component{
             names: [],
             tickets: [],
 
-
+            name: this.props.name,
             reporter: {value: '', key: ''},
             assignee: {value: '', key: ''},
             component: {value: '', key: ''},

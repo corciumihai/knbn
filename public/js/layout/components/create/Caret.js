@@ -7,7 +7,9 @@ class Caret extends React.Component{
 
     render(){
         return(
-            <img src="./images/arrow-down-inverted.svg" class="caret float-right"/>
+            <div class="caret btn float-right">
+                <img src="./images/arrow-down-inverted.svg" class="d-block mx-auto"/>
+            </div>
         );
     }
 }

@@ -153,7 +153,7 @@ router.post('/create/card', (request, response) => {
 });
 
 router.get('/get-projects', (request, response) => {
-    let query = database.query('SELECT * FROM projects', (error, result, fields) => {
+    let query = database.query('SELECT name as \'value\', id as \'key\' FROM projects', (error, result, fields) => {
         if(error){
             console.log('Database error at projects: ' + error);
             return;

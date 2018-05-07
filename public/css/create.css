@@ -1,19 +1,20 @@
 body{
-    background-color: rgb(230, 230, 230);
+    background-color: rgb(226, 226, 226);
+}
+
+.no-back{
+    background-color: transparent !important;
+    box-shadow: none !important;
 }
 
 .create > .row, .ticket > .row, .component > .row{
     /* margin-bottom: 15px; */
     background: white;
     /* padding: 15px; */
-    padding-top: 15px;
+    /* padding-top: 15px; */
     /* padding-bottom: 15px; */
-    box-shadow: 1px 4px 4px rgb(199, 199, 199);
+    box-shadow: 2px 3px 3px rgb(189, 189, 189);
     border-radius: 4px;
-}
-
-.selection{
-    /* padding: 0px 0px 0px 15px; */
 }
 
 .select-item{
@@ -24,6 +25,10 @@ body{
     width: 100%;
 }
 
+.form-control{
+    font-size: 14px;
+}
+
 .form-control::-moz-placeholder, .info{
     font-size: 12px;
     font-style: italic;
@@ -31,10 +36,11 @@ body{
 
 .form-control:focus{
     box-shadow: none;
+    border: 1px solid rgb(48, 108, 165);
 }
 
 .info{
-    font-size: 14px;
+    font-size: 13px;
     color: gray;
     /* text-align: right; */
 }
@@ -65,9 +71,20 @@ body{
     color: black;
 }
 
+.caret{
+    width: 22px;
+    height: 22px;
+    padding: 0px;
+    background-color: transparent;
+}
+
 .dropdown-toggle:hover > .caret, .dropdown-toggle:focus > .caret, .dropdown-toggle:active > .caret{
-    background-color: rgb(226, 226, 226);
+    background-color: rgb(48, 108, 165);
     border-radius: 4px;
+}
+
+.dropdown-toggle:hover > .caret > img, .dropdown-toggle:focus > .caret > img, .dropdown-toggle:active > .caret > img{
+    filter: invert(1);
 }
 
 .dropdown-toggle::after{
@@ -112,18 +129,13 @@ body{
     box-shadow: none;
 }
 
-.increment > img{
-    opacity: 0.7;
-}
-
 .increment:hover > img, .increment:active > img{
     filter: invert(1);
-    opacity: 1;
 }
 
 .increment:hover, .increment:active{
     box-shadow: none;
-    background-color: rgb(105, 165, 221);
+    background-color: rgb(48, 108, 165);
 }
 
 .cursor{
@@ -132,7 +144,39 @@ body{
     padding-bottom: 5px;
 }
 
-.error{
+.error, .warning{
     font-size: 12px;
-    color: rgb(228, 93, 83);;
+    color: rgb(228, 61, 49);
+}
+
+.warning{
+    color: rgb(228, 180, 49);
+}
+
+.no-match{
+    font-size: 13px;
+    font-style: italic;
+    text-align: center;
+    color: gray;
+}
+
+.dating{
+    text-align: center;
+}
+
+.submit{
+    background-color: rgb(83, 83, 83);
+    box-shadow: 2px 3px 3px rgb(175, 175, 175);
+    color: white;
+    cursor: pointer;
+}
+
+.submit:hover{
+    background-color: rgb(48, 108, 165);
+
+}
+
+.optional{
+    text-align: center;
+    font-size: 14px;
 }

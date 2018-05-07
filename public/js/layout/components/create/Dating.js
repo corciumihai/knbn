@@ -72,17 +72,15 @@ class Dating extends React.Component{
         date.setFullYear(this.state.year);
         date.setMonth(this.state.month);
         date.setDate(this.state.day);
-        // date.setHours(0);
-        // date.setMinutes(0);
-        // date.setSeconds(0);
-        
+
         if(!((date.getFullYear() == this.state.year) && (date.getMonth() == this.state.month) && (date.getDate() == this.state.day))){
             if(prevState.error.length == 0 &&  prevState.error == this.state.error){
                 this.setState({error:"Invalid date! Please check if correct!"});
             }
         }
         else{
-            if(previousProps == undefined || previousProps.dueDate.getFullYear() != date.getFullYear() || previousProps.dueDate.getMonth() != date.getMonth() || previousProps.dueDate.getDate() != date.getDate()){
+            if((this.props.dueDate == undefined) || (this.props.dueDate.getFullYear() != date.getFullYear()) || 
+                    (this.props.dueDate.getMonth() != date.getMonth()) || (this.props.dueDate.getDate() != date.getDate())){
                 this.props.setDate(date);
             }
             if(prevState.error.length > 0 &&  prevState.error == this.state.error){
@@ -93,24 +91,33 @@ class Dating extends React.Component{
 
     render(){
         return(
-            <div class="dates w-100">
+            <div class="dates col">
                 <div class="row">
                     <div class="col-xl-3 col-6">
-                        <div class="info col">Day</div>
-                        <Cursor increase={this.increaseDay} decrease={this.decreaseDay} value={this.state.day.toString()} placeholder="Day"/>
+                        <div class="row">
+                            <div class="info dating col-xl-12">Day</div>
+                            <Cursor increase={this.increaseDay} decrease={this.decreaseDay} value={this.state.day.toString()} placeholder="Day"/>
+                        </div>
                     </div>
                     <div class="col-xl-4 col-6">
-                        <div class="info col">Month</div>
-                        <Cursor increase={this.increaseMonth} decrease={this.decreaseMonth} value={(this.state.month + 1).toString()} placeholder="Month"/>
+                        <div class="row">
+                            <div class="info dating col-xl-12">Month</div>
+                            <Cursor increase={this.increaseMonth} decrease={this.decreaseMonth} value={(this.state.month + 1).toString()} placeholder="Month"/>
+                        </div>
                     </div>
                     <div class="col-xl-5 col-12">
-                        <div class="info col">Year</div>
-                        <Cursor increase={this.increaseYear} decrease={this.decreaseYear} value={this.state.year.toString()} placeholder="Year"/>
+                        <div class="row">
+                            <div class="info dating col-xl-12">Year</div>
+                            <Cursor increase={this.increaseYear} decrease={this.decreaseYear} value={this.state.year.toString()} placeholder="Year"/>
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col mb-3"><span class="error">{this.state.error}</span></div>
-                </div>
+                {
+                    this.state.error.length > 0 ? 
+                    <div class="row">
+                        <div class="col mb-3"><span class="error">{this.state.error}</span></div>
+                    </div> : null
+                }
             </div>
         );
     }
