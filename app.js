@@ -6,6 +6,7 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 const database = require('./database/database');
 const bcrypt = require('bcrypt-nodejs');
+const mysql = require('mysql');
 
 app.use(express.static('public'));
 app.set('port', process.env.port || 3000);
@@ -119,8 +120,7 @@ router.get('/count', (request, response) => {
 });
 
 router.get('/users/get-users', function(request, response){
-    // console.log('hit this');
-    var query = database.query('SELECT email, name from users', timeout = 5000, (error, result, fields) => {
+    var query = database.query('SELECT email as \'key\', name as \'value\' from users', (error, result, fields) => {
         if(error){
             console.log('Databse error at users: ' + error);
             return;
@@ -246,6 +246,169 @@ router.get('/create-project', (request, response) => {
 router.get('/create', (request, response) => {
     response.render(path.resolve(__dirname, 'views', 'create.pug'));
 });
+
+/* *******************************************[ add component ]********************************************************* */
+router.post('/add/component', (request, response) => {
+    let data = request.body;
+    console.log(data);
+    // prepare to ackownledge existence of component
+    database.query('select count(*) as count from components where name = ?', data.name, (error, result, fields) => {
+        if(error){
+            //table does not exist
+            if(error.code == 'ER_NO_SUCH_TABLE'){
+                //create table
+                database.query('CREATE TABLE components (id INT AUTO_INCREMENT PRIMARY KEY UNIQUE, project INT, name VARCHAR(255)NOT NULL, \
+                description VARCHAR(2000), dueDate VARCHAR(255), startDate VARCHAR(255), rel INT, discipline INT)', (error, result, fields) => {
+                    if(error){
+                        console.log('Error when creating table \'components\' for the first time: ' + error.code);
+                        return;
+                    }
+                    //insert into table
+                    database.query('insert into components set ?', data, (error, result, fields) => {
+                        if(error){
+                            console.log('Database error when inserting component in database: ' + error);
+                            return;
+                        }
+                        //send back positive response
+                        response.statusCode = 200;
+                        response.send({ success: 'Component successfully added to database!' });
+                        console.log('Component successfully added to database!');
+                        return;
+                    });
+                });
+            }
+            console.log('Database error when checking existence of component: ' + error.code);
+            return;
+        }
+        //check component duplicate component name - TBD: also duplicate component id
+        if(result[0].count > 0){
+            //send back negative response
+            response.statusCode = 400;
+            response.send({error: 'Component name already exists in the database'});
+            return;
+        }
+        //insert into database 
+        database.query('insert into components set ?', data, (error, result, fields) => {
+            if(error){
+                console.log('Database error when inserting component in database: ' + error);
+                return;
+            }
+            //send back positive response
+            response.statusCode = 200;
+            response.send({ success: 'Component successfully added to database!' });
+            console.log('Component successfully added to database!');
+        });
+    });
+});
+//********************************************************************************************************************** */
+
+/* *******************************************[ add ticket ]************************************************************ */
+router.post('/add/ticket', (request, response) => {
+    let data = request.body;
+    console.log(data);
+    // prepare to ackownledge existence of ticket
+    //change name to id - somehow generate id based on project name
+    database.query('select count(*) as count from tickets where name = ?', data.name, (error, result, fields) => {
+        if(error){
+            //table does not exist
+            if(error.code == 'ER_NO_SUCH_TABLE'){
+                //create table
+                //TODO: generate id based on ticket number since autoincrement is not viable
+                //TODO: verify which is more viable: INT or VARCHAR
+                database.query('CREATE TABLE tickets (id INT PRIMARY AUTO_INCREMENT KEY UNIQUE, component INT, \
+                    name VARCHAR(255)NOT NULL, description VARCHAR(2000), dueDate VARCHAR(255)NOT NULL, startDate VARCHAR(255)NOT NULL, discipline INT, \
+                    reporter VARCHAR(255)NOT NULL, assignee VARCHAR(255)NOT NULL, blocked INT, blocking INT, estimation INT)', (error, result, fields) => {
+                    if(error){
+                        console.log('Error when creating table \'tickets\' for the first time: ' + error.code);
+                        return;
+                    }
+                    //insert into table
+                    database.query('INSERT INTO tickets SET ?', data, (error, result, fields) => {
+                        if(error){
+                            console.log('Database error when inserting ticket in database: ' + error);
+                            return;
+                        }
+                        //send back positive response
+                        response.statusCode = 200;
+                        response.send({ success: 'Ticket successfully added to database!' });
+                        console.log('Ticket successfully added to database!');
+                        return;
+                    });
+                });
+            }
+            console.log('Database error when checking existence of ticket: ' + error.code);
+            return;
+        }
+        //check ticket duplicate name - TBD: also duplicate ticket id
+        if(result[0].count > 0){
+            //send back negative response
+            response.statusCode = 400;
+            response.send({error: 'Ticket name already exists in the database'});
+            return;
+        }
+        //insert into database 
+        database.query('insert into tickets set ?', data, (error, result, fields) => {
+            if(error){
+                console.log('Database error when inserting ticket in database: ' + error);
+                return;
+            }
+            //send back positive response
+            response.statusCode = 200;
+            response.send({ success: 'Ticket successfully added to database!' });
+            console.log('Ticket successfully added to database!');
+        });
+    });
+});
+//********************************************************************************************************************** */
+
+/* *************************************************[ get releases ]**************************************************** */
+router.get('/get-releases', (request, response) => {
+    database.query('SELECT id AS \'key\', name AS \'value\' FROM releases', (error, result, fields) => {
+        if(error){
+            console.log('Database error when fetching releases: ' + error.code);
+            return;
+        }
+        response.send(result);
+    })
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ get disciplines ]************************************************* */
+router.get('/get-disciplines', (request, response) => {
+    database.query('SELECT id AS \'key\', name AS \'value\' FROM disciplines', (error, result, fields) => {
+        if(error){
+            console.log('Database error when fetching releases: ' + error.code);
+            return;
+        }
+        response.send(result);
+    })
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ get labels ]****************************************************** */
+router.get('/get-components', (request, response) => {
+    database.query('SELECT id AS \'key\', name AS \'value\' FROM components', (error, result, fields) => {
+        if(error){
+            console.log('Database error when fetching releases: ' + error.code);
+            return;
+        }
+        response.send(result);
+    })
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ get tickets ]***************************************************** */
+router.get('/get-tickets', (request, response) => {
+    database.query('SELECT id AS \'key\', name AS \'value\' FROM tickets', (error, result, fields) => {
+        if(error){
+            console.log('Database error when fetching releases: ' + error.code);
+            response.send({count: 0});
+            return;
+        }
+        response.send(result);
+    })
+});
+/* ********************************************************************************************************************* */
 
 app.use(express.static(__dirname + '/routes'));
 app.use(router);

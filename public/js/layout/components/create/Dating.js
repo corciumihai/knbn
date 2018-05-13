@@ -7,7 +7,7 @@ class Dating extends React.Component{
     constructor(props){
         super(props);
 
-        let currentDate = this.props.dueDate;
+        let currentDate = this.props.date;
 
         this.state = {
             day: parseInt(currentDate.getDate()),
@@ -67,20 +67,36 @@ class Dating extends React.Component{
         this.setState({year: this.state.year - 1});
     }
 
+    changeDay(value){
+        if(value > 31){
+            console.log('Way too many days');
+            return;
+        }
+        else if( value < 1){
+            console.log('Cant be 0');
+            return;
+        }
+        this.setState({day: value});
+    }
+
     componentDidUpdate(previousProps, prevState){
         let date = new Date();
         date.setFullYear(this.state.year);
         date.setMonth(this.state.month);
         date.setDate(this.state.day);
+        date.setHours(0);
+        date.setMinutes(0);
+        date.setSeconds(0);
+        date.setMilliseconds(0);
 
         if(!((date.getFullYear() == this.state.year) && (date.getMonth() == this.state.month) && (date.getDate() == this.state.day))){
             if(prevState.error.length == 0 &&  prevState.error == this.state.error){
-                this.setState({error:"Invalid date! Please check if correct!"});
+                this.setState({error:"Invalid date"});
             }
         }
         else{
-            if((this.props.dueDate == undefined) || (this.props.dueDate.getFullYear() != date.getFullYear()) || 
-                    (this.props.dueDate.getMonth() != date.getMonth()) || (this.props.dueDate.getDate() != date.getDate())){
+            if((this.props.date == undefined) || (this.props.date.getFullYear() != date.getFullYear()) || 
+                    (this.props.date.getMonth() != date.getMonth()) || (this.props.date.getDate() != date.getDate())){
                 this.props.setDate(date);
             }
             if(prevState.error.length > 0 &&  prevState.error == this.state.error){
@@ -96,7 +112,7 @@ class Dating extends React.Component{
                     <div class="col-xl-3 col-6">
                         <div class="row">
                             <div class="info dating col-xl-12">Day</div>
-                            <Cursor increase={this.increaseDay} decrease={this.decreaseDay} value={this.state.day.toString()} placeholder="Day"/>
+                            <Cursor increase={this.increaseDay} decrease={this.decreaseDay} value={this.state.day.toString()} onChange={this.changeDay} placeholder="Day"/>
                         </div>
                     </div>
                     <div class="col-xl-4 col-6">
@@ -115,7 +131,7 @@ class Dating extends React.Component{
                 {
                     this.state.error.length > 0 ? 
                     <div class="row">
-                        <div class="col mb-3"><span class="error">{this.state.error}</span></div>
+                        <div class="col"><span class="error">{this.state.error}</span></div>
                     </div> : null
                 }
             </div>

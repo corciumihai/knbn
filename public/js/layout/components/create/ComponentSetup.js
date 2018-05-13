@@ -2,6 +2,7 @@ import React from 'react';
 import DropdownSearch from './DropdownSearch';
 import Dating from './Dating';
 import axios from 'axios';
+import { EROFS } from 'constants';
 
 class ComponentSetup extends React.Component{
     constructor(props){
@@ -9,82 +10,88 @@ class ComponentSetup extends React.Component{
 
         this.state = {
             projects: [],
+            releases: [],
+            disciplines: [],
 
             dueDate: new Date(),
             startDate: new Date(),
-            projectName: undefined,
-            projectId: undefined,
-            description: undefined,
+            projectName: '',
+            projectId: '',
+            releaseName: '',
+            releaseId: '',
+            description: '',
+            disciplineId: '',
+            disciplineName: '',
 
-            projectError: undefined,
-            descriptionWarning: undefined,
-
-            hasWarning: false,
-            hasError: false,
+            projectError: '',
+            releaseError: '',
         }
 
         this.setProject = this.setProject.bind(this);
         this.setDueDate = this.setDueDate.bind(this);
         this.setStartDate = this.setStartDate.bind(this);
         this.setDescription = this.setDescription.bind(this);
-        this.checkValues = this.checkValues.bind(this);
+        this.setRelease = this.setRelease.bind(this);
+        this.setDiscipline = this.setDiscipline.bind(this);
         this.submit = this.submit.bind(this);
     }
 
-    setDescription(event){
-        let text = event.target.value;
-
-        this.setState({description: text}, () => {
-            this.setState({descriptionWarning: '', hasWarning: false});
-        });
-    }
-
-    setProject(project){
-        this.setState({projectName: project.value, projectId: project.key}, () => {
-            this.setState({projectError: ''});
-        });
-    }
-
     componentDidMount(){
-        axios.get('/get-projects').then(response => {
-            this.setState({projects: response.data});
-        });
+        axios.get('/get-projects').then(response => {this.setState({projects: response.data});});
+        axios.get('/get-releases').then(response => {this.setState({releases: response.data});})
+        axios.get('/get-disciplines').then(response => {this.setState({disciplines: response.data});});
     }
 
-    setDueDate(date){
-        this.setState({dueDate: date});
-    }
+    setDescription(event){this.setState({description: event.target.value}, () => {this.setState({descriptionWarning: ''});});}
+    setProject(project){this.setState({projectName: project.value, projectId: project.key}, () => {this.setState({projectError: ''});});}
+    setRelease(release){this.setState({releaseName: release.value, releaseId: release.key}, () => {this.setState({releaseError: ''});})}
+    setDiscipline(discipline){this.setState({disciplineName: discipline.value, disciplineId: discipline.key});}
+    setDueDate(date){this.setState({dueDate: date});}
+    setStartDate(date){this.setState({startDate: date});}
 
-    setStartDate(date){
-        this.setState({startDate: date});
-    }
-
-    checkValues(event){
-        // console.log('click');
+    submit(event){
         event.preventDefault();
         if(this.props.name == undefined || this.props.name.length == 0){
             this.props.setError('Name is empty');
             return;
         }
 
-        if(this.state.projectName == undefined || this.state.projectId == undefined || this.state.projectName.length == 0 || this.state.projectId.length == 0){
-            this.setState({projectError: 'Project name or id is empty! Please select a project!'});
-            return;
+        if(this.state.projectId == undefined || this.state.projectId.length == 0){
+            this.setState({projectError: 'Project name or id is empty! Please select a project!'}); return;
+        }
+        if(this.state.releaseId == undefined || this.state.releaseId.length == 0){
+            this.setState({releaseError: 'Please select a release'}); return;
         }
 
-        if(this.state.description == undefined || this.state.description.length == 0){
-            this.setState({descriptionWarning: 'Description is empty! Having a description is optional'}, () => {
-                this.setState({hasWarning: true});
-            });
-            return;
-        }
-
-        return true;
-
-    }
-
-    submit(){
-        console.log('Submitted');
+        axios.post('/add/component', {
+            name: this.props.name,
+            dueDate: this.state.dueDate.getTime(),
+            startDate: this.state.startDate.getTime(),
+            description: this.state.description,
+            project: this.state.projectId,
+            rel: this.state.releaseId,
+            discipline: this.state.disciplineId,
+        }).then(response => {
+            if(response.status == 200){
+                this.setState({
+                    dueDate: new Date(),
+                    startDate: new Date(),
+                    projectName: '',
+                    projectId: '',
+                    releaseName: '',
+                    releaseId: '',
+                    description: '',
+                    disciplineId: '',
+                    disciplineName: '',
+                    projectError: '',
+                    releaseError: '',
+                });
+                this.props.resetName();
+            }
+        }).catch(error => {
+            if(error.response == undefined){return;}
+            this.props.setError(error.response.data.error);
+        })
     }
 
     render(){
@@ -93,7 +100,7 @@ class ComponentSetup extends React.Component{
                 <div class="row pb-3 pt-3 mb-2">
                     <div class="col-xl-2 info">Belongs to (*)</div>
                     <div class="col">
-                        <DropdownSearch list={this.state.projects} item={{value: this.state.projectName, key: this.state.projectId}} change={this.setProject} placeholder="Project name"/>
+                        <DropdownSearch list={this.state.projects} item={{value: this.state.projectName, key: this.state.projectId}} onClick={this.setProject} placeholder="Project name"/>
                         {
                             this.state.projectError != undefined && this.state.projectError.length > 0 ?
                                 <div class="col-xl-12"><span class="error row">{this.state.projectError}</span></div>
@@ -119,10 +126,30 @@ class ComponentSetup extends React.Component{
                 </div>
 
                 <div class="row pb-3 pt-3 mb-2">
-                    <div class="col-xl-2 info">Labels</div>
+                    <div class="col-xl-2 info">Release</div>
                     <div class="col">
-                        <div class="form-group mb-0">
-                            <input type="text" class="form-control" placeholder="Label name"/>
+                        <DropdownSearch list={this.state.releases} item={{value: this.state.releaseName, key: this.state.releaseId}} onClick={this.setRelease} placeholder="Release" />
+                        {
+                            this.state.releaseError != undefined && this.state.releaseError.length > 0 ?
+                            <div class="col-xl-12"><span class="error row">{this.state.releaseError}</span></div>
+                            :   
+                            null
+                        }
+                    </div>
+                </div>
+
+                <div class="row pb-3 pt-3 mb-2">
+                    <div class="col-xl-2 info">Discipline</div>
+                    <div class="col">
+                        <DropdownSearch list={this.state.disciplines} item={{value: this.state.disciplineName, key: this.state.disciplineId}} onClick={this.setDiscipline} placeholder="Discipline" />
+                    </div>
+                </div>
+
+                <div class="row pb-3 pt-3 mb-2">
+                    <div class="col-xl-2 info">Start date (*)</div>
+                    <div class="col-xl-10">
+                        <div class="row">
+                            <Dating setDate={this.setStartDate} date={this.state.startDate}/>
                         </div>
                     </div>
                 </div>
@@ -131,36 +158,17 @@ class ComponentSetup extends React.Component{
                     <div class="col-xl-2 info">Due date (*)</div>
                     <div class="col-xl-10">
                         <div class="row">
-                            <Dating setDate={this.setDueDate} dueDate={this.state.dueDate}/>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row pb-3 pt-3 mb-2">
-                    <div class="col-xl-2 info">Start date (*)</div>
-                    <div class="col-xl-10">
-                        <div class="row">
-                            <Dating setDate={this.setStartDate} dueDate={this.state.startDate}/>
+                            <Dating setDate={this.setDueDate} date={this.state.dueDate}/>
                         </div>
                     </div>
                 </div>
 
                 <div class="no-back row mb-2 pt-3 justify-content-center">
-                    {
-                        this.state.hasWarning ? 
-                            <div class="col-12 d-flex justify-content-center">
-                                <div class="row">
-                                    <span class="optional col-xl-12 mb-2">This component has one or more optional fields incomplete. Proceed?</span>
-                                    <div class="col-xl-12 d-flex justify-content-center">
-                                        <button class="submit btn" onClick={this.submit}>Submit</button> 
-                                    </div>
-                                </div>
-                            </div>
-                            :     
-                            <div class="col-xl-12 d-flex justify-content-center">                       
-                                <button class="submit btn" onClick={this.checkValues}>Submit</button> 
-                            </div> 
-                    }
+    
+                    <div class="col-xl-12 d-flex justify-content-center">                       
+                        <button class="submit btn" onClick={this.submit}>Submit</button> 
+                    </div> 
+                    
                 </div>
             </div>
         );

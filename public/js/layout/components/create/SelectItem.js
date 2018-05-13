@@ -37,11 +37,13 @@ class SelectItem extends React.Component{
     render(){
         return(
             <div class="btn-group w-100" onClick={this.toggle} onBlur={this.toggle}>
-                <button type="button" class="btn dropdown-toggle w-100" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="float-left">{this.props.type == 0 ? "Item" : this.props.type == 1 ? "Task": this.props.type == 2 ? "Ticket" : "Component"}</span>
-                    <Caret toggle={this.state.toggle}/>
-                </button>
-                <div class="dropdown-menu">
+                <div type="button" class="btn dropdown-toggle w-100" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <div class="row">
+                        <div class="col"><span class="float-left">{this.props.type == 0 ? "Item" : this.props.type == 1 ? "Task": this.props.type == 2 ? "Ticket" : "Component"}</span></div>
+                        <Caret toggle={this.state.toggle}/>
+                    </div>
+                </div>
+                <div class="dropdown-menu w-100">
                     <a class="dropdown-item" href="#" onClick={this.changeToTask}>Task</a>
                     <a class="dropdown-item" href="#" onClick={this.changeToTicket}>Ticket</a>
                     <a class="dropdown-item" href="#" onClick={this.changeToComponent}>Component</a>

@@ -12,23 +12,27 @@ class DropdownSearch extends React.Component{
         }
 
         this.search = this.search.bind(this);
-        this.change = this.change.bind(this);
+        this.click = this.click.bind(this);
         this.toggle = this.toggle.bind(this);
+        this.clearSearch = this.clearSearch.bind(this);
     }
 
     toggle(){
         this.setState({toggle: !this.state.toggle});
     }
 
-    change(user){
-        this.props.change(user);
+    click(item, event){
+        event.preventDefault();
+        this.props.onClick(item);
     }
 
     search(event){
         let value = event.target.value;
-        this.setState({
-            searched: value
-        });
+        this.setState({searched: value});
+    }
+
+    clearSearch(){
+        this.setState({searched: ''});
     }
 
     render(){
@@ -41,20 +45,26 @@ class DropdownSearch extends React.Component{
         }
         return(
             <div class="btn-group w-100" onClick={this.toggle} onBlur={this.toggle}>
-                <button type="button" class="btn dropdown-toggle w-100" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.getUsers}>
-                    <span class="float-left">{this.props.item.value != undefined && this.props.item.value.length > 0 ? this.props.item.value :
-                        this.props.placeholder != undefined && this.props.placeholder.length > 0 ? this.props.placeholder : "Default" 
-                        }</span>
-                    <Caret toggle={this.state.toggle}/>
-                </button>
+                <div type="button" class="btn dropdown-toggle w-100 pl-3 pr-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.getUsers}>
+                    <div class="row">
+                        {this.props.important ? <div class="obligatory" title="This field is obligatory"></div> : null}
+                        <div class="col text-truncate dropdown-text">
+                        {
+                            this.props.item.value != undefined && this.props.item.value.length > 0 ? this.props.item.value :
+                            this.props.placeholder != undefined && this.props.placeholder.length > 0 ? this.props.placeholder : "Default" 
+                        }
+                        </div>
+                        <Caret toggle={this.state.toggle}/>
+                    </div>
+                </div>
                 <div class="dropdown-menu w-100">
-                    <div class="pl-3 pr-3"><input type="text" class="search form-control" onChange={this.search} 
+                    <div class="pl-3 pr-3"><input type="text" class="search form-control" onChange={this.search} onBlur={this.clearSearch}
                         value={this.state.searched!= undefined && this.state.searched.length > 0 ? this.state.searched : ''}/></div>
                     <div class="users">
                     {
                         list.length > 0 ? 
                             list.map(item => {
-                                let boundClick = this.change.bind(this, item);
+                                let boundClick = this.click.bind(this, item);
                                 return <a key={item.key} class="dropdown-item" href="#" onClick={boundClick}>{item.value}</a>
                             }) 
                     : 
