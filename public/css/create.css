@@ -50,6 +50,12 @@ body{
     overflow: auto;
 }
 
+.loading{
+    text-align: center;
+    font-size: 14px;
+    color: gray;
+}
+
 .search{
     height: 30px;
     font-size: 14px;

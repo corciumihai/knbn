@@ -8,6 +8,10 @@ class Dating extends React.Component{
         super(props);
 
         let currentDate = this.props.date;
+        currentDate.setHours(0);
+        currentDate.setMinutes(0);
+        currentDate.setSeconds(0);
+        currentDate.setMilliseconds(0);
 
         this.state = {
             day: parseInt(currentDate.getDate()),
@@ -107,8 +111,8 @@ class Dating extends React.Component{
 
     render(){
         return(
-            <div class="dates col">
-                <div class="row">
+            // <div class="dates col">
+                <div class="dates row">
                     <div class="col-xl-3 col-6">
                         <div class="row">
                             <div class="info dating col-xl-12">Day</div>
@@ -127,14 +131,15 @@ class Dating extends React.Component{
                             <Cursor increase={this.increaseYear} decrease={this.decreaseYear} value={this.state.year.toString()} placeholder="Year"/>
                         </div>
                     </div>
+                    {
+                        this.state.error.length > 0 ? 
+                            <div class="col"><span class="error">{this.state.error}</span></div>
+                            : 
+                            null
+                    }
                 </div>
-                {
-                    this.state.error.length > 0 ? 
-                    <div class="row">
-                        <div class="col"><span class="error">{this.state.error}</span></div>
-                    </div> : null
-                }
-            </div>
+                
+            // </div>
         );
     }
 }

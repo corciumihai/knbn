@@ -98,8 +98,8 @@ class ComponentSetup extends React.Component{
         return(
             <div class="component">
                 <div class="row pb-3 pt-3 mb-2">
-                    <div class="col-xl-2 info">Belongs to (*)</div>
-                    <div class="col">
+                    <div class="col-xl-2 info">Belongs to project *</div>
+                    <div class="col-xl-6">
                         <DropdownSearch list={this.state.projects} item={{value: this.state.projectName, key: this.state.projectId}} onClick={this.setProject} placeholder="Project name"/>
                         {
                             this.state.projectError != undefined && this.state.projectError.length > 0 ?
@@ -127,7 +127,7 @@ class ComponentSetup extends React.Component{
 
                 <div class="row pb-3 pt-3 mb-2">
                     <div class="col-xl-2 info">Release</div>
-                    <div class="col">
+                    <div class="col-xl-6">
                         <DropdownSearch list={this.state.releases} item={{value: this.state.releaseName, key: this.state.releaseId}} onClick={this.setRelease} placeholder="Release" />
                         {
                             this.state.releaseError != undefined && this.state.releaseError.length > 0 ?
@@ -140,25 +140,29 @@ class ComponentSetup extends React.Component{
 
                 <div class="row pb-3 pt-3 mb-2">
                     <div class="col-xl-2 info">Discipline</div>
-                    <div class="col">
+                    <div class="col-xl-6">
                         <DropdownSearch list={this.state.disciplines} item={{value: this.state.disciplineName, key: this.state.disciplineId}} onClick={this.setDiscipline} placeholder="Discipline" />
                     </div>
                 </div>
 
                 <div class="row pb-3 pt-3 mb-2">
-                    <div class="col-xl-2 info">Start date (*)</div>
+                    <div class="col-xl-2 info">Start date *</div>
                     <div class="col-xl-10">
                         <div class="row">
-                            <Dating setDate={this.setStartDate} date={this.state.startDate}/>
+                            <div class="col">
+                                <Dating setDate={this.setStartDate} date={this.state.startDate}/>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="row pb-3 pt-3 mb-2">
-                    <div class="col-xl-2 info">Due date (*)</div>
+                    <div class="col-xl-2 info">Due date *</div>
                     <div class="col-xl-10">
                         <div class="row">
-                            <Dating setDate={this.setDueDate} date={this.state.dueDate}/>
+                            <div class="col">
+                                <Dating setDate={this.setDueDate} date={this.state.dueDate}/>
+                            </div>
                         </div>
                     </div>
                 </div>

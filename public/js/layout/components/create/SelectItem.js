@@ -5,14 +5,9 @@ class SelectItem extends React.Component{
     constructor(props){
         super(props);
 
-        this.state = {
-            toggle: false,
-        }
-
         this.changeToTask = this.changeToTask.bind(this);
         this.changeToComponent = this.changeToComponent.bind(this);
         this.changeToTicket = this.changeToTicket.bind(this);
-        this.toggle = this.toggle.bind(this);
     }
 
     changeToTask(type){
@@ -26,21 +21,14 @@ class SelectItem extends React.Component{
     changeToComponent(type){
         this.props.changeType(3);
     }
-    
-    toggle(){
-        console.log('click');
-        this.setState({toggle: !this.state.toggle}, () => {
-            console.log(this.state.toggle);
-        });
-    }
 
     render(){
         return(
-            <div class="btn-group w-100" onClick={this.toggle} onBlur={this.toggle}>
+            <div class="btn-group w-100">
                 <div type="button" class="btn dropdown-toggle w-100" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <div class="row">
                         <div class="col"><span class="float-left">{this.props.type == 0 ? "Item" : this.props.type == 1 ? "Task": this.props.type == 2 ? "Ticket" : "Component"}</span></div>
-                        <Caret toggle={this.state.toggle}/>
+                        <Caret/>
                     </div>
                 </div>
                 <div class="dropdown-menu w-100">

@@ -36,6 +36,11 @@ class TicketSetup extends React.Component{
             componentError: '',
             dateError: '',
             estimateError: '',
+
+            loadingUsers: true,
+            loadingComponents: true,
+            loadingDisciplines: true,
+            loadingTickets: true,
         }
 
         this.changeReporter = this.changeReporter.bind(this);
@@ -48,6 +53,14 @@ class TicketSetup extends React.Component{
         this.setStartDate = this.setStartDate.bind(this);
         this.setEstimation = this.setEstimation.bind(this);
         this.setDescription = this.setDescription.bind(this);
+        this.fetchComponents = this.fetchComponents.bind(this);
+        this.fetchDisciplines = this.fetchDisciplines.bind(this);
+        this.fetchTickets = this.fetchTickets.bind(this);
+        this.fetchUsers = this.fetchUsers.bind(this);
+        this.resetComponents = this.resetComponents.bind(this);
+        this.resetDisciplines = this.resetDisciplines.bind(this);
+        this.resetTickets = this.resetTickets.bind(this);
+        this.resetUsers = this.resetUsers.bind(this);
         this.submit = this.submit.bind(this);
     }
 
@@ -61,19 +74,22 @@ class TicketSetup extends React.Component{
     setStartDate(date){this.setState({startDate: date, dateError: ''});}
     setDescription(event){this.setState({description: event.target.value});}
 
+    fetchUsers(){axios.get('/users/get-users').then(response => {this.setState({users: response.data, loadingUsers: false});});}
+    fetchComponents(){axios.get('/get-components').then(response => {this.setState({components: response.data, loadingComponents: false});});}
+    fetchTickets(){axios.get('/get-tickets').then(response => {this.setState({tickets: response.data, ticketNumber: response.data.count + 1, loadingTickets: false});});}
+    fetchDisciplines(){axios.get('/get-disciplines').then(response => {this.setState({disciplines: response.data, loadingDisciplines: false});});}
+
+    resetUsers(){this.setState({users: [], loadingUsers: true}, () => {console.log('reset')});}
+    resetComponents(){this.setState({components: [], loadingComponents: true});}
+    resetTickets(){this.setState({tickets: [], ticketNumber: 0, loadingTickets: true});}
+    resetDisciplines(){this.setState({disciplines: [], loadingDisciplines: true});}
+
     setEstimation(event){
         let value = event.target.value;
         if(value.length > 0){
             if(isNaN(value)){this.setState({estimateError: 'What are you trying to input is not a number'}); return;}
         }
         this.setState({estimation: value, estimateError: ''});
-    }
-
-    componentDidMount(){
-        axios.get('/users/get-users').then(response => {this.setState({users: response.data});});
-        axios.get('/get-components').then(response => {this.setState({components: response.data});});
-        axios.get('/get-tickets').then(response => {this.setState({tickets: response.data, ticketNumber: response.data.count + 1});});
-        axios.get('/get-disciplines').then(response => {this.setState({disciplines: response.data});});
     }
 
     submit(event){
@@ -115,9 +131,13 @@ class TicketSetup extends React.Component{
                     startDate: new Date(),
                     componentError: '',
                     dateError: '',
+                    estimation: 0,
                     estimateError: '',
-                    description: ''
-                });
+                    description: '',
+
+                    loading: true,
+                }, this.props.resetName);
+
             }
         }).catch(error => {
             if(error.response == undefined){return;}
@@ -133,7 +153,8 @@ class TicketSetup extends React.Component{
                     <div class="col-xl-6">
                         <div class="row">
                             <div class="col-xl-12">
-                                <DropdownSearch list={this.state.components} item={{value: this.state.componentName, key: this.state.componentId}} onClick={this.setComponent} important={true} placeholder="Component name"/>
+                                <DropdownSearch list={this.state.components} item={{value: this.state.componentName, key: this.state.componentId}} 
+                                    fetch={this.fetchComponents} onClick={this.setComponent} loading={this.state.loadingComponents} reset={this.resetComponents} placeholder="Component name"/>
                             </div>
                         {
                             this.state.componentError != undefined && this.state.componentError.length > 0 ?
@@ -150,7 +171,8 @@ class TicketSetup extends React.Component{
                     <div class="col-xl-4 pb-xl-0 pb-2">
                         <div class="row">
                             <div class="col-xl-12">
-                                <DropdownSearch list={this.state.users} item={{value: this.state.reporterName, key: this.state.reporterEmail}} onClick={this.changeReporter} important={true} placeholder="Reporter"/>
+                                <DropdownSearch list={this.state.users} item={{value: this.state.reporterName, key: this.state.reporterEmail}} 
+                                    fetch={this.fetchUsers} onClick={this.changeReporter} loading={this.state.loadingUsers} reset={this.resetUsers} placeholder="Reporter"/>
                             </div>
                         {
                             this.state.reporterError != undefined && this.state.reporterError.length > 0 ?
@@ -164,7 +186,8 @@ class TicketSetup extends React.Component{
                     <div class="col-xl-4">
                         <div class="row">
                             <div class="col-xl-12">
-                                <DropdownSearch list={this.state.users} item={{value: this.state.assigneeName, key: this.state.assigneeEmail}} onClick={this.changeAssignee} important={true} placeholder="Assignee"/>
+                                <DropdownSearch list={this.state.users} item={{value: this.state.assigneeName, key: this.state.assigneeEmail}} 
+                                    fetch={this.fetchUsers} onClick={this.changeAssignee} loading={this.state.loadingUsers} reset={this.resetUsers} placeholder="Assignee"/>
                             </div>
                         {
                             this.state.assigneeError != undefined && this.state.assigneeError.length > 0 ?
@@ -189,19 +212,22 @@ class TicketSetup extends React.Component{
                 <div class="row mb-2 pt-3 pb-3">
                     <div class="col-xl-2 info">Blocks ticket</div>
                     <div class="col-xl-4 pb-xl-0 pb-2">
-                        <DropdownSearch list={this.state.tickets} item={{value: this.state.blockedTicketName, key: this.state.blockedTicketId}} onClick={this.setBlockedTicket} placeholder="Blocked ticket"/>
+                        <DropdownSearch list={this.state.tickets} item={{value: this.state.blockedTicketName, key: this.state.blockedTicketId}} 
+                            fetch={this.fetchTickets} onClick={this.setBlockedTicket} reset={this.resetTickets} placeholder="Blocked ticket"/>
                     </div>
 
                     <div class="col-xl-2 info">Blocked by ticket</div>
                     <div class="col-xl-4">
-                        <DropdownSearch list={this.state.tickets} item={{value: this.state.blockingTicketName, key: this.state.blockingTicketId}} onClick={this.setBlockingTicket} placeholder="Blocking ticket"/>
+                        <DropdownSearch list={this.state.tickets} item={{value: this.state.blockingTicketName, key: this.state.blockingTicketId}} 
+                            fetch={this.fetchTickets} onClick={this.setBlockingTicket} reset={this.resetTickets} placeholder="Blocking ticket"/>
                     </div>
                 </div>
 
                 <div class="row mb-2 pt-3 pb-3">
                     <div class="col-xl-2 info">Discipline</div>
                     <div class="col-xl-6">
-                        <DropdownSearch list={this.state.disciplines} item={{value: this.state.disciplineName, key: this.state.disciplineId}} onClick={this.setDiscipline} placeholder="Discipline" />
+                        <DropdownSearch list={this.state.disciplines} item={{value: this.state.disciplineName, key: this.state.disciplineId}} 
+                            fetch={this.fetchDisciplines} onClick={this.setDiscipline} reset={this.resetDisciplines} placeholder="Discipline" />
                     </div>
                 </div>
 
@@ -209,7 +235,9 @@ class TicketSetup extends React.Component{
                     <div class="col-xl-2 info">Start date</div>
                     <div class="col-xl-10">
                         <div class="row">
-                            <Dating setDate={this.setStartDate} date={this.state.startDate}/>
+                            <div class="col">
+                                <Dating setDate={this.setStartDate} date={this.state.startDate}/>
+                            </div>
                             {
                                 this.state.dateError != undefined && this.state.dateError.length > 0 ?
                                     <div class="col-xl-12"><span class="error">{this.state.dateError}</span></div>
@@ -224,7 +252,9 @@ class TicketSetup extends React.Component{
                     <div class="col-xl-2 info">Due date</div>
                     <div class="col-xl-10">
                         <div class="row">
-                            <Dating setDate={this.setDueDate} date={this.state.dueDate}/>
+                            <div class="col">
+                                <Dating setDate={this.setDueDate} date={this.state.dueDate}/>
+                            </div>
                         </div>
                     </div>
                 </div>
