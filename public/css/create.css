@@ -1,5 +1,5 @@
 body{
-    background-color: rgb(226, 226, 226);
+    background-color: rgb(34, 35, 37);
 }
 
 .no-back{
@@ -9,11 +9,11 @@ body{
 
 .create > .row, .ticket > .row, .component > .row{
     /* margin-bottom: 15px; */
-    background: white;
+    background: rgb(51, 56, 65);
     /* padding: 15px; */
     /* padding-top: 15px; */
     /* padding-bottom: 15px; */
-    box-shadow: 2px 3px 3px rgb(189, 189, 189);
+    /* box-shadow: 2px 3px 3px rgb(189, 189, 189); */
     border-radius: 4px;
 }
 
@@ -27,6 +27,9 @@ body{
 
 .form-control{
     font-size: 14px;
+    background-color: transparent;
+    border: 1px solid rgb(79, 85, 99);
+    color: rgb(179, 179, 179);
 }
 
 .form-control::-moz-placeholder{
@@ -37,11 +40,14 @@ body{
 .form-control:focus{
     box-shadow: none;
     border: 1px solid rgb(48, 108, 165);
+    background-color: rgb(63, 68, 78);
+    color: white;
 }
+
 
 .info{
     font-size: 13px;
-    color: gray;
+    color: rgb(177, 177, 177);
     /* text-align: right; */
 }
 
@@ -59,27 +65,44 @@ body{
 .search{
     height: 30px;
     font-size: 14px;
+    background: rgb(93, 102, 122);
+    color: rgb(212, 212, 212);
+    border: 1px solid transparent;
+}
+
+.search:focus{
+    height: 30px;
+    font-size: 14px;
+    background: rgb(93, 102, 122);
+    color: rgb(212, 212, 212);
+    border: 1px solid rgb(52, 135, 184);
 }
 
 .dropdown-toggle{
-    color: black;
-    background: rgb(255, 255, 255);
+    color: rgb(192, 188, 188);
+    background: rgb(77, 83, 97);
     box-shadow: none;
-    border: 1px solid rgb(228, 228, 228);
+    /* border: 1px solid rgb(50, 57, 71); */
     font-size: 14px;
     cursor: pointer;
     text-align: left
 }
 
-/* .dropdown-text{
-    width: 60%;
-} */
+.description{
+    background: rgb(79, 87, 104);
+    border: 1px solid transparent;
+}
+
+.description:focus{
+    background: rgb(79, 87, 104);
+    /* border: none; */
+}
 
 .dropdown-toggle:hover, .dropdown-toggle:focus, .dropdown-toggle:active{
-    background-color: rgb(250, 250, 250);
-    border: 1px solid rgb(65, 122, 196);
+    background: rgb(96, 105, 126);
+    border: 1px solid rgb(52, 135, 184);
     box-shadow: none;
-    color: black;
+    color: rgb(255, 255, 255);
 }
 
 .caret{
@@ -94,7 +117,11 @@ body{
     border-radius: 4px;
 }
 
-.dropdown-toggle:hover > .row > .caret > img, .dropdown-toggle:focus > .row > .caret > img, .dropdown-toggle:active > .row > .caret > img{
+.dropdown-toggle > .row > .caret > img, .dropdown-toggle > .row > .caret > img, .dropdown-toggle > .row > .caret > img{
+    filter: invert(.5);
+}
+
+.dropdown-toggle:hover > .row > .caret > img, .dropdown-toggle:active > .row > .caret > img, .dropdown-toggle:focus > .row > .caret > img{
     filter: invert(1);
 }
 
@@ -102,8 +129,12 @@ body{
     display: none;
 }
 
+.dropdown-menu{
+    background: rgb(79, 87, 104);
+}
+
 .dropdown-item{
-    color:black;
+    color:rgb(219, 219, 219);
     font-size: 14px;
 }
 
@@ -117,17 +148,18 @@ body{
     font-size: 14px;
     border-radius: 4px;
     text-decoration: none;
+    color: gray;
 }
 
 .assign-to:hover{
-    background-color: rgb(65, 122, 196);
+    background-color: rgb(81, 97, 119);
     color: white;
     text-decoration: none;
 }
 
 .input-group{
     border-radius: 4px;
-    border: 1px solid rgb(196, 196, 196);
+    border: 1px solid rgb(79, 85, 99);
 }
 
 .input-group:hover{
@@ -143,13 +175,18 @@ body{
     /* border: 1px solid rgb(226, 226, 226); */
     width: 22px;
     height: 22px;
-    background-color: transparent;
+    /* border: 1px solid rgb(83, 85, 88); */
+    background-color: rgb(79, 85, 99);
     cursor: pointer;
     box-shadow: none;
 }
 
 .increment:hover > img, .increment:active > img{
-    filter: invert(1);
+    opacity: 1;
+}
+
+.increment > img, .increment > img{
+    opacity: .55;
 }
 
 .increment:hover, .increment:active{
@@ -187,16 +224,17 @@ body{
     text-align: center;
 }
 
-.submit{
-    background-color: rgb(83, 83, 83);
-    box-shadow: 2px 3px 3px rgb(175, 175, 175);
-    color: white;
+.add-btn, .submit{
+    font-size: 14px;
+    color: rgb(190, 190, 190);
+    background-color: rgb(74, 82, 99);
     cursor: pointer;
 }
 
-.submit:hover{
-    background-color: rgb(48, 108, 165);
-
+.add-btn:hover, .submit:hover{
+    background-color: rgb(40, 86, 129);
+    color: white;
+    border-color: transparent;
 }
 
 .optional{
@@ -222,4 +260,30 @@ body{
     width: 10px;
     margin-left: -15px;
     background-color: rgba(250, 96, 58, 0.781);
+}
+
+.warning{
+    width: 22px;
+    height: 22px;
+    border-radius: 100%;
+    border: 1px solid rgb(255, 83, 77);
+    background-color: rgba(255, 70, 46, 0.096);
+    cursor: pointer;
+}
+
+.index, .remove{
+    background-color: rgb(74, 82, 99);
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    font-size: 12px;
+    text-align: center;
+}
+
+.step-val{
+    color: white;
+    font-size: 13px;
+    word-wrap: break-word;
+    word-break: break-all;
 }

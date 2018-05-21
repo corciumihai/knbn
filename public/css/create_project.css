@@ -1,5 +1,5 @@
 body{
-    background-color: rgb(170, 170, 170);
+    background-color: rgb(34, 35, 37);
 }
 
 label, small{
@@ -9,23 +9,24 @@ label, small{
 }
 
 .dash{
-    background-color: white;
-    box-shadow: 2px 3px 3px rgb(110, 110, 110);
+    background-color: rgb(51, 56, 65);
+    /* box-shadow: 2px 3px 3px rgb(224, 224, 224); */
     border-radius: 4px;
 }
 
 .dash > .info{
     font-size: 14px;
-    color: gray;
+    color: rgb(177, 177, 177);
 }
 
 .info{
     font-size: 13px;
-    color: gray;
+    color: rgb(112, 120, 139);
     /* text-align: right; */
 }
 
 .cursor{
+    text-align: center;
     font-size: 14px;
     padding-top: 5px;
     padding-bottom: 5px;
@@ -36,13 +37,18 @@ label, small{
     /* border: 1px solid rgb(226, 226, 226); */
     width: 22px;
     height: 22px;
-    background-color: transparent;
+    /* border: 1px solid rgb(83, 85, 88); */
+    background-color: rgb(79, 85, 99);
     cursor: pointer;
     box-shadow: none;
 }
 
 .increment:hover > img, .increment:active > img{
-    filter: invert(1);
+    opacity: 1;
+}
+
+.increment > img, .increment > img{
+    opacity: .55;
 }
 
 .increment:hover, .increment:active{
@@ -52,7 +58,7 @@ label, small{
 
 .input-group{
     border-radius: 4px;
-    border: 1px solid rgb(196, 196, 196);
+    border: 1px solid rgb(79, 85, 99);
 }
 
 .input-group:hover{
@@ -65,6 +71,9 @@ label, small{
 
 .form-control{
     font-size: 14px;
+    background-color: transparent;
+    border: 1px solid rgb(79, 85, 99);
+    color: rgb(179, 179, 179);
 }
 
 .form-control::-moz-placeholder{
@@ -75,22 +84,26 @@ label, small{
 .form-control:focus{
     box-shadow: none;
     border: 1px solid rgb(48, 108, 165);
+    background-color: rgb(63, 68, 78);
+    color: white;
 }
 
-.add-button{
-    border: 1px solid gray;
+.add-button, .submit{
+    /* border: 1px solid gray; */
     font-size: 14px;
+    color: rgb(190, 190, 190);
+    background-color: rgb(74, 82, 99);
     cursor: pointer;
 }
 
-.add-button:hover{
+.add-button:hover, .submit:hover{
     background-color: rgb(40, 86, 129);
     color: white;
     border-color: transparent;
 }
 
 .release, .close-btn{
-    background-color: rgb(40, 86, 129);
+    background-color: rgb(74, 82, 99);
     border-radius: 17px;
     color: white;
     font-size: 14px;
@@ -99,7 +112,52 @@ label, small{
     /* border-right: 1px solid rgb(179, 190, 201); */
 }
 
+
 .close-btn:hover{
-    background-color: rgb(46, 97, 145);
+    background-color: rgb(112, 118, 133);
     cursor: pointer;
+}
+
+.blue{
+    color: rgb(2, 71, 134);
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.warning{
+    width: 22px;
+    height: 22px;
+    border-radius: 100%;
+    border: 1px solid rgb(255, 83, 77);
+    background-color: rgba(255, 70, 46, 0.096);
+    cursor: pointer;
+}
+
+.error{
+    color: rgb(255, 83, 77);
+    font-size: 13px;
+    font-style: italic;
+}
+
+.bad{
+    border: 1px solid rgb(255, 83, 77);
+}
+
+.rst{
+    border: 1px solid rgb(79, 85, 99);
+    border-radius: 4px;
+}
+
+.rst-btn{
+    width: 22px;
+    height: 22px;
+    opacity: .5;
+    background-color: rgb(79, 85, 99);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.rst-btn:hover{
+    opacity: 1;
+
 }

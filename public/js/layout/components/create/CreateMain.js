@@ -6,13 +6,13 @@ import ItemSetup from './ItemSetup';
 import TaskSetup from './TaskSetup';
 import ComponentSetup from './ComponentSetup';
 import TicketSetup from './TicketSetup';
-
+import ProblemReport from './ProblemReport';
 
 class CreateMain extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            type: 2,
+            type: 4,
             name: '',
             error: '',
         }
@@ -34,7 +34,7 @@ class CreateMain extends React.Component{
     }
 
     changeType(type){
-        if(type < 0 || type > 3){
+        if(type < 0 || type > 4){
             console.log('Invalid item type');
             return;
         }
@@ -78,7 +78,8 @@ class CreateMain extends React.Component{
                     this.state.type == 0 ? null 
                         : this.state.type == 1 ?    <TaskSetup name={this.state.name} setError={this.setError} resetName={this.resetName}/> 
                         : this.state.type == 2 ?    <TicketSetup name={this.state.name} setError={this.setError} resetName={this.resetName}/> 
-                    :                               <ComponentSetup name={this.state.name} setError={this.setError} resetName={this.resetName}/>
+                        : this.state.type == 3 ?    <ComponentSetup name={this.state.name} setError={this.setError} resetName={this.resetName}/>
+                        :                           <ProblemReport name={this.state.name} setError={this.setError} resetName={this.resetName}/>  
                 }
                
             </div>

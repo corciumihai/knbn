@@ -7,6 +7,8 @@ class Dating extends React.Component{
     constructor(props){
         super(props);
 
+        
+
         let currentDate = this.props.date;
         currentDate.setHours(0);
         currentDate.setMinutes(0);
@@ -14,6 +16,7 @@ class Dating extends React.Component{
         currentDate.setMilliseconds(0);
 
         this.state = {
+            months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
             day: parseInt(currentDate.getDate()),
             month: parseInt(currentDate.getMonth()),
             year: parseInt(currentDate.getFullYear()),
@@ -27,34 +30,45 @@ class Dating extends React.Component{
         this.increaseDay = this.increaseDay.bind(this);
         this.increaseMonth = this.increaseMonth.bind(this);
         this.increaseYear = this.increaseYear.bind(this);
+        this.resetDate = this.resetDate.bind(this);
     }
 
     increaseDay(){
         if(this.state.day == 31){
-            return;
+            this.setState({day: 1});
         }
-        this.setState({day: this.state.day + 1});
+        else{
+            this.setState({day: this.state.day + 1});
+        }
+        
     }
 
     decreaseDay(){
         if(this.state.day == 1){
-            return;
+            this.setState({day: 31})
         }
-        this.setState({day: this.state.day - 1});
+        else{
+            this.setState({day: this.state.day - 1});
+        }
     }
 
     increaseMonth(){
         if(this.state.month == 11){
-            return;
+            this.setState({month: 0});
         }
-        this.setState({month: this.state.month + 1});
+        else{
+            this.setState({month: this.state.month + 1});
+        }
+        
     }
 
     decreaseMonth(){
         if(this.state.month == 0){
-            return;
+            this.setState({month: 11});
         }
-        this.setState({month: this.state.month - 1});
+        else{
+            this.setState({month: this.state.month - 1});
+        }
     }
 
     increaseYear(){
@@ -109,6 +123,10 @@ class Dating extends React.Component{
         }
     }
 
+    resetDate(){
+        let date = new Date(); this.setState({day: parseInt(date.getDate()), month: parseInt(date.getMonth()), year: parseInt(date.getFullYear())});
+    }
+
     render(){
         return(
             // <div class="dates col">
@@ -116,24 +134,35 @@ class Dating extends React.Component{
                     <div class="col-xl-3 col-6">
                         <div class="row">
                             <div class="info dating col-xl-12">Day</div>
-                            <Cursor increase={this.increaseDay} decrease={this.decreaseDay} value={this.state.day.toString()} onChange={this.changeDay} placeholder="Day"/>
+                            <div class="col pr-xl-2">
+                                <Cursor increase={this.increaseDay} decrease={this.decreaseDay} value={this.state.day.toString()} onChange={this.changeDay} placeholder="Day"/>
+                            </div>
                         </div>
                     </div>
                     <div class="col-xl-4 col-6">
                         <div class="row">
-                            <div class="info dating col-xl-12">Month</div>
-                            <Cursor increase={this.increaseMonth} decrease={this.decreaseMonth} value={(this.state.month + 1).toString()} placeholder="Month"/>
-                        </div>
-                    </div>
-                    <div class="col-xl-5 col-12">
-                        <div class="row">
                             <div class="info dating col-xl-12">Year</div>
-                            <Cursor increase={this.increaseYear} decrease={this.decreaseYear} value={this.state.year.toString()} placeholder="Year"/>
+                            <div class="col px-xl-2">
+                                <Cursor increase={this.increaseYear} decrease={this.decreaseYear} value={this.state.year.toString()} placeholder="Year"/>
+                            </div>
                         </div>
                     </div>
+                    <div class="col">
+                        <div class="row">
+                            <div class="info dating col-xl-12">Month</div>
+                            <div class="col pl-xl-2">
+                                <Cursor increase={this.increaseMonth} decrease={this.decreaseMonth} value={this.state.months[this.state.month]} placeholder="Month"/>
+                            </div>
+                            {/* <div class="rst py-1 px-1 ml-0 mr-3">
+                                <div class="rst-btn d-flex" onClick={this.resetDate}><img src="./images/reset.svg" class="d-block mx-auto"/></div>
+                            </div> */}
+                        </div>
+                    </div>
+                    
+                    
                     {
                         this.state.error.length > 0 ? 
-                            <div class="col"><span class="error">{this.state.error}</span></div>
+                            <div class="col-xl-12"><span class="error">{this.state.error}</span></div>
                             : 
                             null
                     }

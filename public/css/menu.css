@@ -5,15 +5,20 @@
 
 .navbar{
     width: 100%;
-    background-color: white;
-    box-shadow: 1px 4px 4px rgb(199, 199, 199);
+    background-color: rgb(51, 56, 65);
+    /* box-shadow: 1px 4px 4px rgb(199, 199, 199); */
+    color: white;
 }
 
 
 .nav-item{
     border-bottom: 2px solid transparent;
     border-radius: none;
-    color: rgb(177, 177, 177);
+    color: rgb(180, 180, 180);
+}
+
+.nav-link{
+    color: rgb(180, 180, 180);
 }
 
 /* .nav-link, .navbar-brand{

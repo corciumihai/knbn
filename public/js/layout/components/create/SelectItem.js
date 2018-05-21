@@ -8,6 +8,7 @@ class SelectItem extends React.Component{
         this.changeToTask = this.changeToTask.bind(this);
         this.changeToComponent = this.changeToComponent.bind(this);
         this.changeToTicket = this.changeToTicket.bind(this);
+        this.changeToProblemReport = this.changeToProblemReport.bind(this);
     }
 
     changeToTask(type){
@@ -22,12 +23,17 @@ class SelectItem extends React.Component{
         this.props.changeType(3);
     }
 
+    changeToProblemReport(type){
+        this.props.changeType(4);
+    }
+
     render(){
         return(
             <div class="btn-group w-100">
                 <div type="button" class="btn dropdown-toggle w-100" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <div class="row">
-                        <div class="col"><span class="float-left">{this.props.type == 0 ? "Item" : this.props.type == 1 ? "Task": this.props.type == 2 ? "Ticket" : "Component"}</span></div>
+                        <div class="col"><span class="float-left">{this.props.type == 0 ? "Item" : this.props.type == 1 ? "Task": this.props.type == 2 ? "Ticket" : 
+                        this.props.type == 3 ? "Component" : "Problem report"}</span></div>
                         <Caret/>
                     </div>
                 </div>
@@ -36,7 +42,7 @@ class SelectItem extends React.Component{
                     <a class="dropdown-item" href="#" onClick={this.changeToTicket}>Ticket</a>
                     <a class="dropdown-item" href="#" onClick={this.changeToComponent}>Component</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#" onClick={this.changeToTicket}>Problem report</a>
+                    <a class="dropdown-item" href="#" onClick={this.changeToProblemReport}>Problem report</a>
                 </div>
             </div>
         );

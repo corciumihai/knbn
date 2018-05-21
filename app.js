@@ -247,6 +247,107 @@ router.get('/create', (request, response) => {
     response.render(path.resolve(__dirname, 'views', 'create.pug'));
 });
 
+/* *******************************************< add project >*********************************************************** */
+router.post('/add/project', (request, response) => {
+    let data = request.body;
+    // console.log(data);
+    // prepare to ackownledge existence of component
+    database.query('SELECT count(*) AS count FROM projects WHERE name = ?', data.projectName, (error, result, fields) => {
+        if(error){
+            // table does not exist
+            if(error.code == 'ER_NO_SUCH_TABLE'){
+                // create projects table
+                database.query('CREATE TABLE projects (id INT AUTO_INCREMENT PRIMARY KEY UNIQUE, shortName VARCHAR(255), name VARCHAR(255)NOT NULL, \
+                startDate VARCHAR(255), endDate VARCHAR(255))', (error, result, fields) => {
+                    if(error){
+                        console.log('Error creating table \'projects\' for the first time: ' + error.code);
+                        return;
+                    }
+                });
+                //insert immediately into table project data
+                database.query('INSERT INTO projects SET ?', {name: data.projectName, shortName: data.projectId, startDate: data.startDate, endDate: data.endDate}, (error, result, fields) => {
+                    if(error){
+                        console.log('Error when inserting data in \'projects\' table: ' + error.code);
+                        return;
+                    }
+                });
+                response.statusCode = 200;
+                response.send({ success: 'Project successfully added to database!' });
+                console.log('Project successfully added to database!');
+                return;
+            }
+            console.log('Database error when checking existence of project: ' + error.code);
+            return;
+        }
+        if(result[0].count > 0){
+            //send back negative response
+            response.statusCode = 400;
+            response.send({error: 'Project name already exists in the database'});
+            return;
+        }
+        //insert project data in the database
+        database.query('INSERT INTO projects SET ?', {name: data.projectName, shortName: data.projectShortName, startDate: data.startDate, endDate: data.endDate}, (error, result, fields) => {
+            if(error){
+                console.log('Error when inserting data in \'projects\' table: ' + error.code);
+                return;
+            }
+        });
+        response.statusCode = 200;
+        response.send({ success: 'Project successfully added to database!' });
+        console.log('Project successfully added to database!');
+    });
+
+    // insert releases into table
+    let releases = data.releases;
+    let error = false;
+    releases.forEach(element => {
+        console.log(element);
+        database.query('SELECT COUNT(*) as count FROM releases WHERE name = ? AND projectId = ?', [element.name, data.projectShortName], (error, result, fields) => {
+            if(error){
+                console.log(error.code);
+                if(error.code == 'ER_NO_SUCH_TABLE'){
+                    //create table releases
+                    console.log('here');
+                    database.query('CREATE TABLE releases (id INT AUTO_INCREMENT PRIMARY KEY UNIQUE, name VARCHAR(255)NOT NULL, projectId VARCHAR(255)NOT NULL, \
+                                        startDate VARCHAR(255)NOT NULL, endDate VARCHAR(255)NOT NULL)', (error, result, fields) => {
+                        if(error){
+                            //error thrown everytime ER_TABLE_EXISTS ^
+                            console.log('Error when creating table \'releases\': ' + error.code);
+                            return;
+                        }
+                    });
+                    database.query('INSERT INTO releases SET ?', {name: element.name, startDate: element.startDate, endDate: element.endDate, projectId: data.projectShortName}, (error, result, fields) =>{
+                        if(error){
+                            console.log('Error when inserting into table \'releases\': ' + error.code);
+                            error = true;
+                            return;
+                        }
+                    });
+                    return;
+                }
+            }
+
+            // console.log(result);
+
+            if(result[0].count > 0){
+                console.log('Release ' + release.name + ' already in the table');
+                return;
+            }
+
+            database.query('INSERT INTO releases SET ?', {name: element.name, startDate: element.startDate, endDate: element.endDate, projectId: data.projectShortName}, (error, result, fields) => {
+                if(error){
+                    console.log('Error when inserting into table \'releases\': ' + error.code);
+                    error = true;
+                    return;
+                }
+            });
+        });
+    });
+    console.log(error);
+    // send error that there are some releases in the table already
+});
+//********************************************************************************************************************** */
+
 /* *******************************************[ add component ]********************************************************* */
 router.post('/add/component', (request, response) => {
     let data = request.body;
@@ -357,6 +458,67 @@ router.post('/add/ticket', (request, response) => {
             response.send({ success: 'Ticket successfully added to database!' });
             console.log('Ticket successfully added to database!');
         });
+    });
+});
+//********************************************************************************************************************** */
+
+/* *******************************************[ add problem report ]**************************************************** */
+router.post('/add/report', (request, response) => {
+    let data = request.body;
+    console.log(data);
+    // prepare to ackownledge existence of ticket
+    //change name to id - somehow generate id based on project name
+    database.query('SELECT COUNT(*) AS count FROM reports WHERE name = ?', data.name, (error, result, fields) => {
+        if(error){
+            //table does not exist
+            if(error.code == 'ER_NO_SUCH_TABLE'){
+                //create table
+                //TODO: generate id based on ticket number since autoincrement is not viable
+                //TODO: verify which is more viable: INT or VARCHAR
+                database.query('CREATE TABLE reports (id INT UNIQUE PRIMARY KEY, component INT, \
+                    name VARCHAR(255)NOT NULL, description VARCHAR(2000), dueDate VARCHAR(255)NOT NULL, startDate VARCHAR(255)NOT NULL, discipline INT, \
+                    reporter VARCHAR(255)NOT NULL, assignee VARCHAR(255)NOT NULL, blocked INT, blocking INT, estimation INT, testSteps VARCHAR(255), \
+                    observedBehaviour VARCHAR(255), expectedBehaviour VARCHAR(255), priority INT)', (error, result, fields) => {
+                    if(error){
+                        console.log('Error when creating table \'reports\' for the first time: ' + error.code);
+                        return;
+                    }
+                    // //insert into table
+                    // database.query('INSERT INTO tickets SET ?', data, (error, result, fields) => {
+                    //     if(error){
+                    //         console.log('Database error when inserting ticket in database: ' + error);
+                    //         return;
+                    //     }
+                    //     //send back positive response
+                    //     response.statusCode = 200;
+                    //     response.send({ success: 'Ticket successfully added to database!' });
+                    //     console.log('Ticket successfully added to database!');
+                    //     return;
+                    // });
+                });
+                return;
+            }
+            console.log('Database error when checking existence of report: ' + error.code);
+            return;
+        }
+        //check ticket duplicate name - TBD: also duplicate ticket id
+        // if(result[0].count > 0){
+        //     //send back negative response
+        //     response.statusCode = 400;
+        //     response.send({error: 'Ticket name already exists in the database'});
+        //     return;
+        // }
+        // //insert into database 
+        // database.query('insert into tickets set ?', data, (error, result, fields) => {
+        //     if(error){
+        //         console.log('Database error when inserting ticket in database: ' + error);
+        //         return;
+        //     }
+        //     //send back positive response
+        //     response.statusCode = 200;
+        //     response.send({ success: 'Ticket successfully added to database!' });
+        //     console.log('Ticket successfully added to database!');
+        // });
     });
 });
 //********************************************************************************************************************** */

@@ -98,7 +98,12 @@ class ComponentSetup extends React.Component{
         return(
             <div class="component">
                 <div class="row pb-3 pt-3 mb-2">
-                    <div class="col-xl-2 info">Belongs to project *</div>
+                    <div class="col-xl-3 pr-0 info mb-xl-0 mb-2">
+                        <div class="row d-flex h-100">
+                            <div class="warning ml-3 align-self-center" title="This is a mandatory field"><img src="./images/warning.svg" class="d-block mx-auto"/></div>
+                            <div class="col d-flex"><span class="align-self-center">Belongs to project</span></div>
+                        </div>
+                    </div>
                     <div class="col-xl-6">
                         <DropdownSearch list={this.state.projects} item={{value: this.state.projectName, key: this.state.projectId}} onClick={this.setProject} placeholder="Project name"/>
                         {
@@ -111,7 +116,12 @@ class ComponentSetup extends React.Component{
                 </div>
 
                 <div class="row pb-3 pt-3 mb-2">
-                    <div class="col-xl-2 info">Description</div>
+                    <div class="col-xl-3 pr-0 info mb-xl-0 mb-2">
+                        <div class="row d-flex h-100">
+                            <div class="warning ml-3 align-self-center" title="This is a mandatory field"><img src="./images/warning.svg" class="d-block mx-auto"/></div>
+                            <div class="col d-flex"><span class="align-self-center">Description</span></div>
+                        </div>
+                    </div>
                     <div class="col">
                         <div class="form-group mb-0">
                             <textarea type="text" class="form-control" placeholder="Description" onChange={this.setDescription} value={this.state.description}/>
@@ -126,7 +136,12 @@ class ComponentSetup extends React.Component{
                 </div>
 
                 <div class="row pb-3 pt-3 mb-2">
-                    <div class="col-xl-2 info">Release</div>
+                    <div class="col-xl-3 pr-0 info mb-xl-0 mb-2">
+                        <div class="row d-flex h-100">
+                            {/* <div class="warning ml-3 align-self-center" title="This is a mandatory field"><img src="./images/warning.svg" class="d-block mx-auto"/></div> */}
+                            <div class="col d-flex"><span class="align-self-center">Release</span></div>
+                        </div>
+                    </div>
                     <div class="col-xl-6">
                         <DropdownSearch list={this.state.releases} item={{value: this.state.releaseName, key: this.state.releaseId}} onClick={this.setRelease} placeholder="Release" />
                         {
@@ -139,15 +154,25 @@ class ComponentSetup extends React.Component{
                 </div>
 
                 <div class="row pb-3 pt-3 mb-2">
-                    <div class="col-xl-2 info">Discipline</div>
+                    <div class="col-xl-3 pr-0 info mb-xl-0 mb-2">
+                        <div class="row d-flex h-100">
+                            {/* <div class="warning ml-3 align-self-center" title="This is a mandatory field"><img src="./images/warning.svg" class="d-block mx-auto"/></div> */}
+                            <div class="col d-flex"><span class="align-self-center">Discipline</span></div>
+                        </div>
+                    </div>
                     <div class="col-xl-6">
                         <DropdownSearch list={this.state.disciplines} item={{value: this.state.disciplineName, key: this.state.disciplineId}} onClick={this.setDiscipline} placeholder="Discipline" />
                     </div>
                 </div>
 
                 <div class="row pb-3 pt-3 mb-2">
-                    <div class="col-xl-2 info">Start date *</div>
-                    <div class="col-xl-10">
+                    <div class="col-xl-3 pr-0 info mb-xl-0 mb-2">
+                        <div class="row d-flex h-100">
+                            <div class="warning ml-3 align-self-center" title="This is a mandatory field"><img src="./images/warning.svg" class="d-block mx-auto"/></div>
+                            <div class="col d-flex"><span class="align-self-center">Start date</span></div>
+                        </div>
+                    </div>
+                    <div class="col-xl-9">
                         <div class="row">
                             <div class="col">
                                 <Dating setDate={this.setStartDate} date={this.state.startDate}/>
@@ -157,8 +182,13 @@ class ComponentSetup extends React.Component{
                 </div>
 
                 <div class="row pb-3 pt-3 mb-2">
-                    <div class="col-xl-2 info">Due date *</div>
-                    <div class="col-xl-10">
+                    <div class="col-xl-3 pr-0 info mb-xl-0 mb-2">
+                        <div class="row d-flex h-100">
+                            <div class="warning ml-3 align-self-center" title="This is a mandatory field"><img src="./images/warning.svg" class="d-block mx-auto"/></div>
+                            <div class="col d-flex"><span class="align-self-center">Due date</span></div>
+                        </div>
+                    </div>
+                    <div class="col-xl-9">
                         <div class="row">
                             <div class="col">
                                 <Dating setDate={this.setDueDate} date={this.state.dueDate}/>
