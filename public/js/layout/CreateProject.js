@@ -202,6 +202,7 @@ class CreateProject extends React.Component{
                                     }
                                 </div>
                             </div>
+                            <div class="col-xl-5"><span class="small info">Will be used as part of the tickets's ID for this project</span></div>
                         </div>
                     </div>
                     {/* *************************************************************** */}

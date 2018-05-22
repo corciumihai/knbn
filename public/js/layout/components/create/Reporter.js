@@ -1,7 +1,7 @@
 import React from 'react';
 import DropdownSearch from './DropdownSearch';
 
-class User extends React.Component{
+class Reporter extends React.Component{
     constructor(props){
         super(props);
     }
@@ -13,7 +13,7 @@ class User extends React.Component{
                     <div class="col-xl-5 pr-0 info mb-xl-0 mb-2">
                         <div class="row d-flex h-100">
                             <div class="warning ml-3 align-self-center" title="This is a mandatory field"><img src="./images/warning.svg" class="d-block mx-auto"/></div>
-                            <div class="col d-flex"><span class="align-self-center">{this.props.title}</span></div>
+                            <div class="col d-flex"><span class="align-self-center">Reporter</span></div>
                         </div>
                     </div>
                     <div class="col-xl-7 pb-xl-0 pb-2">
@@ -36,4 +36,4 @@ class User extends React.Component{
     }
 }
 
-export default User;
+export default Reporter;

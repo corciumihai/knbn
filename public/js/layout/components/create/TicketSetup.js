@@ -2,11 +2,11 @@ import React from 'react';
 import axios from 'axios';
 import update from 'react-addons-update';
 import Dating from './Dating';
-import Users from './Users';
-import User from './User';
 import TextArea from './TextArea';
 import DropdownSearch from './DropdownSearch';
 import Priority from './Priority';
+import Reporter from './Reporter';
+import Assignee from './Assignee';
 
 class TicketSetup extends React.Component{
     constructor(props){
@@ -61,10 +61,7 @@ class TicketSetup extends React.Component{
         this.fetchDisciplines = this.fetchDisciplines.bind(this);
         this.fetchTickets = this.fetchTickets.bind(this);
         this.fetchUsers = this.fetchUsers.bind(this);
-        this.resetComponents = this.resetComponents.bind(this);
-        this.resetDisciplines = this.resetDisciplines.bind(this);
-        this.resetTickets = this.resetTickets.bind(this);
-        this.resetUsers = this.resetUsers.bind(this);
+        this.resetState = this.resetState.bind(this);
         this.setPriority = this.setPriority.bind(this);
         this.submit = this.submit.bind(this);
     }
@@ -77,7 +74,7 @@ class TicketSetup extends React.Component{
     setDiscipline(discipline){this.setState({disciplineName: discipline.value, disciplineId: discipline.key});}
     setDueDate(date){this.setState({dueDate: date, dateError: ''});}
     setStartDate(date){this.setState({startDate: date, dateError: ''});}
-    setDescription(event){this.setState({description: event.target.value});}
+    setDescription(value){this.setState({description: value});}
     setPriority(prio){this.setState({priority: prio});}
 
     fetchUsers(){axios.get('/users/get-users').then(response => {this.setState({users: response.data, loadingUsers: false});});}
@@ -85,11 +82,32 @@ class TicketSetup extends React.Component{
     fetchTickets(){axios.get('/get-tickets').then(response => {this.setState({tickets: response.data, ticketNumber: response.data.count + 1, loadingTickets: false});});}
     fetchDisciplines(){axios.get('/get-disciplines').then(response => {this.setState({disciplines: response.data, loadingDisciplines: false});});}
 
-    resetUsers(){this.setState({users: [], loadingUsers: true}, () => {console.log('reset')});}
-    resetComponents(){this.setState({components: [], loadingComponents: true});}
-    resetTickets(){this.setState({tickets: [], ticketNumber: 0, loadingTickets: true});}
-    resetDisciplines(){this.setState({disciplines: [], loadingDisciplines: true});}
+    resetState(){
+        this.setState({
+            reporterName: '',
+            reporterEmail: '',
+            assigneeName: '',
+            assigneeEmail: '',
+            componentName: '',
+            componentId: '',
+            blockedTicketId: '',
+            blockedTicketName: '',
+            blockingTicketId: '',
+            blockingTicketName: '',
+            disciplineName: '',
+            disciplineId: '',
+            dueDate: new Date(),
+            startDate: new Date(),
+            ticketNumber: 0,
+            estimation: 0,
+            description: '',
+            priority: 1,
 
+            componentError: '',
+            dateError: '',
+            estimateError: '',
+        }, this.props.resetName);
+    }
     setEstimation(event){
         let value = event.target.value;
         if(value.length > 0){
@@ -119,32 +137,7 @@ class TicketSetup extends React.Component{
             description: this.state.description,
             estimation: this.state.estimation,
         }).then(response => {
-            if(response.status == 200){
-                this.setState({
-                    reporterName: '',
-                    reporterEmail: '',
-                    assigneeName: '',
-                    assigneeEmail: '',
-                    componentName: '',
-                    componentId: '',
-                    blockedTicketId: '',
-                    blockedTicketName: '',
-                    blockingTicketId: '',
-                    blockingTicketName: '',
-                    disciplineName: '',
-                    disciplineId: '',
-                    dueDate: new Date(),
-                    startDate: new Date(),
-                    componentError: '',
-                    dateError: '',
-                    estimation: 0,
-                    estimateError: '',
-                    description: '',
-
-                    loading: true,
-                }, this.props.resetName);
-
-            }
+            if(response.status == 200){this.resetState()}
         }).catch(error => {
             if(error.response == undefined){return;}
             this.props.setError(error.response.data.error);
@@ -179,13 +172,13 @@ class TicketSetup extends React.Component{
 
                 <Priority set={this.setPriority} item={this.state.priority}/>
 
-                <Users fetch={this.fetchUsers} users={this.state.users}>
-                    <User users={this.state.users} name={this.state.reporterName} id={this.state.reporterEmail} fetch={this.fetchUsers} set={this.changeReporter}
-                        loading={this.state.loadingUsers} error={this.state.reporterError} title="Reporter" key={1}/>
+                <div class="row mb-2 pt-3 pb-3">
+                    <Reporter users={this.state.users} name={this.state.reporterName} id={this.state.reporterEmail} fetch={this.fetchUsers} set={this.changeReporter}
+                        loading={this.state.loadingUsers} error={this.state.reporterError}/>
 
-                    <User users={this.state.users} name={this.state.assigneeName} id={this.state.assigneeEmail} fetch={this.fetchUsers} set={this.changeAssignee}
-                        loading={this.state.loadingUsers} error={this.state.assigneeError} title="Assignee" key={2}/>
-                </Users> 
+                    <Assignee users={this.state.users} name={this.state.assigneeName} id={this.state.assigneeEmail} fetch={this.fetchUsers} set={this.changeAssignee}
+                        loading={this.state.loadingUsers} error={this.state.assigneeError}/>
+                </div> 
 
                 <TextArea set={this.setDescription} value={this.state.description} placeholder={"Description"} title={"Description"} mandatory={false}/>
 
@@ -198,7 +191,7 @@ class TicketSetup extends React.Component{
                     </div>
                     <div class="col-xl-3 pb-xl-0 pb-2">
                         <DropdownSearch list={this.state.tickets} item={{value: this.state.blockedTicketName, key: this.state.blockedTicketId}} 
-                            fetch={this.fetchTickets} onClick={this.setBlockedTicket} reset={this.resetTickets} placeholder="Blocked ticket"/>
+                            fetch={this.fetchTickets} onClick={this.setBlockedTicket} placeholder="Blocked ticket"/>
                     </div>
 
                     <div class="col-xl-3 pr-0 info mb-xl-0 mb-2">
@@ -209,7 +202,7 @@ class TicketSetup extends React.Component{
                     </div>
                     <div class="col-xl-3">
                         <DropdownSearch list={this.state.tickets} item={{value: this.state.blockingTicketName, key: this.state.blockingTicketId}} 
-                            fetch={this.fetchTickets} onClick={this.setBlockingTicket} reset={this.resetTickets} placeholder="Blocking ticket"/>
+                            fetch={this.fetchTickets} onClick={this.setBlockingTicket} placeholder="Blocking ticket"/>
                     </div>
                 </div>
 

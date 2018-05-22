@@ -5,19 +5,16 @@ import update from 'react-addons-update';
 import Dating from './Dating';
 import Priority from './Priority';
 import TextArea from './TextArea';
-import Users from './Users';
-import User from './User';
+import Reporter from './Reporter';
+import Assignee from './Assignee';
 
 class ProblemReport extends React.Component{
     constructor(props){
         super(props);
         this.state = {
             users: [],
-            components: [],
-            names: [],
             tickets: [],
             disciplines: [],
-            testSteps: [],
 
             reporterName: '',
             reporterEmail: '',
@@ -66,16 +63,13 @@ class ProblemReport extends React.Component{
         this.setStartDate = this.setStartDate.bind(this);
         this.setEstimation = this.setEstimation.bind(this);
         this.setDescription = this.setDescription.bind(this);
-        this.fetchComponents = this.fetchComponents.bind(this);
+        // this.fetchComponents = this.fetchComponents.bind(this);
         this.fetchDisciplines = this.fetchDisciplines.bind(this);
         this.fetchTickets = this.fetchTickets.bind(this);
         this.fetchUsers = this.fetchUsers.bind(this);
-        this.resetComponents = this.resetComponents.bind(this);
-        this.resetDisciplines = this.resetDisciplines.bind(this);
-        this.resetTickets = this.resetTickets.bind(this);
-        this.resetUsers = this.resetUsers.bind(this);
         this.setTestStep = this.setTestStep.bind(this);
         this.setPriority = this.setPriority.bind(this);
+        this.resetState = this.resetState.bind(this);
         this.setExpectedBehaviour = this.setExpectedBehaviour.bind(this);
         this.setObservedBehaviour = this.setObservedBehaviour.bind(this);
         this.submit = this.submit.bind(this);
@@ -95,25 +89,12 @@ class ProblemReport extends React.Component{
     setExpectedBehaviour(value){this.setState({expectedBehaviour: value, expectedBehaviourError: ''});}
     setObservedBehaviour(value){this.setState({observedBehaviour: value, observedBehaviourError: ''});}
 
-    fetchUsers(){axios.get('/users/get-users').then(response => {this.setState({users: response.data, loadingUsers: false});});}
-    fetchComponents(){axios.get('/get-components').then(response => {this.setState({components: response.data, loadingComponents: false});});}
-    fetchTickets(){axios.get('/get-tickets').then(response => {this.setState({tickets: response.data, ticketNumber: response.data.count + 1, loadingTickets: false});});}
-    fetchDisciplines(){axios.get('/get-disciplines').then(response => {this.setState({disciplines: response.data, loadingDisciplines: false});});}
-
-    resetUsers(){this.setState({users: [], loadingUsers: true}, () => {console.log('reset')});}
-    resetComponents(){this.setState({components: [], loadingComponents: true});}
-    resetTickets(){this.setState({tickets: [], ticketNumber: 0, loadingTickets: true});}
-    resetDisciplines(){this.setState({disciplines: [], loadingDisciplines: true});}
+    fetchUsers(){if(this.state.users.length == 0){axios.get('/users/get-users').then(response => {this.setState({users: response.data, loadingUsers: false});});}}
+    fetchTickets(){if(this.state.tickets.length == 0){axios.get('/get-tickets').then(response => {this.setState({tickets: response.data, ticketNumber: response.data.count + 1, loadingTickets: false});});}}
+    fetchDisciplines(){if(this.state.disciplines.length == 0){axios.get('/get-disciplines').then(response => {this.setState({disciplines: response.data, loadingDisciplines: false});});}}
 
     resetState(){
-        this.props.resetName();
-        this.setState({users: [],
-            components: [],
-            names: [],
-            tickets: [],
-            disciplines: [],
-            testSteps: [],
-
+        this.setState({
             reporterName: '',
             reporterEmail: '',
             assigneeName: '',
@@ -139,12 +120,12 @@ class ProblemReport extends React.Component{
             componentError: '',
             dateError: '',
             estimateError: '',
-
-            loadingUsers: true,
-            loadingComponents: true,
-            loadingDisciplines: true,
-            loadingTickets: true,
-        });
+            reporterError: '',
+            assigneeError: '',
+            testStepError: '',
+            observedBehaviourError: '',
+            expectedBehaviourError: ''
+        }, this.props.resetName);
     }
 
     setEstimation(event){
@@ -192,36 +173,13 @@ class ProblemReport extends React.Component{
     render(){
         return(
             <div class="ticket">
-                {/* <div class="row mb-2 pt-3 pb-3">
-                    <div class="col-xl-3 pr-0 info mb-xl-0 mb-2">
-                        <div class="row d-flex h-100">
-                            <div class="warning ml-3 align-self-center" title="This is a mandatory field"><img src="./images/warning.svg" class="d-block mx-auto"/></div>
-                            <div class="col d-flex"><span class="align-self-center">Belongs to component</span></div>
-                        </div>
-                    </div>
-                    <div class="col-xl-6">
-                        <div class="row">
-                            <div class="col-xl-12">
-                                <DropdownSearch list={this.state.components} item={{value: this.state.componentName, key: this.state.componentId}} 
-                                    fetch={this.fetchComponents} onClick={this.setComponent} loading={this.state.loadingComponents} reset={this.resetComponents} placeholder="Component name"/>
-                            </div>
-                        {
-                            this.state.componentError != undefined && this.state.componentError.length > 0 ?
-                                <div class="col-xl-12"><span class="error">{this.state.componentError}</span></div>
-                                :   
-                                null
-                        }
-                        </div>
-                    </div>
-                </div> */}
+                <div class="row mb-2 pt-3 pb-3">
+                    <Reporter users={this.state.users} name={this.state.reporterName} id={this.state.reporterEmail} set={this.changeReporter}
+                        loading={this.state.loadingUsers} error={this.state.reporterError} fetch={this.fetchUsers}/>
 
-                <Users fetch={this.fetchUsers} users={this.state.users}>
-                    <User users={this.state.users} name={this.state.reporterName} id={this.state.reporterEmail} fetch={this.fetchUsers} set={this.changeReporter}
-                        loading={this.state.loadingUsers} error={this.state.reporterError} title="Reporter" key={1}/>
-
-                    <User users={this.state.users} name={this.state.assigneeName} id={this.state.assigneeEmail} fetch={this.fetchUsers} set={this.changeAssignee}
-                        loading={this.state.loadingUsers} error={this.state.assigneeError} title="Assignee" key={2}/>
-                </Users>
+                    <Assignee users={this.state.users} name={this.state.assigneeName} id={this.state.assigneeEmail} set={this.changeAssignee}
+                        loading={this.state.loadingUsers} error={this.state.assigneeError} fetch={this.fetchUsers}/>
+                </div> 
 
                 <Priority set={this.setPriority} item={this.state.priority}/>
 
@@ -229,24 +187,9 @@ class ProblemReport extends React.Component{
                 <TextArea set={this.setExpectedBehaviour} value={this.state.expectedBehaviour} placeholder={"Expected behaviour"} title={"Expected behaviour"} mandatory={true} error={this.state.expectedBehaviourError}/>
                 <TextArea set={this.setObservedBehaviour} value={this.state.observedBehaviour} placeholder={"Observed behaviour"} title={"Observed behaviour"} mandatory={true} error={this.state.observedBehaviourError}/>
 
-                {/* <div class="row mb-2 pt-3 pb-3">
-                    <div class="col-xl-3 pr-0 info mb-xl-0 mb-2">
-                        <div class="row d-flex h-100">
-                            <div class="warning ml-3 align-self-center" title="This is a mandatory field"><img src="./images/warning.svg" class="d-block mx-auto"/></div>
-                            <div class="col d-flex"><span class="align-self-center">Description</span></div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="form-group mb-0">
-                            <textarea type="text" class="form-control" onChange={this.setDescription} value={this.state.description} placeholder="Description"/>
-                        </div>
-                    </div>
-                </div> */}
-
                 <div class="row mb-2 pt-3 pb-3">
                     <div class="col-xl-3 pr-0 info mb-xl-0 mb-2">
                         <div class="row d-flex h-100">
-                            {/* <div class="warning ml-3 align-self-center" title="This is a mandatory field"><img src="./images/warning.svg" class="d-block mx-auto"/></div> */}
                             <div class="col d-flex"><span class="align-self-center">Blocks ticket</span></div>
                         </div>
                     </div>
@@ -257,7 +200,6 @@ class ProblemReport extends React.Component{
 
                     <div class="col-xl-3 pr-0 info mb-xl-0 mb-2">
                         <div class="row d-flex h-100">
-                            {/* <div class="warning ml-3 align-self-center" title="This is a mandatory field"><img src="./images/warning.svg" class="d-block mx-auto"/></div> */}
                             <div class="col d-flex"><span class="align-self-center">Blocked ticket</span></div>
                         </div>
                     </div>
@@ -321,7 +263,6 @@ class ProblemReport extends React.Component{
                 <div class="row mb-2 pt-3 pb-3">
                     <div class="col-xl-3 pr-0 info mb-xl-0 mb-2">
                         <div class="row d-flex h-100">
-                            {/* <div class="warning ml-3 align-self-center" title="This is a mandatory field"><img src="./images/warning.svg" class="d-block mx-auto"/></div> */}
                             <div class="col d-flex"><span class="align-self-center">Estimation</span></div>
                         </div>
                     </div>

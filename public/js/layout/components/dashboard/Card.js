@@ -3,8 +3,8 @@ import ReactDom from 'react-dom';
 import PropTypes from 'prop-types';
 import {DragSource} from 'react-dnd';
 import {ItemTypes} from './Constants.js';
-import ChangeModal from './ChangeModal';
-import InputField from './InputField';
+// import ChangeModal from './ChangeModal';
+// import InputField from './InputField';
 
 const cardSource = {
     beginDrag(props, monitor, component){
@@ -63,9 +63,9 @@ class Card extends React.Component{
                  
                     <div id="card-details" class="row" style={{display: this.state.toggled ? "none":""}}>
                         <div class="container">
-                            <InputField id={this.props.state.id} label="Assigned to" text={this.props.state.assignee} />
+                            {/* <InputField id={this.props.state.id} label="Assigned to" text={this.props.state.assignee} />
                             <InputField id={this.props.state.id} label="Reported by" text={this.props.state.reporter} />
-                            <InputField id={this.props.state.id} label="Description" text={this.props.state.description} />
+                            <InputField id={this.props.state.id} label="Description" text={this.props.state.description} /> */}
                         </div>
                     </div>
                     <div class="row">

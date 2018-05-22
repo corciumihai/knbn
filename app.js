@@ -407,23 +407,25 @@ router.post('/add/component', (request, response) => {
 router.post('/add/ticket', (request, response) => {
     let data = request.body;
     console.log(data);
+    data.lane = 0;
     // prepare to ackownledge existence of ticket
     //change name to id - somehow generate id based on project name
-    database.query('select count(*) as count from tickets where name = ?', data.name, (error, result, fields) => {
+    database.query('SELECT COUNT(*) AS count FROM tickets', (error, result, fields) => {
         if(error){
             //table does not exist
             if(error.code == 'ER_NO_SUCH_TABLE'){
                 //create table
                 //TODO: generate id based on ticket number since autoincrement is not viable
                 //TODO: verify which is more viable: INT or VARCHAR
-                database.query('CREATE TABLE tickets (id INT PRIMARY AUTO_INCREMENT KEY UNIQUE, component INT, \
+                database.query('CREATE TABLE tickets (id INT PRIMARY KEY UNIQUE, component INT, \
                     name VARCHAR(255)NOT NULL, description VARCHAR(2000), dueDate VARCHAR(255)NOT NULL, startDate VARCHAR(255)NOT NULL, discipline INT, \
-                    reporter VARCHAR(255)NOT NULL, assignee VARCHAR(255)NOT NULL, blocked INT, blocking INT, estimation INT)', (error, result, fields) => {
+                    reporter VARCHAR(255)NOT NULL, assignee VARCHAR(255)NOT NULL, blocked INT, blocking INT, estimation INT, lane INT)', (error, result, fields) => {
                     if(error){
                         console.log('Error when creating table \'tickets\' for the first time: ' + error.code);
                         return;
                     }
                     //insert into table
+                    data.id = 1;
                     database.query('INSERT INTO tickets SET ?', data, (error, result, fields) => {
                         if(error){
                             console.log('Database error when inserting ticket in database: ' + error);
@@ -440,13 +442,7 @@ router.post('/add/ticket', (request, response) => {
             console.log('Database error when checking existence of ticket: ' + error.code);
             return;
         }
-        //check ticket duplicate name - TBD: also duplicate ticket id
-        if(result[0].count > 0){
-            //send back negative response
-            response.statusCode = 400;
-            response.send({error: 'Ticket name already exists in the database'});
-            return;
-        }
+        data.id = result[0].count + 1;
         //insert into database 
         database.query('insert into tickets set ?', data, (error, result, fields) => {
             if(error){
@@ -466,59 +462,53 @@ router.post('/add/ticket', (request, response) => {
 router.post('/add/report', (request, response) => {
     let data = request.body;
     console.log(data);
-    // prepare to ackownledge existence of ticket
-    //change name to id - somehow generate id based on project name
-    database.query('SELECT COUNT(*) AS count FROM reports WHERE name = ?', data.name, (error, result, fields) => {
+    data.lane = 0;
+    // prepare to ackownledge existence
+    database.query('SELECT COUNT(*) AS count FROM reports', (error, result, fields) => {
         if(error){
             //table does not exist
             if(error.code == 'ER_NO_SUCH_TABLE'){
                 //create table
-                //TODO: generate id based on ticket number since autoincrement is not viable
-                //TODO: verify which is more viable: INT or VARCHAR
                 database.query('CREATE TABLE reports (id INT UNIQUE PRIMARY KEY, component INT, \
                     name VARCHAR(255)NOT NULL, description VARCHAR(2000), dueDate VARCHAR(255)NOT NULL, startDate VARCHAR(255)NOT NULL, discipline INT, \
-                    reporter VARCHAR(255)NOT NULL, assignee VARCHAR(255)NOT NULL, blocked INT, blocking INT, estimation INT, testSteps VARCHAR(255), \
-                    observedBehaviour VARCHAR(255), expectedBehaviour VARCHAR(255), priority INT)', (error, result, fields) => {
+                    reporter VARCHAR(255)NOT NULL, assignee VARCHAR(255)NOT NULL, blocked INT, blocking INT, estimation INT, steps VARCHAR(255), \
+                    observedBehaviour VARCHAR(255), expectedBehaviour VARCHAR(255), priority INT, lane INT)', (error, result, fields) => {
                     if(error){
                         console.log('Error when creating table \'reports\' for the first time: ' + error.code);
                         return;
                     }
-                    // //insert into table
-                    // database.query('INSERT INTO tickets SET ?', data, (error, result, fields) => {
-                    //     if(error){
-                    //         console.log('Database error when inserting ticket in database: ' + error);
-                    //         return;
-                    //     }
-                    //     //send back positive response
-                    //     response.statusCode = 200;
-                    //     response.send({ success: 'Ticket successfully added to database!' });
-                    //     console.log('Ticket successfully added to database!');
-                    //     return;
-                    // });
+                    //insert into table
+                    data.id = 1;
+                    database.query('INSERT INTO reports SET ?', data, (error, result, fields) => {
+                        if(error){
+                            console.log('Database error when inserting problem report in database: ' + error);
+                            return;
+                        }
+                        //send back positive response
+                        response.statusCode = 200;
+                        response.send({ success: 'Problem report successfully added to database!' });
+                        console.log('Problem report successfully added to database!');
+                        return;
+                    });
                 });
                 return;
             }
             console.log('Database error when checking existence of report: ' + error.code);
             return;
         }
-        //check ticket duplicate name - TBD: also duplicate ticket id
-        // if(result[0].count > 0){
-        //     //send back negative response
-        //     response.statusCode = 400;
-        //     response.send({error: 'Ticket name already exists in the database'});
-        //     return;
-        // }
         // //insert into database 
-        // database.query('insert into tickets set ?', data, (error, result, fields) => {
-        //     if(error){
-        //         console.log('Database error when inserting ticket in database: ' + error);
-        //         return;
-        //     }
-        //     //send back positive response
-        //     response.statusCode = 200;
-        //     response.send({ success: 'Ticket successfully added to database!' });
-        //     console.log('Ticket successfully added to database!');
-        // });
+        data.lane = 0;
+        data.id = result[0].count + 1;
+        database.query('INSERT INTO reports SET ?', data, (error, result, fields) => {
+            if(error){
+                console.log('Database error when inserting problem report in database: ' + error);
+                return;
+            }
+            //send back positive response
+            response.statusCode = 200;
+            response.send({ success: 'Problem report successfully added to database!' });
+            console.log('Problem reports successfully added to database!');
+        });
     });
 });
 //********************************************************************************************************************** */
@@ -564,7 +554,18 @@ router.get('/get-tickets', (request, response) => {
     database.query('SELECT id AS \'key\', name AS \'value\' FROM tickets', (error, result, fields) => {
         if(error){
             console.log('Database error when fetching releases: ' + error.code);
-            response.send({count: 0});
+            return;
+        }
+        response.send(result);
+    })
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ get tickets ]***************************************************** */
+router.get('/get-tickets-dash', (request, response) => {
+    database.query('SELECT * FROM tickets', (error, result, fields) => {
+        if(error){
+            console.log('Database error when fetching releases: ' + error.code);
             return;
         }
         response.send(result);
