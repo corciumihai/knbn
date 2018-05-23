@@ -3,48 +3,54 @@ import Ticket from './Ticket';
 import { DropTarget } from 'react-dnd';
 import { ItemTypes } from './Constants';
 import update from 'react-addons-update';
+import axios from 'axios';
 
 const target = {
     drop(props, monitor, component){
         //get ticket data
         let ticket = monitor.getItem();
 
-        if(ticket.lane != props.lane){
+        // check component id
+        if(ticket.lane != props.lane && ticket.component == props.comp){
             ticket.lane = props.lane;
 
             // change ticket lane id TBD
             props.push(ticket);
-            // component.sortTickets();
-        }
-        return {lane: props.lane};
+            component.changeTicketLane(ticket);
+            props.sort();
+
+            return {lane: props.lane, component: props.comp};
+        }  
     },
 
-    canDrop(props, monitor, component){return true;} // can change lanes 
+    canDrop(props, monitor, component){return true;} // can change lanes without limitation - TEMPORARY
 }
 
 @DropTarget(ItemTypes.TICKET, target, (connect, monitor) => ({connectDropTarget: connect.dropTarget(), isOver: monitor.isOver({shallow: true}), canDrop: monitor.canDrop()}))
 class Lane extends React.Component{
     constructor(props){
         super(props);
-
         this.state = {tickets: []}
 
-        // this.sortTickets = this.sortTickets.bind(this);
+        this.changeTicketLane = this.changeTicketLane.bind(this);
     }
 
-    // sortTickets(){
-    //     this.setState({tickets: update(this.state.tickets, {$set: this.state.tickets.sort((a, b) => {
-    //         if(a.id , b.id) return -1;
-    //         if(a.id > b.id) return 1;
-    //         return 0;
-    //     })})});
-    // }
+    changeTicketLane(ticket){
+        axios.post('/change-lane', {id: ticket.id, lane: ticket.lane})
+        .then(response => {
+            // console.log(response.status);
+        })
+        .catch(response => {
+            // console.log(response.status);
+        })
+        
+    }
 
     render(){
         const {isOver, canDrop} = this.props;
         const {connectDropTarget} = this.props;
         return connectDropTarget(
-            <div class={isOver ? "lane col is-over": "lane d-flex flex-column col"}> 
+            <div class={isOver ? "lane col is-over": "lane col"}> 
             {
                 this.props.items.length > 0 ?
                 this.props.items.map(ticket => {

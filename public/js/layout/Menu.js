@@ -30,9 +30,9 @@ class Menu extends React.Component{
                         <li class="nav-item active">
                             <a class="nav-link" href='/create-project'>Setup new project <span class="sr-only">(current)</span></a>
                         </li>
-                        <li class="nav-item">
+                        {/* <li class="nav-item">
                             <a class="nav-link" href='/create-project'>Boards <span class="sr-only">(current)</span></a>
-                        </li>
+                        </li> */}
                         <li class="nav-item">
                             <a class="nav-link" href="/create">Create</a>
                         </li>

@@ -2,29 +2,44 @@
     background-color: rgb(34, 35, 37);
 }
 
+.section-head{
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
 .section-head, .section-body{
     color: rgb(221, 221, 221);
     font-size: 14px;
-    background-color: rgb(51, 56, 65);
+    background-color: #333841;
 }
 
 .section-head{
     border-bottom: 1px solid rgb(67, 76, 92);
 }
 
-.lane{
-    border: 1px solid transparent;
-    flex: 1;
+.section-body{
+    border-bottom: 3px solid rgb(67, 76, 92);
 }
 
-.parent{
-    display: flex; /* new */
-    flex-direction: column; /* new */
+.border-r{
+    /* border-left: 1px solid gray; */
+    border-right: 1px solid rgb(74, 97, 116);
+}
+
+.border-L{
+    border-left: 3px solid rgb(71, 78, 92);
+}
+
+.border-R{
+    border-right: 3px solid rgb(71, 78, 92);
+}
+
+.lane{
+    border: 2px solid transparent;
 }
 
 .is-over{
-    /* background-color: rgb(86, 126, 104); */
-    border: 1px solid rgb(75, 163, 81);
+    border: 2px dashed rgb(116, 153, 55);
 }
 
 .column-name{
@@ -37,17 +52,78 @@
     border-top-right-radius: 4px; */
 }
 
-.column{
-    display: flex; /* new */
-    flex-direction:column;
+.field{
+    border-bottom: 2px solid rgb(68, 74, 87);;
+    /* background-color: rgb(81, 92, 114); */
 }
 
 .ticket{
-    text-align: center;
-    color: white;
-    border: 1px solid rgb(71, 78, 92);
-    background-color: rgb(71, 78, 92);
+    /* border: 1px solid rgb(71, 78, 92); */
+    background-color: rgb(68, 74, 87);
     cursor: move;
-    margin-top: 1px;
-    margin-bottom: 1px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+}
+
+.ticket-data{
+    /* color: white; */
+    /* border: 1px solid rgb(71, 78, 92); */
+    background-color: rgb(78, 85, 100);
+    border-radius: 4px;
+    /* cursor: move;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-radius: 4px; */
+}
+
+.ticket-id{
+    color: white;
+    font-size: 14px;
+}
+
+.ticket-id:focus, .ticket-id:hover{
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    text-decoration: underline;
+}
+
+.name{
+    font-size: 16px;
+    /* font-weight: bold; */
+    text-align: left;
+}
+
+.info{
+    font-size: 13px;
+    color: rgb(216, 216, 216);
+}
+
+.data{
+    font-size: 14px;
+    color: white;
+}
+
+.prio-1{
+    border-left: 6px solid rgb(99, 153, 86);
+}
+
+.prio-2{
+    border-left: 6px solid rgb(243, 171, 38);
+}
+
+.prio-3{
+    border-left: 6px solid rgb(241, 66, 53);
+}
+
+.toggle{
+    height: 26px;
+    width: 26px;
+    border-radius: 4px;
+    background-color: rgb(81, 92, 114);
+    cursor: pointer;
+}
+
+.reduce{
+    display: none;
 }

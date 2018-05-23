@@ -20,7 +20,7 @@ class CreateProject extends React.Component{
             disciplines: [],
             releases: [],
 
-            projectId:'',
+            shortName:'',
             releaseName: '',
             disciplineName: '',
 
@@ -30,14 +30,14 @@ class CreateProject extends React.Component{
             releaseEndDate: new Date(),
 
             projectNameErr: '',
-            projectIdErr: '',
+            shortNameErr: '',
             projectReleaseErr: '',
             projectDateErr: '',
             projectDisciplineErr: ''
         }
 
         this.setProjectName = this.setProjectName.bind(this);
-        this.setProjectId = this.setProjectId.bind(this);
+        this.setShortName = this.setShortName.bind(this);
         this.addDiscipline = this.addDiscipline.bind(this);
         this.removeDiscipline = this.removeDiscipline.bind(this);
         this.setReleaseName = this.setReleaseName.bind(this);
@@ -62,7 +62,7 @@ class CreateProject extends React.Component{
         let cookieData = projectCookie.get('project');
         if(cookieData == undefined){return;}
         if(cookieData.projectName != undefined && cookieData.projectName.length > 0){ this.setState({projectName: cookieData.projectName}); }
-        if(cookieData.projectId != undefined && cookieData.projectId.length > 0){ this.setState({projectId: cookieData.projectId}); }
+        if(cookieData.shortName != undefined && cookieData.shortName.length > 0){ this.setState({shortName: cookieData.shortName}); }
         if(cookieData.startDate != undefined && cookieData.startDate.length > 0){ this.setState({startDate: new Date(cookieData.startDate)}); }
         if(cookieData.endDate != undefined && cookieData.endDate.length > 0){ this.setState({endDate: new Date(cookieData.endDate)}); }
         if(cookieData.releases != undefined && cookieData.releases.length > 0){ this.setState({releases: cookieData.releases}); }
@@ -76,7 +76,7 @@ class CreateProject extends React.Component{
     componentDidUpdate(){ this.saveCookie(); }
 
     setProjectName(event){ this.setState({projectName: event.target.value, projectNameErr: ''}); }
-    setProjectId(event){ this.setState( {projectId: event.target.value, projectIdErr: ''}); }
+    setShortName(event){ this.setState( {shortName: event.target.value, shortNameErr: ''}); }
     setReleaseName(event){ this.setState( {releaseName: event.target.value, projectReleaseErr: ''}); }
     setDisciplineName(event){ this.setState( {disciplineName: event.target.value, projectDisciplineErr: ''}); }
 
@@ -107,13 +107,13 @@ class CreateProject extends React.Component{
     removeRelease(release){ this.setState({releases: update(this.state.releases, {$splice: [[this.state.releases.indexOf(release), 1]]})}); }
 
     resetState(){
-        this.setState({ projectName: '', disciplines: [], releases: [], projectId: '', releaseName: '', disciplineName: '', startDate: new Date(), endDate: new Date(),
-            releaseStartDate: new Date(), releaseEndDate: new Date(), projectNameErr: '', projectIdErr: '', projectReleaseErr: '', projectDateErr: '', projectDisciplineErr: '' });
+        this.setState({ projectName: '', disciplines: [], releases: [], shortName: '', releaseName: '', disciplineName: '', startDate: new Date(), endDate: new Date(),
+            releaseStartDate: new Date(), releaseEndDate: new Date(), projectNameErr: '', shortNameErr: '', projectReleaseErr: '', projectDateErr: '', projectDisciplineErr: '' });
     }
 
     submit(){
         if(this.state.projectName == undefined || this.state.projectName.length == 0){this.setState({projectNameErr: 'Empty project name'}); return;}
-        if(this.state.projectId == undefined || this.state.projectId.length == 0){this.setState({projectIdErr: 'Empty project id name'}); return;}
+        if(this.state.shortName == undefined || this.state.shortName.length == 0){this.setState({shortNameErr: 'Empty project id name'}); return;}
         if(this.state.startDate.getTime() > this.state.endDate.getTime()){this.setState({projectDateErr: 'Start development date cannot be higher than end development date'}); return;}
         if(this.state.releases == undefined || this.state.releases.length == 0){this.setState({projectReleaseErr: 'You must have at least one release'}); return;}
         if(this.state.disciplines == undefined || this.state.disciplines.length == 0){this.setState({projectDisciplineErr: 'You must have at least one discipline'}); return;}
@@ -121,11 +121,12 @@ class CreateProject extends React.Component{
         /* all state has enough info to be created */
         axios.post('/add/project', {
             projectName: this.state.projectName,
-            projectShortName: this.state.projectId,
+            shortName: this.state.shortName,
             startDate: this.state.startDate.getTime(),
             endDate: this.state.endDate.getTime(),
             releases: this.state.releases,
-            disciplines: this.state.disciplines
+            disciplines: this.state.disciplines,
+            shortName: this.state.shortName,
         }).then(response => {
             if(response.status == 200){
                 console.log('Project successfully added to database!');
@@ -183,20 +184,20 @@ class CreateProject extends React.Component{
                             <div class="col-xl-3 pr-0 info  mb-xl-0 mb-2">
                                 <div class="row d-flex h-100">
                                         <div class="warning ml-3 align-self-center" title="This is a mandatory field"><img src="./images/warning.svg" class="d-block mx-auto"/></div>
-                                        <div class="col d-flex"><span class="align-self-center">Project ID</span></div>
+                                        <div class="col d-flex"><span class="align-self-center">Tickets ID</span></div>
                                 </div>
                             </div>
                             <div class="col-xl-4 d-flex">
                                 <div class="row">
                                     <div class="col-xl-12">
                                         <input type="text" class={
-                                            this.state.projectIdErr.length > 0 ? "form-control bad" : "form-control"
+                                            this.state.shortNameErr.length > 0 ? "form-control bad" : "form-control"
                                         } placeholder="Enter project id" 
-                                            onChange={this.setProjectId} value={this.state.projectId}/>
+                                            onChange={this.setShortName} value={this.state.shortName}/>
                                     </div>
                                     {
-                                        this.state.projectIdErr.length > 0 ?
-                                        <div class="col-xl-12" class="error"><span class="px-3">{this.state.projectIdErr}</span></div>
+                                        this.state.shortNameErr.length > 0 ?
+                                        <div class="col-xl-12" class="error"><span class="px-3">{this.state.shortNameErr}</span></div>
                                         :
                                         null
                                     }

@@ -32,12 +32,12 @@ class Backlog extends React.Component{
 
     render(){
         return(
-            <div class="column col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12" >
+            <div class="column border-r col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12" >
                 <div class="row">
-                    <div class="column-name col mt-1">BACKLOG
+                    <div class="column-name col">BACKLOG
                     </div>
                 </div>
-                <div class="row parent">
+                <div class="row d-flex h-100">
                     <Lane items={this.state.tickets} lane={0} push={this.pushTicket} remove={this.removeTicket}/>
                 </div>
             </div>

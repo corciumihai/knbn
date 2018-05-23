@@ -75,7 +75,7 @@ class TicketSetup extends React.Component{
     setDueDate(date){this.setState({dueDate: date, dateError: ''});}
     setStartDate(date){this.setState({startDate: date, dateError: ''});}
     setDescription(value){this.setState({description: value});}
-    setPriority(prio){this.setState({priority: prio});}
+    setPriority(prio){this.setState({priority: prio}, () => {console.log(this.state.priority)});}
 
     fetchUsers(){axios.get('/users/get-users').then(response => {this.setState({users: response.data, loadingUsers: false});});}
     fetchComponents(){axios.get('/get-components').then(response => {this.setState({components: response.data, loadingComponents: false});});}
@@ -108,6 +108,7 @@ class TicketSetup extends React.Component{
             estimateError: '',
         }, this.props.resetName);
     }
+
     setEstimation(event){
         let value = event.target.value;
         if(value.length > 0){
@@ -136,6 +137,7 @@ class TicketSetup extends React.Component{
             discipline: this.state.disciplineId,
             description: this.state.description,
             estimation: this.state.estimation,
+            priority: this.state.priority,
         }).then(response => {
             if(response.status == 200){this.resetState()}
         }).catch(error => {
@@ -223,7 +225,7 @@ class TicketSetup extends React.Component{
                     <div class="col-xl-3 pr-0 info mb-xl-0 mb-2">
                         <div class="row d-flex h-100">
                             <div class="warning ml-3 align-self-center" title="This is a mandatory field"><img src="./images/warning.svg" class="d-block mx-auto"/></div>
-                            <div class="col d-flex"><span class="align-self-center">Start date</span></div>
+                            <div class="col d-flex"><span class="align-self-center">Creation date</span></div>
                         </div>
                     </div>
                     <div class="col-xl-9">
