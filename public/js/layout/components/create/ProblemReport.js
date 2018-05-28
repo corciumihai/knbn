@@ -174,18 +174,57 @@ class ProblemReport extends React.Component{
         return(
             <div class="ticket">
                 <div class="row mb-2 pt-3 pb-3">
-                    <Reporter users={this.state.users} name={this.state.reporterName} id={this.state.reporterEmail} set={this.changeReporter}
-                        loading={this.state.loadingUsers} error={this.state.reporterError} fetch={this.fetchUsers}/>
-
-                    <Assignee users={this.state.users} name={this.state.assigneeName} id={this.state.assigneeEmail} set={this.changeAssignee}
-                        loading={this.state.loadingUsers} error={this.state.assigneeError} fetch={this.fetchUsers}/>
+                    <div class="col-xl-6 my-2">
+                        <div class="row">
+                            <div class="col-xl-5 pr-0 info mb-xl-0 mb-2">
+                                <div class="row d-flex h-100">
+                                    <div class="warning ml-3 align-self-center" title="This is a mandatory field"><img src="./images/warning.svg" class="d-block mx-auto"/></div>
+                                    <div class="col d-flex"><span class="align-self-center">Reporter</span></div>
+                                </div>
+                            </div>
+                            <div class="col-xl-7 pb-xl-0 pb-2">
+                                <Reporter users={this.state.users} name={this.state.reporterName} id={this.state.reporterEmail} fetch={this.fetchUsers} set={this.changeReporter}
+                                    loading={this.state.loadingUsers} error={this.state.reporterError}/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 my-2">
+                        <div class="row">
+                            <div class="col-xl-5 pr-0 info mb-xl-0 mb-2">
+                                <div class="row d-flex h-100">
+                                    <div class="warning ml-3 align-self-center" title="This is a mandatory field"><img src="./images/warning.svg" class="d-block mx-auto"/></div>
+                                    <div class="col d-flex"><span class="align-self-center">Assignee</span></div>
+                                </div>
+                            </div>
+                            <div class="col-xl-7 pb-xl-0 pb-2">
+                                <Assignee users={this.state.users} name={this.state.assigneeName} id={this.state.assigneeEmail} fetch={this.fetchUsers} set={this.changeAssignee}
+                                    loading={this.state.loadingUsers} error={this.state.assigneeError}/>
+                            </div>
+                        </div>
+                        <div class="row"><div class="col"><a class="assign-to mt-1 pb-1 pl-2 pr-2" href="#">Assign to me</a></div></div>
+                    </div>
                 </div> 
 
                 <Priority set={this.setPriority} item={this.state.priority}/>
 
-                <TextArea set={this.setTestStep} value={this.state.testStep} placeholder={"Test step"} title={"Testing steps"} mandatory={true} error={this.state.testStepError}/>
-                <TextArea set={this.setExpectedBehaviour} value={this.state.expectedBehaviour} placeholder={"Expected behaviour"} title={"Expected behaviour"} mandatory={true} error={this.state.expectedBehaviourError}/>
-                <TextArea set={this.setObservedBehaviour} value={this.state.observedBehaviour} placeholder={"Observed behaviour"} title={"Observed behaviour"} mandatory={true} error={this.state.observedBehaviourError}/>
+                <div class="row mb-2 pt-3 pb-3">
+                    <div class="col-xl-3 pr-0 info mb-xl-0 mb-2">
+                        <span class="align-self-center">Testing steps</span>
+                    </div>
+                    <TextArea set={this.setTestStep} value={this.state.testStep} placeholder={"Test step"} error={this.state.testStepError}/>
+                </div>
+                <div class="row mb-2 pt-3 pb-3">
+                    <div class="col-xl-3 pr-0 info mb-xl-0 mb-2">
+                        <span class="align-self-center">Expected behaviour</span>
+                    </div>
+                    <TextArea set={this.setExpectedBehaviour} value={this.state.expectedBehaviour} placeholder={"Expected behaviour"} error={this.state.expectedBehaviourError}/>
+                </div>
+                <div class="row mb-2 pt-3 pb-3">
+                    <div class="col-xl-3 pr-0 info mb-xl-0 mb-2">
+                        <span class="align-self-center">Observed behaviour</span>
+                    </div>
+                    <TextArea set={this.setObservedBehaviour} value={this.state.observedBehaviour} placeholder={"Observed behaviour"} error={this.state.observedBehaviourError}/>
+                </div>
 
                 <div class="row mb-2 pt-3 pb-3">
                     <div class="col-xl-3 pr-0 info mb-xl-0 mb-2">

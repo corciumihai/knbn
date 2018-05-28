@@ -17,8 +17,8 @@ class TicketSetup extends React.Component{
             names: [],
             tickets: [],
             disciplines: [],
+            releases: [],
 
-            reporterName: '',
             reporterEmail: '',
             assigneeName: '',
             assigneeEmail: '',
@@ -36,10 +36,13 @@ class TicketSetup extends React.Component{
             estimation: 0,
             description: '',
             priority: 1,
-
+            releaseName: '',
+            releaseId: '',
+            
             componentError: '',
             dateError: '',
             estimateError: '',
+            releaseError: '',
 
             loadingUsers: true,
             loadingComponents: true,
@@ -60,10 +63,11 @@ class TicketSetup extends React.Component{
         this.fetchComponents = this.fetchComponents.bind(this);
         this.fetchDisciplines = this.fetchDisciplines.bind(this);
         this.fetchTickets = this.fetchTickets.bind(this);
-        this.fetchUsers = this.fetchUsers.bind(this);
         this.resetState = this.resetState.bind(this);
         this.setPriority = this.setPriority.bind(this);
         this.submit = this.submit.bind(this);
+        this.setRelease = this.setRelease.bind(this);
+        this.fetchReleases = this.fetchReleases.bind(this);
     }
 
     changeReporter(user){this.setState({reporterName: user.value, reporterEmail: user.key, reporterError: ''});}
@@ -76,11 +80,12 @@ class TicketSetup extends React.Component{
     setStartDate(date){this.setState({startDate: date, dateError: ''});}
     setDescription(value){this.setState({description: value});}
     setPriority(prio){this.setState({priority: prio}, () => {console.log(this.state.priority)});}
+    setRelease(release){this.setState({releaseName: release.value, releaseId: release.key});}
 
-    fetchUsers(){axios.get('/users/get-users').then(response => {this.setState({users: response.data, loadingUsers: false});});}
     fetchComponents(){axios.get('/get-components').then(response => {this.setState({components: response.data, loadingComponents: false});});}
     fetchTickets(){axios.get('/get-tickets').then(response => {this.setState({tickets: response.data, ticketNumber: response.data.count + 1, loadingTickets: false});});}
     fetchDisciplines(){axios.get('/get-disciplines').then(response => {this.setState({disciplines: response.data, loadingDisciplines: false});});}
+    fetchReleases(){axios.get('/get-releases').then(response => {this.setState({releases: response.data, loadingReleases: false});});}
 
     resetState(){
         this.setState({
@@ -137,7 +142,10 @@ class TicketSetup extends React.Component{
             discipline: this.state.disciplineId,
             description: this.state.description,
             estimation: this.state.estimation,
+            logged: 0,
             priority: this.state.priority,
+            rel: this.state.releaseId,
+            lane: 0,
         }).then(response => {
             if(response.status == 200){this.resetState()}
         }).catch(error => {
@@ -175,14 +183,42 @@ class TicketSetup extends React.Component{
                 <Priority set={this.setPriority} item={this.state.priority}/>
 
                 <div class="row mb-2 pt-3 pb-3">
-                    <Reporter users={this.state.users} name={this.state.reporterName} id={this.state.reporterEmail} fetch={this.fetchUsers} set={this.changeReporter}
-                        loading={this.state.loadingUsers} error={this.state.reporterError}/>
-
-                    <Assignee users={this.state.users} name={this.state.assigneeName} id={this.state.assigneeEmail} fetch={this.fetchUsers} set={this.changeAssignee}
-                        loading={this.state.loadingUsers} error={this.state.assigneeError}/>
+                    <div class="col-xl-6 my-2">
+                        <div class="row">
+                            <div class="col-xl-5 pr-0 info mb-xl-0 mb-2">
+                                <div class="row d-flex h-100">
+                                    <div class="warning ml-3 align-self-center" title="This is a mandatory field"><img src="./images/warning.svg" class="d-block mx-auto"/></div>
+                                    <div class="col d-flex"><span class="align-self-center">Reporter</span></div>
+                                </div>
+                            </div>
+                            <div class="col-xl-7 pb-xl-0 pb-2">
+                                <Reporter users={this.state.users} name={this.state.reporterName} id={this.state.reporterEmail} fetch={this.fetchUsers} set={this.changeReporter}
+                                    loading={this.state.loadingUsers} error={this.state.reporterError}/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 my-2">
+                        <div class="row">
+                            <div class="col-xl-5 pr-0 info mb-xl-0 mb-2">
+                                <div class="row d-flex h-100">
+                                    <div class="warning ml-3 align-self-center" title="This is a mandatory field"><img src="./images/warning.svg" class="d-block mx-auto"/></div>
+                                    <div class="col d-flex"><span class="align-self-center">Assignee</span></div>
+                                </div>
+                            </div>
+                            <div class="col-xl-7 pb-xl-0 pb-2">
+                                <Assignee users={this.state.users} name={this.state.assigneeName} id={this.state.assigneeEmail} fetch={this.fetchUsers} set={this.changeAssignee}
+                                    loading={this.state.loadingUsers} error={this.state.assigneeError}/>
+                            </div>
+                        </div>
+                        <div class="row"><div class="col"><a class="assign-to mt-1 pb-1 pl-2 pr-2" href="#">Assign to me</a></div></div>
+                    </div>
                 </div> 
-
-                <TextArea set={this.setDescription} value={this.state.description} placeholder={"Description"} title={"Description"} mandatory={false}/>
+                <div class="row mb-2 pt-3 pb-3">
+                    <div class="col-xl-3 pr-0 info mb-xl-0 mb-2">
+                        <span class="align-self-center">Description</span>
+                    </div>
+                    <TextArea set={this.setDescription} value={this.state.description} placeholder={"Description"}/>
+                </div>
 
                 <div class="row mb-2 pt-3 pb-3">
                     <div class="col-xl-3 pr-0 info mb-xl-0 mb-2">
@@ -211,13 +247,32 @@ class TicketSetup extends React.Component{
                 <div class="row mb-2 pt-3 pb-3">
                     <div class="col-xl-3 pr-0 info mb-xl-0 mb-2">
                         <div class="row d-flex h-100">
-                            <div class="warning ml-3 align-self-center" title="This is a mandatory field"><img src="./images/warning.svg" class="d-block mx-auto"/></div>
+                            {/* <div class="warning ml-3 align-self-center" title="This is a mandatory field"><img src="./images/warning.svg" class="d-block mx-auto"/></div> */}
                             <div class="col d-flex"><span class="align-self-center">Discipline</span></div>
                         </div>
                     </div>
                     <div class="col-xl-6">
                         <DropdownSearch list={this.state.disciplines} item={{value: this.state.disciplineName, key: this.state.disciplineId}} 
                             fetch={this.fetchDisciplines} onClick={this.setDiscipline} reset={this.resetDisciplines} placeholder="Discipline" />
+                    </div>
+                </div>
+
+                <div class="row pb-3 pt-3 mb-2">
+                    <div class="col-xl-3 pr-0 info mb-xl-0 mb-2">
+                        <div class="row d-flex h-100">
+                            {/* <div class="warning ml-3 align-self-center" title="This is a mandatory field"><img src="./images/warning.svg" class="d-block mx-auto"/></div> */}
+                            <div class="col d-flex"><span class="align-self-center">Release</span></div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6">
+                        <DropdownSearch list={this.state.releases} item={{value: this.state.releaseName, key: this.state.releaseId}} onClick={this.setRelease} placeholder="Release" 
+                            fetch={this.fetchReleases}/>
+                        {
+                            this.state.releaseError != undefined && this.state.releaseError.length > 0 ?
+                            <div class="col-xl-12"><span class="error row">{this.state.releaseError}</span></div>
+                            :   
+                            null
+                        }
                     </div>
                 </div>
 

@@ -1,38 +1,32 @@
 import React from 'react';
 import DropdownSearch from './DropdownSearch';
+import axios from 'axios';
 
 class Assignee extends React.Component{
     constructor(props){
         super(props);
+
+        this.state = {users: [], loadingUsers: true}
+    }
+
+    componentWillMount(){
+        axios.get('/users/get-users').then(response => {this.setState({users: response.data, loadingUsers: false});});
     }
 
     render(){
         return(
-            <div class="col-xl-6">
-                <div class="row">
-                    <div class="col-xl-5 pr-0 info mb-xl-0 mb-2">
-                        <div class="row d-flex h-100">
-                            <div class="warning ml-3 align-self-center" title="This is a mandatory field"><img src="./images/warning.svg" class="d-block mx-auto"/></div>
-                            <div class="col d-flex"><span class="align-self-center">Assignee</span></div>
-                        </div>
-                    </div>
-                    <div class="col-xl-7 pb-xl-0 pb-2">
-                        <div class="row">
-                            <div class="col-xl-12">
-                                <DropdownSearch list={this.props.users} item={{value: this.props.name, key: this.props.id}} 
-                                    fetch={this.props.fetch} onClick={this.props.set} loading={this.props.loading} placeholder="Assignee"/>
-                            </div>
-                        {
-                            this.props.error != undefined && this.props.error.length > 0 ?
-                                <div class="col-xl-12"><span class="error">{this.props.error}</span></div>
-                                :   
-                                null
-                        }
-                        </div>
-                    </div>
-                    <div class="col"><a class="assign-to mt-1 pb-1 pl-2 pr-2" href="#">Assign to me</a></div>
+            <div class="row">
+                <div class="col-xl-12">
+                    <DropdownSearch list={this.state.users} item={{value: this.props.name, key: this.props.id}} 
+                        onClick={this.props.set} loading={this.state.loading} placeholder="Assignee"/>
                 </div>
-            </div>
+            {
+                this.props.error != undefined && this.props.error.length > 0 ?
+                    <div class="col-xl-12"><span class="error">{this.props.error}</span></div>
+                    :   
+                    null
+            }
+            </div>          
         );
     }
 }

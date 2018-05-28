@@ -19,6 +19,8 @@
 
 .section-body{
     border-bottom: 3px solid rgb(67, 76, 92);
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
 }
 
 .border-r{
@@ -39,7 +41,7 @@
 }
 
 .is-over{
-    border: 2px dashed rgb(116, 153, 55);
+    border: 2px solid rgb(116, 153, 55);
 }
 
 .column-name{
@@ -57,24 +59,32 @@
     /* background-color: rgb(81, 92, 114); */
 }
 
+.ticket-box{
+    border: 2px solid transparent;
+    /* border-radius: 4px; */
+}
+
+.ticket-box:hover{
+    border: 2px solid rgba(135, 210, 253, 0.281);
+}
+
 .ticket{
-    /* border: 1px solid rgb(71, 78, 92); */
+    border: 1px solid transparent;
     background-color: rgb(68, 74, 87);
     cursor: move;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    border-radius: 4px;
+    /* margin-top: 5px;
+    margin-bottom: 5px; */
 }
 
 .ticket-data{
     /* color: white; */
     /* border: 1px solid rgb(71, 78, 92); */
     background-color: rgb(78, 85, 100);
-    border-radius: 4px;
+    /* border-radius: 4px; */
     /* cursor: move;
     margin-top: 5px;
-    margin-bottom: 5px;
-    border-radius: 4px; */
+    margin-bottom: 5px;*/
+    border-radius: 4px; 
 }
 
 .ticket-id{
@@ -104,16 +114,21 @@
     color: white;
 }
 
+.prio-1, .prio-2, .prio-3{
+    width: 6px;
+}
+
 .prio-1{
-    border-left: 6px solid rgb(99, 153, 86);
+    background-color: rgb(99, 153, 86);
+    
 }
 
 .prio-2{
-    border-left: 6px solid rgb(243, 171, 38);
+    background-color: rgb(243, 171, 38);
 }
 
 .prio-3{
-    border-left: 6px solid rgb(241, 66, 53);
+    background-color: rgb(241, 66, 53);
 }
 
 .toggle{
@@ -125,5 +140,28 @@
 }
 
 .reduce{
+    display: none;
+}
+
+.tool{
+    height: 24px;
+    width: 24px;
+    background-color: rgb(184, 70, 85);
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 4px;
+}
+
+.tool:hover{
+    border: 2px solid rgb(194, 112, 19);
+}
+
+.close{
+    cursor: pointer;
+    /* border: 2px solid rgb(88, 129, 141); */
+    border-radius: 4px;
+} 
+
+.hide{
     display: none;
 }

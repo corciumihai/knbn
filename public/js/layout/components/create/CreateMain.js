@@ -12,7 +12,7 @@ class CreateMain extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            type: 4,
+            type: 2,
             name: '',
             error: '',
         }

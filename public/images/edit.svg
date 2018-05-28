@@ -1,11 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" width="12" height="12" viewBox="0 0 12 12">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #393948;
-        fill-rule: evenodd;
-      }
-    </style>
-  </defs>
-  <path d="M10.364,8.000 C9.460,8.000 8.727,7.328 8.727,6.500 C8.727,5.672 9.460,5.000 10.364,5.000 C11.267,5.000 12.000,5.672 12.000,6.500 C12.000,7.328 11.267,8.000 10.364,8.000 ZM6.000,8.000 C5.096,8.000 4.364,7.328 4.364,6.500 C4.364,5.672 5.096,5.000 6.000,5.000 C6.904,5.000 7.636,5.672 7.636,6.500 C7.636,7.328 6.904,8.000 6.000,8.000 ZM1.636,8.000 C0.733,8.000 -0.000,7.328 -0.000,6.500 C-0.000,5.672 0.733,5.000 1.636,5.000 C2.540,5.000 3.273,5.672 3.273,6.500 C3.273,7.328 2.540,8.000 1.636,8.000 Z" class="cls-1"/>
-</svg>
+<?xml version="1.0" standalone="no"?><!-- Generator: Gravit.io --><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="isolation:isolate" viewBox="0 0 20 20" width="20" height="20"><defs><clipPath id="_clipPath_QSwUvRbf4o4ktxZtifMFqvTcI82pejhc"><rect width="20" height="20"/></clipPath></defs><g clip-path="url(#_clipPath_QSwUvRbf4o4ktxZtifMFqvTcI82pejhc)"><rect width="20" height="20" style="fill:rgb(38,38,38,0)"/><g style="isolation:isolate" id="Layer 0"><path d=" M 6.481 15.627 L 6.284 14.519 L 6.086 13.411 L 7.35 14.159 L 8.614 14.907 L 7.548 15.267 L 6.481 15.627 Z  M 12.425 3.289 L 14.405 4.461 C 14.566 4.556 14.619 4.764 14.524 4.926 L 8.614 14.907 L 6.086 13.411 L 12.017 3.393 C 12.101 3.252 12.284 3.205 12.425 3.289 Z " fill="rgb(255,255,255)"/></g></g></svg>

@@ -222,6 +222,8 @@ router.get('/create', (request, response) => {
     response.render(path.resolve(__dirname, 'views', 'create.pug'));
 });
 
+router.get('/view/ticket/:id', (request, response) => {response.render(path.resolve(__dirname, 'views', 'view.pug')); });
+
 /* *******************************************< add project >*********************************************************** */
 router.post('/add/project', (request, response) => {
     let data = request.body;
@@ -413,7 +415,7 @@ router.post('/add/ticket', (request, response) => {
                 //TODO: verify which is more viable: INT or VARCHAR
                 database.query('CREATE TABLE tickets (id INT PRIMARY KEY UNIQUE, component INT, \
                     name VARCHAR(255)NOT NULL, description VARCHAR(2000), dueDate VARCHAR(255)NOT NULL, startDate VARCHAR(255)NOT NULL, discipline INT, \
-                    reporter VARCHAR(255)NOT NULL, assignee VARCHAR(255)NOT NULL, blocked INT, blocking INT, estimation INT, lane INT, priority INT)', (error, result, fields) => {
+                    reporter VARCHAR(255)NOT NULL, assignee VARCHAR(255)NOT NULL, blocked INT, blocking INT, estimation INT, logged INT, lane INT, priority INT, rel INT)', (error, result, fields) => {
                     if(error){
                         console.log('Error when creating table \'tickets\' for the first time: ' + error.code);
                         return;
@@ -429,9 +431,9 @@ router.post('/add/ticket', (request, response) => {
                         response.statusCode = 200;
                         response.send({ success: 'Ticket successfully added to database!' });
                         console.log('Ticket successfully added to database!');
-                        return;
                     });
                 });
+                return;
             }
             console.log('Database error when checking existence of ticket: ' + error.code);
             return;
@@ -555,10 +557,52 @@ router.get('/get-tickets', (request, response) => {
 });
 /* ********************************************************************************************************************* */
 
+/* *************************************************[ get ticket ]****************************************************** */
+router.get('/get-ticket/:id', (request, response) => {
+    let fullData;
+    
+    database.query('SELECT * FROM tickets WHERE id = ?', request.params.id, (error, result, fields) => {
+        if(error){
+            console.log('Database error when fetching single ticket: ' + error.code);
+            return;
+        }
+
+        let ticket = result[0];
+        database.query('SELECT id, name, project FROM components WHERE id = ?', ticket.component, (error, result, fields) => {
+            if(error){ return; }
+            let component = result[0];
+
+            database.query('SELECT id, shortName, name FROM projects WHERE id = ?', component.project, (error, result, fields) => {
+                if(error){ return; }
+                let project = result[0];
+                // console.log(project);
+
+                database.query('SELECT id, name FROM disciplines WHERE id = ?', ticket.discipline, (error, result, fields) => {
+                    if(error){ return; }
+                    let discipline = result[0];
+
+                    database.query('SELECT id, name FROM releases WHERE id = ?', ticket.rel, (error, result, fields) => {
+                        if(error){ return; }
+                        let rel = result[0];
+    
+                        response.send({ticket: ticket, project: project, release: rel, component: component, discipline: discipline});
+                        
+                    });
+
+                })
+            });
+            
+        });
+
+        // response.send({ticket: ticket});
+        // console.log(project);
+    });
+});
+/* ********************************************************************************************************************* */
+
 /* *************************************************[ get tickets dash ]************************************************ */
 router.get('/get-tickets-dash', (request, response) => {
-    database.query('SELECT * from tickets where tickets.lane = ? and tickets.component = ?', 
-    [request.query.lane, request.query.component], (error, result, fields) => {
+    database.query('SELECT * from tickets where component = ?', [request.query.component], (error, result, fields) => {
         if(error){
             console.log('Database error when fetching dashboard: ' + error.code);
             return;
@@ -616,8 +660,21 @@ router.get('/conv-user', (request, response) => {
     });
 });
 /* ********************************************************************************************************************* */
-
-
+/* *************************************************[ update ticket name ]********************************************** */
+router.post('/update/ticket', (request, response) => {
+    let data = request.body;
+    database.query('UPDATE tickets SET name = ? WHERE id = ?', [data.name, data.id], request.query.user, (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            // response.send({success: 0});
+            console.log('Database error at components: ' + error);
+            return;
+        }
+        response.statusCode == 200;
+        response.send();
+    });
+});
+/* ********************************************************************************************************************* */
 
 app.use(express.static(__dirname + '/routes'));
 app.use(router);

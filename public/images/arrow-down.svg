@@ -1,11 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" viewBox="0 0 30 30">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #393948;
-        fill-rule: evenodd;
-      }
-    </style>
-  </defs>
-  <path d="M21.588,13.865 L16.151,18.586 C16.137,18.598 16.118,18.602 16.103,18.614 C16.058,18.657 16.031,18.709 15.975,18.747 C15.763,18.891 15.506,18.946 15.246,18.957 C15.175,18.965 15.107,18.968 15.036,18.968 C15.024,18.967 15.014,18.967 15.002,18.965 C14.683,18.960 14.367,18.888 14.116,18.712 C13.906,18.566 13.795,18.375 13.732,18.174 L9.327,13.773 C8.847,13.293 8.903,12.602 9.452,12.229 C10.001,11.856 10.836,11.943 11.317,12.423 L15.107,16.210 L19.494,12.401 C20.040,11.927 20.952,11.871 21.530,12.275 C22.108,12.679 22.134,13.391 21.588,13.865 Z" class="cls-1"/>
-</svg>
+<?xml version="1.0" standalone="no"?><!-- Generator: Gravit.io --><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="isolation:isolate" viewBox="0 0 20 20" width="20" height="20"><defs><clipPath id="_clipPath_3MoLc0hGtditXkIybTKvR21ViaTWpxZx"><rect width="20" height="20"/></clipPath></defs><g clip-path="url(#_clipPath_3MoLc0hGtditXkIybTKvR21ViaTWpxZx)"><rect width="20" height="20" style="fill:rgb(45,44,44,0)"/><g style="isolation:isolate" id="Layer 0"><path d=" M 10 11.544 L 14.67 6.874 C 14.933 6.611 15.36 6.611 15.623 6.874 L 15.7 6.95 C 15.963 7.213 15.963 7.64 15.7 7.903 L 10.553 13.05 L 10.477 13.126 C 10.214 13.389 9.786 13.389 9.523 13.126 L 9.447 13.05 L 4.3 7.903 C 4.037 7.64 4.037 7.213 4.3 6.95 L 4.377 6.874 C 4.64 6.611 5.067 6.611 5.33 6.874 L 10 11.544 Z " fill="rgb(255,255,255)"/></g></g></svg>

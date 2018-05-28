@@ -24,7 +24,6 @@ class Column extends React.Component{
         axios.get('/get-tickets-dash', {params: {lane: this.props.lane, component: this.props.compId}}).then(response => {
             // tickets = response.data;
             this.setState( {tickets: response.data, loading: false});
-            
         });
     }
 
@@ -33,7 +32,7 @@ class Column extends React.Component{
     }
 
     pushTicket(ticket){
-        this.setState({tickets: update(this.state.tickets, {$push: [ticket]})});
+        this.setState({tickets: update(this.state.tickets, {$push: [ticket]})}, ()=>{console.log(this.state.tickets)});
     }
 
     removeTicket(ticket){
@@ -47,8 +46,10 @@ class Column extends React.Component{
                     <div class="column-name col">{this.props.name}
                     </div>
                 </div>
-                <div class="row">
-                    <Lane items={this.state.tickets} lane={this.props.lane} comp={this.props.compId} push={this.pushTicket} remove={this.removeTicket} sort={this.sortTickets}/>
+                <div class="row h-100">
+                    <Lane items={this.state.tickets} lane={this.props.lane} 
+                        comp={this.props.compId} push={this.pushTicket} 
+                        remove={this.removeTicket} sort={this.sortTickets} loading={this.state.loading} changeLane={this.props.changeLane}/>
                 </div>
             </div>
         );

@@ -5,13 +5,15 @@ var webpack = require('webpack');
 module.exports = {
   context: __dirname,
   devtool: debug ? "inline-sourcemap" : null,
-  entry: {login: "./public/js/layout/Login.js",
-          register: "./public/js/layout/Register.js",
-          dashboard: "./public/js/layout/Dashboard.js",
-          menu: "./public/js/layout/Menu.js",
-          create_project: "./public/js/layout/CreateProject.js",
-          create_main: "./public/js/layout/components/create/CreateMain.js",
-        },
+  entry: {
+    login: "./public/js/layout/Login.js",
+    register: "./public/js/layout/Register.js",
+    dashboard: "./public/js/layout/Dashboard.js",
+    menu: "./public/js/layout/Menu.js",
+    create_project: "./public/js/layout/CreateProject.js",
+    create_main: "./public/js/layout/components/create/CreateMain.js",
+    router: "./public/js/layout/Router.js"
+  },
   module:{
     loaders: [
       {

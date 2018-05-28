@@ -9,16 +9,12 @@ const target = {
     drop(props, monitor, component){
         //get ticket data
         let ticket = monitor.getItem();
-
         // check component id
         if(ticket.lane != props.lane && ticket.component == props.comp){
             ticket.lane = props.lane;
-
             // change ticket lane id TBD
             props.push(ticket);
-            component.changeTicketLane(ticket);
-            props.sort();
-
+            props.changeLaneF(ticket);
             return {lane: props.lane, component: props.comp};
         }  
     },
@@ -30,20 +26,6 @@ const target = {
 class Lane extends React.Component{
     constructor(props){
         super(props);
-        this.state = {tickets: []}
-
-        this.changeTicketLane = this.changeTicketLane.bind(this);
-    }
-
-    changeTicketLane(ticket){
-        axios.post('/change-lane', {id: ticket.id, lane: ticket.lane})
-        .then(response => {
-            // console.log(response.status);
-        })
-        .catch(response => {
-            // console.log(response.status);
-        })
-        
     }
 
     render(){
@@ -52,12 +34,14 @@ class Lane extends React.Component{
         return connectDropTarget(
             <div class={isOver ? "lane col is-over": "lane col"}> 
             {
-                this.props.items.length > 0 ?
-                this.props.items.map(ticket => {
-                    return <Ticket data={ticket} key={ticket.id} remove={this.props.remove} lane={this.props.lane}/>
-                })
+                this.props.loading ?
+                    <img src="./images/loading.gif" class="d-block mx-auto"/>
                 :
-                null
+                    this.props.items.map(ticket => {
+                        return <Ticket data={ticket} key={ticket.id} remove={this.props.remove} lane={this.props.lane} changeLaneF={this.props.changeLaneF} changeLaneB={this.props.changeLaneB}
+                            edit={this.props.edit}/>
+                    })
+                    
             }
             </div>
         );

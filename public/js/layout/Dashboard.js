@@ -2,8 +2,10 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import Component from './components/dashboard/Component';
 import axios from 'axios';
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContext } from 'react-dnd';
 
-// @DragDropContext(HTML5Backend)
+@DragDropContext(HTML5Backend)
 class Dashboard extends React.Component{
     constructor(props){
         super(props);
@@ -16,20 +18,24 @@ class Dashboard extends React.Component{
 
     componentWillMount(){
         axios.get('/components').then(response => {
-            this.setState({components: response.data, loading: false})
+            this.setState({components: response.data})
         });
     }
 
+    componentDidMount(){
+        this.setState({loading:false});
+    }
+
     render(){
-        
         return(
             <div class="container-fluid">
-            {/* component */}
-                {/* <Component name={"Component 1"}/> */}
-            {/* ******************************* */}
+            {/* components */}
             {
+                this.state.loading ? 
+                <img src="./images/bigloading.gif" class="d-block mx-auto"/>
+                :
                 this.state.components.map(comp => {
-                    return <Component key={comp.id} name={comp.name} id={comp.id}/>
+                    return <Component key={comp.id} name={comp.name} id={comp.id} edit={this.editTicket}/>
                 })
             }
             </div>
