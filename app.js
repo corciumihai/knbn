@@ -585,7 +585,17 @@ router.get('/get-ticket/:id', (request, response) => {
                         if(error){ return; }
                         let rel = result[0];
     
-                        response.send({ticket: ticket, project: project, release: rel, component: component, discipline: discipline});
+                        database.query('SELECT email, name from users where email = ?', ticket.reporter, (error, result, fields) => {
+                            if(error){ return; }
+                            let reporter = result[0];
+
+                            database.query('SELECT email, name from users where email = ?', ticket.assignee, (error, result, fields) => {
+                                if(error){ return; }
+                                let assignee = result[0];
+    
+                                response.send({ticket: ticket, project: project, release: rel, component: component, discipline: discipline, reporter: reporter, assignee: assignee});
+                            })
+                        })
                         
                     });
 
