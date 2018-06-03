@@ -30,7 +30,7 @@ class Estimation extends React.Component{
         return(
             <div class="row">
                 <div class="edit-field ml-1" title="Estimation"><img src="/images/estimation.svg" class="d-block mx-auto"/></div>
-                <div class="col">
+                <div class="col text-truncate">
                     <input type="text" class="form-control py-0 px-0 form-small-font" onChange={this.set} value={this.state.tempEstimation} onKeyPress={this.setOnKeyPress}/>
                 </div>
                 <div class="edit-field mr-1" onClick={bound} title="Save"><img src="/images/save.svg" class="d-block mx-auto"/></div>

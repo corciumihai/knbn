@@ -130,6 +130,8 @@ class TicketSetup extends React.Component{
         if(this.state.assigneeEmail == undefined || this.state.assigneeEmail.length == 0){this.setState({assigneeError: 'Please select an assignee'}); return;}
         if(this.state.startDate.getTime() > this.state.dueDate.getTime()){this.setState({dateError: 'Start date cannot be higher than due date'}); return;}
 
+        let date = new Date().getTime();
+
         axios.post('/add/ticket', {
             name: this.props.name,
             reporter: this.state.reporterEmail,
@@ -146,6 +148,8 @@ class TicketSetup extends React.Component{
             priority: this.state.priority,
             rel: this.state.releaseId,
             lane: 0,
+            lastModified: date,
+            created: date,
         }).then(response => {
             if(response.status == 200){this.resetState()}
         }).catch(error => {

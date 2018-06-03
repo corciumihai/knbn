@@ -39,13 +39,11 @@ class SetDate extends React.Component{
     incrementDay(){
         let date = new Date(this.state.year, this.state.month, this.state.day + 1);
         this.setState({day: date.getDate(), month: date.getMonth(), year: date.getFullYear()});
-        
     }
 
     decrementDay(){
         let date = new Date(this.state.year, this.state.month, this.state.day - 1);
         this.setState({day: date.getDate(), month: date.getMonth(), year: date.getFullYear()});
-        
     }
 
     incrementMonth(){
@@ -122,6 +120,7 @@ class SetDate extends React.Component{
                         </div>
                     </div>
                     <div class="col-xl-3 col-3 edit-field d-flex" onClick={bound}><img src="/images/save.svg" class="d-block mx-auto"/></div>
+                    {this.props.error.length > 0 ? <div class="col-xl-12 error-input"><span class="error">{this.props.error}</span></div> : null}
                 </div>
             </div>
                         

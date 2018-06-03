@@ -415,7 +415,10 @@ router.post('/add/ticket', (request, response) => {
                 //TODO: verify which is more viable: INT or VARCHAR
                 database.query('CREATE TABLE tickets (id INT PRIMARY KEY UNIQUE, component INT, \
                     name VARCHAR(255)NOT NULL, description VARCHAR(2000), dueDate VARCHAR(255)NOT NULL, startDate VARCHAR(255)NOT NULL, discipline INT, \
-                    reporter VARCHAR(255)NOT NULL, assignee VARCHAR(255)NOT NULL, blocked INT, blocking INT, estimation INT, logged INT, lane INT, priority INT, rel INT)', (error, result, fields) => {
+                    reporter VARCHAR(255)NOT NULL, assignee VARCHAR(255)NOT NULL, blocked INT UNSIGNED, blocking INT UNSIGNED, estimation INT UNSIGNED NOT NULL, logged INT UNSIGNED NOT NULL, lane INT UNSIGNED NOT NULL, \
+                    priority INT UNSIGNED, \
+                    rel INT UNSIGNED, \
+                    lastModified BIGINT UNSIGNED NOT NULL, created BIGINT UNSIGNED NOT NULL)', (error, result, fields) => {
                     if(error){
                         console.log('Error when creating table \'tickets\' for the first time: ' + error.code);
                         return;
@@ -509,6 +512,104 @@ router.post('/add/report', (request, response) => {
 });
 //********************************************************************************************************************** */
 
+/* *******************************************[ add comment ]*********************************************************** */
+router.post('/add/comment', (request, response) => {
+    let data = request.body;
+    delete data.id;
+    // prepare to ackownledge existence
+    database.query('INSERT INTO comments SET ?', data, (error, result, fields) => {
+        if(error){
+            //table does not exist
+            if(error.code == 'ER_NO_SUCH_TABLE'){
+                //create table
+                database.query('CREATE TABLE comments (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, val VARCHAR(1000) NOT NULL,\
+                    ticketId INT NOT NULL, author INT NOT NULL, created BIGINT NOT NULL, lastModified BIGINT NOT NULL) AUTO_INCREMENT = 0;', (error, result, fields) => {
+                    if(error){
+                        console.log('Error when creating table \'comments\' for the first time: ' + error.code);
+                        return;
+                    }
+                    //insert into table
+                    database.query('INSERT INTO comments SET ?', data, (error, result, fields) => {
+                        if(error){
+                            console.log('Database error when inserting comment in database: ' + error.code);
+                            return;
+                        }
+                        //send back positive response
+                        response.statusCode = 200;
+                        response.send({ success: 'Comment successfully added to database!' });
+                        console.log('Comment successfully added to database!');
+                        return;
+                    });
+                });
+                return;
+            }
+            console.log('Database error when checking existence of comment: ' + error.code);
+        }
+        response.statusCode = 200;
+        response.send({ success: 'Comment successfully added to database!' });
+        console.log('Comment successfully added to database!');
+        return;
+    });
+});
+//********************************************************************************************************************** */
+
+/* *******************************************[ add worklog ]*********************************************************** */
+router.post('/add/worklog', (request, response) => {
+    let data = request.body;
+    delete data.id;
+    // prepare to ackownledge existence
+    database.query('INSERT INTO worklogs SET ?', data, (error, result, fields) => {
+        if(error){
+            //table does not exist
+            if(error.code == 'ER_NO_SUCH_TABLE'){
+                //create table
+                database.query('CREATE TABLE worklogs (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, val VARCHAR(1000) NOT NULL,\
+                    ticketId INT NOT NULL, author INT NOT NULL, created BIGINT NOT NULL, lastModified BIGINT NOT NULL, hours INT NOT NULL) AUTO_INCREMENT = 0;', (error, result, fields) => {
+                    if(error){
+                        console.log('Error when creating table \'worklogs\' for the first time: ' + error.code);
+                        return;
+                    }
+                    //insert into table
+                    database.query('INSERT INTO worklogs SET ?', data, (error, result, fields) => {
+                        if(error){
+                            console.log('Database error when inserting worklog in database: ' + error.code);
+                            return;
+                        }
+                        //send back positive response
+                        database.query('UPDATE tickets SET logged = logged + ? WHERE id = ?', [data.hours, data.ticketId], (error, result, fields) => {
+                            if(error){
+                                console.log('Error when logging hours in ticket ' + error.code);
+                                return;
+                            }
+                            response.statusCode = 200;
+                            response.send({ success: 'Worklog successfully added to database!' });
+                            console.log('Worklog successfully added to database!');
+                            return;
+                        }); 
+                        return;
+                    });
+                });
+                return;
+            }
+            console.log('Database error when checking existence of worklog: ' + error.code);
+
+        }
+
+        database.query('UPDATE tickets SET logged = logged + ? WHERE id = ?', [data.hours, data.ticketId], (error, result, fields) => {
+            if(error){
+                console.log('Error when logging hours in ticket ' + error.code);
+                return;
+            }
+            response.statusCode = 200;
+            response.send({ success: 'Worklog successfully added to database!' });
+            console.log('Worklog successfully added to database!');
+            return;
+        }); 
+        return;
+    });
+});
+//********************************************************************************************************************** */
+
 /* *************************************************[ get releases ]**************************************************** */
 router.get('/get-releases', (request, response) => {
     database.query('SELECT id AS \'key\', name AS \'value\' FROM releases', (error, result, fields) => {
@@ -592,8 +693,20 @@ router.get('/get-ticket/:id', (request, response) => {
                             database.query('SELECT email, name from users where email = ?', ticket.assignee, (error, result, fields) => {
                                 if(error){ return; }
                                 let assignee = result[0];
-    
-                                response.send({ticket: ticket, project: project, release: rel, component: component, discipline: discipline, reporter: reporter, assignee: assignee});
+
+                                database.query('SELECT name as \'key\', name as \'value\' FROM tickets WHERE id = ?', ticket.blocking, (error, result, fields) => {
+                                    if(error){return;}
+                                    let blocking = result[0];
+
+                                    database.query('SELECT name as \'key\', name as \'value\' FROM tickets WHERE id = ?', ticket.blocked, (error, result, fields) => {
+                                        if(error){return;}
+                                        let blocked = result[0];
+
+                                        response.send({ticket: ticket, project: project, release: rel, component: component, discipline: discipline, reporter: reporter, assignee: assignee,
+                                            blocking: blocking, blocked: blocked});
+                                    })
+                                });
+                                // response.send({ticket: ticket, project: project, release: rel, component: component, discipline: discipline, reporter: reporter, assignee: assignee});
                             })
                         })
                         
@@ -655,6 +768,37 @@ router.get('/components', (request, response) => {
     });
 });
 /* ********************************************************************************************************************* */
+
+/* *************************************************[ get comments ]************************************************** */
+router.get('/get/comments/:id', (request, response) => {
+    database.query('SELECT * FROM comments WHERE ticketId = ?', request.params.id, (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            response.send({success: 0});
+            console.log('Database error at comments: ' + error);
+            return;
+        }
+        response.statusCode == 200;
+        response.send(result);
+    });
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ get worklogs ]**************************************************** */
+router.get('/get/worklogs/:id', (request, response) => {
+    database.query('SELECT * FROM worklogs WHERE ticketId = ?', request.params.id, (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            response.send({success: 0});
+            console.log('Database error at worklogs: ' + error);
+            return;
+        }
+        response.statusCode == 200;
+        response.send(result);
+    });
+});
+/* ********************************************************************************************************************* */
+
 /* *************************************************[ change ticket lane ]********************************************** */
 router.get('/conv-user', (request, response) => {
     let params = request.query;
@@ -670,10 +814,107 @@ router.get('/conv-user', (request, response) => {
     });
 });
 /* ********************************************************************************************************************* */
+
 /* *************************************************[ update ticket name ]********************************************** */
-router.post('/update/ticket', (request, response) => {
+router.post('/update/ticket/name', (request, response) => {
     let data = request.body;
-    database.query('UPDATE tickets SET name = ? WHERE id = ?', [data.name, data.id], request.query.user, (error, result, fields) => {
+    database.query('UPDATE tickets SET name = ? WHERE id = ?', [data.name, data.id], (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            response.send({success: 0});
+            console.log('Database error at components: ' + error.code);
+            return;
+        }
+        response.statusCode == 200;
+        response.send({success: 1});
+    });
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ update ticket name ]********************************************** */
+router.post('/update/ticket/lane', (request, response) => {
+    let data = request.body;
+    database.query('UPDATE tickets SET lane = ?, lastModified = ? WHERE id = ?', [data.lane, data.lastModified, data.tid], (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            response.send({success: 0});
+            console.log('Database error at components: ' + error.code);
+            return;
+        }
+        response.statusCode == 200;
+        response.send({success: 1});
+    });
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ update ticket reporter ]********************************************** */
+router.post('/update/ticket/reporter', (request, response) => {
+    let data = request.body;
+    database.query('UPDATE tickets SET reporter = ? WHERE id = ?', [data.user, data.id], (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            response.send({success: 0});
+            console.log('Database error at ticket reporter: ' + error.code);
+            return;
+        }
+        response.statusCode == 200;
+        response.send({success: 1});
+    });
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ update ticket assignee ]********************************************** */
+router.post('/update/ticket/assignee', (request, response) => {
+    let data = request.body;
+    database.query('UPDATE tickets SET assignee = ? WHERE id = ?', [data.user, data.id], (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            response.send({success: 0});
+            console.log('Database error at ticket assignee: ' + error.code);
+            return;
+        }
+        response.statusCode == 200;
+        response.send({success: 1});
+    });
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ update ticket start date ]********************************************** */
+router.post('/update/ticket/startDate', (request, response) => {
+    let data = request.body;
+    database.query('UPDATE tickets SET startDate = ? WHERE id = ?', [data.date, data.id], (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            response.send({success: 0});
+            console.log('Database error at ticket assignee: ' + error.code);
+            return;
+        }
+        response.statusCode == 200;
+        response.send({success: 1});
+    });
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ update ticket due date ]********************************************** */
+router.post('/update/ticket/dueDate', (request, response) => {
+    let data = request.body;
+    database.query('UPDATE tickets SET dueDate = ? WHERE id = ?', [data.date, data.id], (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            response.send({success: 0});
+            console.log('Database error at ticket assignee: ' + error.code);
+            return;
+        }
+        response.statusCode == 200;
+        response.send({success: 1});
+    });
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ update ticket estimation ]**************************************** */
+router.post('/update/ticket/estimation', (request, response) => {
+    let data = request.body;
+    database.query('UPDATE tickets SET estimation = ?, lastModified = ? WHERE id = ?', [data.hours, data.lastModified, data.id], (error, result, fields) => {
         if(error){
             response.statusCode == 400;
             // response.send({success: 0});
@@ -681,7 +922,167 @@ router.post('/update/ticket', (request, response) => {
             return;
         }
         response.statusCode == 200;
-        response.send();
+        response.send({success: 1});
+    });
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ update ticket discipline ]**************************************** */
+router.post('/update/ticket/discipline', (request, response) => {
+    let data = request.body;
+    database.query('UPDATE tickets SET discipline = ?, lastModified = ? WHERE id = ?', [data.id, data.lastModified, data.tid], (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            // response.send({success: 0});
+            console.log('Database error at ticket discipline: ' + error);
+            return;
+        }
+        response.statusCode == 200;
+        response.send({success: 1});
+    });
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ update ticket discipline ]**************************************** */
+router.post('/update/ticket/prio', (request, response) => {
+    let data = request.body;
+    database.query('UPDATE tickets SET priority = ?, lastModified = ? WHERE id = ?', [data.id, data.lastModified, data.tid], (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            // response.send({success: 0});
+            console.log('Database error at ticket discipline: ' + error);
+            return;
+        }
+        response.statusCode == 200;
+        response.send({success: 1});
+    });
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ update ticket release ]**************************************** */
+router.post('/update/ticket/release', (request, response) => {
+    let data = request.body;
+    database.query('UPDATE tickets SET rel = ?, lastModified = ? WHERE id = ?', [data.id, data.lastModified, data.tid], (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            // response.send({success: 0});
+            console.log('Database error at ticket discipline: ' + error);
+            return;
+        }
+        response.statusCode == 200;
+        response.send({success: 1});
+    });
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ update ticket blocking ]**************************************** */
+router.post('/update/ticket/blocking', (request, response) => {
+    let data = request.body;
+    database.query('UPDATE tickets SET blocking = ?, lastModified = ? WHERE id = ?', [data.id, data.lastModified, data.tid], (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            // response.send({success: 0});
+            console.log('Database error at ticket blocking: ' + error);
+            return;
+        }
+        response.statusCode == 200;
+        response.send({success: 1});
+    });
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ update ticket blocked ]**************************************** */
+router.post('/update/ticket/blocked', (request, response) => {
+    let data = request.body;
+    database.query('UPDATE tickets SET blocked = ?, lastModified = ? WHERE id = ?', [data.id, data.lastModified, data.tid], (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            // response.send({success: 0});
+            console.log('Database error at ticket blocked: ' + error);
+            return;
+        }
+        response.statusCode == 200;
+        response.send({success: 1});
+    });
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ update comment ]************************************************** */
+router.post('/update/comment', (request, response) => {
+    let data = request.body;
+    console.log(data);
+    database.query('UPDATE comments SET val = ?, lastModified = ? WHERE created = ?', [data.val, data.lastModified, data.created], (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            // response.send({success: 0});
+            console.log('Database error at components: ' + error);
+            return;
+        }
+        response.statusCode == 200;
+        response.send({success: 1});
+    });
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ update worklog ]************************************************** */
+router.post('/update/worklog', (request, response) => {
+    let data = request.body;
+    console.log(data);
+    database.query('UPDATE worklogs SET val = ?, lastModified = ?, hours = ? WHERE created = ?', [data.val, data.lastModified, data.hours, data.created], (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            response.send({success: 0});
+            console.log('Database error at components: ' + error);
+            return;
+        }
+        
+        database.query('UPDATE tickets SET logged = logged + ? WHERE id = ?', [data.hours - data.lastLog, data.ticketId], (error, result, fields) => {
+            if(error){
+                console.log('Error at modifing log ' + error.code);
+                return;
+            }
+            response.statusCode == 200;
+            response.send({success: 1});
+        });
+    });
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ remove comment ]************************************************** */
+router.post('/remove/comment', (request, response) => {
+    let data = request.body;
+    console.log(data);
+    database.query('DELETE FROM comments WHERE created = ?', data.created, (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            console.log('Database error at comments: ' + error.code);
+            return;
+        }
+        response.statusCode == 200;
+        response.send({success: 1});
+    });
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ remove worklog ]************************************************** */
+router.post('/remove/worklog', (request, response) => {
+    let data = request.body;
+    console.log(data);
+    database.query('DELETE FROM worklogs WHERE created = ?', data.created, (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            console.log('Database error at worklogs: ' + error.code);
+            return;
+        }
+        database.query('UPDATE tickets SET logged = logged - ? WHERE id = ?', [data.hours, data.ticketId], (error, result, fields) => {
+            if(error){
+                response.statusCode == 400;
+                console.log('Database error when removing hours from ticket: ' + error.code);
+                return;
+            }
+            response.statusCode == 200;
+            response.send({success: 1});
+        })
     });
 });
 /* ********************************************************************************************************************* */
