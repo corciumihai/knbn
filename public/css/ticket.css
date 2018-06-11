@@ -220,6 +220,16 @@ html, body{
     font-size: 13px;
 }
 
+.rp-edit{
+    border-radius: 0px;
+    /* border: 1px solid rgb(52, 53, 58); */
+    border-top: none;
+    color: white;
+    font-size: 14px;
+    max-height: 500px !important;
+    overflow: auto;
+}
+
 .day:hover{
     border-top: 1px solid transparent;
     border-left: 1px solid transparent;

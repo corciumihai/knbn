@@ -12,7 +12,7 @@ import WorkLogArea from './components/view/WorkLogArea';
 import OtherTicket from './components/view/OtherTicket';
 import StatusDropdown from './components/view/StatusDropdown';
 
-class ViewTicket extends React.Component{
+class ViewProblemReport extends React.Component{
     constructor(props){
         super(props);
 
@@ -38,6 +38,9 @@ class ViewTicket extends React.Component{
             blocking: {},
             blockedBy: {},
             lane: 0,
+            steps: '',
+            observedBehaviour: '',
+            expectedBehaviour: '',
 
             editPrio: false,
             editRelease: false,
@@ -50,6 +53,9 @@ class ViewTicket extends React.Component{
             editStatus: false,
             noResponse: false,
             commentArea: true,
+            editSteps: false,
+            editObserved: false,
+            editExpected: false,
 
             errorEstimation: '',
             errorName: '',
@@ -88,6 +94,15 @@ class ViewTicket extends React.Component{
         this.setBlockedBy = this.setBlockedBy.bind(this);
         this.setEditStatus = this.setEditStatus.bind(this);
         this.setLane = this.setLane.bind(this);
+        this.setEditSteps = this.setEditSteps.bind(this);
+        this.setEditObserved = this.setEditObserved.bind(this);
+        this.setEditExpected = this.setEditExpected.bind(this);
+        this.setSteps = this.setSteps.bind(this);
+        this.saveSteps = this.saveSteps.bind(this);
+        this.setObserved = this.setObserved.bind(this);
+        this.setExpected = this.setExpected.bind(this);
+        this.saveObserved = this.saveObserved.bind(this);
+        this.saveExpected = this.saveExpected.bind(this);
     }
 
     componentWillMount(){
@@ -130,6 +145,9 @@ class ViewTicket extends React.Component{
                 assignee: response.data.assignee,
                 blocking: response.data.blocking,
                 blockedBy: response.data.blocked,
+                steps: ticket.steps,
+                expectedBehaviour: ticket.expectedBehaviour,
+                observedBehaviour: ticket.observedBehaviour,
                 lane: ticket.lane,
                 loading: false,
             }, () => {console.log(this.state)});
@@ -174,6 +192,9 @@ class ViewTicket extends React.Component{
     setEditAssignee(){this.setState({editAssignee: !this.state.editAssignee})};
     setEditBlockedBy(){this.setState({editBlockedBy: !this.state.editBlockedBy});}
     setEditBlocking(){this.setState({editBlocking: !this.state.editBlocking});}
+    setEditSteps(){this.setState({editSteps: !this.state.editSteps});}
+    setEditObserved(){this.setState({editObserved: !this.state.editObserved});}
+    setEditExpected(){this.setState({editExpected: !this.state.editExpected});}
 
     setPrio(prio){
         let date = new Date().getTime();
@@ -254,7 +275,7 @@ class ViewTicket extends React.Component{
         let date = new Date().getTime();
         axios.post('/update/ticket/blocked', {id: ticket.key, lastModified: date, tid: this.state.id}).then(response => {
             if(response.status == 200){
-                this.setState({blockedBy: ticket, editBlockedBy: false, errorBlockedBy: ''});
+                this.setState({blocked: ticket, editBlockedBy: false, errorBlockedBy: ''});
             }
         })
     }
@@ -265,7 +286,43 @@ class ViewTicket extends React.Component{
         let date = new Date().getTime();
         axios.post('/update/ticket/lane', {lane: lane, lastModified: date, tid: this.state.id}).then(response => {
             if(response.status == 200){
-                this.setState({lane: lane, editStatus: false});
+                this.setState({editStatus: false});
+            }
+        });
+    }
+
+    setSteps(event){
+        this.setState({steps: event.target.value});
+    }
+    setObserved(event){
+        this.setState({observedBehaviour: event.target.value});    
+    }
+    setExpected(event){
+        this.setState({expectedBehaviour: event.target.value});
+    }
+
+    saveSteps(){
+        let date = new Date().getTime();
+        axios.post('/update/ticket/steps', {steps: this.state.steps, lastModified: date, tid: this.state.id}).then(response => {
+            if(response.status == 200){
+                this.setState({editSteps: false});
+            }
+        });
+        
+    }
+    saveObserved(){
+        let date = new Date().getTime();
+        axios.post('/update/ticket/observed', {observed: this.state.observedBehaviour, lastModified: date, tid: this.state.id}).then(response => {
+            if(response.status == 200){
+                this.setState({editObserved: false});
+            }
+        });
+    }
+    saveExpected(){
+        let date = new Date().getTime();
+        axios.post('/update/ticket/expected', {expected: this.state.expectedBehaviour, lastModified: date, tid: this.state.id}).then(response => {
+            if(response.status == 200){
+                this.setState({editExpected: false});
             }
         });
     }
@@ -383,16 +440,16 @@ class ViewTicket extends React.Component{
                                                     {!this.state.editBlockedBy ?
                                                         <div class="col ticket-data modifiable py-1">
                                                             <div class="row">
-                                                                <div class="edit-field ml-1 d-flex"><img title="Blocked ticket" src="/images/ticketer.svg" class="d-block mx-auto"/></div>
+                                                                <div class="edit-field ml-1 d-flex"><img title="Blocking ticket" src="/images/ticketer.svg" class="d-block mx-auto"/></div>
                                                                 <div class="col text-truncate">{this.state.blockedBy != undefined && this.state.blockedBy.value != undefined && this.state.blockedBy.value.length > 0 ? this.state.blockedBy.value : "None"}</div>
                                                                 {
-                                                                    this.state.lane == 3 ? <div class="edit-field mr-1 d-flex" title="Modifying relationship is disabled when ticket is closed"><img src="/images/disabled.svg" class="d-block mx-auto"/></div> : 
+                                                                    this.state.lane == 3 ? <div class="edit-field mr-1 d-flex" title="Modifying relationship is disabled when ticket is closed"><img src="/images/disabled.svg" class="d-block mx-auto"/></div> :
                                                                     <div class="edit-field mr-1 d-flex" onClick={this.setEditBlockedBy} title="Edit"><img src="/images/edit.svg" class="d-block mx-auto"/></div>
                                                                 }
                                                             </div>
                                                         </div>
                                                         :
-                                                        <OtherTicket ticket={this.state.blockedBy} set={this.setBlockedBy} key={2}/>
+                                                        <OtherTicket ticket={this.state.blocked} set={this.setBlockedBy} key={1}/>
                                                     }
                                                     </div>
                                                     {
@@ -406,6 +463,94 @@ class ViewTicket extends React.Component{
                             </div>
                         </div>
                     </div>
+
+                    <div class="row mb-3">
+                        <div class="col-xl-12">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-xl-12 mb-2 header tag">
+                                        <div class="row">
+                                            <div class="col py-1">Test steps</div>
+                                            {
+                                                !this.state.editSteps ? <div class="edit-field edit d-flex alig-self-end align-self-center mr-2" onClick={this.setEditSteps} title="Edit"><img src="/images/edit.svg" class="d-block mx-auto"/></div>
+                                                :
+                                                <div class="edit-field edit d-flex alig-self-end align-self-center mr-2" title="Save" onClick={this.saveSteps}><img src="/images/save.svg" class="d-block mx-auto"/></div>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="col tag"> 
+                                        <div class="row">
+                                        {
+                                            !this.state.editSteps ? <div class="col ticket-data px-3 py-2">{this.state.steps.length > 0 ? this.state.steps : "No steps yet"}</div>
+                                            :
+                                            <textarea type="text" class="form-control rp-edit px-3 py-2" value={this.state.steps} onChange={this.setSteps}/>
+                                        }
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-xl-12">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-xl-12 mb-2 header tag">
+                                        <div class="row">
+                                            <div class="col py-1">Observed behaviour</div>
+                                            {
+                                                !this.state.editObserved ? <div class="edit-field edit d-flex alig-self-end align-self-center mr-2" onClick={this.setEditObserved} title="Edit"><img src="/images/edit.svg" class="d-block mx-auto"/></div>
+                                                :
+                                                <div class="edit-field edit d-flex alig-self-end align-self-center mr-2" title="Save" onClick={this.saveObserved}><img src="/images/save.svg" class="d-block mx-auto"/></div>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="col tag"> 
+                                        <div class="row">
+                                        {
+                                            !this.state.editObserved ? <div class="col ticket-data px-3 py-2">{this.state.observedBehaviour.length > 0 ? this.state.observedBehaviour : "No steps yet"}</div>
+                                            :
+                                            <textarea type="text" class="form-control rp-edit px-3 py-2" value={this.state.observedBehaviour} onChange={this.setObserved}/>
+                                        }
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-xl-12">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-xl-12 mb-2 header tag">
+                                        <div class="row">
+                                            <div class="col py-1">Expected behaviour</div>
+                                            {
+                                                !this.state.editExpected ? <div class="edit-field edit d-flex alig-self-end align-self-center mr-2" onClick={this.setEditExpected} title="Edit"><img src="/images/edit.svg" class="d-block mx-auto"/></div>
+                                                :
+                                                <div class="edit-field edit d-flex alig-self-end align-self-center mr-2" title="Save" onClick={this.saveExpected}><img src="/images/save.svg" class="d-block mx-auto"/></div>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="col tag"> 
+                                        <div class="row">
+                                        {
+                                            !this.state.editExpected ? <div class="col ticket-data px-3 py-2">{this.state.expectedBehaviour.length > 0 ? this.state.expectedBehaviour : "No steps yet"}</div>
+                                            :
+                                            <textarea type="text" class="form-control rp-edit px-3 py-2" value={this.state.expectedBehaviour} onChange={this.setExpected}/>
+                                        }
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row mb-3">
                         <div class="col-xl-6">
                             <div class="container-fluid">
@@ -668,4 +813,4 @@ class ViewTicket extends React.Component{
 }
 
 
-export default ViewTicket;
+export default ViewProblemReport;

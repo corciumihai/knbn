@@ -2,8 +2,6 @@ import React from 'react';
 import Ticket from './Ticket';
 import { DropTarget } from 'react-dnd';
 import { ItemTypes } from './Constants';
-import update from 'react-addons-update';
-import axios from 'axios';
 
 const target = {
     drop(props, monitor, component){
@@ -19,7 +17,23 @@ const target = {
         }  
     },
 
-    canDrop(props, monitor, component){return true;} // can change lanes without limitation - TEMPORARY
+    canDrop(props, monitor){
+        let ticketLane = monitor.getItem().lane;
+        if(ticketLane == 0){
+            if(props.lane == 1 || props.lane == 3) return true;
+        }
+
+        if(ticketLane == 1){
+            if(props.lane == 1) return false;
+            return true;
+        }
+
+        if(ticketLane == 2){
+            if(props.lane == 1 || props.lane == 2 || props.lane == 3) return true;
+        }
+
+        return false;
+    } // can change lanes without limitation - TEMPORARY
 }
 
 @DropTarget(ItemTypes.TICKET, target, (connect, monitor) => ({connectDropTarget: connect.dropTarget(), isOver: monitor.isOver({shallow: true}), canDrop: monitor.canDrop()}))
@@ -32,7 +46,7 @@ class Lane extends React.Component{
         const {isOver, canDrop} = this.props;
         const {connectDropTarget} = this.props;
         return connectDropTarget(
-            <div class={isOver ? "lane col is-over": "lane col"}> 
+            <div class={canDrop ? "lane col can-drop": "lane col"}> 
             {
                 this.props.loading ?
                     <img src="./images/loading.gif" class="d-block mx-auto"/>

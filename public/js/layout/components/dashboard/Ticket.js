@@ -38,11 +38,6 @@ class Ticket extends React.Component{
     }
 
     componentWillMount(){
-        
-        // axios.get('/conv-user', {params: {user: this.props.data.reporter}}).then(response => {
-        //     this.setState({reporter: response.data, reporterLoad: false});
-        // });
-
         if(this.state.assignee.length > 0) {console.log(this.state.assignee); return;}; 
         axios.get('/conv-user', {params: {user: this.props.data.assignee}}).then(response => {
             this.setState({assignee: response.data, assigneeLoad: false});
@@ -56,7 +51,6 @@ class Ticket extends React.Component{
     render(){
         let data = this.props.data;
         data.flipped = this.state.flipped;
-        // console.log();
         const {connectDragSource, isDragging} = this.props;
         let boundF = this.props.changeLaneF.bind(this, data, 1);
         let boundB = this.props.changeLaneB.bind(this, data);
@@ -78,7 +72,7 @@ class Ticket extends React.Component{
                             <div class={"ticket-data col-xl-12" + (this.state.flipped ? " hide" : "")}>
                                 <div class="row py-1 field">
                                     <div class="col-xl-3 col-4 info">Ticket ID</div>
-                                    <div class="col"><a class="ticket-id" href={"/view/ticket/" + data.id}>{"ProjectID - " + data.id}</a></div>
+                                    <div class="col"><a href={(data.isReport ? "/view/report/" : "/view/ticket/") + data.id} class="ticket-id">{"ProjectID - " + data.id}</a></div>
                                 </div>
                                 {/* <div class="row py-1 field">
                                     <div class="col-xl-3 col-4 info">Reporter</div>
@@ -107,7 +101,7 @@ class Ticket extends React.Component{
                                 <div class="row py-1 px-2">
                                     <div class="toolbar">
                                         <div class="row px-3">
-                                            <div class="tool mx-1 my-1" onClick={this.flip} title="Collapse size">
+                                            <div class="tool mx-1 my-1 d-flex" onClick={this.flip} title="Collapse size">
                                                 {
                                                     this.state.flipped ? <img src="./images/arrow-down.svg" class="d-block mx-auto"/> : <img src="./images/arrow-up.svg" class="d-block mx-auto"/>
                                                 }
@@ -116,18 +110,18 @@ class Ticket extends React.Component{
                                     </div>
                                     <div class="toolbar">
                                         <div class="row px-3">
-                                            <div class="tool mx-1 my-1" title="Change to last lane" onClick={boundB}><img src="./images/lanechangeb.svg" class="d-block mx-auto"/></div>
+                                            <div class="tool mx-1 my-1 d-flex" title="Change to last lane" onClick={boundB}><img src="./images/lanechangeb.svg" class="d-block mx-auto"/></div>
                                         </div>
                                     </div>
                                     <div class="toolbar">
                                         <div class="row px-3">
-                                            <div class="tool mx-1 my-1" onClick={boundF} title="Change to next lane"><img src="./images/lanechange.svg" class="d-block mx-auto"/></div>
+                                            <div class="tool mx-1 my-1 d-flex" onClick={boundF} title="Change to next lane"><img src="./images/lanechange.svg" class="d-block mx-auto"/></div>
                                         </div>
                                     </div>
                                     <div class="toolbar">
                                         <div class="row px-3">
-                                            <a href={"/view/ticket/" + data.id}>
-                                                <div class="tool mx-1 my-1">
+                                            <a href={(data.isReport ? "/view/report/" : "/view/ticket/") + data.id}>
+                                                <div class="tool mx-1 my-1 d-flex">
                                                     <img src="./images/edit.svg" data-toggle="modal" data-target="#editModal" title="Edit ticket" class="d-block mx-auto"/>
                                                 </div>
                                             </a>

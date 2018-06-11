@@ -150,6 +150,10 @@ class TicketSetup extends React.Component{
             lane: 0,
             lastModified: date,
             created: date,
+            isReport: 0,
+            steps: '',
+            observedBehaviour: '',
+            expectedBehaviour: '',
         }).then(response => {
             if(response.status == 200){this.resetState()}
         }).catch(error => {

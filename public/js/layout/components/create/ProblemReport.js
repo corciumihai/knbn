@@ -116,6 +116,7 @@ class ProblemReport extends React.Component{
             testStep: '',
             expectedBehaviour: '',
             observedBehaviour: '',
+            release: 1,
 
             componentError: '',
             dateError: '',
@@ -146,7 +147,7 @@ class ProblemReport extends React.Component{
         if(this.state.observedBehaviour == undefined || this.state.observedBehaviour.length == 0){this.setState({observedBehaviourError: 'Please fill the observed behaviour'}); return;}
         if(this.state.startDate.getTime() > this.state.dueDate.getTime()){this.setState({dateError: 'Start date cannot be higher than due date'}); return;}
 
-        axios.post('/add/report', {
+        axios.post('/add/ticket', {
             name: this.props.name,
             reporter: this.state.reporterEmail,
             assignee: this.state.assigneeEmail,
@@ -161,7 +162,9 @@ class ProblemReport extends React.Component{
             steps: this.state.testStep,
             observedBehaviour: this.state.observedBehaviour,
             expectedBehaviour: this.state.expectedBehaviour,
-            priority: this.state.priority
+            priority: this.state.priority,
+            isReport: 1,
+            rel: this.state.release,
         }).then(response => {
             if(response.status == 200){this.resetState()}
         }).catch(error => {

@@ -7,9 +7,13 @@ const bodyParser = require('body-parser');
 const database = require('./database/database');
 const bcrypt = require('bcrypt-nodejs');
 const mysql = require('mysql');
+const http = require('http');
+const https = require('https');
+const fs = require('fs');
 
 app.use(express.static('public'));
-app.set('port', process.env.port || 3000);
+app.set('portHttp', process.env.port || 8080);
+app.set('portHttps', process.env.port || 8443);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'pug');
 
@@ -223,6 +227,7 @@ router.get('/create', (request, response) => {
 });
 
 router.get('/view/ticket/:id', (request, response) => {response.render(path.resolve(__dirname, 'views', 'view.pug')); });
+router.get('/view/report/:id', (request, response) => {response.render(path.resolve(__dirname, 'views', 'view.pug')); });
 
 /* *******************************************< add project >*********************************************************** */
 router.post('/add/project', (request, response) => {
@@ -416,8 +421,8 @@ router.post('/add/ticket', (request, response) => {
                 database.query('CREATE TABLE tickets (id INT PRIMARY KEY UNIQUE, component INT, \
                     name VARCHAR(255)NOT NULL, description VARCHAR(2000), dueDate VARCHAR(255)NOT NULL, startDate VARCHAR(255)NOT NULL, discipline INT, \
                     reporter VARCHAR(255)NOT NULL, assignee VARCHAR(255)NOT NULL, blocked INT UNSIGNED, blocking INT UNSIGNED, estimation INT UNSIGNED NOT NULL, logged INT UNSIGNED NOT NULL, lane INT UNSIGNED NOT NULL, \
-                    priority INT UNSIGNED, \
-                    rel INT UNSIGNED, \
+                    priority INT UNSIGNED, steps VARCHAR(1000), observedBehaviour VARCHAR(1000), expectedBehaviour VARCHAR(1000),\
+                    rel INT UNSIGNED, isReport BOOL NOT NULL,\
                     lastModified BIGINT UNSIGNED NOT NULL, created BIGINT UNSIGNED NOT NULL)', (error, result, fields) => {
                     if(error){
                         console.log('Error when creating table \'tickets\' for the first time: ' + error.code);
@@ -452,61 +457,6 @@ router.post('/add/ticket', (request, response) => {
             response.statusCode = 200;
             response.send({ success: 'Ticket successfully added to database!' });
             console.log('Ticket successfully added to database!');
-        });
-    });
-});
-//********************************************************************************************************************** */
-
-/* *******************************************[ add problem report ]**************************************************** */
-router.post('/add/report', (request, response) => {
-    let data = request.body;
-    console.log(data);
-    data.lane = 0;
-    // prepare to ackownledge existence
-    database.query('SELECT COUNT(*) AS count FROM reports', (error, result, fields) => {
-        if(error){
-            //table does not exist
-            if(error.code == 'ER_NO_SUCH_TABLE'){
-                //create table
-                database.query('CREATE TABLE reports (id INT UNIQUE PRIMARY KEY, component INT, \
-                    name VARCHAR(255)NOT NULL, description VARCHAR(2000), dueDate VARCHAR(255)NOT NULL, startDate VARCHAR(255)NOT NULL, discipline INT, \
-                    reporter VARCHAR(255)NOT NULL, assignee VARCHAR(255)NOT NULL, blocked INT, blocking INT, estimation INT, steps VARCHAR(255), \
-                    observedBehaviour VARCHAR(255), expectedBehaviour VARCHAR(255), priority INT, lane INT)', (error, result, fields) => {
-                    if(error){
-                        console.log('Error when creating table \'reports\' for the first time: ' + error.code);
-                        return;
-                    }
-                    //insert into table
-                    data.id = 1;
-                    database.query('INSERT INTO reports SET ?', data, (error, result, fields) => {
-                        if(error){
-                            console.log('Database error when inserting problem report in database: ' + error);
-                            return;
-                        }
-                        //send back positive response
-                        response.statusCode = 200;
-                        response.send({ success: 'Problem report successfully added to database!' });
-                        console.log('Problem report successfully added to database!');
-                        return;
-                    });
-                });
-                return;
-            }
-            console.log('Database error when checking existence of report: ' + error.code);
-            return;
-        }
-        // //insert into database 
-        data.lane = 0;
-        data.id = result[0].count + 1;
-        database.query('INSERT INTO reports SET ?', data, (error, result, fields) => {
-            if(error){
-                console.log('Database error when inserting problem report in database: ' + error);
-                return;
-            }
-            //send back positive response
-            response.statusCode = 200;
-            response.send({ success: 'Problem report successfully added to database!' });
-            console.log('Problem reports successfully added to database!');
         });
     });
 });
@@ -659,9 +609,7 @@ router.get('/get-tickets', (request, response) => {
 /* ********************************************************************************************************************* */
 
 /* *************************************************[ get ticket ]****************************************************** */
-router.get('/get-ticket/:id', (request, response) => {
-    let fullData;
-    
+router.get('/get-ticket/:id', (request, response) => {    
     database.query('SELECT * FROM tickets WHERE id = ?', request.params.id, (error, result, fields) => {
         if(error){
             console.log('Database error when fetching single ticket: ' + error.code);
@@ -670,51 +618,47 @@ router.get('/get-ticket/:id', (request, response) => {
 
         let ticket = result[0];
         database.query('SELECT id, name, project FROM components WHERE id = ?', ticket.component, (error, result, fields) => {
-            if(error){ return; }
+            if(error){console.log("1 " + error.code); return; }
             let component = result[0];
 
             database.query('SELECT id, shortName, name FROM projects WHERE id = ?', component.project, (error, result, fields) => {
-                if(error){ return; }
+                if(error){console.log("2 " + error.code); return; }
                 let project = result[0];
                 // console.log(project);
 
                 database.query('SELECT id, name FROM disciplines WHERE id = ?', ticket.discipline, (error, result, fields) => {
-                    if(error){ return; }
+                    if(error){console.log("3 " + error.code); return; }
                     let discipline = result[0];
 
                     database.query('SELECT id, name FROM releases WHERE id = ?', ticket.rel, (error, result, fields) => {
-                        if(error){ return; }
+                        if(error){console.log("4 " + error.code); return; }
                         let rel = result[0];
     
                         database.query('SELECT email, name from users where email = ?', ticket.reporter, (error, result, fields) => {
-                            if(error){ return; }
+                            if(error){console.log("5 " + error.code); return; }
                             let reporter = result[0];
 
                             database.query('SELECT email, name from users where email = ?', ticket.assignee, (error, result, fields) => {
-                                if(error){ return; }
+                                if(error){console.log("6 " + error.code); return; }
                                 let assignee = result[0];
 
                                 database.query('SELECT name as \'key\', name as \'value\' FROM tickets WHERE id = ?', ticket.blocking, (error, result, fields) => {
-                                    if(error){return;}
+                                    if(error){console.log("7 " + error.code); return;}
                                     let blocking = result[0];
 
                                     database.query('SELECT name as \'key\', name as \'value\' FROM tickets WHERE id = ?', ticket.blocked, (error, result, fields) => {
-                                        if(error){return;}
+                                        if(error){console.log("8 " + error.code); return;}
                                         let blocked = result[0];
-
+                                        
                                         response.send({ticket: ticket, project: project, release: rel, component: component, discipline: discipline, reporter: reporter, assignee: assignee,
                                             blocking: blocking, blocked: blocked});
                                     })
                                 });
-                                // response.send({ticket: ticket, project: project, release: rel, component: component, discipline: discipline, reporter: reporter, assignee: assignee});
-                            })
-                        })
-                        
+                            });
+                        });
                     });
-
                 })
             });
-            
         });
 
         // response.send({ticket: ticket});
@@ -981,7 +925,7 @@ router.post('/update/ticket/blocking', (request, response) => {
     database.query('UPDATE tickets SET blocking = ?, lastModified = ? WHERE id = ?', [data.id, data.lastModified, data.tid], (error, result, fields) => {
         if(error){
             response.statusCode == 400;
-            // response.send({success: 0});
+            response.send({success: 0});
             console.log('Database error at ticket blocking: ' + error);
             return;
         }
@@ -994,10 +938,59 @@ router.post('/update/ticket/blocking', (request, response) => {
 /* *************************************************[ update ticket blocked ]**************************************** */
 router.post('/update/ticket/blocked', (request, response) => {
     let data = request.body;
+    console.log(data);
     database.query('UPDATE tickets SET blocked = ?, lastModified = ? WHERE id = ?', [data.id, data.lastModified, data.tid], (error, result, fields) => {
         if(error){
             response.statusCode == 400;
-            // response.send({success: 0});
+            response.send({success: 0});
+            console.log('Database error at ticket blocked: ' + error);
+            return;
+        }
+        response.statusCode == 200;
+        response.send({success: 1});
+    });
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ update ticket steps ]**************************************** */
+router.post('/update/ticket/steps', (request, response) => {
+    let data = request.body;
+    database.query('UPDATE tickets SET steps = ?, lastModified = ? WHERE id = ?', [data.steps, data.lastModified, data.tid], (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            response.send({success: 0});
+            console.log('Database error at ticket blocked: ' + error);
+            return;
+        }
+        response.statusCode == 200;
+        response.send({success: 1});
+    });
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ update ticket observed behaviour ]**************************************** */
+router.post('/update/ticket/observed', (request, response) => {
+    let data = request.body;
+    database.query('UPDATE tickets SET observedBehaviour = ?, lastModified = ? WHERE id = ?', [data.observed, data.lastModified, data.tid], (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            response.send({success: 0});
+            console.log('Database error at ticket blocked: ' + error);
+            return;
+        }
+        response.statusCode == 200;
+        response.send({success: 1});
+    });
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ update ticket observed behaviour ]**************************************** */
+router.post('/update/ticket/expected', (request, response) => {
+    let data = request.body;
+    database.query('UPDATE tickets SET expectedBehaviour = ?, lastModified = ? WHERE id = ?', [data.expected, data.lastModified, data.tid], (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            response.send({success: 0});
             console.log('Database error at ticket blocked: ' + error);
             return;
         }
@@ -1090,6 +1083,20 @@ router.post('/remove/worklog', (request, response) => {
 app.use(express.static(__dirname + '/routes'));
 app.use(router);
 
-app.listen(app.get('port'), function(){
-    console.log('App is listening to port ' + app.get('port'));
+const sslOptions = {
+    key: fs.readFileSync('./ssl/key.pem'),
+    cert: fs.readFileSync('./ssl/cert.pem'),
+    passphrase: 'knbn',
+};
+
+app.listen(app.get('portHttp'), function(){
+    console.log('App is listening to port ' + app.get('portHttp'));
+});
+
+// let httpServer = http.createServer(app).listen(app.get('portHttp'), function(){
+//     // console.log('App is listening to port ' + app.get('port'));
+// });
+
+let httpsServer = https.createServer(sslOptions, app).listen(app.get('portHttps'), function(){
+    console.log('Https server is listening to port ' + app.get('portHttps'));
 });

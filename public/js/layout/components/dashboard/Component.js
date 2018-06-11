@@ -42,7 +42,6 @@ class Component extends React.Component{
 
     changeTicketLaneForward(ticket, fromToolbar){
         if(fromToolbar){
-            // console.log('hello');
             if(ticket.lane == 0){ 
                 this.removeTicket(ticket, ticket.lane);
                 ticket.lane = 1;
@@ -172,7 +171,7 @@ class Component extends React.Component{
         return(
             this.state.ticketsBacklog.length > 0 || this.state.ticketsProgress.length > 0 || this.state.ticketsDone.length > 0 || this.state.ticketsClosed.length > 0 ?
                 <div class="row">
-                    <div class="section col-xl-10 col-lg-10 col-md-10 col-sm-10 col-12 offset-xl-1 offset-lg-1 offset-md-1 offset-sm-1 px-2 mt-2">
+                    <div class="section col-xl-10 col-lg-10 col-md-10 col-sm-10 col-12 offset-xl-1 offset-lg-1 offset-md-1 offset-sm-1 mt-2">
                         <div class="row">
                             <div class="section-head col-xl-12 py-2">
                                 <div class="row">
@@ -200,8 +199,7 @@ class Component extends React.Component{
                                     {/* IN PROGRESS */}
                                     <div class={'column col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 border-r'} >
                                         <div class="row">
-                                            <div class="column-name col">IN PROGRESS
-                                            </div>
+                                            <div class="column-name col">IN PROGRESS</div>
                                         </div>
                                         <div class="row h-100">
                                             <Lane items={this.state.ticketsProgress} lane={1} 

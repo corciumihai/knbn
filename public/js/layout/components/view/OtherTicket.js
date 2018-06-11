@@ -10,7 +10,7 @@ class OtherTicket extends React.Component{
     }
 
     componentWillMount(){
-        axios.get('/get-tickets').then(response => { this.setState({tickets: response.data}); });
+        axios.get('/get-tickets').then(response => { this.setState({tickets: response.data}, () => {console.log(this.state.tickets)}); });
     }
 
     setTicket(ticket, event){
@@ -19,13 +19,13 @@ class OtherTicket extends React.Component{
     }
 
     render(){
-        console.log(this.props.ticket);
+        // console.log(this.props.ticket);
         let none = this.setTicket.bind(this, {key: 0, value: "None"});
         return(
             <div class="col ticket-data modifiable py-1">
                 <div class="row" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    { this.props.ticket != undefined && this.props.ticket.value != undefined && this.props.ticket.value.length > 0 ? <div class="edit-field ml-1" title="Release"><img src="/images/ticketer.svg" class="d-block mx-auto"/></div> 
-                    : <div class="edit-field ml-1" title="Release"><img src="/images/ticketer.svg" class="d-block mx-auto"/></div>}
+                    { this.props.ticket != undefined && this.props.ticket.value != undefined && this.props.ticket.value.length > 0 ? <div class="edit-field ml-1" title="Ticket"><img src="/images/ticketer.svg" class="d-block mx-auto"/></div> 
+                    : <div class="edit-field ml-1" title="Ticket"><img src="/images/ticketer.svg" class="d-block mx-auto"/></div>}
                     <div class="col text-truncate"> { this.props.ticket != undefined && this.props.ticket.value != undefined && this.props.ticket.value.length > 0 ? this.props.ticket.value : "Select ticket" }</div>
                     <div class="edit-field mr-1 float-right"><img src="/images/arr-dwn.svg" class="d-block mx-auto"/></div>
                 </div>

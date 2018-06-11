@@ -2,166 +2,93 @@
     background-color: rgb(34, 35, 37);
 }
 
-.section-head{
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-}
-
-.section-head, .section-body{
+.section{
     color: rgb(221, 221, 221);
     font-size: 14px;
-    background-color: #333841;
+    background-color: rgb(39, 40, 43);
 }
 
 .section-head{
-    border-bottom: 1px solid rgb(67, 76, 92);
-}
-
-.section-body{
-    border-bottom: 3px solid rgb(67, 76, 92);
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-}
-
-.border-r{
-    /* border-left: 1px solid gray; */
-    border-right: 1px solid rgb(74, 97, 116);
-}
-
-.border-L{
-    border-left: 3px solid rgb(71, 78, 92);
-}
-
-.border-R{
-    border-right: 3px solid rgb(71, 78, 92);
-}
-
-.lane{
-    border: 2px solid transparent;
-}
-
-.is-over{
-    border: 2px solid rgb(116, 153, 55);
+    /* border-bottom: 1px solid rgb(52, 53, 58); */
 }
 
 .column-name{
-    background-color: rgb(71, 78, 92);
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
     text-align: center;
-    /* border-top-left-radius: 4px;
-    border-top-right-radius: 4px; */
-}
-
-.field{
-    border-bottom: 2px solid rgb(68, 74, 87);;
-    /* background-color: rgb(81, 92, 114); */
-}
-
-.ticket-box{
-    border: 2px solid transparent;
-    /* border-radius: 4px; */
-}
-
-.ticket-box:hover{
-    border: 2px solid rgba(135, 210, 253, 0.281);
+    font-weight: bold;
+    font-size: 12px;
+    border-top: 1px solid rgb(52, 53, 58);
 }
 
 .ticket{
+    background-color: rgb(52, 53, 58);
     border: 1px solid transparent;
-    background-color: rgb(68, 74, 87);
     cursor: move;
-    /* margin-top: 5px;
-    margin-bottom: 5px; */
+    border-radius: 4px;
+}
+
+.ticket:hover{
+    border: 1px solid rgba(178, 191, 255, 0.226);
+}
+
+.lane{
+    border: 1px solid rgb(52, 53, 58);
+    background-color: rgb(39, 40, 43);
 }
 
 .ticket-data{
-    /* color: white; */
-    /* border: 1px solid rgb(71, 78, 92); */
-    background-color: rgb(78, 85, 100);
-    /* border-radius: 4px; */
-    /* cursor: move;
-    margin-top: 5px;
-    margin-bottom: 5px;*/
-    border-radius: 4px; 
+    background-color: rgb(52, 53, 58);
 }
 
 .ticket-id{
-    color: white;
-    font-size: 14px;
-}
-
-.ticket-id:focus, .ticket-id:hover{
-    color: rgb(255, 255, 255);
-    text-decoration: none;
     text-decoration: underline;
+    color: rgb(245, 219, 170);
 }
 
-.name{
-    font-size: 16px;
-    /* font-weight: bold; */
-    text-align: left;
-}
-
-.info{
-    font-size: 13px;
-    color: rgb(216, 216, 216);
-}
-
-.data{
-    font-size: 14px;
-    color: white;
-}
-
-.prio-1, .prio-2, .prio-3{
-    width: 6px;
-}
-
-.prio-1{
-    background-color: rgb(99, 153, 86);
-    
-}
-
-.prio-2{
-    background-color: rgb(243, 171, 38);
-}
-
-.prio-3{
-    background-color: rgb(241, 66, 53);
-}
-
-.toggle{
-    height: 26px;
-    width: 26px;
-    border-radius: 4px;
-    background-color: rgb(81, 92, 114);
-    cursor: pointer;
-}
-
-.reduce{
-    display: none;
+.ticket-id:hover{
+    color: rgb(245, 219, 170);
+    text-decoration: none;
 }
 
 .tool{
-    height: 24px;
-    width: 24px;
-    background-color: rgb(184, 70, 85);
-    cursor: pointer;
-    border: 2px solid transparent;
+    background-color: rgb(65, 67, 73);
     border-radius: 4px;
+    height: 25px;
+    width: 25px;
+    cursor: pointer;
 }
 
 .tool:hover{
-    border: 2px solid rgb(194, 112, 19);
+    background-color: rgb(214, 135, 31);
 }
 
-.close{
+.toggle{
+    height: 25px;
+    width: 25px;
+    background-color: rgb(52, 53, 58);
     cursor: pointer;
-    /* border: 2px solid rgb(88, 129, 141); */
-    border-radius: 4px;
-} 
-
-.hide{
-    display: none;
 }
+
+.toggle:hover{
+    background-color: rgb(214, 135, 31);
+}
+
+.can-drop{
+    border: 1px dashed rgba(188, 255, 167, 0.541);
+    background-color: rgb(44, 51, 49);
+}
+
+.no-drop{
+    border: 1px dashed rgba(255, 177, 167, 0.541);
+    background-color: rgb(51, 44, 44);
+}
+
+.lane-grow{
+    flex-grow: 1; 
+    display: flex;
+}
+
+/* .section-head, .section-body{
+    color: rgb(221, 221, 221);
+    font-size: 14px;
+    background-color: rgb(39, 40, 43);
+} */
