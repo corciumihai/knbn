@@ -1,93 +1,93 @@
 const express = require('express');
 const app = express();
-const reactEngine = require('react-view-engine');
 const path = require('path');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const database = require('./database/database');
-const bcrypt = require('bcrypt-nodejs');
-const mysql = require('mysql');
-const http = require('http');
 const https = require('https');
 const fs = require('fs');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var UserSchema = require('./public/components/login/UserSchema');
+const bcrypt = require('bcryptjs');
+
+app.set('view engine', 'pug');
+app.set('views', __dirname + '/views');
 
 app.use(express.static('public'));
-app.set('portHttp', process.env.port || 8080);
-app.set('portHttps', process.env.port || 8443);
-app.set('views', __dirname + '/views');
-app.set('view engine', 'pug');
-
+app.use(require('express-session')({secret: 'keyboard cat', resave: false, saveUninitialized: false/*, cookie: { maxAge: 6000}*/}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(passport.initialize());
+app.use(passport.session());
 
-router.get('/login', function(request, response){
-    response.render(path.resolve(__dirname, 'views', 'login.pug'));
+passport.serializeUser(function(user, done) {
+    done(null, user.email);
 });
 
-router.get('/estimation-help', function(request, response){
-    response.render(path.resolve(__dirname, 'views', 'estimation-help.pug'));
-})
-
-router.post('/login', function(request, response){
-    // verify against database and send back response
-    var userData = {};
-    userData.email = request.body.email;
-    userData.password = request.body.password;
-    userData.rememberPassword = request.body.rememberPassword;
-
-    // check if in the database and re-route
-    var query = database.query('SELECT * FROM users WHERE email = ?', [userData.email], function(error, result){
-        if(error){
-            console.log('Error ', error);
-        }
-        if(result.length){
-            // check if the password is correct
-            if(userData.password === result[0].password){
-                // redirect to the dashboard
-                // TODO this piece of code does not redirect correctly
-                response.redirect('/dashboard');
-                // console.log('Haha');
-            }
-        }
-        else{
-            // do something when there is are no results
-            // invalid email status code
-            response.statusCode = 405;
-            response.send('');
-        }
+passport.deserializeUser(function(email, done) {
+    UserSchema.findUser(email, (error, user) => {
+        return done(null, user);
     });
 });
 
-router.get('/register', function(request, response){
-    response.render(path.resolve(__dirname, 'views', 'register.pug'));
-})
+passport.use(new LocalStrategy((email, password, done) => {
+    console.log(email, password);
+    UserSchema.findUser(email, (error, user) => {
+        if(error){ 
+            return done(err); 
+        }
+        if(!user){
+            return done(null, false, { message: 'Incorrect username' });
+        }
+        if(!UserSchema.validate(password, user.password)){
+            console.log('Incorrect password');
+            return done(null, false, { message: 'Incorrect password' });
+        }
+        return done(null, user);
+    });
+}));
 
+router.post('/user/checkuser', (request, response) => {
+    let data = request.body;
+    var query = database.query('SELECT * FROM users WHERE email = ?', [data.email], function(error, result, fields){
+        if(error){response.send({success:false, message: 'Unexpected error occured'}); console.log(error); return;}
+        if(result != undefined && result.length > 0){  
+            response.send({success: false, message: 'Email already exists in our database'});
+            return;
+        }
+        response.send({success: true});
+    });
+});
+
+router.get('/register', function(request, response){response.render(path.resolve(__dirname, 'views', 'register.pug'));});
 router.post('/register', (request, response) => {
-    // add user to database and send back response
-    // TODO use a class where you can hash the password on creation of the object
-    var userData = {
-        email: request.body.email, 
-        // TODO hash the password
-        password: request.body.password, 
-        company: request.body.company
-    };
-    // TODO escape more values
-    // TODO read more about the mysql nodejs module
-    var query = database.query('INSERT INTO users SET ?', userData, function(error, result, fields){
+    let data = request.body;
+    data.password = bcrypt.hashSync(data.password, 8);
+    var query = database.query('INSERT INTO users SET ?', data, function(error, result, fields){
         if(error){
-            switch(error.code){
-                case 'ER_DUP_ENTRY':
-                    response.send({email: 'Email already exists'});
-                break;
-                // TODO add more error codes
-            }
-            return; // do not continue the execution if error occures
+            response.redirect('/register'); 
+            return;
         }
-        response.redirect('/login'); // redirect to the login page
+        response.redirect('/login');
     });
 });
 
-router.get('/dashboard', function(request, response){
-    response.render(path.resolve(__dirname, 'views', 'dashboard.pug'));
+router.get('/login', function(request, response){response.render(path.resolve(__dirname, 'views', 'login.pug'));});
+router.post('/login', passport.authenticate('local', {successRedirect: '/', failureRedirect: '/login'}));
+
+
+
+
+router.get('/view/ticket/:id', (request, response) => {response.render(path.resolve(__dirname, 'views', 'view.pug')); });
+router.get('/view/report/:id', (request, response) => {response.render(path.resolve(__dirname, 'views', 'view.pug')); });
+router.get('/view/project/:id', (request, response) => {response.render(path.resolve(__dirname, 'views', 'view.pug')); });
+
+
+
+router.get('/', function(request, response){
+    if(request.isAuthenticated()){response.render(path.resolve(__dirname, 'views', 'dashboard.pug'));}
+    else{response.redirect('/login');}
 });
 
 router.post('/cards/modify', (request, response) => {
@@ -226,9 +226,6 @@ router.get('/create', (request, response) => {
     response.render(path.resolve(__dirname, 'views', 'create.pug'));
 });
 
-router.get('/view/ticket/:id', (request, response) => {response.render(path.resolve(__dirname, 'views', 'view.pug')); });
-router.get('/view/report/:id', (request, response) => {response.render(path.resolve(__dirname, 'views', 'view.pug')); });
-
 /* *******************************************< add project >*********************************************************** */
 router.post('/add/project', (request, response) => {
     let data = request.body;
@@ -360,7 +357,7 @@ router.post('/add/component', (request, response) => {
             if(error.code == 'ER_NO_SUCH_TABLE'){
                 //create table
                 database.query('CREATE TABLE components (id INT AUTO_INCREMENT PRIMARY KEY UNIQUE, project INT, name VARCHAR(255)NOT NULL, \
-                description VARCHAR(2000), dueDate VARCHAR(255), startDate VARCHAR(255), rel INT, discipline INT)', (error, result, fields) => {
+                description VARCHAR(2000), dueDate VARCHAR(255), startDate VARCHAR(255), rel INT, discipline INT, wip INT)', (error, result, fields) => {
                     if(error){
                         console.log('Error when creating table \'components\' for the first time: ' + error.code);
                         return;
@@ -465,6 +462,7 @@ router.post('/add/ticket', (request, response) => {
 /* *******************************************[ add comment ]*********************************************************** */
 router.post('/add/comment', (request, response) => {
     let data = request.body;
+    console.log(data);
     delete data.id;
     // prepare to ackownledge existence
     database.query('INSERT INTO comments SET ?', data, (error, result, fields) => {
@@ -674,8 +672,26 @@ router.get('/get-tickets-dash', (request, response) => {
             console.log('Database error when fetching dashboard: ' + error.code);
             return;
         }
-        // tickets = result;
-        response.send(result);
+        tickets = result;
+
+        database.query('SELECT project from components where id = ?', [request.query.component], (error, result, fields) => {
+            if(error){
+                console.log('Database error when fetching dashboard: ' + error.code);
+                return;
+            }
+            proj = result[0];
+
+            database.query('SELECT shortName from projects where id = ?', [proj.project], (error, result, fields) => {
+                if(error){
+                    console.log('Database error when fetching dashboard: ' + error.code);
+                    return;
+                }
+
+                response.send({tickets: tickets, shortName: result[0]});
+            });
+
+        });
+        // 
     });
 });
 /* ********************************************************************************************************************* */
@@ -744,13 +760,11 @@ router.get('/get/worklogs/:id', (request, response) => {
 /* ********************************************************************************************************************* */
 
 /* *************************************************[ change ticket lane ]********************************************** */
-router.get('/conv-user', (request, response) => {
-    let params = request.query;
-    database.query('SELECT name, email FROM users where email = ?', request.query.user, (error, result, fields) => {
+router.post('/conv-user', (request, response) => {
+    console.log(request.body.user);
+    database.query('SELECT * FROM users WHERE email = ?', request.body.user, (error, result, fields) => {
         if(error){
-            response.statusCode == 400;
-            response.send({success: 0});
-            console.log('Database error at components: ' + error);
+            console.log('Database error at tick: ' + error.code);
             return;
         }
         response.statusCode == 200;
@@ -1080,23 +1094,221 @@ router.post('/remove/worklog', (request, response) => {
 });
 /* ********************************************************************************************************************* */
 
-app.use(express.static(__dirname + '/routes'));
+/* *************************************************[ get project details ]********************************************* */
+router.get('/get/project/:id', (request, response) => {
+    let data = request.body;
+    database.query('SELECT * FROM projects WHERE id = ?', request.params.id, (error, result1, fields) => {
+        if(error){
+            console.log('Database error at project: ' + error.code);
+            return;
+        }
+        let project = result1[0];
+
+        database.query('SELECT * FROM releases WHERE project = ?', request.params.id, (error, result2, fields) => {
+            if(error){
+                console.log('Database error at project: ' + error.code);
+                return;
+            }
+            let releases = result2;
+
+            database.query('SELECT * FROM disciplines WHERE project = ?', request.params.id, (error, result3, fields) => {
+                if(error){
+                    console.log('Database error at project: ' + error.code);
+                    return;
+                }
+                let cats = result3;
+
+                response.statusCode == 200;
+                response.send({project: project, releases: releases, categories: cats});
+            });
+        });
+    });
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ set project name ]********************************************* */
+router.post('/project/setname', (request, response) => {
+    let data = request.body;
+    database.query('UPDATE projects SET name = ?, lastModified = ? WHERE id = ?', [data.name, data.lastModified, data.id], (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            response.send({success: 0});
+            console.log('Database error at project: ' + error.code);
+            return;
+        }
+        response.statusCode == 200;
+        response.send({success: 1});
+    });
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ set project shortname ]********************************************* */
+router.post('/project/setshortname', (request, response) => {
+    let data = request.body;
+    database.query('UPDATE projects SET shortName = ?, lastModified = ? WHERE id = ?', [data.name, data.lastModified, data.id], (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            response.send({success: 0});
+            console.log('Database error at project: ' + error.code);
+            return;
+        }
+        response.statusCode == 200;
+        response.send({success: 1});
+    });
+});
+/* ********************************************************************************************************************* */
+/* *************************************************[ set project shortname ]********************************************* */
+router.post('/project/setstartdate', (request, response) => {
+    let data = request.body;
+    database.query('UPDATE projects SET startDate = ?, lastModified = ? WHERE id = ?', [data.date, data.lastModified, data.id], (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            response.send({success: 0});
+            console.log('Database error at project: ' + error.code);
+            return;
+        }
+        response.statusCode == 200;
+        response.send({success: 1});
+    });
+});
+/* ********************************************************************************************************************* */
+/* *************************************************[ set project shortname ]********************************************* */
+router.post('/project/setduedate', (request, response) => {
+    let data = request.body;
+    database.query('UPDATE projects SET endDate = ?, lastModified = ? WHERE id = ?', [data.date, data.lastModified, data.id], (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            response.send({success: 0});
+            console.log('Database error at project: ' + error.code);
+            return;
+        }
+        response.statusCode == 200;
+        response.send({success: 1});
+    });
+});
+/* ********************************************************************************************************************* */
+/* *************************************************[ set project shortname ]********************************************* */
+router.post('/project/removerelease', (request, response) => {
+    let data = request.body;
+    database.query('DELETE FROM releases WHERE id = ?', [data.rid, data.lastModified, data.id], (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            response.send({success: 0});
+            console.log('Database error at project: ' + error.code);
+            return;
+        }
+        
+        database.query('SELECT * FROM releases', (error, result, fields) => {
+            if(error){
+                response.statusCode == 400;
+                response.send({success: 0});
+                console.log('Database error at project: ' + error.code);
+                return;
+            }
+
+            response.statusCode == 200;
+            response.send({success: 1, releases: result});
+        });
+
+        database.query('UPDATE projects SET lastModified = ? WHERE id = ?', [data.lastModified, data.id], (error, result, fields));
+    });
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ set project shortname ]********************************************* */
+router.post('/project/addrelease', (request, response) => {
+    let data = request.body;
+    console.log(data);
+    database.query('INSERT INTO releases SET ?', data.release, (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            response.send({success: 0});
+            console.log('Database error at project: ' + error.code);
+            return;
+        }
+        response.statusCode == 200;
+        database.query('SELECT * FROM releases', (error, result, fields) => {
+            if(error){
+                response.statusCode == 400;
+                response.send({success: 0});
+                console.log('Database error at project: ' + error.code);
+                return;
+            }
+            response.statusCode = 200;
+            response.send({success: 1, releases: result});
+        });
+
+        database.query('UPDATE projects SET lastModified = ? WHERE id = ?', [data.lastModified, data.id], (error, result, fields));
+    });
+});
+/* ********************************************************************************************************************* */
+/* *************************************************[ set project shortname ]********************************************* */
+router.post('/project/addcategory', (request, response) => {
+    let data = request.body;
+    console.log(data);
+    database.query('INSERT INTO disciplines SET ?', data.category, (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            response.send({success: 0});
+            console.log('Database error at project: ' + error.code);
+            return;
+        }
+        database.query('SELECT * FROM disciplines', (error, result, fields) => {
+            if(error){
+                response.statusCode == 400;
+                response.send({success: 0});
+                console.log('Database error at project: ' + error.code);
+                return;
+            }
+            response.statusCode = 200;
+            response.send({success: 1, categories: result});
+        });
+        database.query('UPDATE projects SET lastModified = ? WHERE id = ?', [data.lastModified, data.id]);
+    });
+});
+/* ********************************************************************************************************************* */
+/* *************************************************[ set project shortname ]********************************************* */
+router.post('/project/removecategory', (request, response) => {
+    let data = request.body;
+    database.query('DELETE FROM disciplines WHERE id = ?', [data.cid, data.lastModified, data.id], (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            response.send({success: 0});
+            console.log('Database error at project: ' + error.code);
+            return;
+        }
+        
+        database.query('SELECT * FROM disciplines', (error, result, fields) => {
+            if(error){
+                response.statusCode == 400;
+                response.send({success: 0});
+                console.log('Database error at project: ' + error.code);
+                return;
+            }
+
+            response.statusCode == 200;
+            response.send({success: 1, categories: result});
+        });
+
+        database.query('UPDATE projects SET lastModified = ? WHERE id = ?', [data.lastModified, data.id], (error, result, fields));
+    });
+});
+/* ********************************************************************************************************************* */
+
+/* *************************************************[ set project shortname ]********************************************* */
+router.post('/project/setdescription', (request, response) => {
+    let data = request.body;
+    database.query('UPDATE projects SET description = ?, lastModified = ? WHERE id = ?', [data.description, data.lastModified, data.id], (error, result, fields) => {
+        if(error){
+            response.statusCode == 400;
+            response.send({success: 0});
+            console.log('Database error at project: ' + error.code);
+            return;
+        }
+        response.statusCode == 200;
+        response.send({success: 1});
+    });
+});
+/* ********************************************************************************************************************* */
 app.use(router);
-
-const sslOptions = {
-    key: fs.readFileSync('./ssl/key.pem'),
-    cert: fs.readFileSync('./ssl/cert.pem'),
-    passphrase: 'knbn',
-};
-
-app.listen(app.get('portHttp'), function(){
-    console.log('App is listening to port ' + app.get('portHttp'));
-});
-
-// let httpServer = http.createServer(app).listen(app.get('portHttp'), function(){
-//     // console.log('App is listening to port ' + app.get('port'));
-// });
-
-let httpsServer = https.createServer(sslOptions, app).listen(app.get('portHttps'), function(){
-    console.log('Https server is listening to port ' + app.get('portHttps'));
-});
+https.createServer({key: fs.readFileSync('ssl/key.pem'), cert: fs.readFileSync('ssl/cert.pem')}, app).listen(8080);

@@ -2,14 +2,9 @@ body{
     background-color: rgb(34, 35, 37);
 }
 
-.no-back{
-    background-color: transparent !important;
-    box-shadow: none !important;
-}
-
 .create > .row, .ticket > .row, .component > .row{
     /* margin-bottom: 15px; */
-    background: rgb(51, 56, 65);
+    background: rgb(39, 40, 43);
     /* padding: 15px; */
     /* padding-top: 15px; */
     /* padding-bottom: 15px; */
@@ -39,8 +34,8 @@ body{
 
 .form-control:focus{
     box-shadow: none;
-    border: 1px solid rgb(48, 108, 165);
-    background-color: rgb(63, 68, 78);
+    border: 1px solid rgb(49, 71, 83);
+    background-color: rgb(68, 70, 75);
     color: white;
 }
 
@@ -65,7 +60,7 @@ body{
 .search{
     height: 30px;
     font-size: 14px;
-    background: rgb(93, 102, 122);
+    background: rgb(55, 57, 61);
     color: rgb(212, 212, 212);
     border: 1px solid transparent;
 }
@@ -73,14 +68,14 @@ body{
 .search:focus{
     height: 30px;
     font-size: 14px;
-    background: rgb(93, 102, 122);
+    background: rgb(68, 70, 75);
     color: rgb(212, 212, 212);
-    border: 1px solid rgb(52, 135, 184);
+    border: 1px solid rgb(49, 71, 83);
 }
 
 .dropdown-toggle{
     color: rgb(192, 188, 188);
-    background: rgb(77, 83, 97);
+    background: rgb(46, 48, 51);
     box-shadow: none;
     /* border: 1px solid rgb(50, 57, 71); */
     font-size: 14px;
@@ -99,8 +94,8 @@ body{
 }
 
 .dropdown-toggle:hover, .dropdown-toggle:focus, .dropdown-toggle:active{
-    background: rgb(96, 105, 126);
-    border: 1px solid rgb(52, 135, 184);
+    background: rgb(53, 55, 59);
+    border: 1px solid rgb(34, 67, 88);
     box-shadow: none;
     color: rgb(255, 255, 255);
 }
@@ -130,17 +125,17 @@ body{
 }
 
 .dropdown-menu{
-    background: rgb(79, 87, 104);
+    background: rgb(46, 48, 51);
 }
 
 .dropdown-item{
-    color:rgb(219, 219, 219);
+    color:rgb(185, 185, 185);
     font-size: 14px;
 }
 
 .dropdown-item:hover{
-    background-color: rgb(71, 113, 161);
-    color: white;
+    background-color: rgb(58, 63, 66);
+    color: rgb(252, 252, 252);
 }
 
 .assign-to{

@@ -1,0 +1,9 @@
+html{
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body{
+    background-color: var(--main-bg-color);
+    height: 100%;
+}

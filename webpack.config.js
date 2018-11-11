@@ -6,13 +6,10 @@ module.exports = {
   context: __dirname,
   devtool: debug ? "inline-sourcemap" : null,
   entry: {
-    login: "./public/js/layout/Login.js",
-    register: "./public/js/layout/Register.js",
-    dashboard: "./public/js/layout/Dashboard.js",
-    menu: "./public/js/layout/Menu.js",
-    create_project: "./public/js/layout/CreateProject.js",
-    create_main: "./public/js/layout/components/create/CreateMain.js",
-    router: "./public/js/layout/Router.js"
+    login: "./public/components/Login.js",
+    register: "./public/components/Register.js",
+    dashboard: "./public/components/Dashboard.js",
+    menu: "./public/components/Menu.js",
   },
   module:{
     loaders: [
@@ -30,6 +27,9 @@ module.exports = {
   output: {
     path: __dirname + "/public/js/layout",
     filename: "[name].min.js"
+  },
+  node: {
+    fs: "empty"
   },
   plugins: debug ? [] : [
     new webpack.optimize.DedupePlugin(),

@@ -1,31 +1,54 @@
-/* .menu{
-    padding: 10px 20px 10px 20px;
+
+.navbar, .proj-drop {
+width : 100%;
+background-color : rgb(51, 56, 65);
+color : white;
+}
+.nav-item {
+border : transparent solid 1px !important ;
+background-color : transparent;
+color : rgb(180, 180, 180);
+font-size : 14px;
+padding-left : 15px;
+padding-right : 15px;
+}
+.active {
+background-color : rgb(65, 70, 78) !important ;
+border : rgb(65, 70, 78) solid 1px !important ;
+}
+.nav-link {
+color : rgb(180, 180, 180);
+}
+.nav-item:hover {
+border : rgb(65, 70, 78) solid 1px !important ;
+background-color : transparent !important ;
+}
+.proj-drop {
+width : 100%;
+}
+.proj-item {
+color : rgb(231, 231, 231);
+font-size : 14px;
+}
+.proj-item:hover, .proj-item:active, .proj-item:focus {
+color : rgb(255, 255, 255);
+background-color : rgb(65, 70, 78);
+}
+.navbar-toggler {
+border : none;
+}
+.search-btn {
+cursor : pointer;
+}
+.search-inpt, .search-inpt:focus {
     color: white;
-} */
-
-.navbar{
-    width: 100%;
-    background-color: rgb(51, 56, 65);
-    /* box-shadow: 1px 4px 4px rgb(199, 199, 199); */
-    color: white;
+width : 170px;
+font-size : 14px;
+background-color: transparent;
+border:none;
+box-shadow: none;
 }
-
-
-.nav-item{
-    border-bottom: 2px solid transparent;
-    border-radius: none;
-    color: rgb(180, 180, 180);
-}
-
-.nav-link{
-    color: rgb(180, 180, 180);
-}
-
-/* .nav-link, .navbar-brand{
-    color: white !important;
-} */
-
-.nav-item:hover{
-    /* background-color: rgba(255, 255, 255, 0.164); */
-    border-bottom: 2px solid rgb(3, 182, 226);
+.search-bar {
+background-color : rgb(67, 73, 85);
+border-radius : 4px;
 }

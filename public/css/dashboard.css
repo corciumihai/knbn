@@ -8,10 +8,6 @@
     background-color: rgb(39, 40, 43);
 }
 
-.section-head{
-    /* border-bottom: 1px solid rgb(52, 53, 58); */
-}
-
 .column-name{
     text-align: center;
     font-weight: bold;
@@ -23,7 +19,7 @@
     background-color: rgb(52, 53, 58);
     border: 1px solid transparent;
     cursor: move;
-    border-radius: 4px;
+    border-radius: none;
 }
 
 .ticket:hover{
@@ -87,8 +83,22 @@
     display: flex;
 }
 
-/* .section-head, .section-body{
-    color: rgb(221, 221, 221);
-    font-size: 14px;
-    background-color: rgb(39, 40, 43);
-} */
+.prio-1, .prio-2, .prio-3{
+    width: 4px;
+}
+
+.prio-1{
+    background-color: rgb(94, 187, 94);
+}
+
+.prio-2{
+    background-color: rgb(250, 207, 87);
+}
+
+.prio-3{
+    background-color: rgb(209, 95, 87);
+}
+
+.reduce, .hide{
+    display: none;
+}

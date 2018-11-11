@@ -1,0 +1,13 @@
+:root {
+    --main-bg-color:rgb(34, 35, 37);
+    --form-ctrl-bg:rgb(48, 50, 53);
+    --form-ctrl-border:rgb(72, 76, 82);
+    --form-ctrl-on-focus-bg:rgb(56, 60, 65);
+    --form-ctrl-on-focus-border:rgb(61, 83, 117);
+    --error: rgb(250, 86, 86);
+    --span-col: rgb(156, 156, 156);
+    --small-text: 13px;
+
+
+  }
+

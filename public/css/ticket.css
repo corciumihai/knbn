@@ -6,6 +6,7 @@ html, body{
     color: white;
     cursor: pointer;
     font-size: 14px;
+    /* min-height: 100px; */
 }
 
 .info{
@@ -27,18 +28,16 @@ html, body{
     font-size: 25px;
     color: white;
     border: 1px solid transparent;
-    /* border-radius: 4px; */
+    border: 1px solid rgb(62, 64, 68);
 }
 
 .name:hover{
-    border: 1px solid rgb(62, 64, 68);
+    border: 1px solid rgb(55, 76, 116);
 }
 
 .edit{
     width: 25px;
     height: 25px;
-    /* border-radius: 4px; */
-    /* border: 1px solid transparent; */
     cursor: pointer;
 }
 
@@ -62,9 +61,7 @@ html, body{
 }
 
 .modifiable{
-    /* border-radius: 4px; */
     border: 1px solid transparent;
-    /* cursor: pointer; */
 }
 
 .modifiable:hover{
@@ -89,7 +86,7 @@ html, body{
     background-color: rgb(78, 105, 128);
 }
 
-.tag{
+.tag, .name, .highlight{
     background-color: rgb(39, 40, 43);
 }
 
@@ -115,7 +112,6 @@ html, body{
     overflow: auto;
 }
 
-
 .dropdown-item:hover{
     background-color: rgb(52, 53, 58);
     color: white;
@@ -134,26 +130,21 @@ html, body{
     width: 20px;
 }
 
-.nav-item, .nav-link:hover, .nav-link:focus, .nav-link{
+.ticket-link, .ticket-link:hover, .ticket-link:focus{
     border-radius: 0px !important;
     border: none !important;
-    font-size: 14px;
+    font-size: 14px !important;
+    color: gray;
+}
+.ticket-link:hover{
+    background-color: rgb(49, 49, 53) !important;
 }
 
-.active{
+.ticket-link-active{
     background-color: rgb(52, 53, 58) !important;
     color: rgb(245, 219, 170) !important;
     border: none;
     border-radius: 0px;
-}
-
-.nav-link:hover{
-    background-color: rgb(52, 53, 58) !important;
-    color: white;
-}
-
-.nav-tabs{
-    border: none;
 }
 
 .comment, .worklog{
@@ -226,7 +217,8 @@ html, body{
     border-top: none;
     color: white;
     font-size: 14px;
-    max-height: 500px !important;
+    max-height: 700px !important;
+    min-height: 40px;
     overflow: auto;
 }
 
@@ -277,10 +269,61 @@ html, body{
     border: 1px solid rgb(52, 53, 58);
 }
 
-.top-nav-item, .top-nav-item:focus{
-    border-right: 1px solid rgb(52, 53, 58) !important;
+.font-medium-size{
+    font-size: 17px;
 }
 
-.top-nav-item:hover{
-    border-right: 1px solid transparent !important;
+.release-box{
+    border-radius: 0px;
+    border: 1px solid rgb(68, 68, 68);
+    font-size: 14px;
+    background-color: transparent;
+}
+
+.release-box:hover, .release-box:focus{
+    background-color: rgb(39, 40, 43);
+}
+
+.release-box:focus{
+    border: 1px solid rgb(55, 76, 116);
+    
+}
+
+.insert-release{
+    font-size: 14px;
+    border-radius: 0px;
+    color: rgb(214, 214, 214);
+    border: 1px solid rgb(61, 61, 61);
+    border-left: none;
+    cursor: pointer;
+}
+
+.insert-release:hover, .insert-release:focus{
+    background-color: rgb(48, 49, 51);
+    border: 1px solid rgb(68, 68, 68);
+    border-left: none;
+}
+
+.release{
+    border-radius: 15px;
+    color: rgb(255, 255, 255) !important;
+    background-color: rgb(46, 48, 54);
+    /* background: linear-gradient(0deg, rgba(46,48,54,1) 0%, rgb(58, 58, 58) 100%); */
+    border: 1px solid rgb(65, 67, 71);
+    font-size: 13px;
+    text-align: center;
+}
+
+.remove{
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+.remove:hover, .remove:focus{
+    opacity: 1;
+}
+
+.ticket-nav-item, .ticket-nav-item:hover{
+    border: none !important;
+    margin-bottom: 1px !important;
 }
