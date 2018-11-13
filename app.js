@@ -15,7 +15,7 @@ app.set('view engine', 'pug');
 app.set('views', __dirname + '/views');
 
 app.use(express.static('public'));
-app.use(require('express-session')({secret: 'keyboard cat', resave: false, saveUninitialized: false/*, cookie: { maxAge: 6000}*/}));
+app.use(require('express-session')({secret: 'keyboard cat', resave: false, saveUninitialized: false, cookie: { maxAge: 600000}}));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(passport.initialize());
@@ -35,7 +35,7 @@ passport.use(new LocalStrategy((email, password, done) => {
     console.log(email, password);
     UserSchema.findUser(email, (error, user) => {
         if(error){ 
-            return done(err); 
+            return done(error); 
         }
         if(!user){
             return done(null, false, { message: 'Incorrect username' });

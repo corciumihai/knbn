@@ -57,7 +57,7 @@ class Lane extends React.Component{
         const {isOver, canDrop} = this.props;
         const {connectDropTarget} = this.props;
         return connectDropTarget(
-            <div class={canDrop ? "lane col can-drop": "lane col"}> 
+            <div class={canDrop ? "lane col can-drop p-1": "lane col p-1"}> 
             {
                 this.props.loading ?
                     <img src="./images/loading.gif" class="d-block mx-auto"/>

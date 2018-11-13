@@ -29,6 +29,7 @@
 .lane{
     border: 1px solid rgb(52, 53, 58);
     background-color: rgb(39, 40, 43);
+    flex: 1;
 }
 
 .ticket-data{
@@ -69,7 +70,7 @@
 }
 
 .can-drop{
-    border: 1px dashed rgba(188, 255, 167, 0.541);
+    border: 1px solid rgba(188, 255, 167, 0.541);
     background-color: rgb(44, 51, 49);
 }
 
@@ -96,9 +97,22 @@
 }
 
 .prio-3{
-    background-color: rgb(209, 95, 87);
+    background-color: rgb(199, 61, 51);
 }
 
 .reduce, .hide{
     display: none;
+}
+
+.lane-direction{
+    flex-direction: column;
+}
+
+.assignee-pic{
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    /* border: 1px solid var(--ticket-border-color); */
+    margin-bottom: -20px;
+    z-index: 1; 
 }

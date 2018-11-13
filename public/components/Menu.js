@@ -29,7 +29,7 @@ class Menu extends React.Component{
     render(){
         return(
             <nav class="navbar  navbar-expand-xl navbar-expand-lg navbar-expand-md navbar-dark mb-3">
-                <a class="navbar-brand" href="/dashboard">KNBN Dashboard</a>
+                <a class="navbar-brand" href="/">KNBN Dashboard</a>
                 <div class="navbar-toggler" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
                     onClick={this.toggle}>
                     {

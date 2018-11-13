@@ -169,7 +169,7 @@ class Component extends React.Component{
         return(
             this.state.ticketsBacklog.length > 0 || this.state.ticketsProgress.length > 0 || this.state.ticketsDone.length > 0 || this.state.ticketsClosed.length > 0 ?
                 <div class="row">
-                    <div class="section col-xl-10 col-lg-10 col-md-10 col-sm-10 col-12 offset-xl-1 offset-lg-1 offset-md-1 offset-sm-1 mt-2">
+                    <div class="section col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-2">
                         <div class="row">
                             <div class="section-head col-xl-12 py-2">
                                 <div class="row">
@@ -183,57 +183,62 @@ class Component extends React.Component{
                             <div class={"section-body col" + (this.state.flip ? " reduce" : "")}>
                                 <div class="row">
                                     {/* BACKLOG */}
-                                    <div class={'column col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 border-L border-r'} >
-                                        <div class="row">
-                                            <div class="column-name col">BACKLOG
-                                            </div>
-                                        </div>
-                                        <div class="row h-100">
-                                            <Lane items={this.state.ticketsBacklog} lane={0} 
-                                                comp={this.props.id} push={this.pushTicket} sort={this.sortLane}
-                                                remove={this.removeTicket} changeLaneF={this.changeTicketLaneForward} changeLaneB={this.changeTicketLaneBackward}
-                                                shortName = {this.state.shortName}/>
-                                        </div>
+                                    <div class={'column col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 border-L border-r d-flex flex-column px-0'} >
+                                        <div class="column-name w-100">BACKLOG</div>
+                                        <Lane 
+                                        items={this.state.ticketsBacklog} 
+                                        lane={0} 
+                                        comp={this.props.id} 
+                                        push={this.pushTicket} 
+                                        sort={this.sortLane}
+                                        remove={this.removeTicket} 
+                                        changeLaneF={this.changeTicketLaneForward} 
+                                        changeLaneB={this.changeTicketLaneBackward}
+                                        shortName = {this.state.shortName}/>
                                     </div>
                                     {/* IN PROGRESS */}
-                                    <div class={'column col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 border-r'} >
-                                        <div class="row">
-                                            <div class="column-name col">IN PROGRESS (WIP={this.state.wip})</div>
-                                        </div>
-                                        <div class="row h-100">
-                                            <Lane items={this.state.ticketsProgress} lane={1} 
-                                                comp={this.props.id} push={this.pushTicket} sort={this.sortLane}
-                                                remove={this.removeTicket} changeLaneF={this.changeTicketLaneForward} changeLaneB={this.changeTicketLaneBackward}
-                                                shortName = {this.state.shortName} wip={this.state.wip}/>
-                                        </div>
+                                    <div class={'column col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 border-r d-flex flex-column px-0'} >
+                                        <div class="column-name w-100">IN PROGRESS (WIP={this.state.wip})</div>
+                                        <Lane 
+                                        items={this.state.ticketsProgress} 
+                                        lane={1} 
+                                        comp={this.props.id} 
+                                        push={this.pushTicket} 
+                                        sort={this.sortLane}
+                                        remove={this.removeTicket} 
+                                        changeLaneF={this.changeTicketLaneForward} 
+                                        changeLaneB={this.changeTicketLaneBackward}
+                                        shortName = {this.state.shortName} 
+                                        wip={this.state.wip}/>
                                     </div>
 
                                     {/* DONE */}
-                                    <div class={'column col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 border-r'} >
-                                        <div class="row">
-                                            <div class="column-name col">DONE
-                                            </div>
-                                        </div>
-                                        <div class="row h-100">
-                                            <Lane items={this.state.ticketsDone} lane={2} 
-                                                comp={this.props.id} push={this.pushTicket} sort={this.sortLane}
-                                                remove={this.removeTicket} changeLaneF={this.changeTicketLaneForward} changeLaneB={this.changeTicketLaneBackward}
-                                                shortName = {this.state.shortName}/>
-                                        </div>
+                                    <div class={'column col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 border-r d-flex flex-column px-0'} >
+                                        <div class="column-name w-100">DONE</div>
+                                        <Lane 
+                                        items={this.state.ticketsDone} 
+                                        lane={2} 
+                                        comp={this.props.id} 
+                                        push={this.pushTicket} 
+                                        sort={this.sortLane}
+                                        remove={this.removeTicket} 
+                                        changeLaneF={this.changeTicketLaneForward} 
+                                        changeLaneB={this.changeTicketLaneBackward}
+                                        shortName = {this.state.shortName}/>
                                     </div>
                                     {/* CLOSED */}
-
-                                    <div class={'column col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 border-R'} >
-                                        <div class="row">
-                                            <div class="column-name col">CLOSED
-                                            </div>
-                                        </div>
-                                        <div class="row h-100">
-                                            <Lane items={this.state.ticketsClosed} lane={3} 
-                                                comp={this.props.id} push={this.pushTicket} sort={this.sortLane}
-                                                remove={this.removeTicket} changeLaneF={this.changeTicketLaneForward} changeLaneB={this.changeTicketLaneBackward}
-                                                shortName = {this.state.shortName}/>
-                                        </div>
+                                    <div class={'column col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 border-R d-flex flex-column px-0'} >
+                                        <div class="column-name w-100">CLOSED</div>
+                                        <Lane 
+                                        items={this.state.ticketsClosed} 
+                                        lane={3} 
+                                        comp={this.props.id} 
+                                        push={this.pushTicket} 
+                                        sort={this.sortLane}
+                                        remove={this.removeTicket} 
+                                        changeLaneF={this.changeTicketLaneForward} 
+                                        changeLaneB={this.changeTicketLaneBackward}
+                                        shortName = {this.state.shortName}/>
                                     </div>
                                 </div>
                             </div>
