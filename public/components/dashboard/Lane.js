@@ -61,10 +61,9 @@ class Lane extends React.Component{
             {
                 this.props.loading ?
                     <img src="./images/loading.gif" class="d-block mx-auto"/>
-                :
+                    :
                     this.props.items.map(ticket => {
                         let name;
-                        
                         return <Ticket data={ticket} key={ticket.id} remove={this.props.remove} lane={this.props.lane} changeLaneF={this.props.changeLaneF} changeLaneB={this.props.changeLaneB}
                         edit={this.props.edit} shortName = {this.props.shortName} name={name}/>
                     })

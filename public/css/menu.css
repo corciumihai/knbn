@@ -1,54 +1,80 @@
 
 .navbar, .proj-drop {
-width : 100%;
-background-color : rgb(51, 56, 65);
-color : white;
+    width : 100%;
+    background-color : var(--section-bg-color);
+    color : white;
 }
 .nav-item {
-border : transparent solid 1px !important ;
-background-color : transparent;
-color : rgb(180, 180, 180);
-font-size : 14px;
-padding-left : 15px;
-padding-right : 15px;
+    border : transparent solid 1px !important ;
+    background-color : transparent;
+    color : rgb(180, 180, 180);
+    font-size : 14px;
+    padding-left : 15px;
+    padding-right : 15px;
 }
 .active {
-background-color : rgb(65, 70, 78) !important ;
-border : rgb(65, 70, 78) solid 1px !important ;
+    background-color : var(--ticket-bg) !important ;
 }
 .nav-link {
 color : rgb(180, 180, 180);
 }
 .nav-item:hover {
-border : rgb(65, 70, 78) solid 1px !important ;
-background-color : transparent !important ;
+    border : rgb(65, 70, 78) solid 1px !important ;
+    background-color : transparent !important;
 }
 .proj-drop {
-width : 100%;
+    width : 100%;
 }
 .proj-item {
-color : rgb(231, 231, 231);
-font-size : 14px;
+    color : rgb(231, 231, 231);
+    font-size : 14px;
 }
 .proj-item:hover, .proj-item:active, .proj-item:focus {
-color : rgb(255, 255, 255);
-background-color : rgb(65, 70, 78);
+    color : rgb(255, 255, 255);
+    background-color : var(--ticket-bg);
 }
 .navbar-toggler {
-border : none;
+    border : none;
 }
 .search-btn {
-cursor : pointer;
+    cursor : pointer;
 }
 .search-inpt, .search-inpt:focus {
     color: white;
-width : 170px;
-font-size : 14px;
-background-color: transparent;
-border:none;
-box-shadow: none;
+    /* width : 170px; */
+    font-size : 14px;
+    background-color: transparent;
+    border: 1px solid var(--form-ctrl-border);
+    box-shadow: none;
 }
 .search-bar {
-background-color : rgb(67, 73, 85);
-border-radius : 4px;
+    background-color : rgb(67, 73, 85);
+    border-radius : 4px;
+}
+
+.dropdown-toggle:after{
+    margin-left: 10px;
+}
+
+.dropdown-menu{
+    border: none;
+}
+
+.profile-pic{
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    background-color: gray;
+}
+
+.to-profile{
+    font-size: 14px;
+    color: rgb(192, 192, 192);
+    text-decoration: none;
+}
+
+.to-profile:hover{
+    font-size: 14px;
+    color: white;
+    text-decoration: none;
 }

@@ -77,6 +77,25 @@ router.get('/login', function(request, response){response.render(path.resolve(__
 router.post('/login', passport.authenticate('local', {successRedirect: '/', failureRedirect: '/login'}));
 
 
+router.get('/current-user', (request, response) => {
+    if(request.isAuthenticated()){
+        response.send({success: true, user: request.user.email, name: request.user.name});
+    }
+    else{
+        response.send({success: false});
+    }
+});
+
+router.get('/user/:email', (request, response) => {
+    console.log(request.params.email);
+    database.query('SELECT name FROM users WHERE email = ?', [request.params.email], (error, result, fields) => {
+        if(error || result == undefined || result.length == 0){
+            response.send({success: false}); return;
+        }
+        response.send({success: true, name: result[0].name});
+    });
+});
+
 
 
 router.get('/view/ticket/:id', (request, response) => {response.render(path.resolve(__dirname, 'views', 'view.pug')); });

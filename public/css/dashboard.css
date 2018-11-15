@@ -5,7 +5,7 @@
 .section{
     color: rgb(221, 221, 221);
     font-size: 14px;
-    background-color: rgb(39, 40, 43);
+    background-color: var(--section-bg-color);
 }
 
 .column-name{
@@ -16,24 +16,15 @@
 }
 
 .ticket{
-    background-color: rgb(52, 53, 58);
-    border: 1px solid transparent;
+    background-color: var(--ticket-bg);
     cursor: move;
     border-radius: none;
 }
 
-.ticket:hover{
-    border: 1px solid rgba(178, 191, 255, 0.226);
-}
-
 .lane{
     border: 1px solid rgb(52, 53, 58);
-    background-color: rgb(39, 40, 43);
+    background-color: var(--section-bg-color);
     flex: 1;
-}
-
-.ticket-data{
-    background-color: rgb(52, 53, 58);
 }
 
 .ticket-id{
@@ -112,7 +103,14 @@
     width: 40px;
     height: 40px;
     border-radius: 100%;
-    /* border: 1px solid var(--ticket-border-color); */
-    margin-bottom: -20px;
+    border: 1px solid var(--ticket-border-color);
     z-index: 1; 
+}
+
+.ticket-box{
+    border: 1px solid transparent;
+}
+
+.ticket-box:hover{
+    border: 1px solid rgba(178, 191, 255, 0.226);
 }

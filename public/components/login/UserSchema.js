@@ -3,7 +3,7 @@ var bcrypt = require('bcryptjs');
 
 class UserSchema{
     static findUser(username, callback){        
-        database.query('SELECT email, password FROM users WHERE email = ?', username, (error, result, fields) => {
+        database.query('SELECT email, password, name FROM users WHERE email = ?', username, (error, result, fields) => {
             if(error){
                 callback(error, null);
                 return;

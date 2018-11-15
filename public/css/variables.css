@@ -8,6 +8,8 @@
     --span-col: rgb(156, 156, 156);
     --small-text: 13px;
     --ticket-border-color: rgba(178, 191, 255, 0.226);
-
+    --section-bg-color:rgb(42, 43, 46);
+    --light-gray: rgb(65, 70, 78);
+    --ticket-bg: rgb(56, 57, 61);
   }
 
