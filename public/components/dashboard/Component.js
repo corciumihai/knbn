@@ -14,6 +14,7 @@ class Component extends React.Component{
             ticketsDone: [],
             ticketsClosed: [],
             wip: this.props.wip,
+            showDesc: false,
         }
 
         this.toggle = this.toggle.bind(this);
@@ -22,6 +23,7 @@ class Component extends React.Component{
         this.pushTicket = this.pushTicket.bind(this);
         this.removeTicket = this.removeTicket.bind(this);
         this.sortLane = this.sortLane.bind(this);
+        this.toggleDesc = this.toggleDesc.bind(this);
     }
 
     componentWillMount(){
@@ -39,6 +41,10 @@ class Component extends React.Component{
 
     toggle(){
         this.setState({flip: !this.state.flip});
+    }
+
+    toggleDesc(){
+        this.setState({showDesc: !this.state.showDesc});
     }
 
     changeTicketLaneForward(ticket, fromToolbar){
@@ -171,15 +177,27 @@ class Component extends React.Component{
                 <div class="section col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mt-2">
                     <div class="row">
                         <div class="section-head col-xl-12 py-2">
-                            <div class="row">
-                                <div class="px-3"><div class="toggle d-flex" onClick={this.toggle}>
-                                    <img src={!this.state.flip ? "./images/close.svg" : "./images/show.svg"} class="d-block mx-auto"/></div></div> 
-                                <div class="col">{this.props.name}</div>
+                            <div class="col d-flex flex-row">
+                                <div class="d-flex flex-row">
+                                    <div class="toggle d-flex mr-1" onClick={this.toggle}>
+                                        <img src={!this.state.flip ? "./images/close.svg" : "./images/show.svg"} class="d-block mx-auto"/>
+                                    </div>
+                                    <div class="toggle d-flex" onClick={this.toggleDesc}>
+                                        <img src={!this.state.showDesc ? "./images/descplus.svg" : "./images/descclose.svg"} class="d-block mx-auto"/>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="col">{this.props.name}</div>
+                                    <div class={this.state.showDesc ? "comp-desc col-12 d-flex flex-row" : "comp-desc col-12 d-flex flex-row hide"}>
+                                        <div>Description:</div>
+                                        <div class="col">{this.props.description}</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class={"section-body col" + (this.state.flip ? " reduce" : "")}>
+                        <div class={!this.state.flip ? "section-body col" : "section-body col reduce"}>
                             <div class="row">
                                 {/* BACKLOG */}
                                 <div class={'column col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 d-flex flex-column px-0'} >

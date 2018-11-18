@@ -1,16 +1,95 @@
-body{
-    background-color: rgb(34, 35, 37);
+.label{
+    font-size: 14px;
+    color: white;
 }
 
-.create > .row, .ticket > .row, .component > .row{
-    /* margin-bottom: 15px; */
-    background: rgb(39, 40, 43);
-    /* padding: 15px; */
-    /* padding-top: 15px; */
-    /* padding-bottom: 15px; */
-    /* box-shadow: 2px 3px 3px rgb(189, 189, 189); */
-    border-radius: 4px;
+/* .dropdown-menu{
+    background: rgb(46, 48, 51);
+} */
+
+.ticket-dropdown-item{
+    color:rgb(185, 185, 185);
+    font-size: 14px;
 }
+
+.ticket-dropdown-item:hover{
+    background-color: rgb(58, 63, 66);
+    color: rgb(252, 252, 252);
+} 
+
+.ticket-section{
+    background-color: var(--section-bg-color);
+}
+
+.ticket-text-area{
+    min-width: 20ch;
+}
+
+.ticket-text-area::-moz-placeholder, .date-area::-moz-placeholder{
+    font-size: 14px;
+    font-style: italic;
+    color: rgb(99, 98, 98);
+}
+
+.ticket-text-area:focus, .date-area:focus{
+    box-shadow: none;
+    border: none;
+    background-color: rgb(68, 70, 75);
+    color: white;
+}
+
+.ticket-text-area, .date-area{
+    font-size: 14px;
+    background-color: var(--ticket-bg);
+    border: none;
+    /* border: 1px solid rgb(79, 85, 99); */
+    color: rgb(179, 179, 179);
+    border-radius: 0 !important;
+}
+
+.ticket-dropdown-btn{
+    font-size: 14px;
+    background-color: var(--ticket-bg);
+    border: none;
+    border-radius: 0 !important;
+    box-shadow: none;
+}
+
+.ticket-dropdown-btn:hover, .ticket-dropdown-btn:focus, .ticket-dropdown-btn:active, .ticket-dropdown-menu{
+    box-shadow: none !important;
+    background-color: rgb(68, 70, 75) !important;
+    border: none !important;
+    border-radius: 0 !important;
+}
+
+.mini-profile-pic{
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+}
+
+.ticket-input-grp{
+    border: none !important;
+    border-radius: 0;
+}
+
+.ticket-date{
+    background-color: rgb(59, 59, 59);
+    color: white;
+    font-size: 14px;
+    text-align: center;
+}
+
+.date-label{
+    font-size: 13px;
+    color: gray;
+}
+
+
+
+
+
+
 
 .select-item{
     text-align: center;
@@ -20,24 +99,11 @@ body{
     width: 100%;
 }
 
-.form-control{
-    font-size: 14px;
-    background-color: transparent;
-    border: 1px solid rgb(79, 85, 99);
-    color: rgb(179, 179, 179);
-}
 
-.form-control::-moz-placeholder{
-    font-size: 12px;
-    font-style: italic;
-}
 
-.form-control:focus{
-    box-shadow: none;
-    border: 1px solid rgb(49, 71, 83);
-    background-color: rgb(68, 70, 75);
-    color: white;
-}
+
+
+
 
 
 .info{
@@ -73,15 +139,14 @@ body{
     border: 1px solid rgb(49, 71, 83);
 }
 
-.dropdown-toggle{
+/* .dropdown-toggle{
     color: rgb(192, 188, 188);
     background: rgb(46, 48, 51);
     box-shadow: none;
-    /* border: 1px solid rgb(50, 57, 71); */
     font-size: 14px;
     cursor: pointer;
     text-align: left
-}
+} */
 
 .description{
     background: rgb(79, 87, 104);
@@ -93,12 +158,12 @@ body{
     /* border: none; */
 }
 
-.dropdown-toggle:hover, .dropdown-toggle:focus, .dropdown-toggle:active{
+/* .dropdown-toggle:hover, .dropdown-toggle:focus, .dropdown-toggle:active{
     background: rgb(53, 55, 59);
     border: 1px solid rgb(34, 67, 88);
     box-shadow: none;
     color: rgb(255, 255, 255);
-}
+} */
 
 .caret{
     width: 22px;
@@ -107,12 +172,12 @@ body{
     background-color: transparent;
 }
 
-.dropdown-toggle:hover > .row >.caret, .dropdown-toggle:focus > .row > .caret, .dropdown-toggle:active > .row > .caret{
+/* .dropdown-toggle:hover > .row >.caret, .dropdown-toggle:focus > .row > .caret, .dropdown-toggle:active > .row > .caret{
     background-color: rgb(48, 108, 165);
     border-radius: 4px;
-}
+} */
 
-.dropdown-toggle > .row > .caret > img, .dropdown-toggle > .row > .caret > img, .dropdown-toggle > .row > .caret > img{
+/* .dropdown-toggle > .row > .caret > img, .dropdown-toggle > .row > .caret > img, .dropdown-toggle > .row > .caret > img{
     filter: invert(.5);
 }
 
@@ -122,21 +187,7 @@ body{
 
 .dropdown-toggle::after{
     display: none;
-}
-
-.dropdown-menu{
-    background: rgb(46, 48, 51);
-}
-
-.dropdown-item{
-    color:rgb(185, 185, 185);
-    font-size: 14px;
-}
-
-.dropdown-item:hover{
-    background-color: rgb(58, 63, 66);
-    color: rgb(252, 252, 252);
-}
+} */
 
 .assign-to{
     float: right;
@@ -161,7 +212,7 @@ body{
     border: 1px solid rgb(71, 113, 161);
 }
 
-.input-group > .form-control{
+.input-group > .ticket-text-area{
     border: none;
 }
 

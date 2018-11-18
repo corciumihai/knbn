@@ -16,19 +16,7 @@ class Priority extends React.Component{
 
     render(){
         return(
-            <div class="row mb-2 pt-3 pb-3">
-                <div class="col-xl-3 pr-0 info mb-xl-0 mb-2">
-                    <div class="row d-flex h-100">
-                        <div class="col d-flex"><span class="align-self-center">Priority</span></div>
-                    </div>
-                </div>
-                <div class="col-xl-4">
-                    <DropdownSearch list={this.state.priorities} item={{value: this.props.item == 1 ? "Lowest" : this.props.item == 2 ? "Medium" : "Highest", 
-                                                                        key: this.props.item, 
-                                                                        img: this.props.item == 1 ? "low.svg" : this.props.item == 2 ? "neuter.svg" : "high.svg"}} 
-                        onClick={this.set} placeholder="Select priority" />
-                </div>
-            </div>
+            
         );
     }
 }

@@ -7,9 +7,11 @@ module.exports = {
   devtool: debug ? "inline-sourcemap" : null,
   entry: {
     login: "./public/components/Login.js",
+    ticketSetup: "./public/components/create/TicketSetup.js",
     register: "./public/components/Register.js",
     dashboard: "./public/components/Dashboard.js",
     menu: "./public/components/Menu.js",
+    profile: "./public/components/Profile.js"
   },
   module:{
     loaders: [

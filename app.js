@@ -32,7 +32,6 @@ passport.deserializeUser(function(email, done) {
 });
 
 passport.use(new LocalStrategy((email, password, done) => {
-    console.log(email, password);
     UserSchema.findUser(email, (error, user) => {
         if(error){ 
             return done(error); 
@@ -79,7 +78,7 @@ router.post('/login', passport.authenticate('local', {successRedirect: '/', fail
 
 router.get('/current-user', (request, response) => {
     if(request.isAuthenticated()){
-        response.send({success: true, user: request.user.email, name: request.user.name});
+        response.send({success: true, email: request.user.email, name: request.user.name});
     }
     else{
         response.send({success: false});
@@ -95,6 +94,69 @@ router.get('/user/:email', (request, response) => {
         response.send({success: true, name: result[0].name});
     });
 });
+
+router.get('/profile', (request, response) => {
+    if(request.isAuthenticated()){
+        response.render(path.resolve(__dirname, 'views', 'profile.pug'));
+    } 
+    else{
+        response.redirect('/login');
+    }
+});
+
+router.get('/users/get-users', function(request, response){
+    var query = database.query('SELECT email, name from users', (error, result, fields) => {
+        if(error){
+            console.log('Databse error at users: ' + error);
+            return;
+        }
+        response.send(result);
+    })
+});
+
+router.get('/create-ticket', (request, response) => {
+    // if(request.isAuthenticated()){
+        response.render(path.resolve(__dirname, 'views', 'ticketSetup.pug'));
+    // }
+    // else{
+    //     response.redirect('/login');
+    // }
+});
+
+router.get('/get-components', (request, response) => {
+    database.query('SELECT id, name FROM components', (error, result, fields) => {
+        if(error){
+            console.log('Database error when fetching releases: ' + error.code);
+            return;
+        }
+        response.send(result);
+    })
+});
+
+router.get('/get-tickets', (request, response) => {
+    database.query('SELECT id, name FROM tickets', (error, result, fields) => {
+        if(error){
+            console.log('Database error when fetching releases: ' + error.code);
+            return;
+        }
+        response.send(result);
+    })
+});
+
+router.get('/get-categories', (request, response) => {
+    database.query('SELECT id, name FROM disciplines', (error, result, fields) => {
+        if(error){
+            console.log('Database error when fetching releases: ' + error.code);
+            return;
+        }
+        response.send(result);
+    })
+});
+
+
+
+
+
 
 
 
@@ -128,16 +190,6 @@ router.get('/count', (request, response) => {
         }
         response.send(result);
     });
-});
-
-router.get('/users/get-users', function(request, response){
-    var query = database.query('SELECT email as \'key\', name as \'value\' from users', (error, result, fields) => {
-        if(error){
-            console.log('Databse error at users: ' + error);
-            return;
-        }
-        response.send(result);
-    })
 });
 
 router.post('/create/card', (request, response) => {
@@ -239,10 +291,6 @@ router.post('/components', (request, response) => {
 
 router.get('/create-project', (request, response) => {
     response.render(path.resolve(__dirname, 'views', 'create_project.pug'));
-});
-
-router.get('/create', (request, response) => {
-    response.render(path.resolve(__dirname, 'views', 'create.pug'));
 });
 
 /* *******************************************< add project >*********************************************************** */
@@ -590,39 +638,15 @@ router.get('/get-releases', (request, response) => {
 /* ********************************************************************************************************************* */
 
 /* *************************************************[ get disciplines ]************************************************* */
-router.get('/get-disciplines', (request, response) => {
-    database.query('SELECT id AS \'key\', name AS \'value\' FROM disciplines', (error, result, fields) => {
-        if(error){
-            console.log('Database error when fetching releases: ' + error.code);
-            return;
-        }
-        response.send(result);
-    })
-});
+
 /* ********************************************************************************************************************* */
 
 /* *************************************************[ get labels ]****************************************************** */
-router.get('/get-components', (request, response) => {
-    database.query('SELECT id AS \'key\', name AS \'value\' FROM components', (error, result, fields) => {
-        if(error){
-            console.log('Database error when fetching releases: ' + error.code);
-            return;
-        }
-        response.send(result);
-    })
-});
+
 /* ********************************************************************************************************************* */
 
 /* *************************************************[ get tickets ]***************************************************** */
-router.get('/get-tickets', (request, response) => {
-    database.query('SELECT id AS \'key\', name AS \'value\' FROM tickets', (error, result, fields) => {
-        if(error){
-            console.log('Database error when fetching releases: ' + error.code);
-            return;
-        }
-        response.send(result);
-    })
-});
+
 /* ********************************************************************************************************************* */
 
 /* *************************************************[ get ticket ]****************************************************** */

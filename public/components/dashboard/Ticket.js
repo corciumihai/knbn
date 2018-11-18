@@ -69,31 +69,31 @@ class Ticket extends React.Component{
                     class={(data.priority == 1 ? "prio-1" : data.priority == 2 ? "prio-2" : "prio-3")}
                     title={data.priority == 1 ? "Low priority" : data.priority == 2 ? "Medium priority" : "High priority"}/>
                     <div class="ticket col d-flex flex-row">
-                        <div class="row pr-0">
+                        <div class="row">
                             <div class="col-xl-12">
                                 <div class="row py-1 field">
                                     <div class="col-xl-4 col-4 info text-truncate" title="Name">Name</div>
-                                    <div class="data col text-truncate">{data.name}</div>
+                                    <div class="data col-px-1 text-truncate">{data.name}</div>
                                 </div>
                             </div>
                             <div class={(this.state.flipped ? "ticket-data col-xl-12 hide" : "ticket-data col-xl-12")}>
                                 <div class="row field">
                                     <div class="col-xl-4 col-4 info text-truncate" title="Ticket ID">Ticket ID</div>
-                                    <div class="col"><a href={(data.isReport ? "/view/report/" : "/view/ticket/") + data.id} class="ticket-id">{this.props.shortName.shortName + '-' + data.id}</a></div>
+                                    <div class="col-px-1"><a href={(data.isReport ? "/view/report/" : "/view/ticket/") + data.id} class="ticket-id">{this.props.shortName.shortName + '-' + data.id}</a></div>
                                 </div>
-                            
-                                <div class="row field">
+                                {/* RECYCLE THIS */}
+                                {/* <div class="row field">
                                     <div class="col-xl-4 col-4 info text-truncate" title="Assignee">Assignee</div>
-                                    <div class="data col text-truncate">{this.state.assignee}
+                                    <div class="data col-px-1 text-truncate">{this.state.assignee}
                                     </div>
-                                </div>
+                                </div> */}
                                 <div class="row">
                                     <div class="col-xl-4 col-4 info text-truncate" title="Start date">Start date</div>
-                                    <div class="data col text-truncate">{dateformat(startDate, "dd \u00B7 mmmm \u00B7 yyyy")}</div>
+                                    <div class="data col-px-1 text-truncate">{dateformat(startDate, "dd \u00B7 mmmm \u00B7 yyyy")}</div>
                                 </div>
                                 <div class="row">
                                     <div class="col-xl-4 col-4 info text-truncate" title="Due date">Due date</div>
-                                    <div class="data col text-truncate">{dateformat(dueDate, "dd \u00B7 mmmm \u00B7 yyyy")}</div>
+                                    <div class="data col-px-1 text-truncate">{dateformat(dueDate, "dd \u00B7 mmmm \u00B7 yyyy")}</div>
                                 </div>
                             </div>
                             <div class="col-xl-12 my-2 d-flex flex-row justify-content-start">
@@ -109,7 +109,7 @@ class Ticket extends React.Component{
                                 </a>
                             </div>
                         </div>
-                        <div class="d-flex flex-column align-items-start py-2">
+                        <div class="d-flex flex-column align-items-start py-2 ml-auto">
                             <img class="assignee-pic" src={'https://www.gravatar.com/avatar/' + assigneeHash} alt={this.state.assignee} title={'Assignee \u00B7 ' + this.state.assigneeName}/> 
                             <img class="assignee-pic mt-auto" src={'https://www.gravatar.com/avatar/' + reporterHash} alt={this.state.reporter} title={'Reporter \u00B7 ' + this.state.reporterName}/> 
                         </div>

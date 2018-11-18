@@ -29,7 +29,7 @@ class Menu extends React.Component{
     componentDidMount(){
         // get gravatar hash
         axios.get('/current-user').then(response => {
-            if(response.data.success){this.setState({email: response.data.user, name: response.data.name}, () => {
+            if(response.data.success){this.setState({email: response.data.email, name: response.data.name}, () => {
                 var md5 = crypto.createHash('md5');
                 this.setState({gravatar: md5.update(String(this.state.email).toLowerCase().trim()).digest('hex')});
             })}
@@ -79,7 +79,7 @@ class Menu extends React.Component{
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="/create">Create</a>
+                            <a class="nav-link" href="/create-ticket">Create</a>
                         </li>
                     </ul>
                     <form class="form-inline my-2 my-lg-0">

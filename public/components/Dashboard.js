@@ -29,7 +29,7 @@ class Dashboard extends React.Component{
     render(){
         return(
             <div class="container-fluid d-flex flex-column p-0">
-                {this.state.components.map(comp => {return <Component key={comp.id} name={comp.name} id={comp.id} edit={this.editTicket} wip={comp.wip}/>})}
+                {this.state.components.map(comp => {return <Component key={comp.id} name={comp.name} id={comp.id} description={comp.description} edit={this.editTicket} wip={comp.wip}/>})}
             </div>
         );
     }
