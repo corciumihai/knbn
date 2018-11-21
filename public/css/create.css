@@ -57,7 +57,7 @@
 
 .ticket-dropdown-btn:hover, .ticket-dropdown-btn:focus, .ticket-dropdown-btn:active, .ticket-dropdown-menu{
     box-shadow: none !important;
-    background-color: rgb(68, 70, 75) !important;
+    background-color: var(--ticket-bg);
     border: none !important;
     border-radius: 0 !important;
 }
@@ -85,7 +85,64 @@
     color: gray;
 }
 
+.date-display{
+    font-size: 13px;
+    color:white;
+    text-align: center
+}
 
+.date-btn{
+    font-size: 14px;
+    color: white;
+    border: none;
+    border-radius: 0;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+.date-btn:hover, .date-btn:focus, .date-btn:active{
+    background-color: rgb(100, 98, 98);
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.day-btn, .day-btn:focus, .day-btn:active, .day-btn:hover{
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    font-size: 13px;
+    height: 23px;
+    width: 23px;
+    background-color: rgb(83, 83, 83);
+    text-align: center;
+    color: white;
+    cursor: pointer;
+}
+
+.day-btn:hover{
+    background-color: var(--highlight);
+}
+
+.disabled{
+    background-color: transparent;
+    cursor: auto;
+}
+
+.disabled:hover{
+    background-color: transparent;
+}
+
+.current-day{
+    background-color: rgb(65, 182, 65);
+}
+
+.calendar, .calendar:hover, .calendar:focus, .calendar:active{
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    border-bottom: 1px solid rgb(82, 82, 82) !important;
+}
 
 
 

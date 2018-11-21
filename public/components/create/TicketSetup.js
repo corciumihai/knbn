@@ -9,6 +9,7 @@ import Assignee from './Assignee';
 import ReactDom from 'react-dom';
 import crypto from 'crypto';
 import { throws } from 'assert';
+import dateformat from 'dateformat';
 
 class TicketSetup extends React.Component{
     constructor(props){
@@ -77,6 +78,10 @@ class TicketSetup extends React.Component{
         this.searchCompName = this.searchCompName.bind(this);
         this.searchTicketName = this.searchTicketName.bind(this);
         this.searchCategory = this.searchCategory.bind(this);
+        this.decreaseMonth = this.decreaseMonth.bind(this);
+        this.increaseMonth = this.increaseMonth.bind(this);
+        this.changeDueDate = this.changeDueDate.bind(this);
+        this.translateDay = this.translateDay.bind(this);
     }
 
     searchCategory(event){
@@ -191,6 +196,34 @@ class TicketSetup extends React.Component{
         var md5 = crypto.createHash('md5');
         hash = md5.update(String(user.email).toLowerCase().trim()).digest('hex');
         return hash;
+    }
+
+    changeDueDate(day){
+        console.log(day);
+        const currentDate = new Date();
+        const nextDate = new Date(this.state.dueDate.getFullYear(), this.state.dueDate.getMonth(), day, 23);
+
+        console.log(new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDay(), 23));
+        console.log(nextDate);
+
+        if(new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDay()).getTime() <= nextDate.getTime()){
+            this.setState({dueDate: nextDate});
+        }
+    }
+
+    increaseMonth(){this.setState({dueDate: new Date(this.state.dueDate.setMonth(this.state.dueDate.getMonth() + 1))});}
+    decreaseMonth(){this.setState({dueDate: new Date(this.state.dueDate.setMonth(this.state.dueDate.getMonth() - 1))});}
+    translateDay(day){
+        switch(day){
+            case 0: return "Monday"; break;
+            case 1: return "Tuesday"; break;
+            case 2: return "Wednesday"; break;
+            case 3: return "Thursday"; break;
+            case 4: return "Friday"; break;
+            case 5: return "Saturday"; break;
+            case 6: return "Sunday"; break;
+            default:break;
+        }
     }
 
     render(){
@@ -358,35 +391,44 @@ class TicketSetup extends React.Component{
                             </div>
                         </div>
                     </div>
-                    <div class="ticket-section col-xl-3 mb-2 col-xs-12 mr-xl-2">
+                    <div class="ticket-section col-xl-2 mb-2 col-xs-12 mr-xl-2">
                         <div class="row">
                             <div class="label col-xs-12 col-sm-12 d-flex">
                                 <div class="flex-grow-1">Due date</div>
-                                {/* <a class="ml-auto" href="#" onClick={this.selfAssignAssignee}>Assign to me</a> */}
                             </div>
-                            {/* <div class="ticket-input-grp input-group mb-3 col">
-                                <div class="input-group-prepend">
-                                    <button class="ticket-dropdown-btn btn btn-outline-secondary" type="button" id="button-addon1">-</button>
-                                </div>
-                                <div class="ticket-date w-100">{new Date(this.state.startDate).toDateString()}</div>
-                                
-                                
-                                <div class="input-group-append">
-                                    <button class="ticket-dropdown-btn btn btn-outline-secondary" type="button" id="button-addon1">+</button>
-                                </div>
-                            </div> */}
-                            <div class="form-row px-3 py-2">
-                                <div class="col px-0">
-                                    {/* <label for="day" class="date-label col my-0">Day</label> */}
-                                    <input type="text" id="day" class="date-area form-control" placeholder="Day"/>
-                                </div>
-                                <div class="col px-0">
-                                    {/* <label for="month" class="date-label col my-0">Month</label> */}
-                                    <input type="text" id="month" class="date-area form-control" placeholder="Month"/>
-                                </div>
-                                <div class="col px-0">
-                                    {/* <label for="year" class="date-label col my-0">Year</label> */}
-                                    <input type="text" id="year" class="date-area form-control" placeholder="Year"/>
+                            <div class=" col px-3 py-2">
+                                <button class="ticket-dropdown-btn btn btn-secondary w-100" data-toggle="dropdown">{dateformat(this.state.dueDate, 'dddd \u00B7 dd \u00B7 mmmm \u00B7 yyyy')}</button>
+                                <div class="ticket-dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
+                                    <div class="calendar input-group">
+                                        <div class="input-group-prepend">
+                                            <button class="date-btn btn px-3 py-1 h-100" type="button" id="button-addon1" onClick={this.decreaseMonth}><img class="mx-auto" src="./images/go-left.svg"></img></button>
+                                        </div>
+                                        <div class="date-display mx-auto"><span class="align-middle">{dateformat(this.state.dueDate, 'mmmm \u00B7 yyyy')}</span></div>
+                                        <div class="input-group-append">
+                                            <button class="date-btn btn px-3 py-1 h-100" type="button" id="button-addon1" onClick={this.increaseMonth}><img class="mx-auto" src="./images/go-right.svg"></img></button>
+                                        </div>
+                                    </div>
+                                    <div class="date-days d-flex flex-wrap">
+                                        {[...new Array(new Date(this.state.dueDate.getFullYear(), this.state.dueDate.getMonth() + 1, 0).getDate()).keys()].map(day => {
+                                            if( this.state.dueDate.getFullYear() == new Date().getFullYear() && 
+                                                this.state.dueDate.getMonth() == new Date().getMonth() && 
+                                                day + 1 == new Date().getDate()){
+                                                    return <button 
+                                                            class={"day-btn current-day btn px-0 py-0 mx-1 mt-1"} 
+                                                            key={day} 
+                                                            onClick={()=>{this.changeDueDate(day + 1)}} 
+                                                            title={this.translateDay(new Date(this.state.dueDate.getFullYear(), this.state.dueDate.getMonth(), day).getDay())}>{day + 1}</button>
+                                                }
+                                                else{
+                                                    return <button 
+                                                            class={new Date(this.state.dueDate.getFullYear(), this.state.dueDate.getMonth(), day + 1, 0).getTime() >= new Date().getTime() ? "day-btn btn px-0 py-0 mx-1 mt-1" : "day-btn btn px-0 py-0 mx-1 mt-1 disabled"} 
+                                                            key={day} 
+                                                            onClick={()=>{this.changeDueDate(day + 1)}} 
+                                                            title={this.translateDay(new Date(this.state.dueDate.getFullYear(), this.state.dueDate.getMonth(), day + 1).getDay())}>{day + 1}</button>
+                                                }
+                                            
+                                        })}
+                                    </div>
                                 </div>
                             </div>
                         </div>

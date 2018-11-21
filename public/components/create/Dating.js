@@ -2,6 +2,7 @@ import React from 'react';
 import DropdownSearch from './DropdownSearch';
 import update from 'react-addons-update';
 import Cursor from './Cursor';
+import dateformat from 'dateformat';
 
 class Dating extends React.Component{
     constructor(props){
