@@ -153,6 +153,15 @@ router.get('/get-categories', (request, response) => {
     })
 });
 
+router.get('/get-releases', (request, response) => {
+    database.query('SELECT id, name FROM releases', (error, result, fields) => {
+        if(error){
+            console.log('Database error when fetching releases: ' + error.code);
+            return;
+        }
+        response.send(result);
+    })
+});
 
 
 
@@ -626,15 +635,7 @@ router.post('/add/worklog', (request, response) => {
 //********************************************************************************************************************** */
 
 /* *************************************************[ get releases ]**************************************************** */
-router.get('/get-releases', (request, response) => {
-    database.query('SELECT id AS \'key\', name AS \'value\' FROM releases', (error, result, fields) => {
-        if(error){
-            console.log('Database error when fetching releases: ' + error.code);
-            return;
-        }
-        response.send(result);
-    })
-});
+
 /* ********************************************************************************************************************* */
 
 /* *************************************************[ get disciplines ]************************************************* */

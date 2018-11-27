@@ -13,7 +13,7 @@
 }
 
 .ticket-dropdown-item:hover{
-    background-color: rgb(58, 63, 66);
+    background-color: #444444;
     color: rgb(252, 252, 252);
 } 
 
@@ -53,6 +53,7 @@
     border: none;
     border-radius: 0 !important;
     box-shadow: none;
+    cursor: pointer;
 }
 
 .ticket-dropdown-btn:hover, .ticket-dropdown-btn:focus, .ticket-dropdown-btn:active, .ticket-dropdown-menu{
@@ -60,6 +61,15 @@
     background-color: var(--ticket-bg);
     border: none !important;
     border-radius: 0 !important;
+}
+
+.dropdown-arrow{
+    transition: background-color .1s ease-in;
+}
+
+.ticket-dropdown-btn:hover .row .d-flex .dropdown-arrow{
+    background-color: rgb(102, 102, 102);
+    border-radius: 3px;
 }
 
 .mini-profile-pic{
@@ -134,7 +144,7 @@
 }
 
 .current-day{
-    background-color: rgb(65, 182, 65);
+    background-color: rgb(87, 146, 63);
 }
 
 .calendar, .calendar:hover, .calendar:focus, .calendar:active{
@@ -196,14 +206,22 @@
     border: 1px solid rgb(49, 71, 83);
 }
 
-/* .dropdown-toggle{
-    color: rgb(192, 188, 188);
-    background: rgb(46, 48, 51);
-    box-shadow: none;
-    font-size: 14px;
-    cursor: pointer;
-    text-align: left
-} */
+.search-box{
+    border: 1px solid rgb(112, 112, 112);
+    border-left: none;
+    border-right: none;
+}
+
+.search-box:hover, .search-box:focus, .search-box:active {
+    background-color: rgb(250, 250, 250, .1);
+    border: 1px solid rgb(97, 97, 97);
+    border-left: none;
+    border-right: none;
+}
+
+.search-box::placeholder{
+    color: rgb(161, 161, 161);
+}
 
 .description{
     background: rgb(79, 87, 104);
@@ -215,36 +233,12 @@
     /* border: none; */
 }
 
-/* .dropdown-toggle:hover, .dropdown-toggle:focus, .dropdown-toggle:active{
-    background: rgb(53, 55, 59);
-    border: 1px solid rgb(34, 67, 88);
-    box-shadow: none;
-    color: rgb(255, 255, 255);
-} */
-
 .caret{
     width: 22px;
     height: 22px;
     padding: 0px;
     background-color: transparent;
 }
-
-/* .dropdown-toggle:hover > .row >.caret, .dropdown-toggle:focus > .row > .caret, .dropdown-toggle:active > .row > .caret{
-    background-color: rgb(48, 108, 165);
-    border-radius: 4px;
-} */
-
-/* .dropdown-toggle > .row > .caret > img, .dropdown-toggle > .row > .caret > img, .dropdown-toggle > .row > .caret > img{
-    filter: invert(.5);
-}
-
-.dropdown-toggle:hover > .row > .caret > img, .dropdown-toggle:active > .row > .caret > img, .dropdown-toggle:focus > .row > .caret > img{
-    filter: invert(1);
-}
-
-.dropdown-toggle::after{
-    display: none;
-} */
 
 .assign-to{
     float: right;
@@ -389,4 +383,17 @@
     font-size: 13px;
     word-wrap: break-word;
     word-break: break-all;
+}
+
+.ticket-dropdown-btn::after{
+    content: none;
+}
+
+.dropdown-text{
+    line-height: 2;
+}
+
+.show > .btn-secondary.dropdown-toggle, .show > .btn-secondary.dropdown-toggle:hover, .show > .btn-secondary.dropdown-toggle:focus, .show > .btn-secondary.dropdown-toggle:active{
+    box-shadow: none;
+    background-color: #444444;
 }
