@@ -115,12 +115,8 @@ router.get('/users/get-users', function(request, response){
 });
 
 router.get('/create-ticket', (request, response) => {
-    // if(request.isAuthenticated()){
-        response.render(path.resolve(__dirname, 'views', 'ticketSetup.pug'));
-    // }
-    // else{
-    //     response.redirect('/login');
-    // }
+    if(request.isAuthenticated()){response.render(path.resolve(__dirname, 'views', 'ticketSetup.pug'));}
+    else{response.redirect('/login');}
 });
 
 router.get('/get-components', (request, response) => {
@@ -163,7 +159,20 @@ router.get('/get-releases', (request, response) => {
     })
 });
 
+router.post('/add/ticket', (request, response) => {
+    if(request.isAuthenticated()){
+        var reporter = request.user.email;
+        let data = request.body;
 
+        data.reporter = reporter;
+        
+        database.query('INSERT INTO tickets SET ?', data, (error, fields, result) => {
+            if(error){console.log(error); response.send({success: false, error: error.sqlMessage});}
+        });
+    }
+    // TODO get reporter with the authentication API
+
+});
 
 
 
@@ -478,61 +487,7 @@ router.post('/add/component', (request, response) => {
 //********************************************************************************************************************** */
 
 /* *******************************************[ add ticket ]************************************************************ */
-router.post('/add/ticket', (request, response) => {
-    let data = request.body;
-    console.log(data);
-    data.lane = 0;
-    // prepare to ackownledge existence of ticket
-    //change name to id - somehow generate id based on project name
-    database.query('SELECT COUNT(*) AS count FROM tickets', (error, result, fields) => {
-        if(error){
-            //table does not exist
-            if(error.code == 'ER_NO_SUCH_TABLE'){
-                //create table
-                //TODO: generate id based on ticket number since autoincrement is not viable
-                //TODO: verify which is more viable: INT or VARCHAR
-                database.query('CREATE TABLE tickets (id INT PRIMARY KEY UNIQUE, component INT, \
-                    name VARCHAR(255)NOT NULL, description VARCHAR(2000), dueDate VARCHAR(255)NOT NULL, startDate VARCHAR(255)NOT NULL, discipline INT, \
-                    reporter VARCHAR(255)NOT NULL, assignee VARCHAR(255)NOT NULL, blocked INT UNSIGNED, blocking INT UNSIGNED, estimation INT UNSIGNED NOT NULL, logged INT UNSIGNED NOT NULL, lane INT UNSIGNED NOT NULL, \
-                    priority INT UNSIGNED, steps VARCHAR(1000), observedBehaviour VARCHAR(1000), expectedBehaviour VARCHAR(1000),\
-                    rel INT UNSIGNED, isReport BOOL NOT NULL,\
-                    lastModified BIGINT UNSIGNED NOT NULL, created BIGINT UNSIGNED NOT NULL)', (error, result, fields) => {
-                    if(error){
-                        console.log('Error when creating table \'tickets\' for the first time: ' + error.code);
-                        return;
-                    }
-                    //insert into table
-                    data.id = 1;
-                    database.query('INSERT INTO tickets SET ?', data, (error, result, fields) => {
-                        if(error){
-                            console.log('Database error when inserting ticket in database: ' + error);
-                            return;
-                        }
-                        //send back positive response
-                        response.statusCode = 200;
-                        response.send({ success: 'Ticket successfully added to database!' });
-                        console.log('Ticket successfully added to database!');
-                    });
-                });
-                return;
-            }
-            console.log('Database error when checking existence of ticket: ' + error.code);
-            return;
-        }
-        data.id = result[0].count + 1;
-        //insert into database 
-        database.query('insert into tickets set ?', data, (error, result, fields) => {
-            if(error){
-                console.log('Database error when inserting ticket in database: ' + error);
-                return;
-            }
-            //send back positive response
-            response.statusCode = 200;
-            response.send({ success: 'Ticket successfully added to database!' });
-            console.log('Ticket successfully added to database!');
-        });
-    });
-});
+
 //********************************************************************************************************************** */
 
 /* *******************************************[ add comment ]*********************************************************** */

@@ -1,23 +1,16 @@
 import React from 'react';
 import axios from 'axios';
-import update from 'react-addons-update';
-import Dating from './Dating';
-import TextArea from './TextArea';
-import DropdownSearch from './DropdownSearch';
-import Reporter from './Reporter';
-import Assignee from './Assignee';
 import ReactDom from 'react-dom';
 import crypto from 'crypto';
-import { throws } from 'assert';
 import dateformat from 'dateformat';
 
 class TicketSetup extends React.Component{
     constructor(props){
         super(props);
         this.state = {
+            name: 'generic',
             users: [],
             components: [],
-            names: [],
             tickets: [],
             releases: [],
             filteredUsers: [],
@@ -35,27 +28,14 @@ class TicketSetup extends React.Component{
             searchedCategory: '',
             filteredCategories: [],
             dueDate: new Date(),
-            startDate: new Date(),
-            ticketNumber: 0,
             estimation: 0,
             description: '',
             priority: "low",
             release: {},
             filteredReleases: [],
             searchedRelease: '',
-            
-            componentError: '',
-            dateError: '',
-            estimateError: '',
-            releaseError: '',
-
-            loadingUsers: true,
-            loadingComponents: true,
-            loadingDisciplines: true,
-            loadingTickets: true,
         }
 
-        this.setReporter = this.setReporter.bind(this);
         this.setAssignee = this.setAssignee.bind(this);
         this.setComponent = this.setComponent.bind(this);
         this.setBlockedTicket = this.setBlockedTicket.bind(this);
@@ -69,11 +49,10 @@ class TicketSetup extends React.Component{
         this.fetchCategories = this.fetchCategories.bind(this);
         this.fetchTickets = this.fetchTickets.bind(this);
         this.setPriority = this.setPriority.bind(this);
-        this.submit = this.submit.bind(this);
+        this.submitTicket = this.submitTicket.bind(this);
         this.setRelease = this.setRelease.bind(this);
         this.fetchReleases = this.fetchReleases.bind(this);
         this.fetchUsers = this.fetchUsers.bind(this);
-        this.selfAssignReporter = this.selfAssignReporter.bind(this);
         this.selfAssignAssignee = this.selfAssignAssignee.bind(this);
         this.search = this.search.bind(this);
         this.searchCompName = this.searchCompName.bind(this);
@@ -84,60 +63,34 @@ class TicketSetup extends React.Component{
         this.changeDueDate = this.changeDueDate.bind(this);
         this.translateDay = this.translateDay.bind(this);
         this.searchRelease = this.searchRelease.bind(this);
+        this.setName = this.setName.bind(this);
     }
-
+    setName(event){this.setState({name: event.target.value, nameError: ''});}
     searchRelease(event){
-        if(event.target.value.length > 0){
-            this.setState({filteredReleases: this.state.releases.filter(release => {return String(release.name).toLowerCase().includes(String(event.target.value).toLowerCase())}), searchedRelease: event.target.value});
-        }
-        else{
-            this.setState({filteredReleases: this.state.releases, searchedRelease: event.target.value});
-        }
-           
+        if(event.target.value.length > 0){this.setState({filteredReleases: this.state.releases.filter(release => {return String(release.name).toLowerCase().includes(String(event.target.value).toLowerCase())}), searchedRelease: event.target.value});}
+        else{this.setState({filteredReleases: this.state.releases, searchedRelease: event.target.value});}
     }
-
     searchCategory(event){
-        if(event.target.value.length > 0){
-            this.setState({filteredCategories: this.state.categories.filter(category => {return String(category.name).toLowerCase().includes(String(event.target.value).toLowerCase())}), searchedCategory: event.target.value});
-        }
-        else{
-            this.setState({filteredCategories: this.state.tickets, searchedCategory: event.target.value});
-        }
+        if(event.target.value.length > 0){this.setState({filteredCategories: this.state.categories.filter(category => {return String(category.name).toLowerCase().includes(String(event.target.value).toLowerCase())}), searchedCategory: event.target.value});}
+        else{this.setState({filteredCategories: this.state.tickets, searchedCategory: event.target.value});}
     }
     searchTicketName(event){
-        if(event.target.value.length > 0){
-            this.setState({filteredTickets: this.state.tickets.filter(ticket => {return String(ticket.name).toLowerCase().includes(String(event.target.value).toLowerCase())}), searchedTicketName: event.target.value});
-        }
-        else{
-            this.setState({filteredTickets: this.state.tickets, searchedTicketName: event.target.value});
-        }
+        if(event.target.value.length > 0){this.setState({filteredTickets: this.state.tickets.filter(ticket => {return String(ticket.name).toLowerCase().includes(String(event.target.value).toLowerCase())}), searchedTicketName: event.target.value});}
+        else{this.setState({filteredTickets: this.state.tickets, searchedTicketName: event.target.value});}
     }
     searchCompName(event){
-        if(event.target.value.length > 0){
-            this.setState({filteredComponents: this.state.components.filter(comp => {return String(comp.name).toLowerCase().includes(String(event.target.value).toLowerCase())}), searchCompName: event.target.value});
-        }
-        else{
-            this.setState({filteredComponents: this.state.components, searchCompName: event.target.value});
-        }
+        if(event.target.value.length > 0){this.setState({filteredComponents: this.state.components.filter(comp => {return String(comp.name).toLowerCase().includes(String(event.target.value).toLowerCase())}), searchCompName: event.target.value});}
+        else{this.setState({filteredComponents: this.state.components, searchCompName: event.target.value});}
     }
     search(event){
-        if(event.target.value.length > 0){
-            this.setState({filteredUsers: this.state.users.filter(user => {return String(user.name).toLowerCase().includes(String(event.target.value).toLowerCase())}), searchName: event.target.value});
-        }
-        else{
-            this.setState({filteredUsers: this.state.users, searchName: event.target.value});
-        }
+        if(event.target.value.length > 0){this.setState({filteredUsers: this.state.users.filter(user => {return String(user.name).toLowerCase().includes(String(event.target.value).toLowerCase())}), searchName: event.target.value});}
+        else{this.setState({filteredUsers: this.state.users, searchName: event.target.value});}
     }   
-    selfAssignReporter(){axios.get('/current-user').then(response => {
-        if(response.data.success == true){this.setReporter({email:response.data.email, name: response.data.name})}
-        else{console.log('Error at self assign');}
-    });}
     selfAssignAssignee(){axios.get('/current-user').then(response => {
         if(response.data.success == true){this.setAssignee({email:response.data.email, name: response.data.name})}
         else{console.log('Error at self assign');}
     });}
-    setReporter(user){this.setState({reporter: user});}
-    setAssignee(user){this.setState({assignee: user});}
+    setAssignee(user){this.setState({assignee: user, assigneeError: ''});}
     setComponent(component){this.setState({component: component});}
     setBlockedTicket(ticket){this.setState({blockedTicket: ticket});}
     setBlockingTicket(ticket){this.setState({blockingTicket: ticket});}
@@ -157,72 +110,48 @@ class TicketSetup extends React.Component{
     }
     setEstimation(event){
         let value = event.target.value;
-        if(value.length > 0){
-            if(isNaN(value)){this.setState({estimateError: 'What are you trying to input is not a number'}); return;}
-        }
+        if(value.length > 0){if(isNaN(value)){this.setState({estimateError: 'What are you trying to input is not a number'}); return;}}
         this.setState({estimation: value, estimateError: ''});
     }
-
-    submit(event){
+    submitTicket(event){
         event.preventDefault();
-        if(this.props.name == undefined || this.props.name.length == 0){this.props.setError('Name is empty'); return;}
-        if(this.state.componentId == undefined || this.state.componentId.length == 0){this.setState({componentError: 'Please select a component'}); return;}
-        if(this.state.reporterEmail == undefined || this.state.reporterEmail.length == 0){this.setState({reporterError: 'Please select a reporter'}); return;}
-        if(this.state.assigneeEmail == undefined || this.state.assigneeEmail.length == 0){this.setState({assigneeError: 'Please select an assignee'}); return;}
-        if(this.state.startDate.getTime() > this.state.dueDate.getTime()){this.setState({dateError: 'Start date cannot be higher than due date'}); return;}
-
-        let date = new Date().getTime();
-
+        // TODO make required checks before submiting
+        if(this.state.name == undefined || this.state.name.length == 0) {this.setState({nameError: 'Please insert a ticket name'}); return}
+        if(this.state.assignee == undefined || this.state.assignee.email == undefined || this.state.assignee.name == undefined || this.state.assignee.email.length == 0 || this.state.assignee.name.length == 0){this.setState({assigneeError: 'Please choose an assignee'}); return;}
+        
         axios.post('/add/ticket', {
-            name: this.props.name,
-            reporter: this.state.reporterEmail,
-            assignee: this.state.assigneeEmail,
-            dueDate: this.state.dueDate.getTime(),
-            startDate: this.state.startDate.getTime(),
-            component: this.state.componentId,
-            blocked: this.state.blockedTicketId,
-            blocking: this.state.blockingTicketId,
-            discipline: this.state.disciplineId,
-            description: this.state.description,
-            estimation: this.state.estimation,
-            logged: 0,
+            name: this.state.name,
+            assignee: this.state.assignee.email,
+            component: this.state.component.id,
+            blockedTicket: this.state.blockedTicket.id,
+            blockingTicket: this.state.blockingTicket.id,
+            category: this.state.category.id,
+            estimation: parseInt(this.state.estimation),
+            description: this.state.description.length > 0 ? this.state.description : undefined,
             priority: this.state.priority,
-            rel: this.state.releaseId,
-            lane: 0,
-            lastModified: date,
-            created: date,
-            isReport: 0,
-            steps: '',
-            observedBehaviour: '',
-            expectedBehaviour: '',
+            releaseID: this.state.release.id,
+            dueDate: this.state.dueDate.getTime(),
+            // POST SUBMIT DATA
+            startDate: new Date().getTime(),
+            lane: 'backlog',
         }).then(response => {
-            if(response.status == 200){this.resetState()}
-        }).catch(error => {
-            if(error.response == undefined){return;}
-            this.props.setError(error.response.data.error);
+
         });
     }
-
     hashUser(user){
-        var hash;
-        var md5 = crypto.createHash('md5');
+        var hash; var md5 = crypto.createHash('md5');
         hash = md5.update(String(user.email).toLowerCase().trim()).digest('hex');
         return hash;
     }
-
     changeDueDate(day){
         console.log(day);
         const currentDate = new Date();
         const nextDate = new Date(this.state.dueDate.getFullYear(), this.state.dueDate.getMonth(), day, 23);
 
-        console.log(new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDay(), 23));
-        console.log(nextDate);
-
         if(new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDay()).getTime() <= nextDate.getTime()){
             this.setState({dueDate: nextDate});
         }
     }
-
     increaseMonth(){this.setState({dueDate: new Date(this.state.dueDate.setMonth(this.state.dueDate.getMonth() + 1))});}
     decreaseMonth(){this.setState({dueDate: new Date(this.state.dueDate.setMonth(this.state.dueDate.getMonth() - 1))});}
     translateDay(day){
@@ -237,14 +166,13 @@ class TicketSetup extends React.Component{
             default:break;
         }
     }
-
     render(){
-        
         return(
             <div class="ticket container-fluid mt-3 col-xl-4 offset-xl-4">
                 <div class="ticket-section px-2 mb-2">
                     <div class="row">
                         <div class="label col-xs-12 col-sm-12 d-flex">Ticket name</div>
+                        {this.state.nameError == undefined || this.state.nameError.length == 0 ? null: <div class="col-12"><div class="error-label w-100">{this.state.nameError}</div></div>}
                         <div class="form-group col-xl-12 py-2">
                             <input type="text" class="ticket-text-area form-control" placeholder="Item name" onChange={this.setName} value={this.state.name}/>
                         </div>
@@ -275,6 +203,7 @@ class TicketSetup extends React.Component{
                             <div class="flex-grow-1">Assignee</div>
                             <a class="ml-auto" href="#" onClick={this.selfAssignAssignee}>Assign to me</a>
                         </div>
+                        {this.state.assigneeError == undefined || this.state.assigneeError.length == 0 ? null: <div class="col-12"><div class="error-label w-100">{this.state.assigneeError}</div></div>}
                         <div class="dropdown py-2 col-xl-6 offset-xl-3">
                             <button class="ticket-dropdown-btn btn btn-secondary dropdown-toggle w-100 text-left" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                             onClick={this.fetchUsers}>
@@ -479,8 +408,8 @@ class TicketSetup extends React.Component{
                     </div>
                 </div>
                 <div class="d-flex flex-row justify-content-center mb-3">
-                    <button class="ticket-dropdown-btn btn btn-primary mr-2">Submit ticket</button>
-                    <button class="ticket-dropdown-btn btn btn-primary">Reset values</button>
+                    <button class="ticket-dropdown-btn btn btn-primary mr-2" onClick={this.submitTicket}>Submit ticket</button>
+                    <button class="ticket-dropdown-btn btn btn-primary">Cancel</button>
                 </div>
             </div>
         );
