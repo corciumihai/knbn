@@ -36,9 +36,7 @@ class Menu extends React.Component{
         });
     }
 
-    toggle(){
-        this.setState({toggle: !this.state.toggle});
-    }
+    toggle(){this.setState({toggle: !this.state.toggle});}
 
     render(){
         return(
@@ -59,7 +57,7 @@ class Menu extends React.Component{
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" onClick={this.getProjects}>
-                            Projects
+                                Projects
                             </a> 
                             {   this.state.projects.length > 0 ?
                                 <div class="dropdown-menu proj-drop">  
@@ -79,7 +77,15 @@ class Menu extends React.Component{
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="/create-ticket">Create</a>
+                            <div class="dropdown proj-drop">
+                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                    Create
+                                </a>
+                                <div class="dropdown-menu proj-drop" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item proj-item" href="/create-ticket">Ticket</a>
+                                    <a class="dropdown-item proj-item" href="/create-pr">Problem report</a>
+                                </div>
+                            </div>
                         </li>
                     </ul>
                     <form class="form-inline my-2 my-lg-0">

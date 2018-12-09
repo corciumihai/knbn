@@ -115,22 +115,21 @@ router.get('/users/get-users', function(request, response){
 });
 
 router.get('/create-ticket', (request, response) => {
-    if(request.isAuthenticated()){response.render(path.resolve(__dirname, 'views', 'ticketSetup.pug'));}
+    if(request.isAuthenticated()){
+        response.render(path.resolve(__dirname, 'views', 'ticketSetup.pug'));
+    }
+    else{response.redirect('/login');}
+});
+
+router.get('/create-pr', (request, response) => {
+    if(request.isAuthenticated()){
+        response.render(path.resolve(__dirname, 'views', 'prSetup.pug'));
+    }
     else{response.redirect('/login');}
 });
 
 router.get('/get-components', (request, response) => {
     database.query('SELECT id, name FROM components', (error, result, fields) => {
-        if(error){
-            console.log('Database error when fetching releases: ' + error.code);
-            return;
-        }
-        response.send(result);
-    })
-});
-
-router.get('/get-tickets', (request, response) => {
-    database.query('SELECT id, name FROM tickets', (error, result, fields) => {
         if(error){
             console.log('Database error when fetching releases: ' + error.code);
             return;
@@ -170,9 +169,38 @@ router.post('/add/ticket', (request, response) => {
             if(error){console.log(error); response.send({success: false, error: error.sqlMessage});}
         });
     }
-    // TODO get reporter with the authentication API
-
 });
+
+router.post('/add-pr', (request, response) => {
+    if(request.isAuthenticated()){
+        var reporter = request.user.email;
+        let data = request.body;
+
+        console.log(data);
+
+        data.reporter = reporter;
+        
+        database.query('INSERT INTO prs SET ?', data, (error, fields, result) => {
+            if(error){console.log(error); response.send({success: false, error: error.sqlMessage});}
+        });
+    }
+});
+
+router.get('/get-tickets', (request, response) => {
+    var data = {};
+    database.query('SELECT * FROM tickets', [request.query.component], (error, result, fields) => {
+        if(error){
+            response.send({success: false, error: error.sqlMessage});
+            return;
+        }
+        data.tickets = result;
+        response.send(data);
+    });
+});
+
+
+
+
 
 
 
@@ -665,34 +693,7 @@ router.get('/get-ticket/:id', (request, response) => {
 /* ********************************************************************************************************************* */
 
 /* *************************************************[ get tickets dash ]************************************************ */
-router.get('/get-tickets-dash', (request, response) => {
-    database.query('SELECT * from tickets where component = ?', [request.query.component], (error, result, fields) => {
-        if(error){
-            console.log('Database error when fetching dashboard: ' + error.code);
-            return;
-        }
-        tickets = result;
 
-        database.query('SELECT project from components where id = ?', [request.query.component], (error, result, fields) => {
-            if(error){
-                console.log('Database error when fetching dashboard: ' + error.code);
-                return;
-            }
-            proj = result[0];
-
-            database.query('SELECT shortName from projects where id = ?', [proj.project], (error, result, fields) => {
-                if(error){
-                    console.log('Database error when fetching dashboard: ' + error.code);
-                    return;
-                }
-
-                response.send({tickets: tickets, shortName: result[0]});
-            });
-
-        });
-        // 
-    });
-});
 /* ********************************************************************************************************************* */
 
 /* *************************************************[ change ticket lane ]********************************************** */

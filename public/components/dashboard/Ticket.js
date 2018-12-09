@@ -52,9 +52,8 @@ class Ticket extends React.Component{
         let data = this.props.data;
         data.flipped = this.state.flipped;
         const {connectDragSource, isDragging} = this.props;
-        let boundF = this.props.changeLaneF.bind(this, data, 1);
+        let boundF = this.props.changeLaneF.bind(this, data, 'in_progress');
         let boundB = this.props.changeLaneB.bind(this, data);
-        // get gravatar assigneeHash
         var md51 = crypto.createHash('md5');
         var md52 = crypto.createHash('md5');
         var assigneeHash = md51.update(String(this.state.assignee).toLowerCase().trim()).digest('hex');
@@ -66,8 +65,8 @@ class Ticket extends React.Component{
             <div class="col ticket-box my-1 ">
                 <div class="row">
                     <div 
-                    class={(data.priority == 1 ? "prio-1" : data.priority == 2 ? "prio-2" : "prio-3")}
-                    title={data.priority == 1 ? "Low priority" : data.priority == 2 ? "Medium priority" : "High priority"}/>
+                    class={(data.priority == 'low' ? "prio-1" : data.priority == 'medium' ? "prio-2" : "prio-3")}
+                    title={data.priority == 'low' ? "Low priority" : data.priority == 'medium' ? "Medium priority" : "High priority"}/>
                     <div class="ticket col d-flex flex-row">
                         <div class="row">
                             <div class="col-xl-12">
@@ -79,14 +78,8 @@ class Ticket extends React.Component{
                             <div class={(this.state.flipped ? "ticket-data col-xl-12 hide" : "ticket-data col-xl-12")}>
                                 <div class="row field">
                                     <div class="col-xl-4 col-4 info text-truncate" title="Ticket ID">Ticket ID</div>
-                                    <div class="col-px-1"><a href={(data.isReport ? "/view/report/" : "/view/ticket/") + data.id} class="ticket-id">{this.props.shortName.shortName + '-' + data.id}</a></div>
+                                    <div class="col-px-1"><a href={(data.isReport ? "/view/report/" : "/view/ticket/") + data.id} class="ticket-id">{data.id}</a></div>
                                 </div>
-                                {/* RECYCLE THIS */}
-                                {/* <div class="row field">
-                                    <div class="col-xl-4 col-4 info text-truncate" title="Assignee">Assignee</div>
-                                    <div class="data col-px-1 text-truncate">{this.state.assignee}
-                                    </div>
-                                </div> */}
                                 <div class="row">
                                     <div class="col-xl-4 col-4 info text-truncate" title="Start date">Start date</div>
                                     <div class="data col-px-1 text-truncate">{dateformat(startDate, "dd \u00B7 mmmm \u00B7 yyyy")}</div>
@@ -111,7 +104,7 @@ class Ticket extends React.Component{
                         </div>
                         <div class="d-flex flex-column align-items-start py-2 ml-auto">
                             <img class="assignee-pic" src={'https://www.gravatar.com/avatar/' + assigneeHash} alt={this.state.assignee} title={'Assignee \u00B7 ' + this.state.assigneeName}/> 
-                            <img class="assignee-pic mt-auto" src={'https://www.gravatar.com/avatar/' + reporterHash} alt={this.state.reporter} title={'Reporter \u00B7 ' + this.state.reporterName}/> 
+                            {/* <img class="assignee-pic mt-auto" src={'https://www.gravatar.com/avatar/' + reporterHash} alt={this.state.reporter} title={'Reporter \u00B7 ' + this.state.reporterName}/>  */}
                         </div>
                     </div>
                 </div>

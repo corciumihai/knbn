@@ -1,9 +1,15 @@
 
-.navbar, .proj-drop {
+.navbar{
     width : 100%;
     background-color : var(--section-bg-color);
     color : white;
 }
+
+.proj-drop{
+    background-color : var(--section-bg-color);
+    color : white;
+}
+
 .nav-item {
     border : transparent solid 1px !important ;
     background-color : transparent;
@@ -23,7 +29,7 @@ color : rgb(180, 180, 180);
     background-color : transparent !important;
 }
 .proj-drop {
-    width : 100%;
+    /* width : 100%; */
 }
 .proj-item {
     color : rgb(231, 231, 231);

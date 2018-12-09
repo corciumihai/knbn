@@ -18,157 +18,80 @@ class Component extends React.Component{
         }
 
         this.toggle = this.toggle.bind(this);
-        this.changeTicketLaneForward = this.changeTicketLaneForward.bind(this);
-        this.changeTicketLaneBackward = this.changeTicketLaneBackward.bind(this);
+        this.moveTicketForward = this.moveTicketForward.bind(this);
+        this.moveTicketBackward = this.moveTicketBackward.bind(this);
         this.pushTicket = this.pushTicket.bind(this);
         this.removeTicket = this.removeTicket.bind(this);
-        this.sortLane = this.sortLane.bind(this);
         this.toggleDesc = this.toggleDesc.bind(this);
     }
 
-    componentWillMount(){
-        axios.get('/get-tickets-dash', {params: {component: this.props.id}}).then(response => {
+    componentDidMount(){
+        axios.get('/get-tickets').then(response => {
             let tickets = response.data.tickets;
+            if(tickets.length > 1){tickets = sortTickets(tickets);}
+            console.log(tickets);
             this.setState( {
-                ticketsBacklog: this.sortTickets(tickets.filter(item => item.lane == 0)),
-                ticketsProgress: this.sortTickets(tickets.filter(item => item.lane == 1)),
-                ticketsDone: this.sortTickets(tickets.filter(item => item.lane == 2)),
-                ticketsClosed: this.sortTickets(tickets.filter(item => item.lane == 3)),
-                shortName: response.data.shortName,
+                ticketsBacklog: this.sortTickets(tickets.filter(item => (item.component == this.props.id && item.lane == 'backlog'))),
+                ticketsProgress: this.sortTickets(tickets.filter(item => (item.component == this.props.id && item.lane == 'in_progress'))),
+                ticketsDone: this.sortTickets(tickets.filter(item => (item.component == this.props.id && item.lane == 'done'))),
+                ticketsClosed: this.sortTickets(tickets.filter(item => (item.component == this.props.id && item.lane == 'closed'))),
             });
         });
     }
 
-    toggle(){
-        this.setState({flip: !this.state.flip});
-    }
+    toggle(){this.setState({flip: !this.state.flip});}
+    toggleDesc(){this.setState({showDesc: !this.state.showDesc});}
 
-    toggleDesc(){
-        this.setState({showDesc: !this.state.showDesc});
-    }
-
-    changeTicketLaneForward(ticket, fromToolbar){
+    moveTicketForward(ticket, fromToolbar){
         if(fromToolbar){
-            if(ticket.lane == 0){ 
-                this.removeTicket(ticket, ticket.lane);
-                ticket.lane = 1;
-                this.pushTicket(ticket);
-                
-            }
-            else if(ticket.lane == 1){
-                this.removeTicket(ticket, ticket.lane);
-                ticket.lane = 2;
-                this.pushTicket(ticket);
-            }
-            else if(ticket.lane == 2){
-                this.removeTicket(ticket, ticket.lane);
-                ticket.lane = 3;
-                this.pushTicket(ticket);
-            }
+            this.removeTicket(ticket, ticket.lane);
+            if(ticket.lane == 'backlog'){ticket.lane = 'in_progress';}
+            else if(ticket.lane == 'in_progress'){ticket.lane = 'done';}
+            else if(ticket.lane == 'done'){ticket.lane = 'closed';}
+            this.pushTicket(ticket);
         }
-
         axios.post('/change-lane', {id: ticket.id, lane: ticket.lane});
     }
 
-    changeTicketLaneBackward(ticket){
-        if(ticket.lane == 1){
-            this.removeTicket(ticket, ticket.lane);
-            ticket.lane = 0;
-            this.pushTicket(ticket);
-        }
-        else if(ticket.lane == 2){
-            this.removeTicket(ticket, ticket.lane);
-            ticket.lane = 1;
-            this.pushTicket(ticket);
-        }
-        else if(ticket.lane == 3){
-            //do nothing
-        }
+    moveTicketBackward(ticket){
+        this.removeTicket(ticket, ticket.lane);
 
+        if(ticket.lane == 'in_progress'){ticket.lane = 'backlog';}
+        else if(ticket.lane == 'done'){ticket.lane = 'in_progress';}
+        this.pushTicket(ticket);
         axios.post('/change-lane', {id: ticket.id, lane: ticket.lane});
     }
 
-    sortTickets(tickets){
-        return tickets.sort((first, second) => { return first.id - second.id; });
-    }
-
-    sortLane(lane){
-        if(lane == 0){
-            this.setState({ticketsBacklog: this.state.ticketsBacklog.sort((first, second) => { return first.id - second.id; })});
-        }
-        else if(lane == 1){
-            this.setState({ticketsProgress: this.state.ticketsProgress.sort((first, second) => { return first.id - second.id; })});
-        }
-        else if (lane == 2){
-            this.setState({ticketsDone: this.state.ticketsDone.sort((first, second) => { return first.id - second.id; })});
-        }
-        else if(lane == 3){
-            this.setState({ticketsClosed: this.state.ticketsClosed.sort((first, second) => { return first.id - second.id; })});
-        }
-        else{
-            return;
-        }
-    }
+    sortTickets(tickets){return tickets.sort((first, second) => { return first.id - second.id; });}
 
     pushTicket(ticket){
-        // console.log(ticket);
-        if(ticket.lane == 0){
-            this.setState({ticketsBacklog: update(this.state.ticketsBacklog, {$push: [ticket]})}, () => {
-                this.sortLane(0)
-            });
+        if(ticket.lane == 'backlog'){
+            this.setState({ticketsBacklog: update(this.state.ticketsBacklog, {$push: [ticket]})});
         }
-        else if(ticket.lane == 1){
-            this.setState({ticketsProgress: update(this.state.ticketsProgress, {$push: [ticket]})}, () => {
-                this.sortLane(1)
-            });
+        else if(ticket.lane == 'in_progress'){
+            this.setState({ticketsProgress: update(this.state.ticketsProgress, {$push: [ticket]})});
         }
-        else if (ticket.lane == 2){
-            this.setState({ticketsDone: update(this.state.ticketsDone, {$push: [ticket]})}, () => {
-                this.sortLane(2);
-            });
+        else if (ticket.lane == 'done'){
+            this.setState({ticketsDone: update(this.state.ticketsDone, {$push: [ticket]})});
         }
-        else if(ticket.lane == 3){
-            this.setState({ticketsClosed: update(this.state.ticketsClosed, {$push: [ticket]})}, () => {
-                this.sortLane(3)
-            });
-        }
-        else{
-            return;
+        else if(ticket.lane == 'closed'){
+            this.setState({ticketsClosed: update(this.state.ticketsClosed, {$push: [ticket]})});
         }
     }
 
     removeTicket(ticket, lane){
-        if(lane == 0){
-            this.setState({ticketsBacklog: update(this.state.ticketsBacklog, {$splice: [[this.state.ticketsBacklog.indexOf(ticket), 1]]})}, () => {
-                this.sortLane(0)
-            });
+        if(lane == 'backlog'){
+            this.setState({ticketsBacklog: update(this.state.ticketsBacklog, {$splice: [[this.state.ticketsBacklog.indexOf(ticket), 1]]})});
         }
-        else if(lane == 1){
-            this.setState({ticketsProgress: update(this.state.ticketsProgress, {$splice: [[this.state.ticketsProgress.indexOf(ticket), 1]]})}, () => {
-                this.sortLane(1)
-            });
+        else if(lane == 'in_progress'){
+            this.setState({ticketsProgress: update(this.state.ticketsProgress, {$splice: [[this.state.ticketsProgress.indexOf(ticket), 1]]})});
         }
-        else if (lane == 2){
-            this.setState({ticketsDone: update(this.state.ticketsDone, {$splice: [[this.state.ticketsDone.indexOf(ticket), 1]]})}, () => {
-                this.sortLane(2)
-            });
+        else if (lane == 'done'){
+            this.setState({ticketsDone: update(this.state.ticketsDone, {$splice: [[this.state.ticketsDone.indexOf(ticket), 1]]})});
         }
-        else if(lane == 3){
-            this.setState({ticketsClosed: update(this.state.ticketsClosed, {$splice: [[this.state.ticketsClosed.indexOf(ticket), 1]]})}, () => {
-                this.sortLane(3)
-            });
+        else if(lane == 'closed'){
+            this.setState({ticketsClosed: update(this.state.ticketsClosed, {$splice: [[this.state.ticketsClosed.indexOf(ticket), 1]]})});
         }
-        else{
-            return;
-        }
-    }
-
-    setTicket(ticket){
-        this.setState({ticket: ticket});
-    }
-
-    saveTicket(){
-        console.log('saved');
     }
 
     render(){
@@ -179,11 +102,11 @@ class Component extends React.Component{
                         <div class="section-head col-xl-12 py-2">
                             <div class="col d-flex flex-row">
                                 <div class="d-flex flex-row">
-                                    <div class="toggle d-flex mr-1" onClick={this.toggle}>
+                                    <div class="toggle d-flex mr-1" onClick={this.toggle} title='Collapse component'>
                                         <img src={!this.state.flip ? "./images/close.svg" : "./images/show.svg"} class="d-block mx-auto"/>
                                     </div>
-                                    <div class="toggle d-flex" onClick={this.toggleDesc}>
-                                        <img src={!this.state.showDesc ? "./images/descplus.svg" : "./images/descclose.svg"} class="d-block mx-auto"/>
+                                    <div class="toggle d-flex" onClick={this.toggleDesc} title='Show description'>
+                                        <img src="./images/descplus.svg" class="d-block mx-auto"/>
                                     </div>
                                 </div>
                                 <div>
@@ -204,28 +127,26 @@ class Component extends React.Component{
                                     <div class="column-name w-100">BACKLOG</div>
                                     <Lane 
                                     items={this.state.ticketsBacklog} 
-                                    lane={0} 
+                                    lane={'backlog'} 
                                     comp={this.props.id} 
                                     push={this.pushTicket} 
                                     sort={this.sortLane}
                                     remove={this.removeTicket} 
-                                    changeLaneF={this.changeTicketLaneForward} 
-                                    changeLaneB={this.changeTicketLaneBackward}
-                                    shortName = {this.state.shortName}/>
+                                    changeLaneF={this.moveTicketForward} 
+                                    changeLaneB={this.moveTicketBackward}/>
                                 </div>
                                 {/* IN PROGRESS */}
                                 <div class={'column col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 d-flex flex-column px-0'} >
                                     <div class="column-name w-100">IN PROGRESS (Limit - {this.state.wip})</div>
                                     <Lane 
                                     items={this.state.ticketsProgress} 
-                                    lane={1} 
+                                    lane={'in_progress'} 
                                     comp={this.props.id} 
                                     push={this.pushTicket} 
                                     sort={this.sortLane}
                                     remove={this.removeTicket} 
-                                    changeLaneF={this.changeTicketLaneForward} 
-                                    changeLaneB={this.changeTicketLaneBackward}
-                                    shortName = {this.state.shortName} 
+                                    changeLaneF={this.moveTicketForward} 
+                                    changeLaneB={this.moveTicketBackward}
                                     wip={this.state.wip}/>
                                 </div>
 
@@ -234,28 +155,26 @@ class Component extends React.Component{
                                     <div class="column-name w-100">DONE</div>
                                     <Lane 
                                     items={this.state.ticketsDone} 
-                                    lane={2} 
+                                    lane={'done'} 
                                     comp={this.props.id} 
                                     push={this.pushTicket} 
                                     sort={this.sortLane}
                                     remove={this.removeTicket} 
-                                    changeLaneF={this.changeTicketLaneForward} 
-                                    changeLaneB={this.changeTicketLaneBackward}
-                                    shortName = {this.state.shortName}/>
+                                    changeLaneF={this.moveTicketForward} 
+                                    changeLaneB={this.moveTicketBackward}/>
                                 </div>
                                 {/* CLOSED */}
                                 <div class={'column col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 d-flex flex-column px-0'} >
                                     <div class="column-name w-100">CLOSED</div>
                                     <Lane 
                                     items={this.state.ticketsClosed} 
-                                    lane={3} 
+                                    lane={'closed'} 
                                     comp={this.props.id} 
                                     push={this.pushTicket} 
                                     sort={this.sortLane}
                                     remove={this.removeTicket} 
-                                    changeLaneF={this.changeTicketLaneForward} 
-                                    changeLaneB={this.changeTicketLaneBackward}
-                                    shortName = {this.state.shortName}/>
+                                    changeLaneF={this.moveTicketForward} 
+                                    changeLaneB={this.moveTicketBackward}/>
                                 </div>
                             </div>
                         </div>

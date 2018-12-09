@@ -19,24 +19,21 @@ const target = {
     },
 
     canDrop(props, monitor){
-        let ticketLane = monitor.getItem().lane;
-
-        console.log(monitor);
-        
+        let ticketLane = monitor.getItem().lane;        
         if(props.wip != undefined)
             if(props.items.length == props.wip) return false;
 
-        if(ticketLane == 0){
-            if(props.lane == 1 || props.lane == 3) return true;
+        if(ticketLane == 'backlog'){
+            if(props.lane == 'in_progress' || props.lane == 'closed') return true;
         }
 
-        if(ticketLane == 1){
-            if(props.lane == 1) return false;
+        if(ticketLane == 'in_progress'){
+            if(props.lane == 'in_progress') return false;
             return true;
         }
 
-        if(ticketLane == 2){
-            if(props.lane == 1 || props.lane == 2 || props.lane == 3) return true;
+        if(ticketLane == 'done'){
+            if(props.lane == 'in_progress' || props.lane == 'done' || props.lane == 'closed') return true;
         }
 
         return false;
@@ -47,10 +44,6 @@ const target = {
 class Lane extends React.Component{
     constructor(props){
         super(props);
-
-        this.state = {
-            tickets: this.props.items.length,
-        }
     }
 
     render(){
