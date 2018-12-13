@@ -180,8 +180,8 @@ class PRSetup extends React.Component{
         ]
 
         return(
-            <div class="ticket container-fluid mt-3 col-xl-4 col-sm-8 offset-sm-2 offset-xl-4 col-md-6 offset-md-3">
-                <div class="ticket-section px-2 mb-2 d-flex">
+            <div class="ticket container-fluid mt-3 col-xl-4 col-sm-8 offset-sm-2 offset-xl-4 col-md-6 offset-md-3 px-1">
+                <div class="ticket-section mb-2 d-flex">
                     <Toggler classToToggle=".knbn-to-collapse"/>
                     <div class="w-100">
                         <div class="label col-xs-12 col-sm-12 d-flex">Ticket name</div>
@@ -191,7 +191,7 @@ class PRSetup extends React.Component{
                         </div>
                     </div>
                 </div>
-                <div class="ticket-section px-2 mb-2 d-flex">
+                <div class="ticket-section mb-2 d-flex">
                     <Toggler classToToggle=".knbn-to-collapse"/>
                     <div class="w-100">
                         <div class="label col-xs-12 col-sm-12 d-flex">Priority</div>
@@ -204,14 +204,14 @@ class PRSetup extends React.Component{
                                 </div>
                             </button>
                             <div class="ticket-dropdown-menu dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
-                                <a class="ticket-dropdown-item dropdown-item" href="#" onClick={() => {this.setPriority("high")}}><img src="./images/high.svg" />Highest</a>
-                                <a class="ticket-dropdown-item dropdown-item" href="#" onClick={() => {this.setPriority("medium")}}><img src="./images/neuter.svg" />Medium</a>
-                                <a class="ticket-dropdown-item dropdown-item" href="#" onClick={() => {this.setPriority("low")}}><img src="./images/low.svg" />Lowest</a>
+                                <a class="ticket-dropdown-item dropdown-item" href="#" onClick={(event) => {event.preventDefault(); this.setPriority("high")}}><img src="./images/high.svg" />Highest</a>
+                                <a class="ticket-dropdown-item dropdown-item" href="#" onClick={(event) => {event.preventDefault(); this.setPriority("medium")}}><img src="./images/neuter.svg" />Medium</a>
+                                <a class="ticket-dropdown-item dropdown-item" href="#" onClick={(event) => {event.preventDefault(); this.setPriority("low")}}><img src="./images/low.svg" />Lowest</a>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="ticket-section px-2 mb-2 d-flex">
+                <div class="ticket-section mb-2 d-flex">
                     <Toggler classToToggle=".knbn-to-collapse"/>
                     <div class="w-100">
                         <div class="label col-xs-12 col-sm-12 d-flex">
@@ -229,17 +229,17 @@ class PRSetup extends React.Component{
                                 </div>
                             </button>
                             <div class="ticket-dropdown-menu dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
-                                <div class="col"><input type="text" class="search-box ticket-text-area form-control" placeholder="Search name" onChange={this.search} value={this.state.searchName}/></div>
+                                <div class="col"><input type="text" class="search-box ticket-text-area form-control mb-2" placeholder="Search name" onChange={this.search} value={this.state.searchName}/></div>
                                 {this.state.filteredUsers == undefined || this.state.filteredUsers.length == 0 ?
                                     <a class="ticket-dropdown-item dropdown-item text-truncate" href="#">No users</a> 
                                     :
-                                    this.state.filteredUsers.map(user => <a class="ticket-dropdown-item dropdown-item text-truncate" href="#" key={user.email} onClick={() => {this.setAssignee(user);}}><img class="mini-profile-pic mr-2" src={'https://www.gravatar.com/avatar/' + this.hashUser(user)}/>{user.name}</a>)
+                                    this.state.filteredUsers.map(user => <a class="ticket-dropdown-item dropdown-item text-truncate" href="#" key={user.email} onClick={(event) => {event.preventDefault(); this.setAssignee(user);}}><img class="mini-profile-pic mr-2" src={'https://www.gravatar.com/avatar/' + this.hashUser(user)}/>{user.name}</a>)
                                 }
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="ticket-section px-2 mb-2 d-flex">
+                <div class="ticket-section mb-2 d-flex">
                     <Toggler classToToggle=".knbn-to-collapse"/>
                     <div class="w-100">
                         <Label label='Test steps'/>
@@ -248,7 +248,7 @@ class PRSetup extends React.Component{
                         </div>
                     </div>
                 </div>
-                <div class="ticket-section px-2 mb-2 d-flex">
+                <div class="ticket-section mb-2 d-flex">
                     <Toggler classToToggle=".knbn-to-collapse"/>
                     <div class="w-100">
                         <Label label='Expected behavior'/>
@@ -257,7 +257,7 @@ class PRSetup extends React.Component{
                         </div>
                     </div>
                 </div>  
-                <div class="ticket-section px-2 mb-2 d-flex">
+                <div class="ticket-section mb-2 d-flex">
                     <Toggler classToToggle=".knbn-to-collapse"/>
                     <div class="w-100">
                         <Label label='Observed behavior'/>
@@ -266,7 +266,7 @@ class PRSetup extends React.Component{
                         </div>
                     </div>
                 </div> 
-                <div class="ticket-section px-2 mb-2 d-flex">
+                <div class="ticket-section mb-2 d-flex">
                     <Toggler classToToggle=".knbn-to-collapse"/>
                     <div class="w-100">
                         <Label label='Description'/>
@@ -275,7 +275,7 @@ class PRSetup extends React.Component{
                         </div>
                     </div>
                 </div> 
-                <div class="ticket-section px-2 mb-2 d-flex">
+                <div class="ticket-section mb-2 d-flex">
                     <Toggler classToToggle=".knbn-to-collapse"/>
                     <div class="w-100">
                         <div class="label col-xs-12 col-sm-12 d-flex">
@@ -291,17 +291,17 @@ class PRSetup extends React.Component{
                                 </div>
                             </button>
                             <div class="ticket-dropdown-menu dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
-                                <div class="col"><input type="text" class="search-box ticket-text-area form-control" placeholder="Search name" onChange={this.search} value={this.state.searchName}/></div>
+                                <div class="col"><input type="text" class="search-box ticket-text-area form-control mb-2" placeholder="Search name" onChange={this.search} value={this.state.searchName}/></div>
                                 {this.state.filteredComponents == undefined || this.state.filteredComponents.length == 0 ?
                                     <a class="ticket-dropdown-item dropdown-item text-truncate" href="#">No components</a> 
                                     :
-                                    this.state.filteredComponents.map(component => <a class="ticket-dropdown-item dropdown-item text-truncate" href="#" title={component.name} key={component.id} onClick={() => {this.setComponent(component);}}>{component.name}</a>)
+                                    this.state.filteredComponents.map(component => <a class="ticket-dropdown-item dropdown-item text-truncate" href="#" title={component.name} key={component.id} onClick={(event) => {event.preventDefault(); this.setComponent(component);}}>{component.name}</a>)
                                 }
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="ticket-section px-2 mb-2 d-flex">
+                <div class="ticket-section mb-2 d-flex">
                     <Toggler classToToggle=".knbn-to-collapse"/>
                     <div class="w-100">
                         <div class="label col-xl-12 d-flex">
@@ -317,17 +317,17 @@ class PRSetup extends React.Component{
                                 </div>
                             </button>
                             <div class="ticket-dropdown-menu dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
-                                <div class="col"><input type="text" class="search-box ticket-text-area form-control" placeholder="Search ticket name" onChange={this.searchTicketName} value={this.state.searchedTicketName}/></div>
+                                <div class="col"><input type="text" class="search-box ticket-text-area form-control mb-2" placeholder="Search ticket name" onChange={this.searchTicketName} value={this.state.searchedTicketName}/></div>
                                 {this.state.filteredTickets == undefined || this.state.filteredTickets.length == 0 ?
                                     <a class="ticket-dropdown-item dropdown-item" href="#">No tickets</a> 
                                     :
-                                    this.state.filteredTickets.map(ticket => <a class="ticket-dropdown-item dropdown-item" href="#" key={"blocked" + ticket.id} onClick={() => {this.setBlockedTicket(ticket);}}>{ticket.name}</a>)
+                                    this.state.filteredTickets.map(ticket => <a class="ticket-dropdown-item dropdown-item" href="#" key={"blocked" + ticket.id} onClick={(event) => {event.preventDefault(); this.setBlockedTicket(ticket);}}>{ticket.name}</a>)
                                 }
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="ticket-section px-2 mb-2 d-flex">
+                <div class="ticket-section mb-2 d-flex">
                     <Toggler classToToggle=".knbn-to-collapse"/>
                     <div class="w-100">
                         <div class="label col-xs-12 col-sm-12 d-flex">
@@ -343,17 +343,17 @@ class PRSetup extends React.Component{
                                 </div>
                             </button>
                             <div class="ticket-dropdown-menu dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
-                                <div class="col"><input type="text" class="search-box ticket-text-area form-control" placeholder="Search ticket name" onChange={this.searchTicketName} value={this.state.searchedTicketName}/></div>
+                                <div class="col"><input type="text" class="search-box ticket-text-area form-control mb-2" placeholder="Search ticket name" onChange={this.searchTicketName} value={this.state.searchedTicketName}/></div>
                                 {this.state.filteredTickets == undefined || this.state.filteredTickets.length == 0 ?
                                     <a class="ticket-dropdown-item dropdown-item" href="#">No tickets</a> 
                                     :
-                                    this.state.filteredTickets.map(ticket => <a class="ticket-dropdown-item dropdown-item" href="#" key={"blocking" + ticket.id} onClick={() => {this.setBlockingTicket(ticket);}}>{ticket.name}</a>)
+                                    this.state.filteredTickets.map(ticket => <a class="ticket-dropdown-item dropdown-item" href="#" key={"blocking" + ticket.id} onClick={(event) => {event.preventDefault(); this.setBlockingTicket(ticket);}}>{ticket.name}</a>)
                                 }
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="ticket-section px-2 mb-2 d-flex">
+                <div class="ticket-section mb-2 d-flex">
                     <Toggler classToToggle=".knbn-to-collapse"/>
                     <div class="w-100">
                         <div class="label col-xs-12 col-sm-12 d-flex">
@@ -369,17 +369,17 @@ class PRSetup extends React.Component{
                                 </div>
                             </button>
                             <div class="ticket-dropdown-menu dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
-                                <div class="col"><input type="text" class="search-box ticket-text-area form-control" placeholder="Search category name" onChange={this.searchCategory} value={this.state.searchedCategory}/></div>
+                                <div class="col"><input type="text" class="search-box ticket-text-area form-control mb-2" placeholder="Search category name" onChange={this.searchCategory} value={this.state.searchedCategory}/></div>
                                 {this.state.filteredCategories == undefined || this.state.filteredCategories.length == 0 ?
                                     <a class="ticket-dropdown-item dropdown-item" href="#">No categories</a> 
                                     :
-                                    this.state.filteredCategories.map(ticket => <a class="ticket-dropdown-item dropdown-item" href="#" key={"blocking" + ticket.id} onClick={() => {this.setCategory(ticket);}}>{ticket.name}</a>)
+                                    this.state.filteredCategories.map(ticket => <a class="ticket-dropdown-item dropdown-item" href="#" key={"blocking" + ticket.id} onClick={(event) => {event.preventDefault(); this.setCategory(ticket);}}>{ticket.name}</a>)
                                 }
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="ticket-section px-2 mb-2 d-flex">
+                <div class="ticket-section mb-2 d-flex">
                     <Toggler classToToggle=".knbn-to-collapse"/>
                     <div class="w-100">
                         <div class="label col-xs-12 col-sm-12 d-flex">
@@ -395,17 +395,17 @@ class PRSetup extends React.Component{
                                 </div>
                             </button>
                             <div class="ticket-dropdown-menu dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
-                                <div class="col"><input type="text" class="search-box ticket-text-area form-control" placeholder="Search category name" onChange={this.searchRelease} value={this.state.searchRelease}/></div>
+                                <div class="col"><input type="text" class="search-box ticket-text-area form-control mb-2" placeholder="Search category name" onChange={this.searchRelease} value={this.state.searchRelease}/></div>
                                 {this.state.filteredReleases == undefined || this.state.filteredReleases.length == 0 ?
                                     <a class="ticket-dropdown-item dropdown-item" href="#">No categories</a> 
                                     :
-                                    this.state.filteredReleases.map(release => <a class="ticket-dropdown-item dropdown-item" href="#" key={"blocking" + release.id} onClick={() => {this.setRelease(release);}}>{release.name}</a>)
+                                    this.state.filteredReleases.map(release => <a class="ticket-dropdown-item dropdown-item" href="#" key={"blocking" + release.id} onClick={(event) => {event.preventDefault(); this.setRelease(release);}}>{release.name}</a>)
                                 }
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="ticket-section px-2 mb-2 d-flex">
+                <div class="ticket-section mb-2 d-flex">
                     <Toggler classToToggle=".knbn-to-collapse"/>
                     <div class="w-100">
                         <div class="label col-xl-12 col-xs-12 col-sm-12">Estimation</div>
@@ -414,7 +414,7 @@ class PRSetup extends React.Component{
                         </div>
                     </div>
                 </div>
-                <div class="ticket-section px-2 mb-2 d-flex">
+                <div class="ticket-section mb-2 d-flex">
                     <Toggler classToToggle=".knbn-to-collapse"/>
                     <div class="w-100">
                         <Label label='Due date'/>

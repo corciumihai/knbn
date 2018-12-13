@@ -12,24 +12,19 @@ class Dashboard extends React.Component{
 
         this.state = {
             components: [],
-            loading: true,
         }
     }
 
-    componentWillMount(){
-        axios.get('/components').then(response => {
-            this.setState({components: response.data})
-        });
-    }
-
     componentDidMount(){
-        this.setState({loading:false});
+        axios.get('/get-components').then(response => {
+            this.setState({components: response.data});
+        });
     }
 
     render(){
         return(
             <div class="container-fluid d-flex flex-column p-0">
-                {this.state.components.map(comp => {return <Component key={comp.id} name={comp.name} id={comp.id} description={comp.description} edit={this.editTicket} wip={comp.wip}/>})}
+                {this.state.components.map(comp => {return <Component key={comp.id} data={comp}/>})}
             </div>
         );
     }

@@ -67,44 +67,53 @@ class Ticket extends React.Component{
                     <div 
                     class={(data.priority == 'low' ? "prio-1" : data.priority == 'medium' ? "prio-2" : "prio-3")}
                     title={data.priority == 'low' ? "Low priority" : data.priority == 'medium' ? "Medium priority" : "High priority"}/>
-                    <div class="ticket col d-flex flex-row">
-                        <div class="row">
-                            <div class="col-xl-12">
-                                <div class="row py-1 field">
-                                    <div class="col-xl-4 col-4 info text-truncate" title="Name">Name</div>
-                                    <div class="data col-px-1 text-truncate">{data.name}</div>
-                                </div>
-                            </div>
-                            <div class={(this.state.flipped ? "ticket-data col-xl-12 hide" : "ticket-data col-xl-12")}>
-                                <div class="row field">
-                                    <div class="col-xl-4 col-4 info text-truncate" title="Ticket ID">Ticket ID</div>
-                                    <div class="col-px-1"><a href={(data.isReport ? "/view/report/" : "/view/ticket/") + data.id} class="ticket-id">{data.id}</a></div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xl-4 col-4 info text-truncate" title="Start date">Start date</div>
-                                    <div class="data col-px-1 text-truncate">{dateformat(startDate, "dd \u00B7 mmmm \u00B7 yyyy")}</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xl-4 col-4 info text-truncate" title="Due date">Due date</div>
-                                    <div class="data col-px-1 text-truncate">{dateformat(dueDate, "dd \u00B7 mmmm \u00B7 yyyy")}</div>
-                                </div>
-                            </div>
-                            <div class="col-xl-12 my-2 d-flex flex-row justify-content-start">
-                                <div class="tool mr-1 d-flex" onClick={this.flip} title="Collapse size">
-                                    {this.state.flipped ? <img src="./images/arrow-down.svg" class="d-block mx-auto"/> : <img src="./images/arrow-up.svg" class="d-block mx-auto"/>}
-                                </div>
-                                <div class="tool mx-1 d-flex" title="Change to last lane" onClick={boundB}><img src="./images/lanechangeb.svg" class="d-block mx-auto"/></div>
-                                <div class="tool mx-1 d-flex" onClick={boundF} title="Change to next lane"><img src="./images/lanechange.svg" class="d-block mx-auto"/></div>                             
-                                <a href={(data.isReport ? "/view/report/" : "/view/ticket/") + data.id}>
-                                    <div class="tool mx-1 d-flex">
-                                        <img src="./images/edit.svg" data-toggle="modal" data-target="#editModal" title="Edit ticket" class="d-block mx-auto"/>
+                    <div class="ticket col px-0">
+                        <div class="col-xl-12 d-flex px-0 flex-row">
+                            <div class="col flex-grow-1">
+                                <div class="col-xl-12">
+                                    <div class="row py-1 field">
+                                        <div class="col-xl-4 col-4 px-0 info text-truncate" title="Name">Name</div>
+                                        <div class="data col px-0 text-truncate" title=''>
+                                        {data.name + ' \u00B7 ' + 'Currently in ' + (data.lane == "backlog" ? "Backlog" : data.lane == "in_progress" ? "In Progress" : data.lane == "done" ? "Done" : "Closed")}
+                                        </div>
                                     </div>
-                                </a>
+                                </div>
+                                <div class={(this.state.flipped ? "ticket-data col-xl-12 hide" : "ticket-data col-xl-12")}>
+                                    <div class="row field">
+                                        <div class="col-xl-4 col-4 px-0 info text-truncate" title="Ticket ID">Ticket ID</div>
+                                        <div class="col px-0"><a href={(data.isReport ? "/view/report/" : "/view/ticket/") + data.id} class="ticket-id">{data.id}</a></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-4 col-4 px-0 info text-truncate" title="Start date">Start date</div>
+                                        <div class="data col px-0 text-truncate">{dateformat(startDate, "dd \u00B7 mmmm \u00B7 yyyy")}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xl-4 col-4 px-0 info text-truncate" title="Due date">Due date</div>
+                                        <div class="data col px-0 text-truncate">{dateformat(dueDate, "dd \u00B7 mmmm \u00B7 yyyy")}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class={this.state.flipped ? "py-2 px-2 hide" : "py-2 px-2"}>
+                                <img class="assignee-pic" src={'https://www.gravatar.com/avatar/' + assigneeHash} alt={this.state.assignee} title={'Assignee \u00B7 ' + this.state.assigneeName}/> 
                             </div>
                         </div>
-                        <div class="d-flex flex-column align-items-start py-2 ml-auto">
-                            <img class="assignee-pic" src={'https://www.gravatar.com/avatar/' + assigneeHash} alt={this.state.assignee} title={'Assignee \u00B7 ' + this.state.assigneeName}/> 
-                            {/* <img class="assignee-pic mt-auto" src={'https://www.gravatar.com/avatar/' + reporterHash} alt={this.state.reporter} title={'Reporter \u00B7 ' + this.state.reporterName}/>  */}
+                        <div class="col-xl-12 mt-2 mb-1 d-flex flex-row justify-content-start">
+                            <div class="tool mr-1 d-flex" onClick={this.flip} title="Collapse size">
+                                {this.state.flipped ? <img src="./images/arrow-down.svg" class="d-block mx-auto"/> : <img src="./images/arrow-up.svg" class="d-block mx-auto"/>}
+                            </div>
+                            <div class="tool mx-1 d-flex" title="Change to last lane" onClick={boundB}><img src="./images/lanechangeb.svg" class="d-block mx-auto"/></div>
+                            <div class="tool mx-1 d-flex" onClick={boundF} title="Change to next lane"><img src="./images/lanechange.svg" class="d-block mx-auto"/></div>                             
+                            <a href={(data.isReport ? "/view/report/" : "/view/ticket/") + data.id}>
+                                <div class="tool mx-1 d-flex">
+                                    <img src="./images/edit.svg" data-toggle="modal" data-target="#editModal" title="Edit ticket" class="d-block mx-auto"/>
+                                </div>
+                            </a>
+                            <div class="knbn-days-left ml-auto text-right" title='Remaining days'>2 days remaining</div>
+                        </div>
+                        <div class="col-12 px-0">
+                            <div class="knbn-comp-progress progress w-100" title="Progress"> 
+                                <div class="knbn-comp-progress-bar progress-bar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style={{width: '33.90%'}}></div>
+                            </div>
                         </div>
                     </div>
                 </div>

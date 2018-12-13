@@ -116,3 +116,17 @@
 .ticket-box:hover{
     border: 1px solid rgba(178, 191, 255, 0.226);
 }
+
+.knbn-comp-progress{
+    height: 2px !important;
+    border-radius: none !important;
+    background-color: rgb(100, 100, 100);
+}
+
+.knbn-comp-progress-bar{
+    background-color: rgb(132, 196, 95);
+}
+
+.knbn-days-left{
+    font-size: 12px;
+}

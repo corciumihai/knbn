@@ -128,8 +128,15 @@ router.get('/create-pr', (request, response) => {
     else{response.redirect('/login');}
 });
 
+router.get('/create-cmp', (request, response) => {
+    if(request.isAuthenticated()){
+        response.render(path.resolve(__dirname, 'views', 'cmpSetup.pug'));
+    }
+    else{response.redirect('/login');}
+});
+
 router.get('/get-components', (request, response) => {
-    database.query('SELECT id, name FROM components', (error, result, fields) => {
+    database.query('SELECT * FROM components', (error, result, fields) => {
         if(error){
             console.log('Database error when fetching releases: ' + error.code);
             return;
@@ -182,6 +189,16 @@ router.post('/add-pr', (request, response) => {
         
         database.query('INSERT INTO prs SET ?', data, (error, fields, result) => {
             if(error){console.log(error); response.send({success: false, error: error.sqlMessage});}
+        });
+    }
+});
+
+router.post('/add-cmp', (request, response) => {
+    if(request.isAuthenticated()){
+        let data = request.body;        
+        database.query('INSERT INTO components SET ?', data, (error, fields, result) => {
+            if(error){console.log(error); response.send({success: false, error: error.sqlMessage});}
+            else{console.log('success');}
         });
     }
 });
@@ -262,7 +279,7 @@ router.post('/create/card', (request, response) => {
 });
 
 router.get('/get-projects', (request, response) => {
-    let query = database.query('SELECT name as \'value\', id as \'key\' FROM projects', (error, result, fields) => {
+    let query = database.query('SELECT name, id FROM projects', (error, result, fields) => {
         if(error){
             console.log('Database error at projects: ' + error);
             return;
@@ -319,17 +336,6 @@ router.post('/create-component', (request, response) => {
             return;
         }
         //send positive response
-    });
-});
-
-router.post('/components', (request, response) => {
-    let incomingData = request.body;
-    let query = database.query('SELECT * FROM components WHERE project = ?', incomingData.id, (error, result, fields) => {
-        if(error){
-            console.log('Database error at components: ' + error);
-            return;
-        }
-        response.send(result);
     });
 });
 

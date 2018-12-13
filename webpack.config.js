@@ -9,6 +9,7 @@ module.exports = {
     login: "./public/components/Login.js",
     ticketSetup: "./public/components/create/TicketSetup.js",
     prSetup: "./public/components/create/PRSetup.js",
+    cmpSetup: "./public/components/create/CmpSetup.js",
     register: "./public/components/Register.js",
     dashboard: "./public/components/Dashboard.js",
     menu: "./public/components/Menu.js",
@@ -28,7 +29,7 @@ module.exports = {
     ]
   },
   output: {
-    path: __dirname + "/public/js/layout",
+    path: __dirname + "/public/js",
     filename: "[name].min.js"
   },
   node: {

@@ -63,7 +63,7 @@ class Menu extends React.Component{
                                 <div class="dropdown-menu proj-drop">  
                                 {
                                     this.state.projects.map(proj=>{
-                                        return <a class="dropdown-item proj-item" href={"/view/project/" + proj.key} key={proj.key}>{proj.value}</a>
+                                        return <a class="dropdown-item proj-item" href={"/view/project/" + proj.id} key={proj.id}>{proj.name}</a>
                                     })
                                 }
                                 </div>
@@ -84,6 +84,7 @@ class Menu extends React.Component{
                                 <div class="dropdown-menu proj-drop" aria-labelledby="dropdownMenuButton">
                                     <a class="dropdown-item proj-item" href="/create-ticket">Ticket</a>
                                     <a class="dropdown-item proj-item" href="/create-pr">Problem report</a>
+                                    <a class="dropdown-item proj-item" href="/create-cmp">Component</a>
                                 </div>
                             </div>
                         </li>
