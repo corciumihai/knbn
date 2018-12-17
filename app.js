@@ -135,6 +135,13 @@ router.get('/create-cmp', (request, response) => {
     else{response.redirect('/login');}
 });
 
+router.get('/edit-cmp', (request, response) => {
+    // if(request.isAuthenticated()){
+        response.render(path.resolve(__dirname, 'views', 'editCmp.pug'));
+    // }
+    // else{response.redirect('/login');}
+});
+
 router.get('/get-components', (request, response) => {
     database.query('SELECT * FROM components', (error, result, fields) => {
         if(error){
@@ -164,6 +171,28 @@ router.get('/get-releases', (request, response) => {
         response.send(result);
     })
 });
+
+router.get('/get-releases-with-filter', (request, response) => {
+    database.query("SELECT id, name FROM releases", (error, result, fields) => {
+        if(error){
+            console.log('Database error when fetching releases: ' + error);
+            return;
+        }
+        response.send(result);
+    });
+});
+
+router.get('/get-releases-with-filter/:filter', (request, response) => {
+    database.query("SELECT id, name FROM releases WHERE LOWER(name) LIKE ?", ['%' + request.params.filter + '%'], (error, result, fields) => {
+        if(error){
+            console.log('Database error when fetching releases: ' + error);
+            return;
+        }
+        response.send(result);
+    });
+});
+
+
 
 router.post('/add/ticket', (request, response) => {
     if(request.isAuthenticated()){

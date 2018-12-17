@@ -69,32 +69,34 @@ class Ticket extends React.Component{
                     title={data.priority == 'low' ? "Low priority" : data.priority == 'medium' ? "Medium priority" : "High priority"}/>
                     <div class="ticket col px-0">
                         <div class="col-xl-12 d-flex px-0 flex-row">
-                            <div class="col flex-grow-1">
-                                <div class="col-xl-12">
-                                    <div class="row py-1 field">
+                            <div class="col-9 flex-grow-1 pr-0">
+                                <div class="col-xl-12 pr-0">
+                                    <div class="row pt-1 field">
                                         <div class="col-xl-4 col-4 px-0 info text-truncate" title="Name">Name</div>
-                                        <div class="data col px-0 text-truncate" title=''>
-                                        {data.name + ' \u00B7 ' + 'Currently in ' + (data.lane == "backlog" ? "Backlog" : data.lane == "in_progress" ? "In Progress" : data.lane == "done" ? "Done" : "Closed")}
-                                        </div>
+                                        <div class="data col-xl-8 col-8 px-0 text-truncate" title={data.name}>{data.name}</div>
                                     </div>
                                 </div>
-                                <div class={(this.state.flipped ? "ticket-data col-xl-12 hide" : "ticket-data col-xl-12")}>
+                                <div class={(this.state.flipped ? "ticket-data col-xl-12 pr-0 hide" : "ticket-data col-xl-12 pr-0")}>
+                                <div class="row field">
+                                        <div class="col-xl-4 col-4 px-0 info text-truncate" title="Lane">Lane</div>
+                                        <div class="col-xl-8 col-8 px-0" title={data.lane}>{(data.lane == "backlog" ? "Backlog" : data.lane == "in_progress" ? "In Progress" : data.lane == "done" ? "Done" : "Closed")}</div>
+                                    </div>
                                     <div class="row field">
                                         <div class="col-xl-4 col-4 px-0 info text-truncate" title="Ticket ID">Ticket ID</div>
-                                        <div class="col px-0"><a href={(data.isReport ? "/view/report/" : "/view/ticket/") + data.id} class="ticket-id">{data.id}</a></div>
+                                        <div class="col-xl-8 col-8 px-0" title={data.id}><a href={(data.isReport ? "/view/report/" : "/view/ticket/") + data.id} class="ticket-id">{data.id}</a></div>
                                     </div>
                                     <div class="row">
                                         <div class="col-xl-4 col-4 px-0 info text-truncate" title="Start date">Start date</div>
-                                        <div class="data col px-0 text-truncate">{dateformat(startDate, "dd \u00B7 mmmm \u00B7 yyyy")}</div>
+                                        <div class="data col-xl-8 col-8 px-0 text-truncate" title={dateformat(startDate, "dd \u00B7 mmmm \u00B7 yyyy")}>{dateformat(startDate, "dd \u00B7 mmmm \u00B7 yyyy")}</div>
                                     </div>
                                     <div class="row">
                                         <div class="col-xl-4 col-4 px-0 info text-truncate" title="Due date">Due date</div>
-                                        <div class="data col px-0 text-truncate">{dateformat(dueDate, "dd \u00B7 mmmm \u00B7 yyyy")}</div>
+                                        <div class="data col-xl-8 col-8 px-0 text-truncate" title={dateformat(dueDate, "dd \u00B7 mmmm \u00B7 yyyy")}>{dateformat(dueDate, "dd \u00B7 mmmm \u00B7 yyyy")}</div>
                                     </div>
                                 </div>
                             </div>
-                            <div class={this.state.flipped ? "py-2 px-2 hide" : "py-2 px-2"}>
-                                <img class="assignee-pic" src={'https://www.gravatar.com/avatar/' + assigneeHash} alt={this.state.assignee} title={'Assignee \u00B7 ' + this.state.assigneeName}/> 
+                            <div class={this.state.flipped ? "col-3 pt-2 px-2 hide d-flex" : "col-3 pt-2 px-2 d-flex"}>
+                                <img class="assignee-pic ml-auto" src={'https://www.gravatar.com/avatar/' + assigneeHash} alt={this.state.assignee} title={'Assignee \u00B7 ' + this.state.assigneeName}/> 
                             </div>
                         </div>
                         <div class="col-xl-12 mt-2 mb-1 d-flex flex-row justify-content-start">

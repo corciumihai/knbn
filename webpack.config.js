@@ -13,7 +13,8 @@ module.exports = {
     register: "./public/components/Register.js",
     dashboard: "./public/components/Dashboard.js",
     menu: "./public/components/Menu.js",
-    profile: "./public/components/Profile.js"
+    profile: "./public/components/Profile.js",
+    editCmp: "./public/components/editor/EditCmp.js"
   },
   module:{
     loaders: [

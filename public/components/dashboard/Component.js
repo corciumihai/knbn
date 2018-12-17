@@ -47,7 +47,15 @@ class Component extends React.Component{
 
     moveTicketForward(ticket, fromToolbar){
         if(fromToolbar){
-            if(ticket.lane == 'backlog'){this.removeTicket(ticket, ticket.lane); ticket.lane = 'in_progress'; this.pushTicket(ticket);}
+            if(ticket.lane == 'backlog'){
+                this.removeTicket(ticket, ticket.lane); 
+                if(this.state.wip == this.state.ticketsProgress.length){
+                    ticket.lane = 'done';
+                }else{
+                    ticket.lane = 'in_progress'; 
+                }
+                this.pushTicket(ticket);
+            }
             else if(ticket.lane == 'in_progress'){this.removeTicket(ticket, ticket.lane); ticket.lane = 'done'; this.pushTicket(ticket);}
             else if(ticket.lane == 'done'){this.removeTicket(ticket, ticket.lane); ticket.lane = 'closed'; this.pushTicket(ticket);}
         }
@@ -56,7 +64,16 @@ class Component extends React.Component{
 
     moveTicketBackward(ticket){
         if(ticket.lane == 'in_progress'){this.removeTicket(ticket, ticket.lane); ticket.lane = 'backlog'; this.pushTicket(ticket);}
-        else if(ticket.lane == 'done'){this.removeTicket(ticket, ticket.lane); ticket.lane = 'in_progress'; this.pushTicket(ticket);}
+        else if(ticket.lane == 'done'){
+            this.removeTicket(ticket, ticket.lane); 
+            if(this.state.wip == this.state.ticketsProgress.length){
+                ticket.lane = 'backlog'; 
+            }
+            else{
+                ticket.lane = 'in_progress'; 
+            }
+            this.pushTicket(ticket);
+        }
         axios.post('/change-lane', {id: ticket.id, lane: ticket.lane});
     }
 
@@ -100,12 +117,17 @@ class Component extends React.Component{
                     <div class="section-head col-xl-12 py-2">
                         <div class="row">
                             <div class="d-flex flex-row">
-                                <div class="toggle d-flex mr-1" onClick={this.toggle} title='Collapse component'>
+                                <div class="toggle d-flex border-right-light" onClick={this.toggle} title='Collapse component'>
                                     <img src={!this.state.flip ? "./images/close.svg" : "./images/show.svg"} class="d-block mx-auto"/>
                                 </div>
-                                <div class="toggle d-flex" onClick={this.toggleDesc} title='Show description'>
+                                <div class="toggle d-flex border-right-light" onClick={this.toggleDesc} title='Show description'>
                                     <img src="./images/descplus.svg" class="d-block mx-auto"/>
                                 </div>
+                                <a href="/edit-cmp">
+                                    <div class="toggle d-flex" title='Edit component'>
+                                        <img src="./images/edit.svg" class="d-block mx-auto"/>
+                                    </div>
+                                </a>
                             </div>
                             <div class="col">
                                 <div class="row">
@@ -145,7 +167,7 @@ class Component extends React.Component{
                             </div>
                             {/* IN PROGRESS */}
                             <div class={'column col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 d-flex flex-column px-0'} >
-                                <div class="column-name w-100">IN PROGRESS (Limit - {this.state.wip})</div>
+                                <div class="column-name w-100">IN PROGRESS <span style={{fontWeight: 'normal'}}>(Maximum {this.state.wip} ticket(s))</span></div>
                                 <Lane 
                                 items={this.state.ticketsProgress} 
                                 lane={'in_progress'} 
