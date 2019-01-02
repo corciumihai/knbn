@@ -430,6 +430,6 @@ class PRSetup extends React.Component{
     }
 }
 
-ReactDom.render(<PRSetup/>, document.getElementById('create-ticket'));
+// ReactDom.render(<PRSetup/>, document.getElementById('create-ticket'));
 
 export default PRSetup;

@@ -4,6 +4,7 @@ import { ItemTypes } from './Constants';
 import axios from 'axios';
 import crypto from 'crypto';
 import dateformat from 'dateformat';
+import { Link } from 'react-router-dom';
 
 const source = {
     beginDrag(props, monitor, component){
@@ -105,11 +106,11 @@ class Ticket extends React.Component{
                             </div>
                             <div class="tool mx-1 d-flex" title="Change to last lane" onClick={boundB}><img src="./images/lanechangeb.svg" class="d-block mx-auto"/></div>
                             <div class="tool mx-1 d-flex" onClick={boundF} title="Change to next lane"><img src="./images/lanechange.svg" class="d-block mx-auto"/></div>                             
-                            <a href={(data.isReport ? "/view/report/" : "/view/ticket/") + data.id}>
+                            <Link to={(data.isReport ? "/edit-pr/" : "/edit-ticket/") + data.id}>
                                 <div class="tool mx-1 d-flex">
                                     <img src="./images/edit.svg" data-toggle="modal" data-target="#editModal" title="Edit ticket" class="d-block mx-auto"/>
                                 </div>
-                            </a>
+                            </Link>
                             <div class="knbn-days-left ml-auto text-right" title='Remaining days'>2 days remaining</div>
                         </div>
                         <div class="col-12 px-0">

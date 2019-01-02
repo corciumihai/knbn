@@ -14,7 +14,7 @@ module.exports = {
     dashboard: "./public/components/Dashboard.js",
     menu: "./public/components/Menu.js",
     profile: "./public/components/Profile.js",
-    editCmp: "./public/components/editor/EditCmp.js"
+    reactRouter: "./public/routers/ReactRouter.js"
   },
   module:{
     loaders: [

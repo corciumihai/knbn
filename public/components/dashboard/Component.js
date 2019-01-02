@@ -2,7 +2,8 @@ import React from 'react';
 import Lane from './Lane';
 import axios from 'axios';
 import update from 'react-addons-update';
-import ReactQuill from 'react-quill';
+import ReactHtmlParser from 'react-html-parser';
+import { Link } from 'react-router-dom';
 
 class Component extends React.Component{
     constructor(props){
@@ -29,15 +30,11 @@ class Component extends React.Component{
     componentDidMount(){
         axios.get('/get-tickets').then(response => {
             let tickets = response.data.tickets;
-            // if(tickets.length > 1){tickets = sortTickets(tickets);}
-            console.log(tickets);
             this.setState({
                 ticketsBacklog: this.sortTickets(tickets.filter(item => (item.component == this.props.data.id && item.lane == 'backlog'))),
                 ticketsProgress: this.sortTickets(tickets.filter(item => (item.component == this.props.data.id && item.lane == 'in_progress'))),
                 ticketsDone: this.sortTickets(tickets.filter(item => (item.component == this.props.data.id && item.lane == 'done'))),
                 ticketsClosed: this.sortTickets(tickets.filter(item => (item.component == this.props.data.id && item.lane == 'closed'))),
-            }, () => {
-                console.log(this.state);
             });
         });
     }
@@ -123,11 +120,13 @@ class Component extends React.Component{
                                 <div class="toggle d-flex border-right-light" onClick={this.toggleDesc} title='Show description'>
                                     <img src="./images/descplus.svg" class="d-block mx-auto"/>
                                 </div>
-                                <a href="/edit-cmp">
+                                <Link to={"/edit-component/" + this.props.data.id}>
+                                {/* <a href="/edit-cmp"> */}
                                     <div class="toggle d-flex" title='Edit component'>
                                         <img src="./images/edit.svg" class="d-block mx-auto"/>
                                     </div>
-                                </a>
+                                {/* </a> */}
+                                </Link>
                             </div>
                             <div class="col">
                                 <div class="row">
@@ -137,17 +136,17 @@ class Component extends React.Component{
                                             <div class="knbn-days-left">2 days remaining</div>
                                         </div>
                                     </div>
-                                    <div class={this.state.showDesc ? "comp-desc col-12" : "comp-desc col-12 hide"}>{this.props.data.description}</div>
+                                    <div class={this.state.showDesc ? "comp-desc col-12" : "comp-desc col-12 hide"}>{ReactHtmlParser(this.props.data.description)}</div>
                                 </div> 
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                {/* <div class="row">
                     <div class="knbn-comp-progress progress w-100 mb-1" title="Progress"> 
                         <div class="knbn-comp-progress-bar progress-bar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style={{width: '33.90%'}}></div>
                     </div>
-                </div>
+                </div> */}
                 {this.state.ticketsBacklog.length > 0 || this.state.ticketsProgress.length > 0 || this.state.ticketsDone.length > 0 || this.state.ticketsClosed.length > 0 ?
                 <div class="row">
                     <div class={!this.state.flip ? "section-body col" : "section-body col reduce"}>

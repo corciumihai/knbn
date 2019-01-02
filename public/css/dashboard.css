@@ -30,13 +30,13 @@
 }
 
 .ticket-id{
-    text-decoration: underline;
-    color: rgb(245, 219, 170);
+    text-decoration: underline !important;
+    color: rgb(245, 219, 170) !important;
 }
 
 .ticket-id:hover{
-    color: rgb(245, 219, 170);
-    text-decoration: none;
+    color: rgb(245, 219, 170) !important;
+    text-decoration: none !important;
 }
 
 .tool{

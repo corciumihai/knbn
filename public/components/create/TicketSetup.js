@@ -213,7 +213,7 @@ class TicketSetup extends React.Component{
                     <div class="w-100">
                         <div class="label col-xs-12 col-sm-12 d-flex">
                             <div class="flex-grow-1">Assignee</div>
-                            <a class="ml-auto" href="#" onClick={this.selfAssignAssignee}>Assign to me</a>
+                            <a class="ml-auto" href="#" onClick={this.selfAssignAssignee}>Self assign</a>
                         </div>
                         {this.state.assigneeError == undefined || this.state.assigneeError.length == 0 ? null: <div class="col-12"><div class="error-label w-100">{this.state.assigneeError}</div></div>}
                         <div class="knbn-to-collapse dropdown py-2 col-xl-8 offset-xl-2">
@@ -400,6 +400,6 @@ class TicketSetup extends React.Component{
     }
 }
 
-ReactDom.render(<TicketSetup/>, document.getElementById('create-ticket'));
+// ReactDom.render(<TicketSetup/>, document.getElementById('create-ticket'));
 
 export default TicketSetup;

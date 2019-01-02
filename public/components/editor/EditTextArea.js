@@ -15,9 +15,11 @@ class EditTextArea extends React.Component{
         this.save = this.save.bind(this);
         this.enableEditMode = this.enableEditMode.bind(this);
     }
-    
-    componentDidMount(){
-        this.setState({value: this.props.value, displayValue: ReactHtmlParser(this.props.value)});
+
+    componentWillReceiveProps(nextProps, nextState){
+        if(nextProps.value != this.state.value){
+            this.setState({value: nextProps.value, displayValue: ReactHtmlParser(nextProps.value)});
+        }
     }
 
     enableEditMode(){
@@ -30,6 +32,7 @@ class EditTextArea extends React.Component{
 
     save(){
         this.setState({inEditMode: false});
+        this.props.save != null || this.props.save != undefined ? this.props.save(this.state.value) : {}
     }
 
     render(){
@@ -53,7 +56,7 @@ class EditTextArea extends React.Component{
                             {this.state.inEditMode ? 
                             <img class="knbn-edit-btn mx-auto" src="./images/save.svg" onClick={this.save}></img>
                             :
-                            <img class="knbn-edit-btn mx-auto" src="./images/edit.svg" onClick={this.enableEditMode}></img>}
+                            <img class="knbn-edit-btn mx-auto d-none" src="./images/edit.svg" onClick={this.enableEditMode}></img>}
                         </div>
                     </div>
                 </div>

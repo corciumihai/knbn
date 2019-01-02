@@ -30,6 +30,6 @@ class Dashboard extends React.Component{
     }
 }
 
-ReactDom.render(<Dashboard/>, document.getElementById('dashboard'));
+// ReactDom.render(<Dashboard/>, document.getElementById('dashboard'));
 
 export default Dashboard;

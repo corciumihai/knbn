@@ -305,6 +305,6 @@ class CmpSetup extends React.Component{
     }
 }
 
-ReactDom.render(<CmpSetup/>, document.getElementById('create-ticket'));
+// ReactDom.render(<CmpSetup/>, document.getElementById('create-ticket'));
 
 export default CmpSetup;

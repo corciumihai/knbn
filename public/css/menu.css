@@ -1,50 +1,48 @@
+:root {
+    --border-color: rgb(141, 80, 80);
+    --muted: rgb(102, 102, 102);
+    --light: rgb(156, 156, 156);
+  }
 
-.navbar{
-    width : 100%;
+.knbn-navbar{
+    width : 100% !important;
+    background-color : var(--section-bg-color) !important;
+    color : white !important;
+}
+
+.knbn-dropdown{
     background-color : var(--section-bg-color);
     color : white;
 }
 
-.proj-drop{
-    background-color : var(--section-bg-color);
-    color : white;
+.knbn-nav-item {
+    border : transparent solid 1px !important;
+    background-color : transparent !important;
+    color : rgb(180, 180, 180) !important;
+    font-size : 14px !important;
+    padding-left : 15px !important;
+    padding-right : 15px !important;
+    cursor: pointer;
 }
 
-.nav-item {
-    border : transparent solid 1px !important ;
-    background-color : transparent;
-    color : rgb(180, 180, 180);
-    font-size : 14px;
-    padding-left : 15px;
-    padding-right : 15px;
-}
-.active {
-    background-color : var(--ticket-bg) !important ;
-}
-.nav-link {
-color : rgb(180, 180, 180);
-}
-.nav-item:hover {
-    border : rgb(65, 70, 78) solid 1px !important ;
+.knbn-nav-item:hover {
+    border : var(--border-color) solid 1px !important ;
+    /* background-color : rgba(121, 21, 21, 0.1) !important; */
     background-color : transparent !important;
 }
-.proj-drop {
-    /* width : 100%; */
+
+.knbn-nav-item:hover .knbn-nav-link{
+    color: white !important;
 }
-.proj-item {
-    color : rgb(231, 231, 231);
-    font-size : 14px;
+
+.knbn-navbar-toggler {
+    border : none !important;
 }
-.proj-item:hover, .proj-item:active, .proj-item:focus {
-    color : rgb(255, 255, 255);
-    background-color : var(--ticket-bg);
-}
-.navbar-toggler {
-    border : none;
-}
+
 .search-btn {
     cursor : pointer;
 }
+
 .search-inpt, .search-inpt:focus {
     color: white;
     /* width : 170px; */
@@ -53,6 +51,7 @@ color : rgb(180, 180, 180);
     border: 1px solid var(--form-ctrl-border);
     box-shadow: none;
 }
+
 .search-bar {
     background-color : rgb(67, 73, 85);
     border-radius : 4px;
@@ -62,8 +61,9 @@ color : rgb(180, 180, 180);
     margin-left: 10px;
 }
 
-.dropdown-menu{
-    border: none;
+.knbn-dropdown-menu{
+    background-color: var(--section-bg-color) !important;
+    border: 1px solid rgb(59, 59, 59) !important;
 }
 
 .profile-pic{
@@ -83,4 +83,28 @@ color : rgb(180, 180, 180);
     font-size: 14px;
     color: white;
     text-decoration: none;
+}
+
+.knbn-dropdown-item{
+    color: var(--light) !important;
+}
+
+.knbn-dropdown-item:hover{
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    text-decoration: none;
+}
+
+.knbn-form-control{
+    border-radius: 0px !important; 
+    border: 1px solid rgb(97, 97, 97) !important;
+}
+
+.knbn-form-control:focus, .knbn-form-control:hover{
+    border: 1px solid var(--border-color) !important;
+}
+
+.knbn-no-configuration{
+    font-size: 14px !important;
+    color: var(--muted) !important;
 }

@@ -40,6 +40,14 @@
     font-size: 14px;
 }
 
+.knbn-fake-input-grp:hover{
+    border: 1px solid rgb(86, 84, 241) !important;
+}
+
+.knbn-fake-input-grp:hover .knbn-edit-btn{
+    display: inline !important;  
+}
+
 .knbn-fake-input, .knbn-fake-input:active, .knbn-fake-input:hover, .knbn-fake-input:focus{
     border-radius: 0px !important;
     box-shadow: none !important;
@@ -62,7 +70,9 @@
 }
 
 .knbn-edit-btn:hover{
-    background-color: rgb(73, 73, 73);
+    background-color: rgb(61, 61, 61);
+    /* border: 1px solid rgb(82, 81, 81) !important; */
+    /* background-color: transparent !important; */
 }
 
 .knbn-label-muted{
@@ -90,10 +100,35 @@
     color: white;
 }
 
-.knbn-dropdown-item{
-    color: white !important;
+.knbn-profile-pic, .knbn-profile-pic-large{
+    width: 25px;
+    height: 25px;
+    border-radius: 100%;
+    background-color: gray;
 }
 
-.knbn-dropdown-item:hover{
-    background-color: rgb(83, 83, 83);
+.knbn-profile-pic-large{
+    width: 30px;
+    height: 30px;
+}
+
+.knbn-self-assign{
+    color: rgb(168, 168, 168);
+    text-decoration: none;
+}
+
+.knbn-self-assign:hover{
+    background-color: rgb(86, 84, 241) ;
+    color: rgb(255, 255, 255);
+    text-decoration: none !important;
+    border-radius: 4px;
+}
+
+.knbn-immutable{
+    border: 1px solid rgb(46, 46, 46) !important;
+    background-color: rgb(46, 46, 46) !important; 
+}
+
+.knbn-immutable:hover{
+    border: 1px solid rgb(46, 46, 46) !important;
 }
