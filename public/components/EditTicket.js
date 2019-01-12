@@ -23,7 +23,7 @@ class EditTicket extends React.Component{
         // this.savePriority = this.savePriority.bind(this);
         // this.saveWIP = this.saveWIP.bind(this);
         // this.saveOwner = this.saveOwner.bind(this);
-        // this.saveDueDate = this.saveDueDate.bind(this);
+        this.saveDueDate = this.saveDueDate.bind(this);
     }
 
     componentDidMount(){
@@ -43,11 +43,11 @@ class EditTicket extends React.Component{
     // savePriority(priority){axios.post('/set-component/prio', {id: this.state.data.id, priority: priority.dbName}).then();}
     // saveWIP(wip){axios.post('/set-component/wip', {id: this.state.data.id, wip: wip}).then();}
     // saveOwner(user){axios.post('/set-component/owner', {id: this.state.data.id, owner: user});}
-    // saveDueDate(date){axios.post('/set-component/due-date', {id: this.state.data.id, date: date});}
+    saveDueDate(date){axios.post('/set-component/due-date', {id: this.state.data.id, date: date});}
 
     render(){
         return(
-            <div class="container-fluid mt-3 px-0">
+            <div class={this.props.dark == true ? "container-fluid mt-3 px-0" : "knbn-container-light container-fluid mt-3 px-0"}>
                 <div class="col-xl-12 col-12 d-flex">
                     <h3 class="knbn-header-3 w-100">Ticket Editor</h3>
                 </div>
@@ -90,12 +90,13 @@ class EditTicket extends React.Component{
                             date={this.state.data.startDate}
                             label='Creation date'
                             description='Creation date'
+                            save={this.saveDueDate}
                         />
                         <EditDate
                             editable={true}
                             date={this.state.data.dueDate}
                             label='Due date'
-                            // save={this.saveDueDate}
+                            save={this.saveDueDate}
                             description='Due date for ticket'
                         />
                     </EditForm>

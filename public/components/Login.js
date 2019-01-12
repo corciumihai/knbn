@@ -54,8 +54,8 @@ class Login extends React.Component{
 
     setPassword(event){this.setState({password: event.target.value});}
 
-    remember(event){
-        this.setState({remember: event.target.checked});
+    remember(){
+        this.setState({remember: !this.state.remember});
     }
 
     calcGravatar(email){
@@ -73,7 +73,6 @@ class Login extends React.Component{
                             <img class='profile-img mx-auto' src={'https://www.gravatar.com/avatar/' + this.state.gravatar}/>
                         </div>
                     </div>
-                    <span class='set-profile-msg'>Profile image will be available once you enter your e-mail</span>
                 </div>
 
                 <div class="form-group">
@@ -100,13 +99,12 @@ class Login extends React.Component{
                     {this.state.errorPass == true && this.state.errorPassMsg != undefined && this.state.errorPassMsg.length > 0 ? <span class='register-err'>{this.state.errorPassMsg}</span> : null}
                 </div>
 
-                {/* <div class="form-check">
-                    <label class="form-check-label custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" onChange={this.remember}/>
-                        <span class="custom-control-indicator"></span>
-                        <span>Remember password</span>
-                    </label>
-                </div> */}
+                <div class="d-flex flex-row justify-content-center my-2 knbn-rmb-container" onClick={this.remember}>
+                    <div class={"knbn-remember mr-2 d-flex" + (this.state.remember ? " knbn-remember-active" : "")}>
+                        <img src="./images/saveLight.svg" class="mx-auto my-auto"/>
+                        </div>
+                    <span class="knbn-rmb">Remember password</span>
+                </div>
 
                 <button class="btn col-12 register-btn mb-2" title="Press to login" type='submit'>Login</button>
 

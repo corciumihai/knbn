@@ -1,8 +1,89 @@
 import React from 'react';
-import Axios from 'axios';
+import axios from 'axios';
 import crypto from 'crypto';
+import EditButton from './EditButton';
+import Label from './Label';
+import DropdownItem from '../menu/DropdownItem';
+import DropdownMenu from '../menu/DropdownMenu';
+import TouchButtonRight from './TouchButtonRight';
+import Small from './Small';
+import { connect } from 'react-redux';
 
 class EditUser extends React.Component{
+    render(){
+        var md5 = crypto.createHash('md5');
+        var ownerHash = md5.update(String(this.state.currentUser.email).toLowerCase().trim()).digest('hex');
+
+        return(
+            <div class="form-group">
+                <div class={"d-flex flex-row"}>  
+                    <Label label="Owner"/>
+                    <TouchButtonRight action={this.selfAssign}>Self assign</TouchButtonRight>
+                </div>
+                <div class={"knbn-input-grp knbn-fake-input-grp input-group dropdown knbn-bg-transparent knbn-transition"  + 
+                (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
+                {
+                    this.state.inEditMode ? 
+                    <div class={"d-flex flex-row w-100"}>
+                        <input type="text" class={"knbn-input form-control knbn-bg-transparent" + 
+                        (this.props.themeToggled == true ? 
+                            " knbn-dark-bg-2x knbn-dark-bg-2x-active knbn-dark-color-5x" 
+                            : 
+                            " knbn-snow-bg-2x knbn-snow-bg-2x-active knbn-snow-color-5x" )} id="knbnFieldLabel" aria-describedby="knbnHelp" 
+                            placeholder={this.state.value == undefined || this.state.value.length == 0 ? "Enter user name" : ""}
+                            value={this.state.value}
+                            onChange={this.setFieldValue}
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"/>
+
+                        <EditButton save={this.save} enableEditMode={this.enterEditMode} edit={this.state.inEditMode}/>
+                        <DropdownMenu>
+                        {
+                            this.state.filteredUsers == undefined || this.state.filteredUsers.length == 0 ? 
+                            <div class="col text-truncate">No users found</div>
+                            :
+                            (
+                                this.state.filteredUsers.map(user => 
+                                {
+                                    var md5ForUser = crypto.createHash('md5');
+                                    var hashForUser = md5ForUser.update(String(user.email).toLowerCase().trim()).digest('hex');
+                                    
+                                    return  <a href="#" key={user.email} onClick={(event)=>{event.preventDefault(); this.setUser(user)}}>
+                                                <DropdownItem>
+                                                    <div class="d-flex flex-row">
+                                                        <div class="input-group-text mx-1 d-flex my-auto">
+                                                            <img class="knbn-profile-pic-large" src={'https://www.gravatar.com/avatar/' + hashForUser}/>
+                                                        </div>
+                                                        <div class="d-flex w-100"><div class="w-100 my-auto text-truncate">{user.name + " \u00B7 " + user.email}</div></div>
+                                                    </div>
+                                                </DropdownItem>
+                                            </a>
+                                })
+                            )
+                        }
+                        </DropdownMenu>
+                    </div>
+                    :
+                    <div class="d-flex flex-row w-100">
+                        <div class="knbn-input-grp-prepend input-group-prepend d-flex">
+                            <div class="input-group-text mx-1 d-flex my-auto">
+                                <img class="knbn-profile-pic" src={'https://www.gravatar.com/avatar/' + ownerHash}/>
+                            </div>
+                        </div>
+                        <div class={"knbn-fake-input form-control text-truncate" + (this.props.themeToggled == true ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
+                        {
+                            this.state.currentUser.name == undefined || this.state.currentUser.name.length == 0 ? "No owner configured" : this.state.currentUser.name + " \u00B7 " + this.state.currentUser.email
+                        }
+                        </div>
+
+                        <EditButton  save={this.save} enableEditMode={this.enterEditMode} edit={this.state.inEditMode}/>
+                    </div>
+                }
+                </div>
+                <Small >The current owner of the component</Small>
+            </div>
+        );
+    }
+
     constructor(props){
         super(props);
 
@@ -21,15 +102,15 @@ class EditUser extends React.Component{
         this.selfAssign = this.selfAssign.bind(this);
     }
 
-    componentDidMount(){
-        Axios.get('/users/get-users').then(response =>{
+    componentWillMount(){
+        axios.get('/users/get-users').then(response =>{
             this.setState({users: response.data, filteredUsers: response.data});
         });
     }
 
     componentWillReceiveProps(nextProps, nextState){
-        if(nextProps.user != this.state.currentUser){
-            Axios.get('/user/get-user-by-email/' + nextProps.user).then(response => {
+        if(nextProps.user != undefined && nextProps.user != this.state.currentUser){
+            axios.get('/user/get-user-by-email/' + nextProps.user).then(response => {
                 this.setState({currentUser: response.data});
             });
         }
@@ -42,78 +123,15 @@ class EditUser extends React.Component{
 
     selfAssign(event){
         event.preventDefault();
-        Axios.get('/current-user').then(response => {
-            if(response.data.email != this.state.currentUser.email){
-                this.setState({currentUser: response.data}, () => {this.save(this.state.currentUser)});
-            }
-        });
-    }
-
-    render(){
-        var md5 = crypto.createHash('md5');
-        var ownerHash = md5.update(String(this.state.currentUser.email).toLowerCase().trim()).digest('hex');
-        return(
-            <div class="form-group">
-                <div class="d-flex flex-row">  
-                    <label for="knbnFieldLabel" class="knbn-edit-field">Owner</label>
-                    <div class="w-100 text-right"><a href="" class="knbn-self-assign knbn-edit-field w-100 px-2 py-1" onClick={this.selfAssign}>Self assign</a></div>
-                </div>
-                <div class="knbn-input-grp knbn-fake-input-grp input-group dropdown">
-                {
-                    this.state.inEditMode ? 
-                    <input type="text" class="knbn-input form-control" id="knbnFieldLabel" aria-describedby="knbnHelp" 
-                    placeholder={this.state.value == undefined || this.state.value.length == 0 ? "Enter user name" : ""}
-                    value={this.state.value}
-                    onChange={this.setFieldValue}
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"/>
-                    :
-                    <div class="d-flex flex-row w-100">
-                        <div class="knbn-input-grp-prepend input-group-prepend d-flex">
-                            <div class="input-group-text mx-1 d-flex my-auto">
-                                <img class="knbn-profile-pic" src={'https://www.gravatar.com/avatar/' + ownerHash}/>
-                            </div>
-                        </div>
-                        <div class="knbn-fake-input form-control text-truncate">
-                        {
-                            this.state.currentUser.name == undefined || this.state.currentUser.name.length == 0 ? "No owner configured" : this.state.currentUser.name
-                        }
-                        </div>
-                    </div>
-                }
-                    <div class="knbn-input-grp-append input-group-append d-flex">
-                        <div class="input-group-text mx-1 d-flex my-auto">
-                        {
-                            this.state.inEditMode ? 
-                            <img class="knbn-edit-btn mx-auto" src="./images/save.svg" onClick={this.save}></img>
-                            :
-                            <img class="knbn-edit-btn mx-auto" src="./images/edit.svg" onClick={this.enterEditMode}></img>
-                        }
-                            
-                        </div>
-                    </div>
-                    <div id="knbnDropdownMenu" class="knbn-dropdown-menu dropdown-menu w-100">
-                        {
-                            this.state.filteredUsers == undefined || this.state.filteredUsers.length == 0 ? 
-                            <div class="col text-truncate">No users found</div>
-                            :
-                            this.state.filteredUsers.map(user => 
-                                {
-                                    var md5ForUser = crypto.createHash('md5');
-                                    var hashForUser = md5ForUser.update(String(user.email).toLowerCase().trim()).digest('hex');
-                                    return <a class="knbn-dropdown-item dropdown-item text-truncate d-flex flex-row" href="#" key={user.email} onClick={(event)=>{event.preventDefault(); this.setUser(user)}}>
-                                        <div class="input-group-text mx-1 d-flex my-auto">
-                                            <img class="knbn-profile-pic-large" src={'https://www.gravatar.com/avatar/' + hashForUser}/>
-                                        </div>
-                                        <div class="d-flex w-100"><div class="w-100 my-auto text-truncate">{user.name + " \u00B7 " + user.email}</div></div>
-                                    </a>
-                                })
-                        }
-                    </div>
-                </div>
-                <small id="knbnHelp" class="knbn-edit-help form-text text-muted">The current owner of the component</small>
-            </div>
-        );
+        this.setState({currentUser: this.props.currentUser}, () => {this.save(this.state.currentUser)});
     }
 }
 
-export default EditUser;
+const mapStateToProps = (state) => {
+    return {
+        themeToggled: state.themeToggled,
+        currentUser: state.currentUser
+    }
+}
+
+export default connect(mapStateToProps)(EditUser);

@@ -1,8 +1,51 @@
 import React from 'react';
 import dateformat from 'dateformat';
 import DatePicker from '../create/DatePicker';
+import EditButton from './EditButton';
+import Label from './Label';
+import Small from './Small';
+import { connect } from 'react-redux';
 
 class EditDate extends React.Component{
+    render(){
+        return(
+            <div class="form-group">
+                <div class="d-flex flex-row">  
+                    <Label label={this.props.label}/>
+                </div>
+                {
+                    !this.props.editable ? 
+                    <div class={"knbn-input-grp knbn-fake-input-grp knbn-immutable input-group knbn-transition" + 
+                    (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
+                        <div class={"knbn-fake-input form-control text-truncate knbn-transition" + 
+                        (this.props.themeToggled == true ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
+                            {dateformat(new Date(this.state.date), "dddd \u00B7 mmmm dS \u00B7 yyyy")}
+                        </div>
+                    </div>
+                    :
+                    <div class="d-flex flex-column w-100">
+                        <div class={"knbn-input-grp knbn-fake-input-grp input-group knbn-transition" + 
+                        (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
+                            <div class={"knbn-fake-input form-control text-truncate knbn-transition" + 
+                            (this.props.themeToggled == true ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
+                                {dateformat(new Date(this.state.date), "dddd \u00B7 mmmm dS \u00B7 yyyy")}
+                            </div>
+
+                            <EditButton edit={this.state.inEditMode} save={this.save} enableEditMode={this.enterEditMode}/>
+                        </div>
+                        {
+                        this.state.inEditMode ? 
+                            <DatePicker changeDate={this.setDate}/>
+                            :
+                            null
+                        }
+                    </div>                    
+                }
+                <Small>{this.props.description}</Small>
+            </div>
+        );
+    }
+
     constructor(props){
         super(props);
 
@@ -33,50 +76,12 @@ class EditDate extends React.Component{
     save(date){
         this.setState({inEditMode: false});
     }
+}
 
-    render(){
-        return(
-            <div class="form-group">
-                <div class="d-flex flex-row">  
-                    <label for="knbnFieldLabel" class="knbn-edit-field">{this.props.label}</label>
-                </div>
-                {
-                    !this.props.editable ? 
-                    <div class="knbn-input-grp knbn-fake-input-grp knbn-immutable input-group">
-                        <div class="knbn-fake-input form-control text-truncate">
-                            {dateformat(new Date(this.state.date), "dddd \u00B7 mmmm dS \u00B7 yyyy")}
-                        </div>
-                    </div>
-                    :
-                    <div class="d-flex flex-column w-100">
-                        <div class="knbn-input-grp knbn-fake-input-grp input-group">
-                            <div class="knbn-fake-input form-control text-truncate">
-                                {dateformat(new Date(this.state.date), "dddd \u00B7 mmmm dS \u00B7 yyyy")}
-                            </div>
-                            <div class="knbn-input-grp-append input-group-append d-flex">
-                                <div class="input-group-text mx-1 d-flex my-auto">
-                                {
-                                    this.state.inEditMode ? 
-                                    <img class="knbn-edit-btn mx-auto" src="./images/save.svg" onClick={this.save}></img>
-                                    :
-                                    <img class="knbn-edit-btn mx-auto" src="./images/edit.svg" onClick={this.enterEditMode}></img>
-                                }
-                                    
-                                </div>
-                            </div>
-                        </div>
-                        {
-                            this.state.inEditMode ? 
-                                <DatePicker changeDate={this.setDate}/>
-                                :
-                                null
-                        }
-                    </div>                    
-                }
-                <small id="knbnHelp" class="knbn-edit-help form-text text-muted">{this.props.description}</small>
-            </div>
-        );
+const mapStateToProps = (state) => {
+    return {
+        themeToggled: state.themeToggled,
     }
 }
 
-export default EditDate;
+export default connect(mapStateToProps)(EditDate);

@@ -1,17 +1,17 @@
 .knbn-header-3{
-    color: white;
+    /* color: white; */
 }
 
 .knbn-edit-label{
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 14px;
-    color: white;
+    /* color: white; */
 }
 
 .knbn-edit-field{
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 14px;
-    color: white;
+    /* color: white; */
 }
 
 .knbn-edit-help{
@@ -21,9 +21,9 @@
 .knbn-input, .knbn-input:hover, .knbn-input:focus, .knbn-input:active{
     border-radius: 0px !important;
     box-shadow: none !important;
-    background-color: var(--ticket-bg);
+    /* background-color: var(--ticket-bg); */
     border: 1px solid transparent;
-    color: white;
+    /* color: white; */
     font-size: 14px;
 }
 
@@ -34,9 +34,9 @@
 .knbn-input-grp, .knbn-input-grp:active, .knbn-input-grp:focus, .knbn-input-grp:hover{
     border-radius: 0px !important;
     box-shadow: none !important;
-    background-color: var(--ticket-bg);
+    /* background-color: var(--ticket-bg); */
     border: 1px solid transparent;
-    color: white;
+    /* color: white; */
     font-size: 14px;
 }
 
@@ -53,12 +53,12 @@
     box-shadow: none !important;
     background-color: transparent !important;
     border: 1px solid transparent;
-    color: white;
+    /* color: white; */
     font-size: 14px;
 }
 
 .knbn-fake-input-grp{
-    border: 1px solid rgb(65, 65, 65) !important;
+    /* border: 1px solid rgb(65, 65, 65) !important; */
     background-color: transparent !important;
 }
 
@@ -70,7 +70,7 @@
 }
 
 .knbn-edit-btn:hover{
-    background-color: rgb(61, 61, 61);
+    /* background-color: rgb(61, 61, 61); */
     /* border: 1px solid rgb(82, 81, 81) !important; */
     /* background-color: transparent !important; */
 }
@@ -79,32 +79,22 @@
     color: rgb(85, 85, 85);
 }
 
-.ql-toolbar{
-    border-top: none !important;
-    border-left: none !important;
-}
-
-.ql-container{
-    border-left: none !important;
-    border-bottom: none !important;
-}
-
 .knbn-fake-input p, .knbn-fake-input ul, .knbn-fake-input ol{
     margin-bottom: 0 !important;
 }
 
 .knbn-dropdown-menu{
     border-radius: 0px !important;
-    background-color: var(--light-ticket-bg);
+    /* background-color: var(--light-ticket-bg); */
     font-size: 14px;
-    color: white;
+    /* color: white; */
 }
 
 .knbn-profile-pic, .knbn-profile-pic-large{
     width: 25px;
     height: 25px;
     border-radius: 100%;
-    background-color: gray;
+    /* background-color: gray; */
 }
 
 .knbn-profile-pic-large{
@@ -113,22 +103,18 @@
 }
 
 .knbn-self-assign{
-    color: rgb(168, 168, 168);
+    /* color: rgb(168, 168, 168); */
     text-decoration: none;
 }
 
 .knbn-self-assign:hover{
     background-color: rgb(86, 84, 241) ;
-    color: rgb(255, 255, 255);
+    /* color: rgb(255, 255, 255); */
     text-decoration: none !important;
     border-radius: 4px;
 }
 
-.knbn-immutable{
-    border: 1px solid rgb(46, 46, 46) !important;
-    background-color: rgb(46, 46, 46) !important; 
-}
-
-.knbn-immutable:hover{
-    border: 1px solid rgb(46, 46, 46) !important;
+.ql-container.ql-snow{
+    border-bottom: none;
+    border-left: none;
 }

@@ -54,6 +54,14 @@ router.get('/', function(request, response){
     // else{response.redirect('/login');}
 });
 
+router.get('/logout', function(request, response){
+    if(request.isAuthenticated()){
+        request.logOut();
+        response.redirect('/login');
+    }
+    else{response.redirect('/login');}
+});
+
 router.post('/user/checkuser', (request, response) => {
     let data = request.body;
     var query = database.query('SELECT * FROM users WHERE email = ?', [data.email], function(error, result, fields){
@@ -82,10 +90,9 @@ router.post('/register', (request, response) => {
 router.get('/login', function(request, response){response.render(path.resolve(__dirname, 'views', 'login.pug'));});
 router.post('/login', passport.authenticate('local', {successRedirect: '/', failureRedirect: '/login'}));
 
-
 router.get('/current-user', (request, response) => {
     if(request.isAuthenticated()){
-        response.send({success: true, email: request.user.email, name: request.user.name});
+        response.send({email: request.user.email, name: request.user.name});
     }
     else{
         response.send({success: false});
@@ -102,9 +109,11 @@ router.get('/user/:email', (request, response) => {
 });
 
 router.get('/user/get-user-by-email/:email', (request, response) => {
-    database.query('SELECT * FROM users WHERE email = ?', [request.params.email], (error, result, fields) => {
-        if(error){console.log(error); return;}
-        response.send(result[0]);
+    database.query('SELECT * FROM users WHERE email = ?', request.params.email, (error, result, fields) => {
+        if(error){console.log(error); response.send({})}
+        else{
+            response.send(result[0]);
+        }
     });
 });
 
@@ -127,25 +136,21 @@ router.get('/users/get-users', function(request, response){
     })
 });
 
-// router.get('/create-ticket', (request, response) => {
-//     if(request.isAuthenticated()){
-//         response.render(path.resolve(__dirname, 'views', 'ticketSetup.pug'));
-//     }
-//     else{response.redirect('/login');}
-// });
-
-router.get('/create-pr', (request, response) => {
-    if(request.isAuthenticated()){
-        response.render(path.resolve(__dirname, 'views', 'prSetup.pug'));
-    }
-    else{response.redirect('/login');}
-});
-
 router.get('/create-cmp', (request, response) => {
     if(request.isAuthenticated()){
         response.render(path.resolve(__dirname, 'views', 'cmpSetup.pug'));
     }
     else{response.redirect('/login');}
+});
+
+router.get('/get-components/:projID', (request, response) => {
+    database.query('SELECT * FROM components WHERE project = ?', request.params.projID, (error, result, fields) => {
+        if(error){
+            console.log('Database error when fetching releases: ' + error.code);
+            return;
+        }
+        response.send(result);
+    })
 });
 
 router.get('/get-components', (request, response) => {
@@ -192,41 +197,165 @@ router.post('/add/ticket', (request, response) => {
 });
 
 router.post('/add-pr', (request, response) => {
-    if(request.isAuthenticated()){
-        var reporter = request.user.email;
+    // if(request.isAuthenticated()){
         let data = request.body;
 
-        console.log(data);
-
-        data.reporter = reporter;
+        if(request.user != request.user && request.user.email != undefined){
+            data.reporter = request.user.email;
+        }else{
+            data.reporter = '';
+        }
         
         database.query('INSERT INTO prs SET ?', data, (error, fields, result) => {
-            if(error){console.log(error); response.send({success: false, error: error.sqlMessage});}
+            if(error){
+                console.log(error); 
+                response.send({success: false});
+            }
+            response.send({success: true})
         });
-    }
+    // }
+});
+
+router.post('/add-ticket', (request, response) => {
+    // if(request.isAuthenticated()){
+        let data = request.body;
+
+        if(request.user != request.user && request.user.email != undefined){
+            data.reporter = request.user.email;
+        }else{
+            data.reporter = '';
+        }
+        
+        database.query('INSERT INTO tickets SET ?', data, (error, fields, result) => {
+            if(error){
+                console.log(error); 
+                response.send({success: false});
+            }
+            response.send({success: true})
+        });
+    // }
 });
 
 router.post('/add-cmp', (request, response) => {
-    if(request.isAuthenticated()){
-        let data = request.body;        
+    // if(request.isAuthenticated()){
+        let data = request.body;      
+        
+        if(data.owner == undefined){
+            if(request.user != request.user && request.user.email != undefined){
+                data.owner = request.user.email;
+            }else{
+                data.owner = '';
+            }
+        }
+
         database.query('INSERT INTO components SET ?', data, (error, fields, result) => {
-            if(error){console.log(error); response.send({success: false, error: error.sqlMessage});}
-            else{console.log('success');}
+            if(error){
+                console.log(error); 
+                response.send({success: false, error: error.sqlMessage});
+            }
+            else{response.send({success: true})}
         });
+    // }
+});
+
+router.post('/add-component-comment', (request, response) => {
+    database.query('INSERT INTO components_comments SET ?', request.body, (error, result, fields) => {
+        if(error){
+            console.log(error);
+            return;
+        }
+        response.send({success: true});
+    });
+});
+
+router.post('/add-project', (request, response) => {
+    database.query('INSERT INTO projects SET ?', request.body, (error, result, fields) => {
+        if(error){
+            console.log(error);
+            return;
+        }
+        response.send({success: true});
+    });
+});
+
+router.get('/category/:id', (request, response) => {
+    if(request.params.id != undefined && request.params.id != null){
+        database.query('SELECT name FROM disciplines WHERE id = ?', request.params.id, (error, result, fields) => {
+            if(error){
+                console.log(error);
+                response.send(undefined);
+                return;
+            }
+            response.send(result[0]);
+        });
+    }
+    else{
+        response.send(undefined);
+    }
+    
+});
+
+router.get('/release/:id', (request, response) => {
+    if(request.params.id != undefined && request.params.id != 0){
+        database.query('SELECT name FROM releases WHERE id = ?', request.params.id, (error, result, fields) => {
+            if(error){
+                console.log(error);
+                response.send(undefined);
+                return;
+            }
+            response.send(result[0]);
+        });
+    }
+    else{
+        response.send(undefined);
     }
 });
 
-router.get('/get-tickets', (request, response) => {
-    var data = {};
-    database.query('SELECT * FROM tickets', [request.query.component], (error, result, fields) => {
+router.post('/component/update-comment', (request, response) => {
+    database.query('UPDATE components_comments SET value = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
         if(error){
-            response.send({success: false, error: error.sqlMessage});
+            console.log(error);
             return;
         }
-        data.tickets = result;
-        response.send(data);
+        // response.send({success: true});
+    });
+})
+
+router.get('/get-component-comments/:id', (request, response) => {
+    console.log(request.params.id)
+    database.query('SELECT * FROM components_comments WHERE compID = ?', request.params.id, (error, result, fields) => {
+        if(error){console.log(error);  return;}
+        response.send(result);
+    })
+});
+
+router.post('/remove-comment', (request, response) => {
+    database.query('DELETE FROM components_comments WHERE id = ?', [request.body.id], (error, result, fields) => {
+        if(error){console.log(error);  return;}
+        console.log('here');
+        response.send({success: true});
+    })
+});
+
+router.get('/component/get-tickets/:compID', (request, response) => {
+    database.query('SELECT * FROM tickets WHERE component = ?', request.params.compID, (error, result, fields) => {
+        if(error){
+            response.send([]);
+        }
+        response.send(result);
     });
 });
+
+router.get('/get-tickets/:projID', (request, response) => {
+    database.query('SELECT * FROM tickets WHERE project = ?', request.params.projID, (error, result, fields) => {
+        if(error){
+            response.send([]);
+            return;
+        }
+        response.send(result);
+    });
+});
+
 
 router.get('/get-component-data/:id', (request, response) => {
     database.query('SELECT * FROM components WHERE id = ?', request.params.id, (error, result, fields) => {
@@ -291,6 +420,32 @@ router.get('/get-pr-data/:id', (request, response) => {
     });
 });
 
+router.get('/get-projects', (request, response) => {
+    database.query('SELECT * FROM projects', (error, result, fields) => {
+        if(error){console.log(error); response.send([]);}
+        response.send(result);
+    });
+});
+
+router.get('/get-project-details/:id', (request, response) => {
+    database.query('SELECT * FROM projects WHERE id = ?', request.params.id, (error, result, fields) => {
+        if(error){console.log(error); response.send({})}
+        else{
+            response.send(result[0]);
+        }
+    })
+});
+
+router.post('/update-lane', (request, response) => {
+    database.query('UPDATE tickets SET lane = ? WHERE id = ?', [request.body.lane, request.body.id], (error, fields, result) => {
+        if(error){
+            console.log(error);
+            response.send({success: false});
+        }else{
+            response.send({success: true});
+        }
+    })
+});
 
 /* ********************************************************************************************************************* */
 app.use(router);

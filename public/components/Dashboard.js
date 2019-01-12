@@ -1,35 +1,46 @@
 import React from 'react';
-import ReactDom from 'react-dom';
-import Component from './dashboard/Component';
-import axios from 'axios';
-import HTML5Backend from 'react-dnd-html5-backend';
-import { DragDropContext } from 'react-dnd';
+import { connect } from 'react-redux';
+import Axios from 'axios';
+import ViewProject from './dashboard/ViewProject';
 
-@DragDropContext(HTML5Backend)
 class Dashboard extends React.Component{
     constructor(props){
         super(props);
 
         this.state = {
-            components: [],
+            projects: []
         }
     }
 
-    componentDidMount(){
-        axios.get('/get-components').then(response => {
-            this.setState({components: response.data});
+    componentWillMount(){
+        Axios.get('/get-projects')
+        .then(response => {
+            this.setState({projects: response.data})
         });
     }
 
     render(){
         return(
-            <div class="container-fluid d-flex flex-column p-0">
-                {this.state.components.map(comp => {return <Component key={comp.id} data={comp}/>})}
+            <div class="container-fluid d-flex flex-column">
+                <div class={"knbn-dashboard knbn-font-medium" + (this.props.themeToggled ? " knbn-dark-color-2x" : "")}>
+                {
+                    this.state.projects.length > 0 ? 
+                    this.state.projects.map(item => {
+                        return <ViewProject data={item} key={item.id}/>
+                    })
+                    :
+                    "There are no projects configured. Please configure a project, components and/or tickets"
+                }
+                </div>
             </div>
         );
     }
 }
 
-// ReactDom.render(<Dashboard/>, document.getElementById('dashboard'));
+const mapStateToProps = (state) => {
+    return{
+        themeToggled: state.themeToggled
+    }
+}
 
-export default Dashboard;
+export default connect(mapStateToProps)(Dashboard);

@@ -1,1 +1,0 @@
-const componentRouter = express.Router();

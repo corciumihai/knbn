@@ -58,8 +58,8 @@
 
 .ticket-dropdown-btn:hover, .ticket-dropdown-btn:focus, .ticket-dropdown-btn:active, .ticket-dropdown-menu{
     box-shadow: none !important;
-    background-color: var(--ticket-bg);
-    border: none !important;
+    /* background-color: var(--ticket-bg); */
+    /* border: none !important; */
     border-radius: 0 !important;
 }
 
@@ -405,61 +405,14 @@
     background-color: transparent;
 }
 
-.ql-toolbar, .ql-container{
-    border: 1px solid #423d3d !important;
-    font-size: 14px !important;
-    color: white !important;
-}
-
-.ql-picker-label::before{
-    color: white !important;
-}
-
-.ql-editor{
-    min-height: 100px !important;
-    max-height:  150px !important;
-    font-family: 'Consolas';
-}
-
-.ql-stroke, .ql-stroke:hover, .ql-fill{
-    stroke: white !important;
-}
-
-.ql-active{
-    background-color: rgb(71, 71, 71) !important;
-}
-
-.ql-container{
-    border-top: none !important;
-}
-
-.ql-snow .ql-picker-options{
-    background-color: transparent;
-    color: white;
-}
-
-.ql-picker-label:hover, .ql-picker-label:focus, .ql-picker-label:active{
-    background-color: rgb(53, 53, 53) !important;
-    border-color: transparent !important;
-    border-radius: 3px;
-}
-
-.ql-toolbar.ql-snow .ql-picker.ql-expanded .ql-picker-options{
-    border-color: transparent;
-    background-color: rgb(53, 53, 53) !important;
-}
-
-.ql-bold:hover, .ql-italic:hover, .ql-underline:hover, .ql-link:hover{
-    border-radius: 3px;
-    background-color: rgb(53, 53, 53) !important;
-}
-
-.ql-editor:focus{
-    background-color: rgb(53, 53, 53) !important;
-}
-
 .knbn-section-collapse{
     background-color: rgb(58, 58, 58);
     cursor: pointer;
     vertical-align: top;
+}
+
+.ql-toolbar.ql-snow{
+    border: none !important;
+    border-bottom: 1px solid #ccc !important;
+    border-right: 1px solid #ccc !important;
 }

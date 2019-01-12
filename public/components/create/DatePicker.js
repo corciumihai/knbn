@@ -40,16 +40,18 @@ class DatePicker extends React.Component{
 
     render(){
         return(
-            <div class="knbn-to-collapse col-xl-6 col-sm-8 offset-sm-2 offset-xl-3 px-3 py-2">
-                <button class="ticket-dropdown-btn btn btn-secondary w-100" data-toggle="dropdown">{dateformat(this.state.currentDate, 'dddd \u00B7 dd \u00B7 mmmm \u00B7 yyyy')}</button>
-                <div class="ticket-dropdown-menu w-100 p-2" aria-labelledby="dropdownMenuButton">
+            <div class={"knbn-to-collapse col-xl-6 col-sm-8 offset-sm-2 offset-xl-3 px-3 py-2" + (this.props.dark == true ? "" : "")}>
+                {/* <div class={"ticket-dropdown-btn w-100 text-center" + (this.props.dark == true ? "" : " knbn-snow-bg-1x")}>{dateformat(this.state.currentDate, 'dddd \u00B7 dd \u00B7 mmmm \u00B7 yyyy')}</div> */}
+                <div class={"ticket-dropdown-menu w-100 p-2 knbn-border" + (this.props.dark == true ? "" : " knbn-snow-bg-1x knbn-snow-border-1x")}>
                     <div class="calendar input-group">
                         <div class="input-group-prepend">
-                            <button class="date-btn btn px-3 py-1 h-100" type="button" id="button-addon1" onClick={this.decreaseMonth}><img class="mx-auto" src="./images/go-left.svg"></img></button>
+                            <button class={"date-btn btn px-3 py-1 h-100 knbn-btn knbn-transition" + (this.props.dark == true ? "" : " knbn-snow-bg-inverted-onhover knbn-snow-bg-inverted-onfocus knbn-snow-bg-inverted-onactive")} type="button" id="button-addon1" onClick={this.decreaseMonth}><img class={"mx-auto" + (this.props.dark ? " knbn-img-inverted" : "")} src="./images/leftArrowLight.svg"></img></button>
                         </div>
-                        <div class="date-display mx-auto"><span class="align-middle">{dateformat(this.state.currentDate, 'mmmm \u00B7 yyyy')}</span></div>
+
+                        <div class={"date-display mx-auto" + (this.props.dark == true ? " " : " knbn-snow-color-1x")}><span class="align-middle">{dateformat(this.state.currentDate, 'mmmm \u00B7 yyyy')}</span></div>
+
                         <div class="input-group-append">
-                            <button class="date-btn btn px-3 py-1 h-100" type="button" id="button-addon1" onClick={this.increaseMonth}><img class="mx-auto" src="./images/go-right.svg"></img></button>
+                            <button class={"date-btn btn px-3 py-1 h-100 knbn-btn knbn-transition" + (this.props.dark == true ? "" : " knbn-snow-bg-inverted-onhover knbn-snow-bg-inverted-onfocus knbn-snow-bg-inverted-onactive")} type="button" id="button-addon1" onClick={this.increaseMonth}><img class={"mx-auto" + (this.props.dark ? " knbn-img-inverted" : "")} src="./images/rightArrowLight.svg"></img></button>
                         </div>
                     </div>
                     <div class="date-days d-flex flex-wrap mx-auto justify-content-center">
@@ -58,18 +60,18 @@ class DatePicker extends React.Component{
                                 this.state.currentDate.getMonth() == new Date().getMonth() && 
                                 day + 1 == new Date().getDate()){
                                     return <button 
-                                            class={"day-btn current-day btn px-0 py-0"} 
-                                            key={day} 
-                                            onClick={() => {this.props.changeDate(new Date(this.state.currentDate.getFullYear(), this.state.currentDate.getMonth(), day + 1).getTime())}} 
-                                            title={this.translateDay(new Date(this.state.currentDate.getFullYear(), this.state.currentDate.getMonth(), day).getDay())}>{day + 1}</button>
+                                                class={"day-btn current-day btn px-0 py-0"} 
+                                                key={day} 
+                                                onClick={() => {this.props.changeDate(new Date(this.state.currentDate.getFullYear(), this.state.currentDate.getMonth(), day + 1).getTime())}} 
+                                                title={this.translateDay(new Date(this.state.currentDate.getFullYear(), this.state.currentDate.getMonth(), day).getDay())}>{day + 1}</button>
                                 }
                                 else{
                                     return <button 
-                                            class={new Date(this.state.currentDate.getFullYear(), this.state.currentDate.getMonth(), day + 1, 0).getTime() >= new Date().getTime() ? "day-btn btn px-0 py-0" : "day-btn btn px-0 py-0 disabled"} 
-                                            key={day} 
-                                            onClick={new Date(this.state.currentDate.getFullYear(), this.state.currentDate.getMonth(), day + 1, 0).getTime() >= new Date().getTime() ? 
-                                                () => {this.props.changeDate(new Date(this.state.currentDate.getFullYear(), this.state.currentDate.getMonth(), day + 1).getTime())} : null} 
-                                            title={this.translateDay(new Date(this.state.currentDate.getFullYear(), this.state.currentDate.getMonth(), day).getDay())}>{day + 1}</button>
+                                                class={new Date(this.state.currentDate.getFullYear(), this.state.currentDate.getMonth(), day + 1, 0).getTime() >= new Date().getTime() ? "day-btn btn px-0 py-0" + (this.props.dark == true ? "" : "") : "day-btn btn px-0 py-0 disabled" + (this.props.dark == true ? "" : " knbn-snow-color-1x")} 
+                                                key={day} 
+                                                onClick={new Date(this.state.currentDate.getFullYear(), this.state.currentDate.getMonth(), day + 1, 0).getTime() >= new Date().getTime() ? 
+                                                    () => {this.props.changeDate(new Date(this.state.currentDate.getFullYear(), this.state.currentDate.getMonth(), day + 1).getTime())} : null} 
+                                                title={this.translateDay(new Date(this.state.currentDate.getFullYear(), this.state.currentDate.getMonth(), day).getDay())}>{day + 1}</button>
                                 }
                             
                         })}

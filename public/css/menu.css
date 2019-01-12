@@ -2,23 +2,27 @@
     --border-color: rgb(141, 80, 80);
     --muted: rgb(102, 102, 102);
     --light: rgb(156, 156, 156);
-  }
+}
+
+a, a:active, a:hover, a:active{
+    text-decoration: none;
+}
 
 .knbn-navbar{
     width : 100% !important;
-    background-color : var(--section-bg-color) !important;
-    color : white !important;
+    /* background-color : var(--section-bg-color) !important; */
+    /* color : white !important; */
 }
 
 .knbn-dropdown{
-    background-color : var(--section-bg-color);
-    color : white;
+    /* background-color : var(--section-bg-color); */
+    /* color : white; */
 }
 
 .knbn-nav-item {
     border : transparent solid 1px !important;
-    background-color : transparent !important;
-    color : rgb(180, 180, 180) !important;
+    /* background-color : transparent !important; */
+    /* color : rgb(180, 180, 180) !important; */
     font-size : 14px !important;
     padding-left : 15px !important;
     padding-right : 15px !important;
@@ -26,13 +30,13 @@
 }
 
 .knbn-nav-item:hover {
-    border : var(--border-color) solid 1px !important ;
+    /* border : var(--border-color) solid 1px !important ; */
     /* background-color : rgba(121, 21, 21, 0.1) !important; */
     background-color : transparent !important;
 }
 
 .knbn-nav-item:hover .knbn-nav-link{
-    color: white !important;
+    /* color: white !important; */
 }
 
 .knbn-navbar-toggler {
@@ -44,16 +48,16 @@
 }
 
 .search-inpt, .search-inpt:focus {
-    color: white;
+    /* color: white; */
     /* width : 170px; */
     font-size : 14px;
-    background-color: transparent;
-    border: 1px solid var(--form-ctrl-border);
+    /* background-color: transparent; */
+    /* border: 1px solid var(--form-ctrl-border); */
     box-shadow: none;
 }
 
 .search-bar {
-    background-color : rgb(67, 73, 85);
+    /* background-color : rgb(67, 73, 85); */
     border-radius : 4px;
 }
 
@@ -62,49 +66,77 @@
 }
 
 .knbn-dropdown-menu{
-    background-color: var(--section-bg-color) !important;
-    border: 1px solid rgb(59, 59, 59) !important;
+    /* background-color: var(--section-bg-color) !important; */
+    /* border: 1px solid rgb(59, 59, 59) !important; */
 }
 
 .profile-pic{
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     border-radius: 100%;
-    background-color: gray;
+    /* background-color: gray; */
 }
 
 .to-profile{
     font-size: 14px;
-    color: rgb(192, 192, 192);
+    /* color: rgb(192, 192, 192); */
     text-decoration: none;
 }
 
 .to-profile:hover{
     font-size: 14px;
-    color: white;
+    /* color: white; */
     text-decoration: none;
 }
 
 .knbn-dropdown-item{
-    color: var(--light) !important;
+    /* color: var(--light) !important; */
 }
 
 .knbn-dropdown-item:hover{
     color: white !important;
-    background-color: rgba(255, 255, 255, 0.1) !important;
+    /* background-color: rgba(255, 255, 255, 0.1) !important; */
     text-decoration: none;
 }
 
 .knbn-form-control{
     border-radius: 0px !important; 
-    border: 1px solid rgb(97, 97, 97) !important;
+    /* border: 1px solid rgb(97, 97, 97) !important; */
 }
 
 .knbn-form-control:focus, .knbn-form-control:hover{
-    border: 1px solid var(--border-color) !important;
+    /* border: 1px solid var(--border-color) !important; */
 }
 
 .knbn-no-configuration{
     font-size: 14px !important;
-    color: var(--muted) !important;
+    /* color: var(--muted) !important; */
+}
+
+
+
+
+.knbn-toggler{
+    width: 30px;
+    height: 15px;
+    border-radius: 10px;
+    padding: 0px;
+    background-color: rgb(78, 78, 78);
+    border: 2px solid transparent;
+    cursor: pointer;
+}
+
+.knbn-toggler, .knbn-toggler:hover, .knbn-toggler:focus, .knbn-toggler:active{
+    box-shadow: none;
+}
+
+.knbn-toggler-toggled, .knbn-toggler-toggled:hover, .knbn-toggler-toggled:focus{
+    background-color: rgb(28, 93, 214);
+}
+
+.knbn-toggler-handle{
+    width: 11px;
+    height: 11px;
+    background-color: white;
+    border-radius: 100%;
 }

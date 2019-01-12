@@ -1,9 +1,31 @@
 import React from 'react';
-import ReactDom from 'react-dom';
 import axios from 'axios';
 import crypto from 'crypto';
-import { NavLink } from 'react-router-dom'
-import SearcBar from './search/SearchBar';
+import { NavLink } from 'react-router-dom';
+import SearcBar from './menu/SearchBar';
+import ProfileDrop from './profile/ProfileDrop';
+import DropdownMenu from './menu/DropdownMenu';
+import KNBNNavLink from './menu/KNBNNavLink';
+import DropdownItem from './menu/DropdownItem';
+import { connect } from 'react-redux';
+import ThemeToggler from './menu/ThemeToggler';
+
+const mapStatetoProps = (state) => {
+    return {
+        themeToggled: state.themeToggled
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        loadProfile: (data) => {
+            dispatch({
+                type: 'KNBN_SET_USER',
+                payload: data
+            });
+        }
+    }
+}
 
 class Menu extends React.Component{
     constructor(props){
@@ -13,9 +35,6 @@ class Menu extends React.Component{
             toggle: false,
             projects: [],
             loadProj: false,
-            email: '',
-            name: '',
-            gravatar: ''
         }
 
         this.toggle = this.toggle.bind(this);
@@ -28,70 +47,81 @@ class Menu extends React.Component{
         });
     }
 
-    componentDidMount(){
-        // get gravatar hash
+    toggle(){this.setState({toggle: !this.state.toggle});}
+
+    componentWillMount(){
         axios.get('/current-user').then(response => {
-            if(response.data.success){this.setState({email: response.data.email, name: response.data.name}, () => {
+            if(response.data.success == false){
+                this.props.loadProfile({});
+            }
+            else{
                 var md5 = crypto.createHash('md5');
-                this.setState({gravatar: md5.update(String(this.state.email).toLowerCase().trim()).digest('hex')});
-            })}
+                this.setState({
+                    email: response.data.email, 
+                    name: response.data.name,
+                    gravatar: 'https://www.gravatar.com/avatar/' + md5.update(String(response.data.email).toLowerCase().trim()).digest('hex')}, 
+                    () => {this.props.loadProfile(this.state)});
+            }            
         });
     }
 
-    toggle(){this.setState({toggle: !this.state.toggle});}
-
     render(){
         return(
-            <nav class="knbn-navbar navbar navbar-expand-xl navbar-expand-lg navbar-expand-md navbar-dark">
-                <a class="knbn-navbar-brand navbar-brand" href="/">KNBN Dashboard</a>
+            <nav class={"knbn-navbar navbar navbar-expand-xl navbar-expand-lg navbar-expand-md navbar-dark mb-3 knbn-transition" + (this.props.themeToggled ? " knbn-dark-bg-2x" : " knbn-snow-bg-2x")}>
+                <a class={"knbn-navbar-brand navbar-brand knbn-transition" + (this.props.themeToggled ? " knbn-dark-color-2x knbn-dark-color-2x-active" : " knbn-snow-color-2x knbn-snow-color-2x-active")} href="/">KNBN Dashboard</a>
 
                 <div class="knbn-navbar-toggler navbar-toggler" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" onClick={this.toggle}>
                     {this.state.toggle ? <img src="/images/menu-close.svg"/> : <img src="/images/menu.svg"/>}
                 </div>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="knbn-nav-item nav-item dropdown">
-                            <a class="knbn-nav-link nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" onClick={this.getProjects}>
-                                Projects
-                            </a> 
+                    <ul class={"navbar-nav mr-auto"}>
+                        <li class={"knbn-nav-item nav-item dropdown knbn-no-border"}>
+                            <KNBNNavLink onClick={this.getProjects}>Projects</KNBNNavLink>
+
+                            <DropdownMenu>
                             {   this.state.projects.length > 0 ?
-                                <div class="knbn-dropdown-menu dropdown-menu">  
-                                {
-                                    this.state.projects.map(proj=>{
-                                        return <a class="knbn-dropdown-item dropdown-item" href={"/view/project/" + proj.id} key={proj.id}>{proj.name}</a>
-                                    })
-                                }
-                                </div>
-                                : 
-                                <div class="knbn-dropdown-menu knbn-no-configuration dropdown-menu px-2">No projects configured</div>
+                                this.state.projects.map(project => {
+                                    return  <NavLink key={project.id} to={"/view-project/" + project.id}>
+                                                <DropdownItem imgSrc={'./images/project.svg'}>{project.name}</DropdownItem>
+                                            </NavLink>
+                                })
+                                :
+                                "No projects configured"
                             }
+                            </DropdownMenu>
+                            
                         </li>
 
-                        <li class="knbn-nav-item nav-item">
-                            <a class="knbn-nav-link nav-link" href='/create-project'>Setup new project</a>
+                        <li class={"knbn-nav-item nav-item"}>
+                            <NavLink to='/create-project'>
+                                <KNBNNavLink>Setup new project</KNBNNavLink>
+                            </NavLink>
                         </li>
 
-                        <li class="knbn-nav-item nav-item">
-                            <div class="dropdown knbn-dropdown">
-                                <a class="knbn-nav-link nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                                    Create ...
-                                </a>
-                                <div class="knbn-dropdown-menu dropdown-menu">
-                                    <NavLink to="/create-ticket"><div class="knbn-dropdown-item dropdown-item">Ticket</div></NavLink>
-                                    <NavLink to="/create-pr"><div class="knbn-dropdown-item dropdown-item">Problem report</div></NavLink>
-                                    <NavLink to="/create-cmp"><div class="knbn-dropdown-item dropdown-item">Component</div></NavLink>
-                                </div>
-                            </div>
+                        <li class={"knbn-nav-item nav-item dropdown knbn-no-border"}>
+
+                            <KNBNNavLink onClick={() => {}}>Create</KNBNNavLink>
+
+                            <DropdownMenu>
+                                <NavLink to="/create-ticket">
+                                    <DropdownItem>Ticket</DropdownItem>
+                                </NavLink>
+                                <NavLink to="/create-pr">
+                                    <DropdownItem>Problem report</DropdownItem>
+                                </NavLink>
+                                <NavLink to="/create-cmp">
+                                    <DropdownItem>Component</DropdownItem>
+                                </NavLink>
+                            </DropdownMenu>
+
                         </li>
+                        
                     </ul>
                     
                     <SearcBar/>
-
-                    <form class="form-inline my-2 my-lg-0 d-flex justify-content-center">
-                        <img class="profile-pic" src={'https://www.gravatar.com/avatar/' + this.state.gravatar} title={this.state.name}></img>
-                        <a href="/profile" class="to-profile btn search-btn align-self-end mr-0">Profile options</a>
-                    </form>
+                    <ProfileDrop/>
+                    <ThemeToggler/>
                 </div>
             </nav>
 
@@ -99,9 +129,4 @@ class Menu extends React.Component{
     }
 }
 
-// ReactDom.render(<Menu/>, document.getElementById('menu'));
-
-export default Menu;
-
-
-
+export default connect(mapStatetoProps, mapDispatchToProps)(Menu);

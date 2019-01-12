@@ -1,0 +1,226 @@
+:root{
+    --t-snow-bg-1x: rgb(204, 204, 204);
+    --t-snow-bg-2x: rgb(223, 223, 223);
+    --t-snow-bg-3x: rgb(236, 236, 236);
+    --t-snow-bg-4x: rgb(241, 241, 241);
+    --t-snow-bg-5x: rgb(255, 255, 255);
+
+    --t-snow-bg-1x-active: var(--t-snow-bg-2x);
+    --t-snow-bg-2x-active: var(--t-snow-bg-3x);
+    --t-snow-bg-3x-active: var(--t-snow-bg-4x);
+    --t-snow-bg-4x-active: var(--t-snow-bg-5x);
+
+    --t-snow-color-1x: rgb(119, 119, 119);
+    --t-snow-color-2x: rgb(66, 66, 66);
+    --t-snow-color-3x: rgb(37, 37, 37);
+    --t-snow-color-4x: rgb(26, 26, 26);
+    --t-snow-color-5x: rgb(0, 0, 0);
+
+    --t-snow-color-1x-active: var(--t-snow-color-2x);
+    --t-snow-color-2x-active: var(--t-snow-color-3x);
+    --t-snow-color-3x-active: var(--t-snow-color-4x);
+    --t-snow-color-4x-active: var(--t-snow-color-5x);
+
+    --t-snow-border-1x: rgb(31, 31, 31);
+    --t-snow-border-2x: rgb(190, 190, 190);
+    --t-snow-border-3x: rgb(161, 161, 161);
+    --t-snow-border-4x: rgb(209, 209, 209);
+
+    --t-snow-border-1x-active: var(--t-snow-border-2x);
+    --t-snow-border-2x-active: var(--t-snow-border-3x);
+    --t-snow-border-3x-active: var(--t-snow-border-4x);
+
+    --t-snow-bg-ondrop: rgba(172, 255, 78, 0.158);
+    --t-snow-bd-ondrop: rgba(172, 255, 78, 0.315);
+
+    --t-snow-box-shadow-1x: 2px 4px 3px rgb(192, 192, 192);
+    --t-snow-box-shadow-2x: 2px 4px 3px rgb(201, 201, 201);
+    --t-snow-box-shadow-3x: 2px 4px 3px rgb(201, 201, 201);
+    --t-snow-box-shadow-4x: 2px 4px 3px rgb(214, 214, 214);
+
+    --t-snow-border-onselect: rgb(111, 146, 163);
+}
+
+.knbn-snow-bg-1x{
+    background-color: var(--t-snow-bg-1x) !important;
+}
+
+.knbn-snow-bg-2x{
+    background-color: var(--t-snow-bg-2x) !important;
+}
+
+.knbn-snow-bg-3x{
+    background-color: var(--t-snow-bg-3x) !important;
+}
+
+.knbn-snow-bg-4x{
+    background-color: var(--t-snow-bg-4x) !important;
+}
+
+.knbn-snow-bg-1x-active:hover, 
+.knbn-snow-bg-1x-active:focus, 
+.knbn-snow-bg-1x-active:active{
+    background-color: var(--t-snow-bg-1x-active) !important;
+}
+
+.knbn-snow-bg-2x-active:hover, 
+.knbn-snow-bg-2x-active:focus, 
+.knbn-snow-bg-2x-active:active{
+    background-color: var(--t-snow-bg-2x-active) !important;
+}
+
+.knbn-snow-bg-3x-active:hover, 
+.knbn-snow-bg-3x-active:focus, 
+.knbn-snow-bg-3x-active:active{
+    background-color: var(--t-snow-bg-3x-active) !important;
+}
+
+.knbn-snow-bg-4x-active:hover, 
+.knbn-snow-bg-4x-active:focus, 
+.knbn-snow-bg-4x-active:active{
+    background-color: var(--t-snow-bg-4x-active) !important;
+}
+
+.knbn-snow-color-1x{
+    color: var(--t-snow-color-1x) !important;
+}
+
+.knbn-snow-color-2x{
+    color: var(--t-snow-color-2x) !important;
+}
+
+.knbn-snow-color-3x{
+    color: var(--t-snow-color-3x) !important;
+}
+
+.knbn-snow-color-4x{
+    color: var(--t-snow-color-4x) !important;
+}
+
+.knbn-snow-color-5x{
+    color: var(--t-snow-color-5x) !important;
+}
+
+.knbn-snow-color-1x-active:hover, 
+.knbn-snow-color-1x-active:focus, 
+.knbn-snow-color-1x-active:active{
+    color: var(--t-snow-color-2x) !important;
+}
+
+.knbn-snow-color-2x-active:hover, 
+.knbn-snow-color-2x-active:focus, 
+.knbn-snow-color-2x-active:active{
+    color: var(--t-snow-color-2x-active) !important;
+}
+
+.knbn-snow-color-3x-active:hover, 
+.knbn-snow-color-3x-active:focus, 
+.knbn-snow-color-3x-active:active{
+    color: var(--t-snow-color-3x-active) !important;
+}
+
+.knbn-snow-color-4x-active:hover, 
+.knbn-snow-color-4x-active:focus, 
+.knbn-snow-color-4x-active:active{
+    color: var(--t-snow-color-4x-active) !important;
+}
+
+.knbn-snow-border-1x{
+    border-color: var(--t-snow-border-1x) !important;
+}
+
+.knbn-snow-border-2x{
+    border-color: var(--t-snow-border-2x) !important;
+}
+
+.knbn-snow-border-3x{
+    border-color: var(--t-snow-border-3x) !important;
+}
+
+.knbn-snow-border-4x{
+    border-color: var(--t-snow-border-4x) !important;
+}
+
+.knbn-snow-border-1x-active{
+    border-color: var(--t-snow-border-1x-active) !important;
+}
+
+.knbn-snow-border-2x-active{
+    border-color: var(--t-snow-border-2x-active) !important;
+}
+
+.knbn-snow-border-3x-active{
+    border-color: var(--t-snow-border-3x-active) !important;
+}
+
+.knbn-snow-ondrop{
+    background-color: var(--t-snow-bg-ondrop) !important;
+    border: 1px solid var(--t-snow-bd-ondrop) !important; 
+}
+
+.knbn-snow-shadow-1x{
+    box-shadow: var(--t-snow-box-shadow-1x) !important;
+}
+
+.knbn-snow-shadow-2x{
+    box-shadow: var(--t-snow-box-shadow-2x) !important;
+}
+
+.knbn-snow-shadow-3x{
+    box-shadow: var(--t-snow-box-shadow-3x) !important;
+}
+
+.knbn-snow-shadow-4x{
+    box-shadow: var(--t-snow-box-shadow-4x) !important;
+}
+
+.knbn-snow-onselect:hover, 
+.knbn-snow-onselect:focus, 
+.knbn-snow-onselect:active{
+    border-color: var(--t-snow-border-onselect) !important;
+}
+
+.knbn-snow-edit-bd-2x >.ql-toolbar, 
+.knbn-snow-edit-bd-2x >.ql-snow{
+    border-bottom: 1px solid var(--t-snow-border-2x) !important;
+    border-right: 1px solid var(--t-snow-border-2x) !important;
+}
+
+.knbn-snow-edit-bd-2x .ql-picker-label:before{
+    border: none !important;
+    color: var(--t-snow-color-2x) !important;
+}
+
+.knbn-snow-edit-bd-2x .ql-picker-label,
+.knbn-snow-edit-bd-2x .ql-picker-label:hover,
+.knbn-snow-edit-bd-2x .ql-picker-label:focus,
+.knbn-snow-edit-bd-2x .ql-picker-label:active{
+    border: none !important;
+}
+
+.knbn-snow-edit-bd-2x .ql-snow .ql-picker-options{
+    border: 1px solid var(--t-snow-border-2x) !important;
+    background-color: var(--t-snow-bg-2x) !important;
+}
+
+.knbn-snow-edit-bd-2x .ql-snow .ql-picker-options .ql-picker-item{
+    color: var(--t-snow-color-2x) !important;
+}
+
+.knbn-snow-edit-bd-2x .ql-snow .ql-picker-options .ql-picker-item:hover{
+    color: var(--t-snow-color-2x-active) !important;
+    background-color: var(--t-snow-bg-2x-active) !important;
+}
+
+.knbn-snow-edit-bd-2x .ql-snow .ql-stroke{
+    stroke: white !important;
+}
+
+.knbn-snow-edit-bd-2x .ql-snow .ql-bold:hover .ql-stroke, 
+.knbn-snow-edit-bd-2x .ql-snow .ql-italic:hover .ql-stroke, 
+.knbn-snow-edit-bd-2x .ql-snow .ql-undeline:hover .ql-stroke, 
+.knbn-snow-edit-bd-2x .ql-snow .ql-link:hover .ql-stroke,
+.knbn-snow-edit-bd-2x .ql-snow .ql-list:hover .ql-stroke,
+.knbn-snow-edit-bd-2x .ql-snow .ql-clean:hover .ql-stroke{
+    stroke: rgb(155, 218, 143) !important;
+}

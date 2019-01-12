@@ -1,0 +1,253 @@
+:root{
+    --t-dark-bg-1x: rgb(34, 34, 34);
+    --t-dark-bg-2x: rgb(46, 46, 46);
+    --t-dark-bg-3x: rgb(61, 61, 61);
+    --t-dark-bg-4x: rgb(73, 73, 73);
+    --t-dark-bg-5x: rgb(88, 88, 88);
+
+    --t-dark-bg-1x-active: var(--t-dark-bg-2x);
+    --t-dark-bg-2x-active: var(--t-dark-bg-3x);
+    --t-dark-bg-3x-active: var(--t-dark-bg-4x);
+    --t-dark-bg-4x-active: var(--t-dark-bg-5x);
+
+    --t-dark-color-1x: rgb(119, 119, 119);
+    --t-dark-color-2x: rgb(158, 158, 158);
+    --t-dark-color-3x: rgb(211, 211, 211);
+    --t-dark-color-4x: rgb(241, 241, 241);
+    --t-dark-color-5x: rgb(255, 255, 255);
+
+    --t-dark-color-1x-active: var(--t-dark-color-2x);
+    --t-dark-color-2x-active: var(--t-dark-color-3x);
+    --t-dark-color-3x-active: var(--t-dark-color-4x);
+    --t-dark-color-4x-active: var(--t-dark-color-5x);
+
+    --t-dark-border-1x: rgb(60, 60, 60);
+    --t-dark-border-2x: rgb(70, 70, 70);
+    --t-dark-border-3x: rgb(80, 80, 80);
+    --t-dark-border-4x: rgb(90, 90, 90);
+
+    --t-dark-border-1x-active: var(--t-dark-border-2x);
+    --t-dark-border-2x-active: var(--t-dark-border-3x);
+    --t-dark-border-3x-active: var(--t-dark-border-4x);
+
+    --t-dark-bg-ondrop: rgba(172, 255, 78, 0.158);
+    --t-dark-bd-ondrop: rgba(172, 255, 78, 0.315);
+
+    --t-dark-box-shadow-1x: 2px 4px 3px rgb(31, 31, 31);
+    --t-dark-box-shadow-2x: 2px 4px 3px rgb(41, 41, 41);
+    --t-dark-box-shadow-3x: 2px 4px 3px rgb(42, 42, 42);
+    --t-dark-box-shadow-4x: 2px 4px 3px rgb(54, 54, 54);
+
+    --t-dark-border-onselect: rgb(111, 146, 163);
+    --t-dark-color-error: rgb(252, 74, 74);
+    --t-dark-bg-error: rgba(226, 69, 69, 0.137);
+    --t-dark-bg-remover: rgba(255, 255, 255, 0.062);
+    --t-dark-bd-remover: rgba(255, 255, 255, 0.144);
+}
+
+.knbn-dark-bg-1x{
+    background-color: var(--t-dark-bg-1x) !important;
+}
+
+.knbn-dark-bg-2x{
+    background-color: var(--t-dark-bg-2x) !important;
+}
+
+.knbn-dark-bg-3x{
+    background-color: var(--t-dark-bg-3x) !important;
+}
+
+.knbn-dark-bg-4x{
+    background-color: var(--t-dark-bg-4x) !important;
+}
+
+.knbn-dark-bg-1x-active:hover, 
+.knbn-dark-bg-1x-active:focus, 
+.knbn-dark-bg-1x-active:active{
+    background-color: var(--t-dark-bg-1x-active) !important;
+}
+
+.knbn-dark-bg-2x-active:hover, 
+.knbn-dark-bg-2x-active:focus, 
+.knbn-dark-bg-2x-active:active{
+    background-color: var(--t-dark-bg-2x-active) !important;
+}
+
+.knbn-dark-bg-3x-active:hover, 
+.knbn-dark-bg-3x-active:focus, 
+.knbn-dark-bg-3x-active:active{
+    background-color: var(--t-dark-bg-3x-active) !important;
+}
+
+.knbn-dark-bg-4x-active:hover, 
+.knbn-dark-bg-4x-active:focus, 
+.knbn-dark-bg-4x-active:active{
+    background-color: var(--t-dark-bg-4x-active) !important;
+}
+
+.knbn-dark-color-1x{
+    color: var(--t-dark-color-1x) !important;
+}
+
+.knbn-dark-color-2x{
+    color: var(--t-dark-color-2x) !important;
+}
+
+.knbn-dark-color-3x{
+    color: var(--t-dark-color-3x) !important;
+}
+
+.knbn-dark-color-4x{
+    color: var(--t-dark-color-4x) !important;
+}
+
+.knbn-dark-color-5x{
+    color: var(--t-dark-color-5x) !important;
+}
+
+.knbn-dark-color-1x-active:hover, 
+.knbn-dark-color-1x-active:focus, 
+.knbn-dark-color-1x-active:active{
+    color: var(--t-dark-color-2x) !important;
+}
+
+.knbn-dark-color-2x-active:hover, 
+.knbn-dark-color-2x-active:focus, 
+.knbn-dark-color-2x-active:active{
+    color: var(--t-dark-color-2x-active) !important;
+}
+
+.knbn-dark-color-3x-active:hover, 
+.knbn-dark-color-3x-active:focus, 
+.knbn-dark-color-3x-active:active{
+    color: var(--t-dark-color-3x-active) !important;
+}
+
+.knbn-dark-color-4x-active:hover, 
+.knbn-dark-color-4x-active:focus, 
+.knbn-dark-color-4x-active:active{
+    color: var(--t-dark-color-4x-active) !important;
+}
+
+.knbn-dark-border-1x{
+    border-color: var(--t-dark-border-1x) !important;
+}
+
+.knbn-dark-border-2x{
+    border-color: var(--t-dark-border-2x) !important;
+}
+
+.knbn-dark-border-3x{
+    border-color: var(--t-dark-border-3x) !important;
+}
+
+.knbn-dark-border-4x{
+    border-color: var(--t-dark-border-4x) !important;
+}
+
+.knbn-dark-border-1x-active{
+    border-color: var(--t-dark-border-1x-active) !important;
+}
+
+.knbn-dark-border-2x-active{
+    border-color: var(--t-dark-border-2x-active) !important;
+}
+
+.knbn-dark-border-3x-active{
+    border-color: var(--t-dark-border-3x-active) !important;
+}
+
+.knbn-dark-ondrop{
+    background-color: var(--t-dark-bg-ondrop) !important;
+    border: 1px solid var(--t-dark-bd-ondrop) !important; 
+}
+
+.knbn-dark-shadow-1x{
+    box-shadow: var(--t-dark-box-shadow-1x) !important;
+}
+
+.knbn-dark-shadow-2x{
+    box-shadow: var(--t-dark-box-shadow-2x) !important;
+}
+
+.knbn-dark-shadow-3x{
+    box-shadow: var(--t-dark-box-shadow-3x) !important;
+}
+
+.knbn-dark-shadow-4x{
+    box-shadow: var(--t-dark-box-shadow-4x) !important;
+}
+
+.knbn-dark-onselect:hover, 
+.knbn-dark-onselect:focus, 
+.knbn-dark-onselect:active{
+    border-color: var(--t-dark-border-onselect) !important;
+}
+
+.knbn-dark-edit-bd-2x >.ql-toolbar, 
+.knbn-dark-edit-bd-2x >.ql-snow,
+.knbn-dark-edit-bd-2x >.ql-toolbar .ql-snow{
+    border-bottom: none !important;
+    border-top: none !important;
+    border-color: var(--t-dark-border-2x) !important;
+}
+
+.knbn-dark-edit-bd-2x >.ql-toolbar .ql-snow{
+    border-right: none;
+}
+
+.knbn-dark-edit-bd-2x .ql-editor{
+    border-top: 1px solid var(--t-dark-border-2x) !important;
+}
+
+.knbn-dark-edit-bd-2x .ql-picker-label:before{
+    border: none !important;
+    color: var(--t-dark-color-2x) !important;
+}
+
+.knbn-dark-edit-bd-2x .ql-picker-label,
+.knbn-dark-edit-bd-2x .ql-picker-label:hover,
+.knbn-dark-edit-bd-2x .ql-picker-label:focus,
+.knbn-dark-edit-bd-2x .ql-picker-label:active{
+    border: none !important;
+}
+
+.knbn-dark-edit-bd-2x .ql-snow .ql-picker-options{
+    border: 1px solid var(--t-dark-border-2x) !important;
+    background-color: var(--t-dark-bg-2x) !important;
+}
+
+.knbn-dark-edit-bd-2x .ql-snow .ql-picker-options .ql-picker-item{
+    color: var(--t-dark-color-2x) !important;
+}
+
+.knbn-dark-edit-bd-2x .ql-snow .ql-picker-options .ql-picker-item:hover{
+    color: var(--t-dark-color-2x-active) !important;
+    background-color: var(--t-dark-bg-2x-active) !important;
+}
+
+.knbn-dark-edit-bd-2x .ql-snow .ql-stroke{
+    stroke: white !important;
+}
+
+.knbn-dark-edit-bd-2x .ql-snow .ql-bold:hover .ql-stroke, 
+.knbn-dark-edit-bd-2x .ql-snow .ql-italic:hover .ql-stroke, 
+.knbn-dark-edit-bd-2x .ql-snow .ql-undeline:hover .ql-stroke, 
+.knbn-dark-edit-bd-2x .ql-snow .ql-link:hover .ql-stroke,
+.knbn-dark-edit-bd-2x .ql-snow .ql-list:hover .ql-stroke,
+.knbn-dark-edit-bd-2x .ql-snow .ql-clean:hover .ql-stroke{
+    stroke: rgb(155, 218, 143) !important;
+}
+
+.knbn-dark-error-color{
+    color: var(--t-dark-color-error) !important;
+}
+
+.knbn-dark-bg-error{
+    background-color: var(--t-dark-bg-error) !important;
+}
+
+.knbn-dark-bg-remover{
+    background-color: var(--t-dark-bg-remover);
+    border-color: var(--t-dark-bd-remover);
+}

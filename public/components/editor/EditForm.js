@@ -1,18 +1,11 @@
 import React from 'react';
 
-class EditForm extends React.Component{
-    constructor(props){
-        super(props);
-
-    }
-
-    render(){
-        return(
-            <form class={this.props.classes}>
-                {this.props.children}
-            </form>
-        );
-    }
+const EditForm = (props) => {
+    return(
+        <form class={"col-xl-4 col-12 px-0 knbn-bg-transparent" + (" " + props.classes)}>
+            {props.children}
+        </form>
+    );
 }
 
 export default EditForm;

@@ -88,3 +88,26 @@ form{
     color: var(--span-col);
     font-size: var(--small-text);
 }
+
+.knbn-remember{
+    width: 17px !important;
+    height: 17px !important;
+    background-color: rgb(88, 88, 88) !important;
+}
+
+.knbn-rmb-container{
+    cursor: pointer;
+}
+
+.knbn-remember-active{
+    background-color: rgb(54, 172, 19) !important;
+}
+
+.knbn-remember > img{
+    filter: invert(100%);
+}
+
+.knbn-rmb{
+    font-size: 13px !important;
+    color: gray !important;
+}
