@@ -26,14 +26,14 @@ class ProfileDrop extends React.Component{
                 <li class={"knbn-nav-item nav-item dropdown knbn-no-border knbn-transition"}>
                     <KNBNNavLink onClick={() => {}}>
                         <img class="profile-pic my-auto mr-2" src={this.props.currentUser.gravatar} title={this.props.currentUser.name}></img>
-                        {this.props.currentUser.name == undefined || this.props.currentUser.name.length == 0 ? 'User undefined' : this.props.currentUser.name}
+                        {this.props.currentUser.name == undefined || this.props.currentUser.name.length == 0 ? 'Persoană nedefinită' : this.props.currentUser.name}
                     </KNBNNavLink>
             
                     <DropdownMenu>
                         <NavLink to="">
-                            <DropdownItem dark={this.props.themeToggled}>Future action</DropdownItem>
+                            <DropdownItem dark={this.props.themeToggled}>Acțiune viitoare</DropdownItem>
                         </NavLink>
-                        <a href="/logout"><DropdownItem dark={this.props.themeToggled}>Log out</DropdownItem></a>
+                        <a href="/logout"><DropdownItem dark={this.props.themeToggled}>Ieșire</DropdownItem></a>
                     </DropdownMenu>
                 </li>
             </ul>

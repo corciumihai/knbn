@@ -15,8 +15,8 @@ class UserField extends React.Component{
         return(
             <div class="form-group">
                 <div class={"d-flex flex-row"}>  
-                    <Label label="Owner"/>
-                    <TouchButtonRight action={this.selfAssign}>Assign myself</TouchButtonRight>
+                    <Label label="Proprietar"/>
+                    <TouchButtonRight action={this.selfAssign}>Alocă mie</TouchButtonRight>
                 </div>
                 <div class={"knbn-input-grp knbn-fake-input-grp input-group dropdown knbn-bg-transparent knbn-transition"  + 
                 (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
@@ -24,7 +24,7 @@ class UserField extends React.Component{
                     <div class={"d-flex flex-row w-100"}>
                     {this.state.currentUser.email != undefined && this.state.currentUser.email.length > 0 ?
                         <SelectionRemover>
-                            <RemoveItem item={this.state.currentUser.name + ' \u00b7 ' + this.state.currentUser.email} remove={this.removeUser}/>
+                            <RemoveItem remove={this.removeUser}>{this.state.currentUser.name + ' \u00b7 ' + this.state.currentUser.email}</RemoveItem>
                         </SelectionRemover>
                         :
                         <input type="text" class={"knbn-input form-control knbn-bg-transparent" + 
@@ -32,7 +32,7 @@ class UserField extends React.Component{
                             " knbn-dark-bg-2x knbn-dark-bg-2x-active knbn-dark-color-5x" 
                             : 
                             " knbn-snow-bg-2x knbn-snow-bg-2x-active knbn-snow-color-5x" )} id="knbnFieldLabel" aria-describedby="knbnHelp" 
-                            placeholder={this.state.value == undefined || this.state.value.length == 0 ? "Enter user name" : ""}
+                            placeholder={this.state.value == undefined || this.state.value.length == 0 ? "Introdu nume persoană" : ""}
                             value={this.state.value}
                             onChange={this.setFieldValue}
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
@@ -41,7 +41,7 @@ class UserField extends React.Component{
                         <DropdownMenu classes="col-xl-12">
                         {
                             this.state.filteredUsers == undefined || this.state.filteredUsers.length == 0 ? 
-                            <div class="col text-truncate">No users found</div>
+                            <div class="col text-truncate">Nicio persoană găsită</div>
                             :
                             (
                                 this.state.filteredUsers.map(user => 
@@ -49,7 +49,7 @@ class UserField extends React.Component{
                                     var md5ForUser = crypto.createHash('md5');
                                     var hashForUser = md5ForUser.update(String(user.email).toLowerCase().trim()).digest('hex');
                                     
-                        return  <a href="#" key={user.email} onClick={(event)=>{event.preventDefault(); this.setUser(user)}}>
+                                return  <a href="#" key={user.email} onClick={(event)=>{event.preventDefault(); this.setUser(user)}}>
                                     <DropdownItem>
                                         <div class="d-flex flex-row">
                                             <div class="input-group-text mx-1 d-flex my-auto">

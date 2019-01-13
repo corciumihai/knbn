@@ -10,26 +10,26 @@ class ProjectSetup extends React.Component{
     render(){
         return(
             <div class="container-fluid mt-auto mb-auto col-xl-4 col-sm-8 offset-sm-2 offset-xl-4 col-md-6 offset-md-3 px-2">
-                <Header3>Project Creator</Header3>
+                <Header3>Creator Proiect</Header3>
 
                 <Error>{this.state.nameError}</Error>
                 <InputField 
-                    label="Name"
+                    label="Nume"
                     value={this.state.name}
-                    description="Name of the ticket"
+                    description="Numele tichetului"
                     action={this.setName}
                 />
 
                 <TextAreaField
-                    label="Description"
+                    label="Descriere"
                     action={this.setDescription}
                     value={this.state.description}
-                    description="Description of the ticket"
+                    description="Descrierea tichetului"
                 />
 
                 <div class="d-flex flex-row justify-content-center mb-3 ">
-                    <button class="ticket-dropdown-btn btn btn-primary mr-2" onClick={this.submitProject}>Add new project</button>
-                    <button class="ticket-dropdown-btn btn btn-primary" onClick={this.resetState}>Cancel</button>
+                    <button class="ticket-dropdown-btn btn btn-primary mr-2" onClick={this.submitProject}>Adaugă proiect</button>
+                    <button class="ticket-dropdown-btn btn btn-primary" onClick={this.resetState}>Anulează</button>
                 </div>
             </div>
         );
@@ -67,12 +67,12 @@ class ProjectSetup extends React.Component{
 
     verify(){
         if(this.state.name == undefined || this.state.name.length == 0){
-            this.setState({nameError: 'Enter a project name'});
+            this.setState({nameError: 'Introdu numele proiectului'});
             return false;
         }
 
         if(this.state.projectNames.includes(this.state.name.toLowerCase())){
-            this.setState({nameError: 'This project name already exists. Please choose another one!'});
+            this.setState({nameError: 'Numele acestui proiect există deja. Alege alt nume'});
             return false;
         }
 

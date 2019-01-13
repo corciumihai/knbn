@@ -10,7 +10,7 @@ class CommentInsert extends React.Component{
     render(){
         return(
             <div class="form-group knbn-bg-transparent">
-                <Label label="Add comment"/>
+                <Label label="Adaugă comentariu"/>
                 <div class={"knbn-input-grp knbn-fake-input-grp input-group knbn-transition knbn-bg-transparent" + 
                 (this.props.themeToggled ? " knbn-dark-onselect knbn-dark-border-2x" : " knbn-snow-onselect knbn-snow-border-2x")}>
                     <ReactQuill value={this.state.comment} onChange={this.setComment} className={"w-100 h-100 knbn-bg-transparent" 

@@ -11,6 +11,7 @@ import store from '../storage/store';
 import {Provider} from 'react-redux';
 import ProjectSetup from '../components/create/ProjectSetup';
 import Dashboard from '../components/Dashboard';
+import EditTicket from '../components/editor/EditTicket';
 
 class ReactRouter extends React.Component{
     render(){
@@ -29,7 +30,8 @@ class ReactRouter extends React.Component{
                             <Route exact path="/create-cmp" component={CmpSetup}/>
                             <Route exact path="/create-project" component={ProjectSetup}/>
                             
-                            <Route exact path="/edit-component/:compID" component={EditComponent}/>
+                            <Route exact path="/edit-component/:id" component={EditComponent}/>
+                            <Route exact path="/edit-ticket/:id" component={EditTicket}/>
                             {/* <Route exact path="/edit-ticket/:ticketID" component={EditTicket} dark={this.state.darkMode}/> */}
                             {/* <Route exact path="/edit-pr/:ticketID" component={EditPR} dark={this.state.darkMode}/> */}
                         </Switch>

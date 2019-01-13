@@ -11,13 +11,13 @@ class PriorityField extends React.Component{
     render(){
         return(
             <div class="form-group knbn-bg-transparent">
-                <Label label="Priority"/>
+                <Label label="Prioritate"/>
                 <div class={"knbn-input-grp knbn-fake-input-grp input-group dropdown knbn-bg-transparent knbn-transition" + (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
 
                     {
                         this.state.priority.name != undefined ? 
                         <SelectionRemover>
-                            <RemoveItem item={this.state.priority.name} remove={this.removeItem}/>
+                            <RemoveItem remove={this.removeItem}>{this.state.priority.name}</RemoveItem>
                         </SelectionRemover>
                         :
                         <input type="text" class={"knbn-input form-control knbn-bg-transparent" + 
@@ -27,7 +27,7 @@ class PriorityField extends React.Component{
                                 " knbn-snow-bg-2x knbn-snow-bg-2x-active knbn-snow-color-4x")} 
                         id="knbnFieldLabel" 
                         aria-describedby="knbnHelp" 
-                        placeholder={this.state.value == undefined || this.state.value == undefined || this.state.value.length == 0 ? "Enter priority" : ""}
+                        placeholder={this.state.value == undefined || this.state.value == undefined || this.state.value.length == 0 ? "Introdu prioritatea" : ""}
                         value={this.state.value}
                         onChange={this.setValue}
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"/>
@@ -36,7 +36,7 @@ class PriorityField extends React.Component{
                     <DropdownMenu classes="w-100">
                         {
                             this.state.items == undefined || this.state.items.length == 0 ? 
-                                'No items found'
+                                'Niciun obiect găsit'
                                 :
                                 this.state.filteredItems.map(item => {
                                     return  <a href="#" key={item.id} onClick={(event)=>{event.preventDefault(); this.set(item)}}>

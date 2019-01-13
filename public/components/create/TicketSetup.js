@@ -112,17 +112,17 @@ class TicketSetup extends React.Component{
     verify(){
         // check name not empty
         if(this.state.name == undefined || this.state.name.length == 0){
-            this.setState({nameError: 'Enter a ticket name'});
+            this.setState({nameError: 'Introdu numele tichetului'});
             return false;
         }
         // check if attached to a project
         if(this.state.project.id == undefined || this.state.project.id.length == 0 || this.state.project.id <= 0 ){
-            this.setState({projectError: 'Select a project reference'});
+            this.setState({projectError: 'Selectează referința unui proiect'});
             return false;
         }
 
         if(this.state.component.id == undefined || this.state.component.id.length == 0 || this.state.component.id <= 0 ){
-            this.setState({componentError: 'Select a component reference'});
+            this.setState({componentError: 'Selectează referința unei componente'});
             return false;
         }
 
@@ -179,38 +179,39 @@ class TicketSetup extends React.Component{
     render(){
         return(
             <div class="container-fluid mt-3 col-xl-4 col-sm-8 offset-sm-2 offset-xl-4 col-md-6 offset-md-3 px-2">
-                <Header3>Ticket Creator</Header3>
+                <Header3>Creator tichet</Header3>
 
                 <Error>{this.state.nameError}</Error>
                 <InputField 
-                    label="Name"
+                    label="Nume"
                     value={this.state.name}
-                    description="Name of the ticket"
+                    description="Numele tichetului"
                     action={this.setName}
                 />
 
                 <Error>{this.state.projectError}</Error>
                 <SelectionField
-                    label="Attach project"
+                    label="Atașează proiect"
                     action={this.setProject}
-                    description="Project to be attached to"
+                    description="Proiect la care tichetul va fi atașat"
                     value={this.state.project.name}
                     items={this.state.projects}
                     currentItem={this.state.project}
+                    imgSrc='./images/project.svg'
                 />
 
                 <Error>{this.state.componentError}</Error>
                 <SelectionField
-                    label="Attach component"
+                    label="Atașează componentă"
                     action={this.setComponent}
-                    description="Component to be attached to"
+                    description="Componentă la care tichetul va fi atașat"
                     value={this.state.component.name}
                     items={this.state.components}
                     currentItem={this.state.component}
                 />
 
                 <PriorityField
-                    description="Priority of ticket"
+                    description="Prioritatea tichetului"
                     items={this.props.priorities}
                     action={this.setPriority}
                     value={this.state.priority}
@@ -219,56 +220,56 @@ class TicketSetup extends React.Component{
                 <UserField
                     user={this.state.assignee}
                     action={this.setAssignee}
-                    label="The current owner of the ticket"
+                    label="Proprietarul tichetului"
                 />
 
                 <TextAreaField
-                    label="Description"
+                    label="Descriere"
                     action={this.setDescription}
                     value={this.state.description}
-                    description="Description of the ticket"
+                    description="Descrierea tichetului"
                 />
 
                 <SelectionField
-                    label="Attach release"
+                    label="Atașează versiune"
                     action={this.setRelease}
-                    description="Release to be attached to"
+                    description="Versiune la care tichetul va fi atașat"
                     value={this.state.release.name}
                     items={this.state.releases}
                     currentItem={this.state.release}
                 />
 
                 <SelectionField
-                    label="Blocks ticket"
+                    label="Tichet blocat"
                     action={this.setBlockedTicket}
-                    description="Ticket blocked by this current ticket"
+                    description="Tichetul blocat de crearea tichetului curent"
                     value={this.state.blockedTicket.name}
                     items={this.state.tickets}
                     currentItem={this.state.blockedTicket}
                 />  
 
                 <SelectionField
-                    label="Blocked by ticket"
+                    label="Blocat de ticheet"
                     action={this.setBlockingTicket}
-                    description="Ticket that blocks this current ticket"
+                    description="Tichetul care blochează tichetul curent"
                     value={this.state.blockingTicket.name}
                     items={this.state.tickets}
                     currentItem={this.state.blockingTicket}
                 />  
                 
                 <SelectionField
-                    label="Attach category"
+                    label="Atașează categorie"
                     action={this.setCategory}
-                    description="Category"
+                    description="Categoria tichetului"
                     value={this.state.category.name}
                     items={this.state.categories}
                     currentItem={this.state.category}
                 />  
 
                 <InputField 
-                    label="Estimated work hours"
+                    label="Ore de muncă estimate"
                     value={this.state.estimation}
-                    description="Estimated work in hours"
+                    description="Efort estimat în ore"
                     action={this.setEstimation}
                 />
                 
@@ -281,8 +282,8 @@ class TicketSetup extends React.Component{
                 </div> */}
 
                 <div class="d-flex flex-row justify-content-center mb-3 ">
-                    <button class="ticket-dropdown-btn btn btn-primary mr-2" onClick={this.submitTicket}>Submit ticket</button>
-                    <button class="ticket-dropdown-btn btn btn-primary" onClick={this.resetState}>Cancel</button>
+                    <button class="ticket-dropdown-btn btn btn-primary mr-2" onClick={this.submitTicket}>Adaugă tichet</button>
+                    <button class="ticket-dropdown-btn btn btn-primary" onClick={this.resetState}>Anulează</button>
                 </div>
             </div>
         );

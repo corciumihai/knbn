@@ -22,7 +22,7 @@ class CommentArea extends React.Component{
     addComment(value){
         axios.post('/add-component-comment', {
             author: this.props.currentUser.email,
-            compID: this.props.compID,
+            id: this.props.id,
             value: value,
             created: new Date().getTime()
         })
@@ -38,8 +38,8 @@ class CommentArea extends React.Component{
     }
 
     componentWillReceiveProps(nextProps, nextState){
-        if(nextProps.compID != this.props.compID){
-            this.update(nextProps.compID);
+        if(nextProps.id != this.props.id){
+            this.update(nextProps.id);
         }
     }
 
@@ -51,7 +51,7 @@ class CommentArea extends React.Component{
             });
         }
         else{
-            axios.get('/get-component-comments/' + this.props.compID)
+            axios.get('/get-component-comments/' + this.props.id)
             .then(response => {
                 this.setState({compComments: response.data});
             });
@@ -72,7 +72,7 @@ class CommentArea extends React.Component{
             <div class={"knbn-comment-area w-100 knbn-border knbn-no-border-left knbn-no-border-right knbn-no-border-bottom knbnb-bg-transparent" + 
             (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}>
                 <div class="col-xl-12 col-12 d-flex mt-2">
-                    <Header2>Comments</Header2>
+                    <Header2>Comentarii</Header2>
                 </div>
                 <div class={"container-fluid knbn-transition knbn-bg-transparent"}>
                     <div class={"col-12 px-0 knbn-border-bottom pt-2" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}>
@@ -89,7 +89,7 @@ class CommentArea extends React.Component{
 
                     <div class={"col-12 px-0 knbn-border-bottom" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}>
                         <div class={"col-xl-4 px-0 knbn-transition knbn-bg-transparent"}>
-                            <CommentInsert compID={this.props.compID} add={this.addComment}/>
+                            <CommentInsert id={this.props.id} add={this.addComment}/>
                         </div>
                     </div>
                 </div>

@@ -10,7 +10,7 @@ var initialState = {};
 initialState = {
     themeToggled: cookies.get('darkmode') == "true",
     currentUser: {},
-    priorities: [{id: 0, name: 'Low', dbName: 'low'}, {id: 1, name: 'Medium', dbName: 'medium'}, {id: 2, name: 'High', dbName: 'high'}]
+    priorities: [{id: 0, name: 'Mică', dbName: 'low'}, {id: 1, name: 'Medie', dbName: 'medium'}, {id: 2, name: 'Înaltă', dbName: 'high'}]
 }
 
 const reducer = (state = initialState, action) => {

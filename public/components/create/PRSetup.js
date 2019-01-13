@@ -13,28 +13,28 @@ class PRSetup extends React.Component{
     render(){
         return(
             <div class="container-fluid mt-3 col-xl-4 col-sm-8 offset-sm-2 offset-xl-4 col-md-6 offset-md-3 px-2">
-                <Header3>Problem Report Creator</Header3>
+                <Header3>Creator raport problemă</Header3>
 
                 <Error>{this.state.nameError}</Error>
                 <InputField 
-                    label="Name"
+                    label="Nume"
                     value={this.state.name}
-                    description="Name of the ticket"
+                    description="Numele tichetului"
                     action={this.setName}
                 />
 
                 <Error>{this.state.componentError}</Error>
                 <SelectionField
-                    label="Attach component"
+                    label="Atașează componentă"
                     action={this.setComponent}
-                    description="Component to be attached to"
+                    description="Componenta la care tichetul va fi atașat"
                     value={this.state.component.name}
                     items={this.state.components}
                     currentItem={this.state.component}
                 />
 
                 <PriorityField
-                    description="Priority of problem report"
+                    description="Prioritatea raportului de problemă"
                     items={this.props.priorities}
                     action={this.setPriority}
                     value={this.state.priority}
@@ -43,77 +43,77 @@ class PRSetup extends React.Component{
                 <UserField
                     user={this.state.assignee}
                     action={this.setAssignee}
-                    label="The current owner of the problem report"
+                    label="Prioritatea raportului de problemă"
                 />
 
                 <TextAreaField
-                    label="Description"
+                    label="Descriere"
                     action={this.setDescription}
                     value={this.state.description}
-                    description="Description of the problem report"
+                    description="Descrierea raportului de problemă"
                 />
 
                 <TextAreaField
-                    label="Testing steps"
+                    label="Pași de testare"
                     action={this.setTestSteps}
                     value={this.state.testSteps}
-                    description="Testing steps to reproduce problem"
+                    description="Pașii de testare pentru a reproduce problema"
                 />
 
                 <TextAreaField
-                    label="Expected behavior"
+                    label="Comportament așteptat"
                     action={this.setExpectedBehavior}
                     value={this.state.expectedBehavior}
-                    description="Expected behavior of the problem"
+                    description="Comportamentul așteptat la aplicarea pașilor de testare"
                 />
                 
                 <TextAreaField
-                    label="Observed behavior"
+                    label="Comportament observat"
                     action={this.setObservedBehavior}
                     value={this.state.observedBehavior}
-                    description="Observed behavior of the problem"
+                    description="Comportamentul observat la aplicarea pașilor de testare"
                 />
 
                 <SelectionField
-                    label="Attach release"
+                    label="Atașează versiune"
                     action={this.setRelease}
-                    description="Release to be attached to"
+                    description="Versiune la care raportul de problemă va fi atașat"
                     value={this.state.release.name}
                     items={this.state.releases}
                     currentItem={this.state.release}
                 />
 
                 <SelectionField
-                    label="Blocks ticket"
+                    label="Tichet blocat"
                     action={this.setBlockedTicket}
-                    description="Ticket blocked by this current problem report"
+                    description="Tichetul blocat de crearea acestui raport de problemă"
                     value={this.state.blockedTicket.name}
                     items={this.state.tickets}
                     currentItem={this.state.blockedTicket}
                 />  
 
                 <SelectionField
-                    label="Blocked by ticket"
+                    label="Blocat de tichet"
                     action={this.setBlockingTicket}
-                    description="Ticket that blocks this current problem report"
+                    description="Tichetul care blochează acest raport de problemă"
                     value={this.state.blockingTicket.name}
                     items={this.state.tickets}
                     currentItem={this.state.blockingTicket}
                 />  
                 
                 <SelectionField
-                    label="Attach category"
+                    label="Atașează categorie"
                     action={this.setCategory}
-                    description="Category"
+                    description="Categoria care va fi atașată la raportul de problemă"
                     value={this.state.category.name}
                     items={this.state.categories}
                     currentItem={this.state.category}
                 />  
 
                 <InputField 
-                    label="Estimated work hours"
+                    label="Ore de lucru estimate"
                     value={this.state.estimation}
-                    description="Estimated work in hours"
+                    description="Efortul de muncă estimat in ore"
                     action={this.setEstimation}
                 />
                 
@@ -126,8 +126,8 @@ class PRSetup extends React.Component{
                 </div> */}
 
                 <div class="d-flex flex-row justify-content-center mb-3 ">
-                    <button class="ticket-dropdown-btn btn btn-primary mr-2" onClick={this.submitTicket}>Submit ticket</button>
-                    <button class="ticket-dropdown-btn btn btn-primary" onClick={this.resetState}>Cancel</button>
+                    <button class="ticket-dropdown-btn btn btn-primary mr-2" onClick={this.submitTicket}>Adaugă tichetul</button>
+                    <button class="ticket-dropdown-btn btn btn-primary" onClick={this.resetState}>Anulează</button>
                 </div>
             </div>
         );
@@ -231,12 +231,12 @@ class PRSetup extends React.Component{
     verify(){
         // check name not empty
         if(this.state.name == undefined || this.state.name.length == 0){
-            this.setState({nameError: 'Enter a ticket name'});
+            this.setState({nameError: 'Introdu numele tichetului'});
             return false;
         }
         // check if attached to a component
         if(this.state.component.id == undefined || this.state.component.id.length == 0 || this.state.component.id <= 0 ){
-            this.setState({componentError: 'Select a component'});
+            this.setState({componentError: 'Selectează o referință a unei componente'});
             return false;
         }
 

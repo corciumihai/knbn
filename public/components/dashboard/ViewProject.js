@@ -55,27 +55,27 @@ class ViewProject extends React.Component{
 
                     <div class="col-xl-2 d-flex flex-row">
                         <div class="h-100 d-flex mr-1"><img src="./images/project.svg" class="mx-auto my-auto"/></div>
-                        <div class="mr-2">Name</div>
-                        <div class={"knbn-font-medium text-truncate" + (this.props.themeToggled ? " knbn-dark-color-5x" : "")} title={this.props.data != undefined ? this.props.data.name : 'No name'}>
+                        <div class="mr-2">Nume</div>
+                        <div class={"knbn-font-medium text-truncate" + (this.props.themeToggled ? " knbn-dark-color-5x" : "")} title={this.props.data != undefined ? this.props.data.name : 'Fără nume'}>
                             {this.props.data.name}
                         </div>
                     </div>
 
                     <div class="col-xl-1 px-0 d-flex flex-row mr-3">
-                        <div class="h-100 d-flex knbn-collapse mr-1" title="Show items" onClick={this.showComponents}>
+                        <div class="h-100 d-flex knbn-collapse mr-1" title="Arată obiectele curente" onClick={this.showComponents}>
                             <img src="./images/play.svg" class={"mx-auto my-auto" + (this.state.showComp ? " knbn-flip-90-deg" : "")}/>
                         </div>
-                        <div class="mr-2">Components #</div>
+                        <div class="mr-2">Componente #</div>
                         <div class={"knbn-font-medium text-truncate" + (this.props.themeToggled ? " knbn-dark-color-5x" : "")}>
                             {this.state.components.length}
                         </div>
                     </div>
 
                     <div class="col-xl-1 px-0 d-flex flex-row mr-3">
-                        <div class="h-100 d-flex knbn-collapse mr-1" title="Show items" onClick={this.showTickets}>
+                        <div class="h-100 d-flex knbn-collapse mr-1" title="Arată obiectele" onClick={this.showTickets}>
                             <img src="./images/play.svg" class={"mx-auto my-auto" + (this.state.showTickets ? " knbn-flip-90-deg" : "")}/>
                         </div>
-                        <div class="mr-2">Tickets #</div>
+                        <div class="mr-2">Tichete #</div>
                         <div class={"knbn-font-medium text-truncate" + (this.props.themeToggled ? " knbn-dark-color-5x" : "")}>
                             {this.state.tickets.length}
                         </div>

@@ -109,12 +109,20 @@ router.get('/user/:email', (request, response) => {
 });
 
 router.get('/user/get-user-by-email/:email', (request, response) => {
-    database.query('SELECT * FROM users WHERE email = ?', request.params.email, (error, result, fields) => {
-        if(error){console.log(error); response.send({})}
-        else{
-            response.send(result[0]);
-        }
-    });
+    if(request.params.email != undefined && request.params.email.length > 0){
+        database.query('SELECT * FROM users WHERE email = ?', request.params.email, (error, result, fields) => {
+            if(error){
+                console.log(error); 
+                response.send({});
+            }
+            else{
+                response.send(result[0]);
+            }
+        });
+    }
+    else{
+        response.send({});
+    }
 });
 
 router.get('/profile', (request, response) => {
@@ -177,9 +185,19 @@ router.get('/get-releases', (request, response) => {
     database.query('SELECT id, name FROM releases', (error, result, fields) => {
         if(error){
             console.log('Database error when fetching releases: ' + error.code);
-            return;
+            response.send([]);;
         }
         response.send(result);
+    })
+});
+
+router.get('/get-release/:id', (request, response) => {
+    database.query('SELECT * FROM releases WHERE id = ?', request.params.id, (error, result, fields) => {
+        if(error){
+            console.log('Database error when fetching releases: ' + error.code);
+            response.send({});;
+        }
+        response.send(result[0]);
     })
 });
 
@@ -331,8 +349,10 @@ router.get('/get-component-comments/:id', (request, response) => {
 
 router.post('/remove-comment', (request, response) => {
     database.query('DELETE FROM components_comments WHERE id = ?', [request.body.id], (error, result, fields) => {
-        if(error){console.log(error);  return;}
-        console.log('here');
+        if(error){
+            console.log(error);  
+            return;
+        }
         response.send({success: true});
     })
 });
@@ -359,50 +379,191 @@ router.get('/get-tickets/:projID', (request, response) => {
 
 router.get('/get-component-data/:id', (request, response) => {
     database.query('SELECT * FROM components WHERE id = ?', request.params.id, (error, result, fields) => {
-        if(error){console.log(error); return;}
+        if(error){
+            console.log(error); 
+            response.send({});
+        }
         response.send(result[0]);
     });
 });
 
 router.post('/set-component/name', (request, response) => {
-    database.query('UPDATE components SET name = ? WHERE id = ?', [request.body.name, request.body.id], (error, result, fields) => {
-        if(error){console.log(error); return;}
-    });
+    if(request.body.value != undefined && request.body.value.length > 0){
+        database.query('UPDATE components SET name = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
+            if(error){
+                console.log(error); 
+                response.send({success: false});
+            }
+            else{
+                response.send({success: true});
+            }
+        });
+    }
+    else{
+        response.send({success: false});
+    }
 });
 
 router.post('/set-component/desc', (request, response) => {
-    database.query('UPDATE components SET description = ? WHERE id = ?', [request.body.description, request.body.id], (error, result, fields) => {
-        if(error){console.log(error); return;}
+    database.query('UPDATE components SET description = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
+        if(error){
+            console.log(error); 
+            response.send({success: false});
+        }
+        else{
+            response.send({success: true});
+        }
     });
 });
 
 router.post('/set-component/release', (request, response) => {
-    database.query('UPDATE components SET releaseID = ? WHERE id = ?', [request.body.rel, request.body.id], (error, result, fields) => {
-        if(error){console.log(error); return;}
-    });
+    if(request.body.value != undefined && request.body.value > 0){
+        database.query('UPDATE components SET releaseID = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
+            if(error){
+                console.log(error); 
+                response.send({success: false});
+            }
+            else{
+                response.send({success: true});
+            }
+        });
+    }
+    else{
+        response.send({success: false});
+    }
 });
 
 router.post('/set-component/prio', (request, response) => {
-    database.query('UPDATE components SET priority = ? WHERE id = ?', [request.body.priority, request.body.id], (error, result, fields) => {
-        if(error){console.log(error); return;}
+    database.query('UPDATE components SET priority = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
+        if(error){
+            console.log(error); 
+            response.send({success: false});
+        }
+        else{
+            response.send({success: true});
+        }
     });
 });
 
 router.post('/set-component/wip', (request, response) => {
-    database.query('UPDATE components SET wip = ? WHERE id = ?', [request.body.wip, request.body.id], (error, result, fields) => {
+    database.query('UPDATE components SET wip = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
         if(error){console.log(error); return;}
     });
 });
 
 router.post('/set-component/owner', (request, response) => {
-    database.query('UPDATE components SET owner = ? WHERE id = ?', [request.body.owner.email, request.body.id], (error, result, fields) => {
-        if(error){console.log(error); return;}
+    database.query('UPDATE components SET owner = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
+        if(error){
+            console.log(error); 
+            response.send({success: false});
+        }
+        else{
+            response.send({success: true});
+        }
     });
 });
 
 router.post('/set-component/due-date', (request, response) => {
-    database.query('UPDATE components SET dueDate = ? WHERE id = ?', [request.body.date, request.body.id], (error, result, fields) => {
-        if(error){console.log(error); return;}
+    database.query('UPDATE components SET dueDate = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
+        if(error){
+            console.log(error); 
+            response.send({success: false});
+        }
+        else{
+            response.send({success: true});
+        }
+    });
+});
+
+router.post('/set-ticket/name', (request, response) => {
+    if(request.body.value != undefined && request.body.value.length > 0){
+        database.query('UPDATE tickets SET name = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
+            if(error){
+                console.log(error); 
+                response.send({success: false});
+            }
+            else{
+                response.send({success: true});
+            }
+        });
+    }
+    else{
+        response.send({success: false});
+    }
+});
+
+router.post('/set-ticket/description', (request, response) => {
+    if(request.body.value != undefined && request.body.value.length > 0){
+        database.query('UPDATE tickets SET description = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
+            if(error){
+                console.log(error); 
+                response.send({success: false});
+            }
+            else{
+                response.send({success: true});
+            }
+        });
+    }
+    else{
+        response.send({success: false});
+    }
+});
+
+router.post('/set-ticket/priority', (request, response) => {
+    if(request.body.value != undefined && request.body.value.length > 0){
+        database.query('UPDATE tickets SET priority = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
+            if(error){
+                console.log(error); 
+                response.send({success: false});
+            }
+            else{
+                response.send({success: true});
+            }
+        });
+    }
+    else{
+        response.send({success: false});
+    }
+});
+
+router.post('/set-ticket/release', (request, response) => {    
+    if(request.body.value != undefined && request.body.value > 0){
+        database.query('UPDATE tickets SET releaseID = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
+            if(error){
+                console.log(error); 
+                response.send({success: false});
+            }
+            else{
+                response.send({success: true});
+            }
+        });
+    }
+    else{
+        response.send({success: false});
+    }
+});
+
+router.post('/set-ticket/assignee', (request, response) => {
+    database.query('UPDATE tickets SET assignee = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
+        if(error){
+            console.log(error); 
+            response.send({success: false});
+        }
+        else{
+            response.send({success: true});
+        }
+    });
+});
+
+router.post('/set-ticket/reporter', (request, response) => {
+    database.query('UPDATE tickets SET reporter = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
+        if(error){
+            console.log(error); 
+            response.send({success: false});
+        }
+        else{
+            response.send({success: true});
+        }
     });
 });
 

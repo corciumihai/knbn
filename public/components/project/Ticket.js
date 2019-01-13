@@ -8,6 +8,20 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import LoadingRing from './LoadingRing';
 
+dateformat.i18n = {
+    dayNames: [
+        'Dum', 'Lun', 'Mar', 'Mie', 'Joi', 'Vin', 'Sâ',
+        'Duminică', 'Luni', 'Marți', 'Miercuri', 'Joi', 'Vineri', 'Sâmbătă'
+    ],
+    monthNames: [
+        'Ian', 'Feb', 'Mar', 'Apr', 'Mai', 'Iun', 'Iul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+        'Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie', 'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie'
+    ],
+    timeNames: [
+        'a', 'p', 'am', 'pm', 'A', 'P', 'AM', 'PM'
+    ]
+};
+
 const source = {
     beginDrag(props, monitor, component){
         let ticketData = props.data;
@@ -120,14 +134,14 @@ class Ticket extends React.Component{
 
                 <div class="row">
                     <div class={(this.props.data.priority == 'low' ? "prio-1" : this.props.data.priority == 'medium' ? "prio-2" : "prio-3")} 
-                    title={this.props.data.priority == 'low' ? "Low priority" : this.props.data.priority == 'medium' ? "Medium priority" : "High priority"}/>
+                    title={this.props.data.priority == 'low' ? "Prioritate mică" : this.props.data.priority == 'medium' ? "Prioritate medie" : "Prioritate înaltă"}/>
 
                     <div class={"ticket col px-0"}>
                         <div class="col-xl-12 d-flex px-0 flex-row">
                             <div class="col-9 flex-grow-1 pr-0">
                                 <div class="col-xl-12 pr-0">
                                     <div class="row pt-1 field">
-                                        <div class={"data col-xl-12 col-12 px-0 text-truncate knbn-font-medium mb-1" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")} title={this.state.loading ? "Loading..." : this.props.data.name}>
+                                        <div class={"data col-xl-12 col-12 px-0 text-truncate knbn-font-medium mb-1" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")} title={this.state.loading ? "În așteptare..." : this.props.data.name}>
                                         {
                                             this.state.loading ? 
                                             <LoadingRing/>
@@ -139,20 +153,20 @@ class Ticket extends React.Component{
                                 </div>
                                 <div class={(this.state.flipped ? "ticket-data col-xl-12 pr-0 hide" : "ticket-data col-xl-12 pr-0")}>
                                     <div class="row field">
-                                        <div class={"col-xl-4 col-4 px-0 info text-truncate" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title="Lane">Lane</div>
+                                        <div class={"col-xl-4 col-4 px-0 info text-truncate" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title="Pistă">Pistă</div>
 
-                                        <div class={"col-xl-8 col-8 px-0" + (this.props.themeToggled ? " knbn-dark-color-4x" : " knbn-snow-color-4x")} title={this.state.loading ? "Loading..." : this.props.data.lane}>
+                                        <div class={"col-xl-8 col-8 px-0" + (this.props.themeToggled ? " knbn-dark-color-4x" : " knbn-snow-color-4x")} title={this.state.loading ? "În așteptare..." : this.props.data.lane}>
                                         {
                                             this.state.loading ? 
                                             <LoadingRing/>
                                             :
-                                            (this.props.data.lane == "backlog" ? "Backlog" : this.props.data.lane == "in_progress" ? "In Progress" : this.props.data.lane == "done" ? "Done" : "Closed")
+                                            (this.props.data.lane == "backlog" ? "Nerezolvat" : this.props.data.lane == "in_progress" ? "În progres" : this.props.data.lane == "done" ? "Rezolvat" : "Închis")
                                         }
                                         </div>
                                     </div>
 
                                     <div class="row field">
-                                        <div class={"col-xl-4 col-4 px-0 info text-truncate" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title="Ticket ID">Ticket ID</div>
+                                        <div class={"col-xl-4 col-4 px-0 info text-truncate" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title="ID tichet">ID tichet</div>
 
                                         <div class={"col-xl-8 col-8 px-0" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
                                         {
@@ -169,9 +183,9 @@ class Ticket extends React.Component{
                                     </div>
 
                                     <div class="row field">
-                                        <div class={"col-xl-4 col-4 px-0 info text-truncate" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title="Start date">Start date</div>
+                                        <div class={"col-xl-4 col-4 px-0 info text-truncate" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title="Zi începere">Zi începere</div>
 
-                                        <div class={"data col-xl-8 col-8 px-0 text-truncate" + (this.props.themeToggled ? " knbn-dark-color-4x" : " knbn-snow-color-4x")} title={this.state.loading ? "Loading..." : dateformat(new Date(parseInt(this.props.data.startDate)), "dd \u00B7 mmmm \u00B7 yyyy")}>
+                                        <div class={"data col-xl-8 col-8 px-0 text-truncate" + (this.props.themeToggled ? " knbn-dark-color-4x" : " knbn-snow-color-4x")} title={this.state.loading ? "În așteptare..." : dateformat(new Date(parseInt(this.props.data.startDate)), "dd \u00B7 mmmm \u00B7 yyyy")}>
                                         {
                                             this.state.loading ? 
                                             <LoadingRing/>
@@ -182,9 +196,9 @@ class Ticket extends React.Component{
                                     </div>
 
                                     <div class="row field">
-                                        <div class={"col-xl-4 col-4 px-0 info text-truncate" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title="Due date">Due date</div>
+                                        <div class={"col-xl-4 col-4 px-0 info text-truncate" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title="Zi limită">Zi limită</div>
 
-                                        <div class={"data col-xl-8 col-8 px-0 text-truncate" + (this.props.themeToggled ? " knbn-dark-color-4x" : " knbn-snow-color-4x")} title={this.state.loading ? "Loading..." : dateformat(new Date(parseInt(this.props.data.dueDate)), "dd \u00B7 mmmm \u00B7 yyyy")}>
+                                        <div class={"data col-xl-8 col-8 px-0 text-truncate" + (this.props.themeToggled ? " knbn-dark-color-4x" : " knbn-snow-color-4x")} title={this.state.loading ? "În așteptare..." : dateformat(new Date(parseInt(this.props.data.dueDate)), "dd \u00B7 mmmm \u00B7 yyyy")}>
                                         {
                                             this.state.loading ? 
                                             <LoadingRing/>
@@ -204,7 +218,7 @@ class Ticket extends React.Component{
                                     :
                                     <img    class={"assignee-pic ml-auto knbn-transition"} 
                                             src={'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(this.state.assignee.email).toLowerCase().trim()).digest('hex')} 
-                                            alt={this.state.loading ? "Loading..." : this.state.assignee.name} title={this.state.loading ? "Loading..." : 'Assignee \u00B7 ' + this.state.assignee.name}/> 
+                                            alt={this.state.loading ? "În așteptare..." : this.state.assignee.name} title={this.state.loading ? "În așteptare..." : 'Assignee \u00B7 ' + this.state.assignee.name}/> 
                                 : null
                             }
                                 
@@ -212,42 +226,42 @@ class Ticket extends React.Component{
                         </div>
 
                         <div class={"col-xl-12 mt-2 mb-2 d-flex flex-row justify-content-start"}>
-                            <div class={"knbn-tool d-flex knbn-transition" + (this.props.themeToggled ? " knbn-dark-bg-4x knbn-dark-bg-4x-active knbn-dark-shadow-4x" : " knbn-snow-bg-4x knbn-snow-bg-4x-active knbn-snow-shadow-4x")} onClick={this.flip} title="Collapse size">
+                            <div class={"knbn-tool d-flex knbn-transition" + (this.props.themeToggled ? " knbn-dark-bg-4x knbn-dark-bg-4x-active knbn-dark-shadow-4x" : " knbn-snow-bg-4x knbn-snow-bg-4x-active knbn-snow-shadow-4x")} onClick={this.flip} title="Micșorează">
                                 <img src={this.state.flipped ? "./images/collapseLight.svg" : "./images/expandLight.svg"} class={"d-block mx-auto" + (this.props.themeToggled ? ' knbn-img-inverted' : '')}/>
                             </div>
                             
-                            <div class={"knbn-tool d-flex knbn-transition" + (this.props.themeToggled ? " knbn-dark-bg-4x knbn-dark-bg-4x-active knbn-dark-shadow-4x" : " knbn-snow-bg-4x knbn-snow-bg-4x-active knbn-snow-shadow-4x")} title="Change to last lane"
+                            <div class={"knbn-tool d-flex knbn-transition" + (this.props.themeToggled ? " knbn-dark-bg-4x knbn-dark-bg-4x-active knbn-dark-shadow-4x" : " knbn-snow-bg-4x knbn-snow-bg-4x-active knbn-snow-shadow-4x")} title="Schimbă pe ultima pistă"
                                     onClick={this.shiftBackward}>
                                 <img src={"./images/leftArrowLight.svg"} class={"d-block mx-auto" + (this.props.themeToggled ? ' knbn-img-inverted' : '')}/>
                             </div>
                             
-                            <div class={"knbn-tool d-flex knbn-transition" + (this.props.themeToggled ? " knbn-dark-bg-4x knbn-dark-bg-4x-active knbn-dark-shadow-4x" : " knbn-snow-bg-4x knbn-snow-bg-4x-active knbn-snow-shadow-4x")}  title="Change to next lane"
+                            <div class={"knbn-tool d-flex knbn-transition" + (this.props.themeToggled ? " knbn-dark-bg-4x knbn-dark-bg-4x-active knbn-dark-shadow-4x" : " knbn-snow-bg-4x knbn-snow-bg-4x-active knbn-snow-shadow-4x")}  title="Schimbă pe pista urmatoare"
                                     onClick={this.shiftForward}>
                                 <img src={"./images/rightArrowLight.svg"} class={"d-block mx-auto" + (this.props.themeToggled ? ' knbn-img-inverted' : '')}/>
                             </div>       
 
                             <Link to={(this.props.data.isReport ? "/edit-pr/" : "/edit-ticket/") + this.props.data.id}>
                                 <div class={"knbn-tool d-flex knbn-transition" + (this.props.themeToggled ? " knbn-dark-bg-4x knbn-dark-bg-4x-active knbn-dark-shadow-4x" : " knbn-snow-bg-4x knbn-snow-bg-4x-active knbn-snow-shadow-4x")}>
-                                    <img src={"./images/editLight.svg"} data-toggle="modal" data-target="#editModal" title="Edit ticket" class={"d-block mx-auto" + (this.props.themeToggled ? ' knbn-img-inverted' : '')}/>
+                                    <img src={"./images/editLight.svg"} data-toggle="modal" data-target="#editModal" title="Editează tichet" class={"d-block mx-auto" + (this.props.themeToggled ? ' knbn-img-inverted' : '')}/>
                                 </div>
                             </Link>
 
-                            <div class={"knbn-days-left ml-auto mr-1 text-right d-flex" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title='Release'>
-                            { this.state.loading ?  <LoadingRing/> :  <div class="my-auto">{this.state.release != undefined && this.state.release.name != undefined ? this.state.release.name : "No release"}</div> }
+                            <div class={"knbn-days-left ml-auto mr-1 text-right d-flex" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title='Versiune'>
+                            { this.state.loading ?  <LoadingRing/> :  <div class="my-auto">{this.state.release != undefined && this.state.release.name != undefined ? this.state.release.name : "Nicio versiune"}</div> }
                             </div>
 
-                            <div class={"knbn-days-left ml-1 mr-1 text-right d-flex" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title='Category'>
-                             { this.state.loading ? <LoadingRing/> : <div class="my-auto">{this.state.category != undefined && this.state.category.name != undefined ? this.state.category.name : "No category"}</div> }
+                            <div class={"knbn-days-left ml-1 mr-1 text-right d-flex" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title='Categorie'>
+                             { this.state.loading ? <LoadingRing/> : <div class="my-auto">{this.state.category != undefined && this.state.category.name != undefined ? this.state.category.name : "Nicio categorie"}</div> }
                             </div>
                             
-                            <div class={"knbn-days-left ml-1 text-right d-flex" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title='Remaining days'>
-                            { this.state.loading ? <LoadingRing/> : <div class="my-auto">{this.state.remainingDays == 0 ? 'Today overdue' : this.state.remainingDays >= 0 ? this.state.remainingDays + ' remaining days' : Math.abs(this.state.remainingDays) + ' days overdue'}</div> }
+                            <div class={"knbn-days-left ml-1 text-right d-flex" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title='Zile rămase'>
+                            { this.state.loading ? <LoadingRing/> : <div class="my-auto">{this.state.remainingDays == 0 ? 'Limită atinsă astăzi' : this.state.remainingDays >= 0 ? this.state.remainingDays + ' zile rămase' : Math.abs(this.state.remainingDays) + ' zile depășite'}</div> }
                             </div>
                             
                         </div>
 
                         <div class="col-12 px-0">
-                            <div class={"knbn-comp-progress progress w-100"} title="Progress"> 
+                            <div class={"knbn-comp-progress progress w-100"} title="Progres"> 
                                 <div class="knbn-comp-progress-bar progress-bar" role="progressbar" style={this.state.remainingDays < 0 ? {width: '100%', backgroundColor: 'rgb(199, 61, 51)'} : {width: this.state.remainingPercentage + '%'}}></div>
                             </div>
                         </div>

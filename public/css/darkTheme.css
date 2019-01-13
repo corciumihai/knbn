@@ -248,6 +248,9 @@
 }
 
 .knbn-dark-bg-remover{
-    background-color: var(--t-dark-bg-remover);
-    border-color: var(--t-dark-bd-remover);
+    background-color: var(--t-dark-bg-remover) !important;
+}
+
+.knbn-dark-bd-remover{
+    border-color: var(--t-dark-bd-remover) !important;
 }

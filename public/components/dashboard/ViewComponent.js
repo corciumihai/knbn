@@ -32,12 +32,12 @@ class ViewComponent extends React.Component{
                         <div class="h-100 d-flex mr-1">
                             <img src="./images/comp.svg" class="mx-auto my-auto" />
                         </div>
-                        <div class="mr-2">Name</div>
+                        <div class="mr-2">Nume</div>
                         <div class={"knbn-font-medium text-truncate" + (this.props.themeToggled ? " knbn-dark-color-5x" : "")}>{this.props.data.name}</div>
                     </div>
                     
                     <div class="col-xl-2 px-0 d-flex flex-row">
-                        <div class="mr-2">Owner</div>
+                        <div class="mr-2">Proprietar</div>
                         {
                             this.state.owner.name != undefined && this.state.owner.name.length > 0 ?
                             (
@@ -50,47 +50,47 @@ class ViewComponent extends React.Component{
                         }
                         
                         <div class={"knbn-font-medium" + (this.props.themeToggled ? " knbn-dark-color-5x" : "")}>
-                            {this.state.owner.name != undefined && this.state.owner.name.length > 0 ? this.state.owner.name : "No owner assigned"}
+                            {this.state.owner.name != undefined && this.state.owner.name.length > 0 ? this.state.owner.name : "Niciun proprietar setat"}
                         </div>
                     </div>
 
                     <div class="col-xl-2 px-0 d-flex flex-row">
-                        <div class="mr-2">Created on</div>
+                        <div class="mr-2">Zi creare</div>
                        
                             <div class={"h-100 d-flex mr-2" + (this.props.themeToggled ? " knbn-dark-color-5x" : "")}>
                             {  
                                 this.props.data.startDate != undefined && this.props.data.startDate.length > 0 ?
                                     dateformat(new Date(parseInt(this.props.data.startDate)), "dd \u00B7 mmmm \u00B7 yyyy")
                                     :
-                                    "No creation date"
+                                    "Fără zi creare"
                             }
                             </div>
                         
                     </div>
 
                     <div class="col-xl-2 px-0 d-flex flex-row">
-                        <div class="mr-2">Due date on</div>
+                        <div class="mr-2">Zi limită</div>
                        
                             <div class={"h-100 d-flex mr-2" + (this.props.themeToggled ? " knbn-dark-color-5x" : "")}>
                             {  
                                 this.props.data.dueDate != undefined && this.props.data.dueDate.length > 0 ?
                                     dateformat(new Date(parseInt(this.props.data.dueDate)), "dd \u00B7 mmmm \u00B7 yyyy")
                                     :
-                                    "No due date"
+                                    "Fără zi limită"
                             }
                             </div>
                         
                     </div>
 
                     <div class="col-xl-2 px-0 d-flex flex-row">
-                        <div class="mr-2">Priority</div>
+                        <div class="mr-2">Prioritate</div>
                        
                             <div class={"h-100 d-flex mr-2" + (this.props.themeToggled ? " knbn-dark-color-5x" : "")}>
                             {  
                                 this.props.data.priority != undefined && this.props.data.priority.length > 0 ?
                                     this.props.priorities.find(item => item.dbName == this.props.data.priority).name
                                     :
-                                    "No priority configured"
+                                    "Nicio prioritate setată"
                             }
                             </div>
                         

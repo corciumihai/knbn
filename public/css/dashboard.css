@@ -160,16 +160,8 @@ p{
     border: none !important;
 }
 
-.knbn-border-transparent-1x{
-    border: 1px solid transparent !important;
-}
-
-.knbn-border-transparent-2x{
-    border: 2px solid transparent !important;
-}
-
-.knbn-border-transparent-3x{
-    border: 3px solid transparent !important;
+.knbn-border-transparent{
+    border-color: transparent !important;
 }
 
 .knbn-tool{
@@ -250,8 +242,7 @@ p{
 }
 
 .knbn-remover{
-    /* border-radius: 3px; */
-    /* font-size: 14px; */
+    border-radius: 0px !important;
 }
 
 .knbn-remove-btn{
@@ -277,4 +268,8 @@ p{
 
 .knbn-flip-90-deg{
     transform: rotate(90deg) !important;
+}
+
+.knbn-input-group{
+    border: none !important;
 }

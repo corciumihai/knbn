@@ -25,10 +25,10 @@ const ThemeToggler = (props) => {
                     " knbn-dark-color-2x" 
                     : 
                     " knbn-snow-color-3x")}>
-                    Dark mode
+                    Mod întunecat
             </div>
             <div    type="button" class={"mx-auto" + (props.themeToggled == false ? " knbn-toggler" : " knbn-toggler knbn-toggler-light knbn-toggler-toggled")} 
-                    title={props.themeToggled ? "Toggle snow theme" : "Toggle dark theme"} 
+                    title={props.themeToggled ? "Comută modul luminos" : "Comută modul întunecat"} 
                     onClick={props.toggleTheme}>
                 <div class={"knbn-transition" + (props.themeToggled == false ? " knbn-toggler-handle" : " knbn-toggler-handle knbn-toggler-light-handle ml-auto")}></div>
             </div>

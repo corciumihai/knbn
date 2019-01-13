@@ -133,18 +133,18 @@ class CmpSetup extends React.Component{
     render(){
         return(
             <div class="container-fluid mt-3 col-xl-4 col-sm-8 offset-sm-2 offset-xl-4 col-md-6 offset-md-3 px-2">
-                <Header3>Component Creator</Header3>
+                <Header3>Creator Componentă</Header3>
 
                 <Error>{this.state.nameError}</Error>
                 <InputField 
-                    label="Name"
+                    label="Nume"
                     value={this.state.name}
-                    description="Name of the ticket"
+                    description="Numele tichetului înregistrat în baza de date"
                     action={this.setName}
                 />
                 <Error>{this.state.projectNameError}</Error>
                 <SelectionField
-                    label="Attach project"
+                    label="Atașează proiect"
                     action={this.setProject}
                     description="Project to be attached to"
                     value={this.state.project.name}
@@ -153,7 +153,7 @@ class CmpSetup extends React.Component{
                 />
 
                 <PriorityField
-                    description="Component priority"
+                    description="Prioritatea componentei"
                     items={this.props.priorities}
                     action={this.setPriority}
                     value={this.state.priority}
@@ -162,37 +162,37 @@ class CmpSetup extends React.Component{
                 <UserField
                     user={this.state.assignee}
                     action={this.setAssignee}
-                    label="The current owner of the component"
+                    label="Proprietarul curent al componentei"
                 />
 
                 <TextAreaField
-                    label="Description"
+                    label="Descriere"
                     action={this.setDescription}
                     value={this.state.description}
-                    description="Description of the ticket"
+                    description="Descrierea componentei"
                 />
 
                 <SelectionField
-                    label="Attach release"
+                    label="Atașează versiune"
                     action={this.setRelease}
-                    description="Release to be attached to"
+                    description="Versiune la care se atașează componenta"
                     value={this.state.release.name}
                     items={this.state.releases}
                     currentItem={this.state.release}
                 />
                 
                 <SelectionField
-                    label="Attach category"
+                    label="Atașează categorie"
                     action={this.setCategory}
-                    description="Category for this component"
+                    description="Categoria componentei"
                     value={this.state.category.name}
                     items={this.state.categories}
                     currentItem={this.state.category}
                 />  
 
                 <div class="d-flex flex-row justify-content-center mb-3 ">
-                    <button class="ticket-dropdown-btn btn btn-primary mr-2" onClick={this.submitComponent}>Add component</button>
-                    <button class="ticket-dropdown-btn btn btn-primary" onClick={this.resetState}>Cancel</button>
+                    <button class="ticket-dropdown-btn btn btn-primary mr-2" onClick={this.submitComponent}>Adaugă componentă</button>
+                    <button class="ticket-dropdown-btn btn btn-primary" onClick={this.resetState}>Anulează</button>
                 </div>
             </div>
         );

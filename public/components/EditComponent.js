@@ -15,9 +15,13 @@ class EditComponent extends React.Component{
         super(props);
 
         this.state = {
-            data: {},
             releases: [],
-            priorities: [{id: 0, name: 'Low', dbName: 'low'}, {id: 1, name: 'Medium', dbName: 'medium'}, {id: 2, name: 'High', dbName: 'high'}],
+            id: undefined,
+            name: '',
+            priority: {},
+            description: '',
+            owner: '',
+            release: {},
         }
 
         this.saveRelease = this.saveRelease.bind(this);
@@ -29,85 +33,165 @@ class EditComponent extends React.Component{
     }
 
     componentWillMount(nextProps, nextState){
-        axios.get('/get-component-data/' + this.props.match.params.compID).then(response => {
-            var tempData = response.data;
-            axios.get('/get-releases').then(response => {
-                this.setState({data: tempData, releases: response.data});
+        axios.get('/get-component-data/' + this.props.match.params.id).then( response => {      
+            this.setState({
+                id: response.data.id,
+                priority: this.props.priorities.find(item => {return item.dbName == response.data.priority}),
+                description: response.data.description,
+                name: response.data.name,
+                owner: response.data.owner,
             });
+
+            axios.get('/get-release/' + response.data.releaseID).then( response => {
+                this.setState({
+                    release: response.data
+                });
+            });
+        });
+
+        axios.get('/get-releases').then( response => {
+            this.setState({
+                releases: response.data
+            })
         });
     }
 
-    saveRelease(release){axios.post('/set-component/release', {id: this.state.data.id, rel: release.id}).then();}
-    saveName(name){axios.post('/set-component/name', {id: this.state.data.id, name: name}).then();}
-    saveDescription(description){axios.post('/set-component/desc', {id: this.state.data.id, description: description}).then();}
-    savePriority(priority){axios.post('/set-component/prio', {id: this.state.data.id, priority: priority.dbName}).then();}
-    saveOwner(user){axios.post('/set-component/owner', {id: this.state.data.id, owner: user});}
-    saveDueDate(date){axios.post('/set-component/due-date', {id: this.state.data.id, date: date});}
+    saveRelease(release){
+        axios.post('/set-component/release', {
+            id: this.state.id, 
+            value: release.id
+        })
+        .then( response => {
+            if(response.success == true){
+                this.setState({release: release});
+            }
+        });
+    }
+
+    saveName(name){
+        axios.post('/set-component/name', {
+            id: this.state.id, 
+            value: name
+        }).then( response => {
+            if(response.success == true){
+                this.setState({name: name});
+            }
+        });
+    }
+
+    saveDescription(description){
+        axios.post('/set-component/desc', {
+            id: this.state.id,
+            value: description
+        })
+        .then( response => {
+            if(response.success == true){
+                this.setState({description: description});
+            }
+        });
+    }
+
+    savePriority(priority){
+        axios.post('/set-component/prio', {
+            id: this.state.id, 
+            value: priority.dbName
+        })
+        .then( response => {
+            if(response.success == true){
+                this.setState({priority: priority});
+            }
+        });
+    }
+
+    saveOwner(user){
+        axios.post('/set-component/owner', {
+            id: this.state.id,
+            value: user.email
+        })
+        .then( response => {
+            if(response.success == true){
+                console.log('here');
+                this.setState({owner: user.email});
+            }
+        });
+    }
+
+    saveDueDate(date){
+        axios.post('/set-component/due-date', {
+            id: this.state.id, 
+            value: date
+        })
+        .then( response => {
+            if(response.success == true){
+                this.setState({dueDate: date});
+            }
+        });
+    }
 
     render(){
         return(
-            <div class={"container-fluid mt-3 px-0 py-2 knbn-transition" 
-            // + (this.props.themeToggled == true ? " knbn-dark-bg-2x" : " knbn-snow-bg-2x")
-            }>
+            <div class={"container-fluid mt-3 px-0 py-2 knbn-transition"}>
                 <div class="col-xl-12 col-12 d-flex">
-                    <Header3>Component Editor</Header3>
+                    <Header3>Editor componentă</Header3>
                 </div>
                 <div class="col-xl-12 col-12 d-flex flex-xl-row flex-column">
                     <EditForm>
                         <EditField
-                            value={this.state.data.name}
-                            label='Name' 
+                            value={this.state.name}
+                            label='Nume' 
                             save={this.saveName}
-                            description='Component name given when it was created'
+                            description='Numele componentei când a fost creată'
                         />
+
                         <EditTextArea
-                            value={this.state.data.description}
+                            value={this.state.description}
                             save={this.saveDescription}
-                            label='Description' 
-                            description='Component description given when it was created'
+                            label='Descriere' 
+                            description='Descrierea componentei când a fost creată'
                             canEdit={true}
                         />
+
                         <EditSelection
-                            value={(this.state.releases.length > 0 && this.state.data.releaseID != undefined) ? this.state.releases.find(rel => {return rel.id == this.state.data.releaseID}).name : ''}
-                            label="Release"
-                            description='Release for this component'
-                            filterItems = {true}
+                            item={this.state.release}
+                            label="Versiune"
+                            description='Versiunea atașată componentei'
                             items={this.state.releases}
-                            filler="Release not set yet"
                             save={this.saveRelease}
                         />
+
                         <EditSelection
-                            value={this.state.data.priority != undefined ? (this.state.data.priority== 'low' ? 'Low' : this.state.data.priority == 'medium' ? 'Medium' : 'High') : '' }
-                            label="Priority"
-                            description='Priority for this component'
-                            filler="Priority not set yet"
-                            items={this.state.priorities}
+                            item={this.state.priority}
+                            label="Prioritate"
+                            description='Prioritatea componentei'
+                            items={this.props.priorities}
                             save={this.savePriority}
                         />
                     </EditForm>
                     <EditForm classes={"offset-xl-4"}>
                         <EditUser
-                            label='Edit owner'
-                            user={this.state.data.owner}
+                            label='Editează proprietar'
+                            user={this.state.owner}
                             save={this.saveOwner}
                         />
+
                         <EditDate
                             editable={false}
-                            date={this.state.data.startDate}
-                            label='Creation date'
-                            description='Creation date'
+                            date={this.state.startDate}
+                            label='Data creare'
+                            description='Data când a fost creată componenta'
                         />
+
                         <EditDate
                             editable={true}
-                            date={this.state.data.dueDate}
-                            label='Due date'
+                            date={this.state.dueDate}
+                            label='Data limită'
                             save={this.saveDueDate}
-                            description='Due date for component'
+                            description='Data limită pentru componentă'
                         />
                     </EditForm>
                 </div>
 
-                <CommentArea compID={this.state.data.id}/>
+                <CommentArea id={this.state.id}/>
             </div>
         );
     }
@@ -115,7 +199,8 @@ class EditComponent extends React.Component{
 
 const mapStateToProps = (state) => {
     return {
-        themeToggled: state.themeToggled
+        themeToggled: state.themeToggled,
+        priorities: state.priorities
     }
 }
 

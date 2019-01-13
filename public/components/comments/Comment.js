@@ -61,13 +61,13 @@ class Comment extends React.Component{
                     {
                         this.state.canEdit ? 
                         (
-                            <TouchButtonRight action={(e) => {e.preventDefault();}}>Edit</TouchButtonRight>
+                            <TouchButtonRight action={(e) => {e.preventDefault();}}>Editează</TouchButtonRight>
                         )
                         : null
                     }
                     </div>
 
-                    <RemoveItem item={ReactHtmlParser(this.props.data.value)} classes="py-2" remove={this.state.canEdit ? (e) => {e.preventDefault(); this.props.remove(this.props.data.id)} : null}/>
+                    <RemoveItem classes="py-2" remove={this.state.canEdit ? (e) => {e.preventDefault(); this.props.remove(this.props.data.id)} : null}>{ReactHtmlParser(this.props.data.value)}</RemoveItem>
 
                     {/* <EditTextArea
                         value={this.props.data.value}

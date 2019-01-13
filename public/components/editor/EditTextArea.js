@@ -5,6 +5,8 @@ import EditButton from './EditButton';
 import Label from './Label';
 import Small from './Small';
 import { connect } from 'react-redux';
+import RemoveItem from '../create/RemoveItem';
+import SaveButton from './SaveButton';
 
 class EditTextArea extends React.Component{
     constructor(props){
@@ -18,21 +20,29 @@ class EditTextArea extends React.Component{
 
         this.setFieldValue = this.setFieldValue.bind(this);
         this.save = this.save.bind(this);
-        this.enableEditMode = this.enableEditMode.bind(this);
+        this.setEditMode = this.setEditMode.bind(this);
     }
 
-    componentWillMount(nextProps, nextState){
-        this.setState({value: this.props.value, displayValue: ReactHtmlParser(this.props.value)});
-    }
-
-    componentWillReceiveProps(nextProps, nextState){
-        if(nextProps.value != this.props.value){
-            this.setState({value: nextProps.value, displayValue: ReactHtmlParser(nextProps.value)});
+    componentWillMount(){
+        if(this.props.value != undefined && this.props.value.length > 0){
+            this.setState({value: this.props.value, displayValue: ReactHtmlParser(this.props.value), inEditMode: false})
+        }
+        else{
+            this.setState({inEditMode: true});
         }
     }
 
-    enableEditMode(){
-        this.setState({inEditMode: true});
+    componentWillReceiveProps(nextProps, nextState){
+        if(nextProps.value != undefined && nextProps.value.length > 0){
+            this.setState({value: nextProps.value, displayValue: ReactHtmlParser(nextProps.value), inEditMode: false})
+        }
+        else{
+            this.setState({inEditMode: true});
+        }
+    }
+
+    setEditMode(){
+        this.setState({inEditMode: !this.state.inEditMode});
     }
 
     setFieldValue(value){
@@ -51,25 +61,21 @@ class EditTextArea extends React.Component{
                     (this.props.label == undefined || this.props.label.length == 0) ? null : 
                     <Label label={this.props.label}/>
                 }
-                <div class={"knbn-input-grp knbn-fake-input-grp input-group knbn-bg-transparent knbn-transition" + 
-                (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
+                
                 {this.state.inEditMode == false ? 
-                    <div class={"knbn-fake-input form-control knbn-bg-transparent knbn-no-border" + (this.props.themeToggled == true ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
-                        {
-                            this.state.displayValue == undefined || this.state.displayValue.length == 0 ? <span class="knbn-label-muted">No text</span> 
-                            : 
-                            this.state.displayValue
-                        }
-                    </div>
+                    this.state.displayValue != undefined && this.state.displayValue.length > 0 ? 
+                    <RemoveItem remove={this.setEditMode} classes={"w-100"}>{this.state.displayValue}</RemoveItem>
+                    :
+                    "Introdu valoare"
+                       
                     : 
-                    <ReactQuill value={this.state.value} onChange={this.setFieldValue} className={"w-100 h-100 knbn-bg-transparent" + (this.props.themeToggled ? " knbn-dark-color-5x knbn-dark-edit-bd-2x" : " knbn-snow-color-5x knbn-snow-edit-bd-2x")}/>
+                    
+                    <div class={"knbn-input-grp knbn-fake-input-grp input-group knbn-bg-transparent knbn-transition" + (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
+                        <ReactQuill value={this.state.value} onChange={this.setFieldValue} className={"w-100 h-100 knbn-bg-transparent" + (this.props.themeToggled ? " knbn-dark-color-5x knbn-dark-edit-bd-2x" : " knbn-snow-color-5x knbn-snow-edit-bd-2x")}/>
+                        <SaveButton edit={this.state.inEditMode} save={this.save} enableEditMode={()=>{this.setState({inEditMode: true})}}/>
+                    </div>
                 }
-                    {this.props.canEdit ?
-                        <EditButton edit={this.state.inEditMode} save={this.save} enableEditMode={this.enableEditMode} />
-                        :
-                        null
-                    }
-                </div> 
+                
                 <Small>{this.props.description}</Small>
             </div>
         );

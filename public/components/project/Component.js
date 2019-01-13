@@ -53,35 +53,39 @@ class Component extends React.Component{
     toggleDesc(){this.setState({showDesc: !this.state.showDesc});}
 
     pushBacklog(ticket){
-        axios.post('/update-lane', {lane: 'backlog', id: ticket.id}).then(response => {
-            if(response.data.success){
+        // axios.post('/update-lane', {lane: 'backlog', id: ticket.id}).then(response => {
+            // if(response.data.success){
                 this.setState({ticketsBacklog: update(this.state.ticketsBacklog, {$push: [ticket]}) });
-            }
-        })
+                axios.post('/update-lane', {lane: 'backlog', id: ticket.id});
+            // }
+        // })
     }
 
     pushProgress(ticket){
-        axios.post('/update-lane', {lane: 'in_progress', id: ticket.id}).then(response => {
-            if(response.data.success){
+        // axios.post('/update-lane', {lane: 'in_progress', id: ticket.id}).then(response => {
+            // if(response.data.success){
                 this.setState({ticketsProgress: update(this.state.ticketsProgress, {$push: [ticket]}) });
-            }
-        })  
+                axios.post('/update-lane', {lane: 'in_progress', id: ticket.id});
+            // }
+        // })
     }
 
     pushDone(ticket){
-        axios.post('/update-lane', {lane: 'done', id: ticket.id}).then(response => {
-            if(response.data.success){
+        // axios.post('/update-lane', {lane: 'done', id: ticket.id}).then(response => {
+            // if(response.data.success){
                 this.setState({ticketsDone: update(this.state.ticketsDone, {$push: [ticket]}) });
-            }
-        })
+                axios.post('/update-lane', {lane: 'done', id: ticket.id});
+            // }
+        // })
     }
 
     pushClosed(ticket){
-        axios.post('/update-lane', {lane: 'closed', id: ticket.id}).then(response => {
-            if(response.data.success){
+        // axios.post('/update-lane', {lane: 'closed', id: ticket.id}).then(response => {
+            // if(response.data.success){
                 this.setState({ticketsClosed: update(this.state.ticketsClosed, {$push: [ticket]}) });
-            }
-        })
+                axios.post('/update-lane', {lane: 'closed', id: ticket.id});
+            // }
+        // })
     }
 
     removeBacklog(ticket){
@@ -163,7 +167,7 @@ class Component extends React.Component{
                                 (this.props.themeToggled ? 
                                     " knbn-dark-bg-3x knbn-dark-bg-3x-active knbn-dark-shadow-3x" 
                                     : 
-                                    " knbn-snow-bg-3x knbn-snow-bg-3x-active knbn-snow-shadow-3x")} onClick={this.toggle} title='Collapse component'>
+                                    " knbn-snow-bg-3x knbn-snow-bg-3x-active knbn-snow-shadow-3x")} onClick={this.toggle} title='Ascunde componentă'>
                                     <img src={!this.state.flip ? "./images/expandLight.svg" : "./images/showLight.svg"} class={"d-block mx-auto" + (this.props.themeToggled ? " knbn-img-inverted" : '')}/>
                                 </div>
 
@@ -171,7 +175,7 @@ class Component extends React.Component{
                                 (this.props.themeToggled ? 
                                     " knbn-dark-bg-3x knbn-dark-bg-3x-active knbn-dark-shadow-3x" 
                                     : 
-                                    " knbn-snow-bg-3x knbn-snow-bg-3x-active knbn-snow-shadow-3x")} onClick={this.toggleDesc} title='Show description'>
+                                    " knbn-snow-bg-3x knbn-snow-bg-3x-active knbn-snow-shadow-3x")} onClick={this.toggleDesc} title='Arată descriere'>
                                     <img src={"./images/showDescLight.svg"} class={"d-block mx-auto" + (this.props.themeToggled ? " knbn-img-inverted" : '')}/>
                                 </div>
 
@@ -180,7 +184,7 @@ class Component extends React.Component{
                                     (this.props.themeToggled ? 
                                         " knbn-dark-bg-3x knbn-dark-bg-3x-active knbn-dark-shadow-3x" 
                                         : 
-                                        " knbn-snow-bg-3x knbn-snow-bg-3x-active knbn-snow-shadow-3x")} title='Edit component'>
+                                        " knbn-snow-bg-3x knbn-snow-bg-3x-active knbn-snow-shadow-3x")} title='Editează componentă'>
                                         <img src={"./images/editLight.svg"} class={"d-block mx-auto" + (this.props.themeToggled ? " knbn-img-inverted" : '')}/>
                                     </div>
                                 </Link>
@@ -191,7 +195,6 @@ class Component extends React.Component{
                                     <div class="col-12">
                                         <div class="row">
                                             <div class={"col text-truncate" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>{this.props.data.name}</div>
-                                            {/* <div class={"knbn-days-left" + (this.props.themeToggled ? " knbn-dark-color-2x" : " knbn-snow-color-2x")}>{this.state.remainingDays == 0 ? 'Overdue today' : this.state.remainingDays >= 0 ? (this.state.remainingDays + ' days remaining') : (-this.state.remainingDays + ' days overdue')}</div> */}
                                         </div>
                                     </div>
                                     <div class={"knbn-comp-desc comp-desc col-12" + (this.props.themeToggled ? " knbn-dark-color-2x" : " knbn-snow-color-2x") + (!this.state.showDesc ? " hide" : "")}>{ReactHtmlParser(this.props.data.description)}</div>

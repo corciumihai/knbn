@@ -15,10 +15,10 @@ const SearcBar = (props) => {
                         " knbn-dark-bg-2x-active knbn-dark-color-2x knbn-dark-color-2x-active knbn-dark-border-2x" 
                         : 
                         " knbn-snow-bg-2x-active knbn-snow-color-2x knbn-snow-color-2x-active knbn-snow-border-2x")} 
-                    placeholder="Search" 
-                    aria-label="Search"/>
+                    placeholder="Caută..." 
+                    aria-label="Caută" title='Caută'/>
             <div class="btn search-btn align-self-end mr-0">
-                <img src="/images/search.svg" class="d-block mx-auto" title="Search"/>
+                <img src="/images/search.svg" class="d-block mx-auto" title="Caută"/>
             </div>
         </form>
     );

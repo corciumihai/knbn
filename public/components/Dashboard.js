@@ -29,7 +29,7 @@ class Dashboard extends React.Component{
                         return <ViewProject data={item} key={item.id}/>
                     })
                     :
-                    "There are no projects configured. Please configure a project, components and/or tickets"
+                    "Niciun proiect configurat. Configurează un proiect, apoi o componentă și tichete"
                 }
                 </div>
             </div>

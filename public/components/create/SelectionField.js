@@ -24,7 +24,7 @@ class SelectionField extends React.Component{
                     {
                         this.state.currentItem.name != undefined && this.state.currentItem.name.length > 0 ?
                         <SelectionRemover>
-                            <RemoveItem item={this.state.currentItem.name} remove={this.removeItem}/>
+                            <RemoveItem remove={this.removeItem}>{this.state.currentItem.name}</RemoveItem>
                         </SelectionRemover>
                         :
                         <input type="text" class={"knbn-input form-control knbn-bg-transparent" + 
@@ -32,7 +32,7 @@ class SelectionField extends React.Component{
                             " knbn-dark-bg-2x knbn-dark-bg-2x-active knbn-dark-color-5x" 
                             : 
                             " knbn-snow-bg-2x knbn-snow-bg-2x-active knbn-snow-color-5x" )} id="knbnFieldLabel" aria-describedby="knbnHelp" 
-                            placeholder={this.state.value == undefined || this.state.value.length == 0 ? "Enter item name" : ""}
+                            placeholder={this.state.value == undefined || this.state.value.length == 0 ? "Introdu numele obiectului" : ""}
                             value={this.state.value}
                             onChange={this.setFieldValue}
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
@@ -41,7 +41,7 @@ class SelectionField extends React.Component{
                         <DropdownMenu classes="w-100">
                         {
                             this.state.filteredItems == undefined || this.state.filteredItems.length == 0 ? 
-                            <div class="col text-truncate">No items found</div>
+                            <div class="col text-truncate">Niciun obiect găsit</div>
                             :
                             (
                                 this.state.filteredItems.map(item => 
@@ -50,7 +50,7 @@ class SelectionField extends React.Component{
                                                 <DropdownItem >
                                                     <div class="w-100 my-auto text-truncate d-flex flex-row">
                                                         <div class="d-flex mr-2">
-                                                            <img src="./images/comp.svg" class="my-auto mx-auto"/>
+                                                            <img src={this.props.imgSrc != undefined ? this.props.imgSrc : './images/comp.svg'} class="my-auto mx-auto"/>
                                                         </div>
                                                         {item.name}
                                                     </div>
