@@ -19,7 +19,7 @@ class EditDate extends React.Component{
                     (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
                         <div class={"knbn-fake-input form-control text-truncate knbn-transition" + 
                         (this.props.themeToggled == true ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
-                            {dateformat(new Date(this.state.date), "dddd \u00B7 mmmm dS \u00B7 yyyy")}
+                            {/* {dateformat(new Date(this.state.date), "dddd \u00B7 mmmm dS \u00B7 yyyy")} */}
                         </div>
                     </div>
                     :
@@ -28,7 +28,7 @@ class EditDate extends React.Component{
                         (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
                             <div class={"knbn-fake-input form-control text-truncate knbn-transition" + 
                             (this.props.themeToggled == true ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
-                                {dateformat(new Date(this.state.date), "dddd \u00B7 mmmm dS \u00B7 yyyy")}
+                                {/* {dateformat(new Date(this.state.date), "dddd \u00B7 mmmm dS \u00B7 yyyy")} */}
                             </div>
 
                             <EditButton edit={this.state.inEditMode} save={this.save} enableEditMode={this.enterEditMode}/>

@@ -1,0 +1,75 @@
+[
+{"type":"header","version":"4.7.0","comment":"Export to JSON plugin for PHPMyAdmin"},
+{"type":"database","name":"knbn_database"},
+{"type":"table","name":"avatars","database":"knbn_database","data":
+[
+
+]
+}
+,{"type":"table","name":"comments","database":"knbn_database","data":
+[
+{"id":"2","val":"random commentasd","ticketId":"2","author":"1","created":"1529252603490","lastModified":"1529253520722"},
+{"id":"3","val":"sadad","ticketId":"2","author":"1","created":"1529863355202","lastModified":"1529863355202"}
+]
+}
+,{"type":"table","name":"components","database":"knbn_database","data":
+[
+{"id":"7","name":"Component\u0103 #2","project":"4","category":null,"description":"<p>O descriere a <strong>componentei<\/strong><\/p>","startDate":"1547322401530","releaseID":"32","priority":"high","owner":"mobile.user@yahoo.com"}
+]
+}
+,{"type":"table","name":"components_comments","database":"knbn_database","data":
+[
+{"id":"73","author":"free_roaming94@yahoo.com","created":"1547144146505","value":"<p><strong>Another <\/strong>one.<\/p>","compID":"1"},
+{"id":"74","author":"free_roaming94@yahoo.com","created":"1547144279595","value":"<p>Yay<\/p>","compID":"1"},
+{"id":"75","author":"","created":"1547395017498","value":"<p>asdasd<\/p>","compID":"7"}
+]
+}
+,{"type":"table","name":"disciplines","database":"knbn_database","data":
+[
+{"id":"13","project":"1","name":"Software"},
+{"id":"14","project":"1","name":"Hardware"},
+{"id":"15","project":"1","name":"System Testing"}
+]
+}
+,{"type":"table","name":"projects","database":"knbn_database","data":
+[
+{"id":"4","name":"First project","startDate":"2147483647","description":""},
+{"id":"10","name":"Second Project","startDate":"2147483647","description":""}
+]
+}
+,{"type":"table","name":"prs","database":"knbn_database","data":
+[
+{"id":"2","name":"New PR","component":"1","assignee":"free_roaming94@yahoo.com","blockedTicket":"7","blockingTicket":"0","category":"13","estimation":"0","description":"<p>A new PR.<\/p>","priority":"0","releaseID":"29","dueDate":"1547136518841","testSteps":"<ol><li>Some bullshit<\/li><\/ol>","observedBehavior":"<ol><li>Not the bullshit I want<\/li><\/ol>","expectedBehavior":"<ol><li>Other bullshit<\/li><\/ol>","startDate":"1547136518841","lane":"backlog","reporter":""},
+{"id":"3","name":"Second PR","component":"3","assignee":"mobile.user@yahoo.com","blockedTicket":"0","blockingTicket":"0","category":"13","estimation":"0","description":"<p>Second <strong>PR<\/strong><\/p>","priority":"0","releaseID":"32","dueDate":"1547142485832","testSteps":"","observedBehavior":"","expectedBehavior":"","startDate":"1547142485832","lane":"backlog","reporter":""}
+]
+}
+,{"type":"table","name":"releases","database":"knbn_database","data":
+[
+{"id":"29","name":"Release 001","project":"1","startDate":"1529755845619","endDate":"1529755845619"},
+{"id":"32","name":"Release 002","project":"1","startDate":"1529765874043","endDate":"1529765874043"},
+{"id":"33","name":"Release 003","project":"1","startDate":"1529701200000","endDate":"1529701200000"}
+]
+}
+,{"type":"table","name":"reports","database":"knbn_database","data":
+[
+{"id":"1","component":"0","name":"sadasd","description":"","dueDate":"1527368400000","startDate":"1527368400000","discipline":"0","reporter":"another@email.com","assignee":"random6.email@email.com","blocked":"0","blocking":"0","estimation":"0","steps":"asdasd","observedBehaviour":"asdasd","expectedBehaviour":"adsad","priority":"3","lane":"0"}
+]
+}
+,{"type":"table","name":"tickets","database":"knbn_database","data":
+[
+{"id":"19","component":"7","name":"Tichet #2","description":"<p>Descriere generica<\/p>","dueDate":"1547325816492","startDate":"1547325816492","category":null,"reporter":"free_roaming94@yahoo.com","assignee":"mobile.user@yahoo.com","blockedTicket":null,"blockingTicket":null,"estimation":"0","lane":"backlog","priority":"high","releaseID":"32","project":"4"}
+]
+}
+,{"type":"table","name":"users","database":"knbn_database","data":
+[
+{"email":"free_roaming94@yahoo.com","password":"$2a$08$SvUCBWmJrfs7hJNgglrTxuq3BimCmYoS8kUgzvWjOZfeMy2gyLIiS","company":"CompanyX","name":"Mihai Corciu"},
+{"email":"mobile.user@yahoo.com","password":"$2a$08$TlEqk6xqBDDvbAeSd0OVTOpjtowskcRKfBcqneca0kB1rs8AURuMm","company":"Mobile Company","name":"Mobile User"}
+]
+}
+,{"type":"table","name":"worklogs","database":"knbn_database","data":
+[
+{"id":"3","val":"Hello","ticketId":"1","author":"1","created":"1529753505588","lastModified":"1529753505588","hours":"12"},
+{"id":"4","val":"adasd","ticketId":"2","author":"1","created":"1529863706863","lastModified":"1529863706863","hours":"1"}
+]
+}
+]
