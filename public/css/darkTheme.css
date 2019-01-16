@@ -30,8 +30,11 @@
     --t-dark-border-2x-active: var(--t-dark-border-3x);
     --t-dark-border-3x-active: var(--t-dark-border-4x);
 
-    --t-dark-bg-ondrop: rgba(172, 255, 78, 0.158);
-    --t-dark-bd-ondrop: rgba(172, 255, 78, 0.315);
+    --t-dark-bg-onhover: rgba(172, 255, 78, 0.158);
+    --t-dark-bd-onhover: rgba(172, 255, 78, 0.315);
+
+    --t-dark-bg-ondrop: rgba(78, 169, 255, 0.158);
+    --t-dark-bd-ondrop: rgba(78, 199, 255, 0.315);
 
     --t-dark-box-shadow-1x: 2px 4px 3px rgb(31, 31, 31);
     --t-dark-box-shadow-2x: 2px 4px 3px rgb(41, 41, 41);
@@ -41,7 +44,7 @@
     --t-dark-border-onselect: rgb(111, 146, 163);
     --t-dark-color-error: rgb(252, 74, 74);
     --t-dark-bg-error: rgba(226, 69, 69, 0.137);
-    --t-dark-bg-remover: rgba(255, 255, 255, 0.062);
+    --t-dark-bg-remover: rgba(194, 221, 226, 0.116);
     --t-dark-bd-remover: rgba(255, 255, 255, 0.144);
 }
 
@@ -155,6 +158,11 @@
 
 .knbn-dark-border-3x-active{
     border-color: var(--t-dark-border-3x-active) !important;
+}
+
+.knbn-dark-onhover{
+    background-color: var(--t-dark-bg-onhover) !important;
+    border: 1px solid var(--t-dark-bd-onhover) !important; 
 }
 
 .knbn-dark-ondrop{

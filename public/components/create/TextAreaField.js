@@ -8,14 +8,14 @@ import { connect } from 'react-redux';
 class TextAreaField extends React.Component{
     render(){
         return(
-            <div class="form-group knbn-bg-transparent">
+            <div class="form-group knbn-bg-transparent knbn-transition">
                 {(this.props.label == undefined || this.props.label.length == 0) ? null : 
-                    <Label dark={this.props.themeToggled} label={this.props.label}/>
+                    <Label label={this.props.label}/>
                 }
-                <div class={"knbn-input-grp knbn-fake-input-grp input-group knbn-bg-transparent knbn-transition" + (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
-                    <ReactQuill value={this.state.value} onChange={this.setFieldValue} className={"w-100 h-100 knbn-bg-transparent" + (this.props.themeToggled ? " knbn-dark-color-5x knbn-dark-bg-2x knbn-dark-edit-bd-2x" : " knbn-snow-color-5x knbn-snow-bg-2x knbn-snow-edit-bd-2x")}/>
+                <div class={"knbn-input-grp knbn-fake-input-grp input-group knbn-bg-transparent knbn-transition" + (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-3x knbn-snow-onselect")}>
+                    <ReactQuill value={this.state.value} onChange={this.setFieldValue} className={"w-100 h-100 knbn-bg-transparent knbn-transition" + (this.props.themeToggled ? " knbn-dark-color-5x knbn-dark-bg-2x knbn-dark-edit-bd-2x" : " knbn-snow-color-5x knbn-snow-bg-2x knbn-snow-edit-bd-2x")}/>
                 </div> 
-                <Small dark={this.props.themeToggled}>{this.props.description}</Small>
+                <Small>{this.props.description}</Small>
             </div>
         );
     }

@@ -8,7 +8,7 @@ import DropdownItem from '../menu/DropdownItem';
 import Small from '../editor/Small';
 import { connect } from 'react-redux';
 import SelectionRemover from './SelectionRemover';
-import RemoveItem from './RemoveItem';
+import RemoveItemSmall from './RemoveItemSmall';
 
 class SelectionField extends React.Component{
     render(){
@@ -24,10 +24,10 @@ class SelectionField extends React.Component{
                     {
                         this.state.currentItem.name != undefined && this.state.currentItem.name.length > 0 ?
                         <SelectionRemover>
-                            <RemoveItem remove={this.removeItem}>{this.state.currentItem.name}</RemoveItem>
+                            <RemoveItemSmall remove={this.RemoveItemSmall}>{this.state.currentItem.name}</RemoveItemSmall>
                         </SelectionRemover>
                         :
-                        <input type="text" class={"knbn-input form-control knbn-bg-transparent" + 
+                        <input type="text" class={"knbn-input form-control knbn-bg-transparent knbn-transition" + 
                         (this.props.themeToggled == true ? 
                             " knbn-dark-bg-2x knbn-dark-bg-2x-active knbn-dark-color-5x" 
                             : 
@@ -80,7 +80,7 @@ class SelectionField extends React.Component{
 
         this.setFieldValue = this.setFieldValue.bind(this);
         this.set = this.set.bind(this);
-        this.removeItem = this.removeItem.bind(this);
+        this.RemoveItemSmall = this.RemoveItemSmall.bind(this);
     }
 
     componentWillMount(){
@@ -105,7 +105,7 @@ class SelectionField extends React.Component{
     
     set(item){this.props.action(item);}
 
-    removeItem(){
+    RemoveItemSmall(){
         this.set({});
     }
 }

@@ -63,11 +63,13 @@ class Menu extends React.Component{
                     () => {this.props.loadProfile(this.state)});
             }            
         });
+
+        this.getProjects();
     }
 
     render(){
         return(
-            <nav class={"knbn-navbar navbar navbar-expand-xl navbar-expand-lg navbar-expand-md navbar-dark mb-3 knbn-transition" + (this.props.themeToggled ? " knbn-dark-bg-2x" : " knbn-snow-bg-2x")}>
+            <nav class={"knbn-navbar navbar navbar-expand-xl navbar-expand-lg navbar-expand-md navbar-dark knbn-transition" + (this.props.themeToggled ? " knbn-dark-bg-2x" : " knbn-snow-bg-2x")}>
                 <a class={"knbn-navbar-brand navbar-brand knbn-transition" + (this.props.themeToggled ? " knbn-dark-color-2x knbn-dark-color-2x-active" : " knbn-snow-color-2x knbn-snow-color-2x-active")} href="/">Bord KNBN</a>
 
                 <div class="knbn-navbar-toggler navbar-toggler" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Comută navigație" onClick={this.toggle}>
@@ -77,7 +79,7 @@ class Menu extends React.Component{
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class={"navbar-nav mr-auto"}>
                         <li class={"knbn-nav-item nav-item dropdown knbn-no-border"} title='Arată proiectele curente'>
-                            <KNBNNavLink onClick={this.getProjects}>Proiecte</KNBNNavLink>
+                            <KNBNNavLink onClick={() => {}}>Proiecte</KNBNNavLink>
 
                             <DropdownMenu>
                             {   this.state.projects.length > 0 ?

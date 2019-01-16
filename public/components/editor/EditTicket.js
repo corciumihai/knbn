@@ -9,6 +9,8 @@ import EditDate from './EditDate';
 import { connect } from 'react-redux';
 import Header3 from './Header3';
 import CommentArea from '../comments/CommentArea';
+import ImmutableField from './ImmutableField';
+import dateformat from 'dateformat';
 
 class EditTicket extends React.Component{
     constructor(props){
@@ -23,6 +25,7 @@ class EditTicket extends React.Component{
             assignee: '',
             reporter: '',
             release: {},
+            startDate: undefined
         }
 
         this.saveRelease = this.saveRelease.bind(this);
@@ -43,6 +46,7 @@ class EditTicket extends React.Component{
                 name: response.data.name,
                 assignee: response.data.assignee,
                 reporter: response.data.reporter,
+                startDate: response.data.startDate
             });
 
             axios.get('/get-release/' + response.data.releaseID).then( response => {
@@ -144,7 +148,7 @@ class EditTicket extends React.Component{
 
     render(){
         return(
-            <div class={"container-fluid mt-3 px-0 py-2 knbn-transition"}>
+            <div class={"container-fluid px-0 py-2 knbn-transition" + (this.props.themeToggled ? " knbn-dark-bg-1x" : " knbn-snow-bg-1x")}>
                 <div class="col-xl-12 col-12 d-flex">
                     <Header3>Editor tichet</Header3>
                 </div>
@@ -196,12 +200,13 @@ class EditTicket extends React.Component{
                             description="Proprietarul tichetului"
                         />
 
-                        <EditDate
-                            editable={false}
-                            date={this.state.startDate}
-                            label='Data creare'
-                            description='Data când a fost creată componenta'
-                        />
+                        {
+                            this.state.startDate != undefined ?
+                            <ImmutableField
+                                label='Dată creare'
+                                description='Data când a fost creată componenta'
+                            >{dateformat(new Date(parseInt(this.state.startDate)), "dddd \u00B7 d mmmm \u00B7 yyyy")}</ImmutableField> : null
+                        }
 
                         <EditDate
                             editable={true}

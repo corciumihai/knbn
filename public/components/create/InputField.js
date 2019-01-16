@@ -17,15 +17,15 @@ class InputField extends React.Component{
 
     render(){
         return(
-            <div class="form-group knbn-bg-transparent">
+            <div class="form-group knbn-bg-transparent knbn-transition">
                 <Label label={this.props.label}/>
-                <div class={"knbn-input-grp knbn-fake-input-grp input-group knbn-transition" + (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
+                <div class={"knbn-input-grp knbn-fake-input-grp input-group knbn-transition knbn-border" + (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
                 
-                    <input type="text" class={"knbn-input form-control knbn-editing-mode knbn-bg-transparent" + 
+                    <input type="text" class={"knbn-input form-control knbn-editing-mode knbn-bg-transparent knbn-transition" + 
                     (this.props.themeToggled == true ? 
                         " knbn-dark-color-4x knbn-dark-bg-2x knbn-dark-bg-2x-active" 
                         : 
-                        " knbn-snow-color-4x knbn-snow-bg-2x knbn-snow-bg-2x-active")} aria-describedby="knbnHelp" 
+                        " knbn-snow-color-4x knbn-snow-bg-2x knbn-snow-bg-4x-active")} aria-describedby="knbnHelp" 
                     placeholder={this.props.value == undefined || this.props.value.length == 0 ? "Introdu numele obiectului" : ""}
                     value={this.props.value}
                     onChange={this.set}

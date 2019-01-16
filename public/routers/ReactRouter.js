@@ -12,32 +12,36 @@ import {Provider} from 'react-redux';
 import ProjectSetup from '../components/create/ProjectSetup';
 import Dashboard from '../components/Dashboard';
 import EditTicket from '../components/editor/EditTicket';
+import Wrapper from './Wrapper';
 
 class ReactRouter extends React.Component{
     render(){
         return(
             <Provider store={store}>
-                <HashRouter>
-                    <div class={"container-fluid px-0 h-100 knbn-bg-transparent knbn-transition" 
-                    // + (true ? " knbn-dark-bg-1x" : " knbn-snow-bg-1x")
-                    }>
-                        <Menu/>
-                        <Switch>
-                            <Route exact path="/" component={Dashboard} />
-                            <Route exact path="/view-project/:id" component={Project} />
-                            <Route exact path="/create-pr" component={PRSetup}/>
-                            <Route exact path="/create-ticket" component={TicketSetup}/>
-                            <Route exact path="/create-cmp" component={CmpSetup}/>
-                            <Route exact path="/create-project" component={ProjectSetup}/>
+
+                <Wrapper> 
+
+                    <HashRouter>
+                        <div>
+
+                            <Menu/>
+                            <Switch>
+                                <Route exact path="/" component={Dashboard} />
+                                <Route exact path="/view-project/:id" component={Project} />
+                                <Route exact path="/create-pr" component={PRSetup}/>
+                                <Route exact path="/create-ticket" component={TicketSetup}/>
+                                <Route exact path="/create-cmp" component={CmpSetup}/>
+                                <Route exact path="/create-project" component={ProjectSetup}/>
+                                
+                                <Route exact path="/edit-component/:id" component={EditComponent}/>
+                                <Route exact path="/edit-ticket/:id" component={EditTicket}/>
+                            </Switch>
                             
-                            <Route exact path="/edit-component/:id" component={EditComponent}/>
-                            <Route exact path="/edit-ticket/:id" component={EditTicket}/>
-                            {/* <Route exact path="/edit-ticket/:ticketID" component={EditTicket} dark={this.state.darkMode}/> */}
-                            {/* <Route exact path="/edit-pr/:ticketID" component={EditPR} dark={this.state.darkMode}/> */}
-                        </Switch>
-                    </div>
-                    
-                </HashRouter>
+                        </div>
+                    </HashRouter>
+
+                </Wrapper>
+
             </Provider>
         )
     }

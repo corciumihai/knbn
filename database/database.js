@@ -4,7 +4,7 @@ var connection = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "root",
-    database: 'knbn_database'
+    database: 'knbn-secure-db'
   });
 
 connection.connect(function(error){

@@ -24,7 +24,7 @@ class ViewComponent extends React.Component{
     render(){
         return (
             <Link to={"edit-component/" + this.props.data.id}>
-            <div class={"knbn-view-comp col-xl-12 mb-1 py-2 knbn-border knbn-transition" + (this.props.themeToggled ? " knbn-dark-color-3x knbn-dark-bg-3x knbn-dark-onselect knbn-dark-border-2x" : "")}>
+            <div class={"knbn-view-comp col-xl-12 mb-1 py-2 knbn-border knbn-transition" + (this.props.themeToggled ? " knbn-dark-color-3x knbn-dark-bg-3x knbn-dark-onselect knbn-dark-border-2x" : " knbn-snow-color-3x knbn-snow-bg-3x knbn-snow-onselect knbn-snow-border-2x")}>
 
                 <div class="d-flex flex-row">
 
@@ -33,7 +33,7 @@ class ViewComponent extends React.Component{
                             <img src="./images/comp.svg" class="mx-auto my-auto" />
                         </div>
                         <div class="mr-2">Nume</div>
-                        <div class={"knbn-font-medium text-truncate" + (this.props.themeToggled ? " knbn-dark-color-5x" : "")}>{this.props.data.name}</div>
+                        <div class={"knbn-font-medium text-truncate" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>{this.props.data.name}</div>
                     </div>
                     
                     <div class="col-xl-2 px-0 d-flex flex-row">
@@ -49,7 +49,7 @@ class ViewComponent extends React.Component{
                             null
                         }
                         
-                        <div class={"knbn-font-medium" + (this.props.themeToggled ? " knbn-dark-color-5x" : "")}>
+                        <div class={"knbn-font-medium" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
                             {this.state.owner.name != undefined && this.state.owner.name.length > 0 ? this.state.owner.name : "Niciun proprietar setat"}
                         </div>
                     </div>
@@ -57,7 +57,7 @@ class ViewComponent extends React.Component{
                     <div class="col-xl-2 px-0 d-flex flex-row">
                         <div class="mr-2">Zi creare</div>
                        
-                            <div class={"h-100 d-flex mr-2" + (this.props.themeToggled ? " knbn-dark-color-5x" : "")}>
+                            <div class={"h-100 d-flex mr-2" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
                             {  
                                 this.props.data.startDate != undefined && this.props.data.startDate.length > 0 ?
                                     dateformat(new Date(parseInt(this.props.data.startDate)), "dd \u00B7 mmmm \u00B7 yyyy")
@@ -85,7 +85,7 @@ class ViewComponent extends React.Component{
                     <div class="col-xl-2 px-0 d-flex flex-row">
                         <div class="mr-2">Prioritate</div>
                        
-                            <div class={"h-100 d-flex mr-2" + (this.props.themeToggled ? " knbn-dark-color-5x" : "")}>
+                            <div class={"h-100 d-flex mr-2" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
                             {  
                                 this.props.data.priority != undefined && this.props.data.priority.length > 0 ?
                                     this.props.priorities.find(item => item.dbName == this.props.data.priority).name

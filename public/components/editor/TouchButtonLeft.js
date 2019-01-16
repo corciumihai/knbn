@@ -11,7 +11,7 @@ class TouchButtonLeft extends React.Component{
                 (this.props.themeToggled == true ? 
                     " knbn-dark-color-3x knbn-dark-color-3x-active" 
                     : 
-                    " knbn-snow-color-1x knbn-snow-color-onhover knbn-snow-color-onfocus knbn-snow-color-onactive")}>{this.props.children}</a>
+                    " knbn-snow-color-3x knbn-snow-color-3x-active")}>{this.props.children}</a>
             </div> 
         );
     }

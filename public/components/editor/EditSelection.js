@@ -82,7 +82,7 @@ class EditSelection extends React.Component{
                                 " knbn-snow-bg-2x knbn-snow-bg-2x-active knbn-snow-color-4x")} 
                         id="knbnFieldLabel" 
                         aria-describedby="knbnHelp" 
-                        placeholder={this.state.value == undefined || this.state.value.length == 0 ? "Introdu nume versiune" : ""}
+                        placeholder={this.state.value == undefined || this.state.value.length == 0 ? "Introdu nume" : ""}
                         value={this.state.value}
                         onChange={this.setFieldValue}
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"/>

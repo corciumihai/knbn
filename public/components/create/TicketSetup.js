@@ -61,31 +61,66 @@ class TicketSetup extends React.Component{
         this.setState({name: value, nameError: ''});
     }
 
-    setAssignee(user){this.setState({assignee: user})}
+    setAssignee(user){
+        this.setState({assignee: user})
+    }
 
-    setComponent(component){this.setState({component: component, componentError: ''});}
+    setComponent(component){
+        this.setState({component: component, componentError: ''});
+    }
 
-    setBlockedTicket(ticket){this.setState({blockedTicket: ticket});}
+    setBlockedTicket(ticket){
+        this.setState({blockedTicket: ticket});
+    }
 
-    setBlockingTicket(ticket){this.setState({blockingTicket: ticket});}
+    setBlockingTicket(ticket){
+        this.setState({blockingTicket: ticket});
+    }
 
-    setCategory(category){this.setState({category: category});}
+    setCategory(category){
+        this.setState({category: category});
+    }
 
-    setDescription(value){this.setState({description: value});}
+    setDescription(value){
+        this.setState({description: value});
+    }
 
-    setPriority(prio){this.setState({priority: prio})};
+    setPriority(prio){
+        this.setState({priority: prio})
+    };
 
-    setRelease(release){this.setState({release: release});}
+    setRelease(release){
+        this.setState({release: release});
+    }
 
-    fetchComponents(){axios.get('/get-components/').then(response => {this.setState({components: response.data})});}
+    fetchComponents(){
+        axios.get('/get-components/')
+        .then(response => {this.setState({components: response.data})});
+    }
 
-    fetchTickets(){axios.get('/get-tickets').then(response => {this.setState({tickets: response.data.tickets, filteredTickets: response.data.tickets});});}
+    fetchTickets(){
+        axios.get('/get-tickets')
+        .then(response => {
+            this.setState({tickets: response.data.tickets, filteredTickets: response.data.tickets});
+        });
+    }
 
-    fetchCategories(){axios.get('/get-categories').then(response => {this.setState({categories: response.data, filteredCategories: response.data})});}
+    fetchCategories(){
+        axios.get('/get-categories')
+        .then(response => {
+            this.setState({categories: response.data, filteredCategories: response.data})
+        });
+    }   
 
-    fetchReleases(){axios.get('/get-releases').then(response => {this.setState({releases: response.data})})}
+    fetchReleases(){
+        axios.get('/get-releases')
+        .then(response => {this.setState({releases: response.data})})
+    }
     
-    fetchProject(){axios.get('/get-projects').then(response => {this.setState({projects: response.data})})}
+    fetchProject(){
+        axios.get('/get-projects')
+        .then(response => {this.setState({projects: response.data})})
+    }
 
     setEstimation(value){
         this.setState({estimation: value});
@@ -110,12 +145,11 @@ class TicketSetup extends React.Component{
     }
 
     verify(){
-        // check name not empty
         if(this.state.name == undefined || this.state.name.length == 0){
             this.setState({nameError: 'Introdu numele tichetului'});
             return false;
         }
-        // check if attached to a project
+
         if(this.state.project.id == undefined || this.state.project.id.length == 0 || this.state.project.id <= 0 ){
             this.setState({projectError: 'Selectează referința unui proiect'});
             return false;
@@ -282,8 +316,8 @@ class TicketSetup extends React.Component{
                 </div> */}
 
                 <div class="d-flex flex-row justify-content-center mb-3 ">
-                    <button class="ticket-dropdown-btn btn btn-primary mr-2" onClick={this.submitTicket}>Adaugă tichet</button>
-                    <button class="ticket-dropdown-btn btn btn-primary" onClick={this.resetState}>Anulează</button>
+                    <button class={"ticket-dropdown-btn btn btn-primary mr-2 knbn-border" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-color-2x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-color-2x knbn-snow-border-2x")} onClick={this.submitTicket}>Adaugă tichet</button>
+                    <button class={"ticket-dropdown-btn btn btn-primary" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-color-2x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-color-2x knbn-snow-border-2x")} onClick={this.resetState}>Anulează</button>
                 </div>
             </div>
         );

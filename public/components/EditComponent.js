@@ -130,7 +130,7 @@ class EditComponent extends React.Component{
 
     render(){
         return(
-            <div class={"container-fluid mt-3 px-0 py-2 knbn-transition"}>
+            <div class={"container-fluid px-0 py-2 knbn-transition" + (this.props.themeToggled ? " knbn-dark-bg-1x" : " knbn-snow-bg-1x")}>
                 <div class="col-xl-12 col-12 d-flex">
                     <Header3>Editor componentă</Header3>
                 </div>

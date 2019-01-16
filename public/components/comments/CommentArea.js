@@ -87,7 +87,7 @@ class CommentArea extends React.Component{
                         </div>
                     </div>
 
-                    <div class={"col-12 px-0 knbn-border-bottom" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}>
+                    <div class={"col-12 px-0" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}>
                         <div class={"col-xl-4 px-0 knbn-transition knbn-bg-transparent"}>
                             <CommentInsert id={this.props.id} add={this.addComment}/>
                         </div>

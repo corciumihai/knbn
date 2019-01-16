@@ -71,7 +71,7 @@ class EditTextArea extends React.Component{
                     : 
                     
                     <div class={"knbn-input-grp knbn-fake-input-grp input-group knbn-bg-transparent knbn-transition" + (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
-                        <ReactQuill value={this.state.value} onChange={this.setFieldValue} className={"w-100 h-100 knbn-bg-transparent" + (this.props.themeToggled ? " knbn-dark-color-5x knbn-dark-edit-bd-2x" : " knbn-snow-color-5x knbn-snow-edit-bd-2x")}/>
+                        <ReactQuill value={this.state.value} onChange={this.setFieldValue} className={"w-100 h-100 knbn-bg-transparent" + (this.props.themeToggled ? " knbn-dark-color-5x knbn-dark-edit-bd-2x knbn-dark-bg-2x"  : " knbn-snow-bg-2x knbn-snow-color-5x knbn-snow-edit-bd-2x")}/>
                         <SaveButton edit={this.state.inEditMode} save={this.save} enableEditMode={()=>{this.setState({inEditMode: true})}}/>
                     </div>
                 }

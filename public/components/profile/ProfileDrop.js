@@ -31,9 +31,9 @@ class ProfileDrop extends React.Component{
             
                     <DropdownMenu>
                         <NavLink to="">
-                            <DropdownItem dark={this.props.themeToggled}>Acțiune viitoare</DropdownItem>
+                            <DropdownItem>Acțiune viitoare</DropdownItem>
                         </NavLink>
-                        <a href="/logout"><DropdownItem dark={this.props.themeToggled}>Ieșire</DropdownItem></a>
+                        <a href="/logout"><DropdownItem>Ieșire</DropdownItem></a>
                     </DropdownMenu>
                 </li>
             </ul>

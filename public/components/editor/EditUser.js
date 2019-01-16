@@ -80,11 +80,7 @@ class EditUser extends React.Component{
 
     selfAssign(event){
         event.preventDefault();
-
-        axios.get('/current-user')
-        .then( response => {
-            this.setState({user: response.data}, () => {this.save(response.data)});
-        })
+        this.setState({user: this.props.currentUser}, () => {this.save(this.props.currentUser)});
     }
 
     render(){
@@ -96,12 +92,9 @@ class EditUser extends React.Component{
                 </div>
                 {
                     !this.state.inEditMode ? 
-                    <div class="d-flex flex-row">
-                        <div class={"d-flex" + (this.props.themeToggled ? " knbn-dark-bg-remover knbn-dark-border-2x knbn-dark-bg-2x knbn-dark-bg-2x-active knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
-                            <img class="knbn-profile-pic mx-2 my-auto" src={'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(this.state.user.email).toLowerCase().trim()).digest('hex')}/>
-                        </div>
-                        
+                    <div class={"d-flex flex-row text-truncate"}>
                         <RemoveItem remove={this.setEditMode}>
+                            <img class="knbn-profile-pic mr-1 my-auto" src={'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(this.state.user.email).toLowerCase().trim()).digest('hex')}/>
                             {this.state.user.name == undefined || this.state.user.name.length == 0 ? "Niciun user setat" : this.state.user.name + " \u00B7 " + this.state.user.email}
                         </RemoveItem>
                     </div>

@@ -297,35 +297,35 @@ router.post('/add-project', (request, response) => {
 });
 
 router.get('/category/:id', (request, response) => {
-    if(request.params.id != undefined && request.params.id != null){
+    if(request.params.id != undefined && request.params.id != null && request.params.id != 0){
         database.query('SELECT name FROM disciplines WHERE id = ?', request.params.id, (error, result, fields) => {
             if(error){
                 console.log(error);
-                response.send(undefined);
+                response.send({});
                 return;
             }
             response.send(result[0]);
         });
     }
     else{
-        response.send(undefined);
+        response.send({});
     }
     
 });
 
 router.get('/release/:id', (request, response) => {
-    if(request.params.id != undefined && request.params.id != 0){
+    if(request.params.id != undefined && request.params.id != null && request.params.id != 0){
         database.query('SELECT name FROM releases WHERE id = ?', request.params.id, (error, result, fields) => {
             if(error){
                 console.log(error);
-                response.send(undefined);
+                response.send({});
                 return;
             }
             response.send(result[0]);
         });
     }
     else{
-        response.send(undefined);
+        response.send({});
     }
 });
 

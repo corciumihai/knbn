@@ -11,6 +11,7 @@ class LaneBacklog extends React.Component{
 
         this.state = {
             tickets: [],
+            isOver: false
         }
 
         this.pushTicket = this.pushTicket.bind(this);

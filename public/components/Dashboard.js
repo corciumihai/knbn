@@ -22,7 +22,7 @@ class Dashboard extends React.Component{
     render(){
         return(
             <div class="container-fluid d-flex flex-column">
-                <div class={"knbn-dashboard knbn-font-medium" + (this.props.themeToggled ? " knbn-dark-color-2x" : "")}>
+                <div class={"knbn-dashboard knbn-font-medium" + (this.props.themeToggled ? " knbn-dark-color-2x" : "knbn-snow-color-2x")}>
                 {
                     this.state.projects.length > 0 ? 
                     this.state.projects.map(item => {

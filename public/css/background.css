@@ -4,6 +4,6 @@ html{
 }
 
 body{
-    background-color: var(--main-bg-color);
+    background-color: rgb(250, 250, 250);
     height: 100%;
 }

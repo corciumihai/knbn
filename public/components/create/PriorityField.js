@@ -5,7 +5,7 @@ import DropdownItem from '../menu/DropdownItem';
 import DropdownMenu from '../menu/DropdownMenu';
 import { connect } from 'react-redux';
 import SelectionRemover from './SelectionRemover';
-import RemoveItem from './RemoveItem';
+import RemoveItemSmall from './RemoveItemSmall';
 
 class PriorityField extends React.Component{
     render(){
@@ -17,10 +17,10 @@ class PriorityField extends React.Component{
                     {
                         this.state.priority.name != undefined ? 
                         <SelectionRemover>
-                            <RemoveItem remove={this.removeItem}>{this.state.priority.name}</RemoveItem>
+                            <RemoveItemSmall remove={this.RemoveItemSmall}>{this.state.priority.name}</RemoveItemSmall>
                         </SelectionRemover>
                         :
-                        <input type="text" class={"knbn-input form-control knbn-bg-transparent" + 
+                        <input type="text" class={"knbn-input form-control knbn-bg-transparent knbn-transition" + 
                             (this.props.themeToggled == true ? 
                                 " knbn-dark-bg-2x knbn-dark-bg-2x-active knbn-dark-color-4x" 
                                 : 
@@ -63,7 +63,7 @@ class PriorityField extends React.Component{
         this.set = this.set.bind(this);
         this.filterItems = this.filterItems.bind(this);
         this.setValue = this.setValue.bind(this);
-        this.removeItem = this.removeItem.bind(this);
+        this.RemoveItemSmall = this.RemoveItemSmall.bind(this);
     }
 
     componentWillMount(){
@@ -89,7 +89,7 @@ class PriorityField extends React.Component{
         })
     }
 
-    removeItem(){
+    RemoveItemSmall(){
         this.set({});
     }
 }

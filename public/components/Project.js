@@ -46,12 +46,9 @@ class Project extends React.Component{
 
     render(){
         return(
-            <div class="container-fluid d-flex flex-column p-0">
-                <div class="col-12">
+            <div class="d-flex flex-column">
+                <div class="col-12 mb-2">
                     <Header3>
-                        {/* <span class={"knbn-font-high" + (this.props.themeToggled ? " knbn-dark-color-2x" : "")}>
-                            Viewing project 
-                        </span>  */}
                         {this.state.data.name}
                     </Header3>
                 </div>
@@ -64,8 +61,8 @@ class Project extends React.Component{
                     })
                     :
                     <div class="col-12">
-                        <span class={"knbn-font-medium" + (this.props.themeToggled ? " knbn-dark-color-2x" : "")}>
-                            This project does not contain any components and/or tickets. First setup a component, then add tickets to it.
+                        <span class={"knbn-font-medium" + (this.props.themeToggled ? " knbn-dark-color-2x" : " knbn-snow-color-2x")}>
+                            Acest proiect nu conține componente/tichete. Începeți prin a adăuga o componentă și apoi una sau mai multe tichete.
                         </span> 
                     </div>
                 }

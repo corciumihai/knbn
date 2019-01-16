@@ -191,8 +191,8 @@ class CmpSetup extends React.Component{
                 />  
 
                 <div class="d-flex flex-row justify-content-center mb-3 ">
-                    <button class="ticket-dropdown-btn btn btn-primary mr-2" onClick={this.submitComponent}>Adaugă componentă</button>
-                    <button class="ticket-dropdown-btn btn btn-primary" onClick={this.resetState}>Anulează</button>
+                    <button class={"ticket-dropdown-btn btn btn-primary mr-2 knbn-border" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-color-2x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-color-2x knbn-snow-border-2x")} onClick={this.submitComponent}>Adaugă componentă</button>
+                    <button class={"ticket-dropdown-btn btn btn-primary" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-color-2x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-color-2x knbn-snow-border-2x")} onClick={this.resetState}>Anulează</button>
                 </div>
             </div>
         );

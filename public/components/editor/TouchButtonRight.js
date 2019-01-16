@@ -10,7 +10,7 @@ const TouchButtonRight = (props) => {
                 (props.themeToggled == true ? 
                 " knbn-dark-color-3x knbn-dark-color-3x-active" 
                 : 
-                " knbn-snow-color-1x knbn-snow-color-onhover knbn-snow-color-onfocus knbn-snow-color-onactive")}>
+                " knbn-snow-color-3x knbn-snow-color-3x-active")}>
                     {props.children}
                 </a>
         </div> 

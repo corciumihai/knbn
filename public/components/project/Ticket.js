@@ -60,47 +60,24 @@ class Ticket extends React.Component{
         axios.get('/user/get-user-by-email/' + this.props.data.assignee).then(response => {
             var assignee = response.data;
 
-            if(this.props.data.category != undefined && this.props.data.category != null){
-                axios.get('/category/' + this.props.data.category).then(response => {
-                    var category = response.data;
-    
-                    if(this.props.data.releaseID != undefined && this.props.data.releaseID != 0){
-                        axios.get('/release/' + this.props.data.releaseID).then(response => {
-                            var totalDays = Math.floor((parseInt(new Date(parseInt(this.props.data.dueDate)).getTime()) - parseInt(new Date(parseInt(this.props.data.startDate)).getTime())) / (24*60*60*1000)) + 1;
-                            var remainingDays = Math.floor((parseInt(new Date(parseInt(this.props.data.dueDate)).getTime()) - parseInt(new Date().getTime())) / (24*60*60*1000)) + 1;
-                            
-                            this.setState({
-                                assignee: assignee, 
-                                release: response.data, 
-                                category: category, 
-                                loading: false,
-                                remainingDays: remainingDays,
-                                remainingPercentage: ((totalDays - remainingDays) / totalDays) * 100,
-                                flipped: this.props.data.flipped,
-                            });
-                        });
-                    }
-                    else{ this.setState({loading: false}); }
-                });
-            }
-            else{
-                if(this.props.data.releaseID != undefined && this.props.data.releaseID != 0){
-                    axios.get('/release/' + this.props.data.releaseID).then(response => {
-                        var totalDays = Math.floor((parseInt(new Date(parseInt(this.props.data.dueDate)).getTime()) - parseInt(new Date(parseInt(this.props.data.startDate)).getTime())) / (24*60*60*1000)) + 1;
-                        var remainingDays = Math.floor((parseInt(new Date(parseInt(this.props.data.dueDate)).getTime()) - parseInt(new Date().getTime())) / (24*60*60*1000)) + 1;
-    
-                        this.setState({
-                            assignee: assignee, 
-                            release: response.data, 
-                            loading: false,
-                            remainingDays: remainingDays,
-                            remainingPercentage: ((totalDays - remainingDays) / totalDays) * 100,
-                            flipped: this.props.data.flipped,
-                        });
+            axios.get('/category/' + this.props.data.category).then(response => {
+                var category = response.data;
+
+                axios.get('/release/' + this.props.data.releaseID).then(response => {
+                    var totalDays = Math.floor((parseInt(new Date(parseInt(this.props.data.dueDate)).getTime()) - parseInt(new Date(parseInt(this.props.data.startDate)).getTime())) / (24*60*60*1000)) + 1;
+                    var remainingDays = Math.floor((parseInt(new Date(parseInt(this.props.data.dueDate)).getTime()) - parseInt(new Date().getTime())) / (24*60*60*1000)) + 1;
+                    
+                    this.setState({
+                        assignee: assignee, 
+                        release: response.data, 
+                        category: category, 
+                        loading: false,
+                        remainingDays: remainingDays,
+                        remainingPercentage: ((totalDays - remainingDays) / totalDays) * 100,
+                        flipped: this.props.data.flipped,
                     });
-                }
-                else{ this.setState({loading: false}); }
-            }
+                });
+            });
         });
     }
 
@@ -141,7 +118,7 @@ class Ticket extends React.Component{
                             <div class="col-9 flex-grow-1 pr-0">
                                 <div class="col-xl-12 pr-0">
                                     <div class="row pt-1 field">
-                                        <div class={"data col-xl-12 col-12 px-0 text-truncate knbn-font-medium mb-1" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")} title={this.state.loading ? "În așteptare..." : this.props.data.name}>
+                                        <div class={"data col-xl-12 col-12 px-0 text-truncate knbn-font-16 mb-1" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")} title={this.state.loading ? "În așteptare..." : this.props.data.name}>
                                         {
                                             this.state.loading ? 
                                             <LoadingRing/>

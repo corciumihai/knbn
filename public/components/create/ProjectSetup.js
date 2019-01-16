@@ -9,14 +9,14 @@ import Header3 from '../editor/Header3';
 class ProjectSetup extends React.Component{
     render(){
         return(
-            <div class="container-fluid mt-auto mb-auto col-xl-4 col-sm-8 offset-sm-2 offset-xl-4 col-md-6 offset-md-3 px-2">
+            <div class="mt-3 mb-auto col-xl-4 col-sm-8 offset-sm-2 offset-xl-4 col-md-6 offset-md-3 px-2">
                 <Header3>Creator Proiect</Header3>
 
                 <Error>{this.state.nameError}</Error>
                 <InputField 
                     label="Nume"
                     value={this.state.name}
-                    description="Numele tichetului"
+                    description="Numele proiectului"
                     action={this.setName}
                 />
 
@@ -24,12 +24,12 @@ class ProjectSetup extends React.Component{
                     label="Descriere"
                     action={this.setDescription}
                     value={this.state.description}
-                    description="Descrierea tichetului"
+                    description="Descrierea proiectului"
                 />
 
                 <div class="d-flex flex-row justify-content-center mb-3 ">
-                    <button class="ticket-dropdown-btn btn btn-primary mr-2" onClick={this.submitProject}>Adaugă proiect</button>
-                    <button class="ticket-dropdown-btn btn btn-primary" onClick={this.resetState}>Anulează</button>
+                    <button class={"ticket-dropdown-btn btn btn-primary mr-2 knbn-border" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-color-2x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-color-2x knbn-snow-border-2x")} onClick={this.submitProject}>Adaugă proiect</button>
+                    <button class={"ticket-dropdown-btn btn btn-primary" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-color-2x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-color-2x knbn-snow-border-2x")} onClick={this.resetState}>Anulează</button>
                 </div>
             </div>
         );

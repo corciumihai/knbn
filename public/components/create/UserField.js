@@ -8,7 +8,7 @@ import DropdownItem from '../menu/DropdownItem';
 import Small from '../editor/Small';
 import { connect } from 'react-redux';
 import SelectionRemover from './SelectionRemover';
-import RemoveItem from './RemoveItem';
+import RemoveItemSmall from './RemoveItemSmall';
 
 class UserField extends React.Component{
     render(){
@@ -24,10 +24,10 @@ class UserField extends React.Component{
                     <div class={"d-flex flex-row w-100"}>
                     {this.state.currentUser.email != undefined && this.state.currentUser.email.length > 0 ?
                         <SelectionRemover>
-                            <RemoveItem remove={this.removeUser}>{this.state.currentUser.name + ' \u00b7 ' + this.state.currentUser.email}</RemoveItem>
+                            <RemoveItemSmall remove={this.removeUser}>{this.state.currentUser.name + ' \u00b7 ' + this.state.currentUser.email}</RemoveItemSmall>
                         </SelectionRemover>
                         :
-                        <input type="text" class={"knbn-input form-control knbn-bg-transparent" + 
+                        <input type="text" class={"knbn-input form-control knbn-bg-transparent knbn-transition" + 
                         (this.props.themeToggled == true ? 
                             " knbn-dark-bg-2x knbn-dark-bg-2x-active knbn-dark-color-5x" 
                             : 

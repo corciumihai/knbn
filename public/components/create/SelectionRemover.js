@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 const SelectionRemover = (props) => {
     return(
-        <div class={"knbn-input form-control knbn-bg-transparent px-2" + 
+        <div class={"knbn-input form-control knbn-bg-transparent px-2 knbn-transition" + 
         (props.themeToggled == true ? 
             " knbn-dark-bg-2x knbn-dark-bg-2x-active knbn-dark-color-4x" 
             : 
