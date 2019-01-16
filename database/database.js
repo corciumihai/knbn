@@ -4,7 +4,8 @@ var connection = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "knbn-secure-db",
-    database: 'knbn'
+    database: 'knbn',
+    insecureAuth: true
   });
 
 connection.connect(function(error){
