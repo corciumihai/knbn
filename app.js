@@ -609,5 +609,7 @@ router.post('/update-lane', (request, response) => {
 });
 
 /* ********************************************************************************************************************* */
+// use configured router
 app.use(router);
+// using user generated certificate and key
 https.createServer({key: fs.readFileSync('ssl/key.pem'), cert: fs.readFileSync('ssl/cert.pem')}, app).listen(8080);
