@@ -2,10 +2,9 @@ const mysql = require('mysql');
 
 var connection = mysql.createConnection({
     host: "localhost",
-    user: "root",
-    password: "knbn-secure-db",
+    user: "mihaicorciu",
+    password: "Knbn-secure-db-7*",
     database: 'knbn',
-    insecureAuth: true
   });
 
 connection.connect(function(error){
