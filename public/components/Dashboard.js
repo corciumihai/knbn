@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Axios from 'axios';
-import ViewProject from './dashboard/ViewProject';
+import Menu from './Menu';
 
 class Dashboard extends React.Component{
     constructor(props){
@@ -13,25 +12,12 @@ class Dashboard extends React.Component{
     }
 
     componentWillMount(){
-        Axios.get('/get-projects')
-        .then(response => {
-            this.setState({projects: response.data})
-        });
     }
 
     render(){
         return(
-            <div class="container-fluid d-flex flex-column">
-                <div class={"knbn-dashboard knbn-font-medium" + (this.props.themeToggled ? " knbn-dark-color-2x" : "knbn-snow-color-2x")}>
-                {
-                    this.state.projects.length > 0 ? 
-                    this.state.projects.map(item => {
-                        return <ViewProject data={item} key={item.id}/>
-                    })
-                    :
-                    "Niciun proiect configurat. Configurează un proiect, apoi o componentă și tichete"
-                }
-                </div>
+            <div class={"container-fluid knbn-bg-transparent knbn-transition pb-3 knbn-container" + (this.props.themeToggled ? " knbn-dark-bg-1x" : " knbn-snow-bg-1x")}>
+                <Menu/>
             </div>
         );
     }
@@ -39,7 +25,8 @@ class Dashboard extends React.Component{
 
 const mapStateToProps = (state) => {
     return{
-        themeToggled: state.themeToggled
+        themeToggled: state.themeToggled,
+        jwtToken: state.jwtToken
     }
 }
 

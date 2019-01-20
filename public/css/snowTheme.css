@@ -43,8 +43,8 @@
     --t-snow-border-onselect: rgb(111, 146, 163);
     --t-snow-color-error: rgb(252, 74, 74);
     --t-snow-bg-error: rgba(226, 69, 69, 0.137);
-    --t-snow-bg-remover: rgb(233, 239, 241);
-    --t-snow-bd-remover: rgba(255, 255, 255);
+    --t-snow-bg-remover: rgb(231, 231, 231);
+    --t-snow-bd-remover: rgb(170, 170, 170);
 }
 
 .knbn-snow-bg-1x{

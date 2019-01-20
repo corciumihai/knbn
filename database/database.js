@@ -3,9 +3,8 @@ const mysql = require('mysql');
 var connection = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "knbn-secure-db",
+    password: "root",
     database: 'knbn',
-    insecureAuth: true
   });
 
 connection.connect(function(error){

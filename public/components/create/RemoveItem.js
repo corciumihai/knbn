@@ -7,7 +7,7 @@ const RemoveItem = (props) => {
         (props.themeToggled ? " knbn-dark-bg-remover knbn-dark-border-2x knbn-dark-color-5x" : " knbn-snow-bg-remover knbn-snow-border-2x knbn-snow-color-5x") + 
         (props.classes != undefined ? " " + props.classes : "")
         }>
-            <div class={"d-flex pr-0 form-control knbn-border knbn-border-transparent knbn-bg-transparent" + (props.themeToggled ? "" : "")}>
+            <div class={"d-flex pr-0 form-control knbn-border-transparent knbn-bg-transparent" + (props.themeToggled ? "" : "")}>
                 <div class={"d-flex w-100 knbn-font-medium h-100 text-truncate" + (props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
                     <div class="text-truncate">
                         {props.children}

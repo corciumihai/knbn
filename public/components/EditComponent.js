@@ -9,6 +9,7 @@ import EditDate from './editor/EditDate';
 import CommentArea from './comments/CommentArea';
 import Header3 from './editor/Header3';
 import { connect } from 'react-redux';
+import Menu from './Menu';
 
 class EditComponent extends React.Component{
     constructor(props){
@@ -20,7 +21,7 @@ class EditComponent extends React.Component{
             name: '',
             priority: {},
             description: '',
-            owner: '',
+            owner: {},
             release: {},
         }
 
@@ -32,21 +33,23 @@ class EditComponent extends React.Component{
         this.saveDueDate = this.saveDueDate.bind(this);
     }
 
-    componentWillMount(nextProps, nextState){
+    componentWillMount(){
         axios.get('/get-component-data/' + this.props.match.params.id).then( response => {      
             this.setState({
                 id: response.data.id,
                 priority: this.props.priorities.find(item => {return item.dbName == response.data.priority}),
                 description: response.data.description,
                 name: response.data.name,
-                owner: response.data.owner,
+                owner: {email: response.data.owner},
             });
 
-            axios.get('/get-release/' + response.data.releaseID).then( response => {
-                this.setState({
-                    release: response.data
+            if(response.data.releaseID != 0 && response.data.releaseID.length > 0){
+                axios.get('/get-release/' + response.data.releaseID).then( response => {
+                    this.setState({
+                        release: response.data
+                    });
                 });
-            });
+            }
         });
 
         axios.get('/get-releases').then( response => {
@@ -130,68 +133,60 @@ class EditComponent extends React.Component{
 
     render(){
         return(
-            <div class={"container-fluid px-0 py-2 knbn-transition" + (this.props.themeToggled ? " knbn-dark-bg-1x" : " knbn-snow-bg-1x")}>
-                <div class="col-xl-12 col-12 d-flex">
+            <div class={"container-fluid knbn-bg-transparent knbn-transition pb-3 h-100 knbn-container" + (this.props.themeToggled ? " knbn-dark-bg-1x" : " knbn-snow-bg-1x")}>
+                <Menu/>
+
+                <div class="row mt-3">
                     <Header3>Editor componentă</Header3>
                 </div>
-                <div class="col-xl-12 col-12 d-flex flex-xl-row flex-column">
-                    <EditForm>
-                        <EditField
-                            value={this.state.name}
-                            label='Nume' 
-                            save={this.saveName}
-                            description='Numele componentei când a fost creată'
-                        />
+                
+                <div class="row">
+                    <div class="col-xl-12 col-12">
+                        <div class="row">
+                            <EditForm>
+                                <EditField
+                                    value={this.state.name}
+                                    label='Nume' 
+                                    save={this.saveName}
+                                    description='Numele componentei când a fost creată'
+                                />
 
-                        <EditTextArea
-                            value={this.state.description}
-                            save={this.saveDescription}
-                            label='Descriere' 
-                            description='Descrierea componentei când a fost creată'
-                            canEdit={true}
-                        />
+                                <EditTextArea
+                                    value={this.state.description}
+                                    save={this.saveDescription}
+                                    label='Descriere' 
+                                    description='Descrierea componentei când a fost creată'
+                                    canEdit={true}
+                                />
 
-                        <EditSelection
-                            item={this.state.release}
-                            label="Versiune"
-                            description='Versiunea atașată componentei'
-                            items={this.state.releases}
-                            save={this.saveRelease}
-                        />
+                                <EditSelection
+                                    item={this.state.release}
+                                    label="Versiune"
+                                    description='Versiunea atașată componentei'
+                                    items={this.state.releases}
+                                    save={this.saveRelease}
+                                />
 
-                        <EditSelection
-                            item={this.state.priority}
-                            label="Prioritate"
-                            description='Prioritatea componentei'
-                            items={this.props.priorities}
-                            save={this.savePriority}
-                        />
-                    </EditForm>
-                    <EditForm classes={"offset-xl-4"}>
-                        <EditUser
-                            label='Editează proprietar'
-                            user={this.state.owner}
-                            save={this.saveOwner}
-                        />
+                                <EditSelection
+                                    item={this.state.priority}
+                                    label="Prioritate"
+                                    description='Prioritatea componentei'
+                                    items={this.props.priorities}
+                                    save={this.savePriority}
+                                />
+                            </EditForm>
+                            <EditForm classes={"offset-xl-4"}>
+                                <EditUser
+                                    label='Editează proprietar'
+                                    user={this.state.owner}
+                                    save={this.saveOwner}
+                                />
+                            </EditForm>
+                        </div>
+                    </div>
 
-                        <EditDate
-                            editable={false}
-                            date={this.state.startDate}
-                            label='Data creare'
-                            description='Data când a fost creată componenta'
-                        />
-
-                        <EditDate
-                            editable={true}
-                            date={this.state.dueDate}
-                            label='Data limită'
-                            save={this.saveDueDate}
-                            description='Data limită pentru componentă'
-                        />
-                    </EditForm>
+                    {/* <CommentArea id={this.state.id}/> */}
                 </div>
-
-                <CommentArea id={this.state.id}/>
             </div>
         );
     }

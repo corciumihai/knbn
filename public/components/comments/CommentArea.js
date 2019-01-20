@@ -13,84 +13,39 @@ class CommentArea extends React.Component{
         this.state = {
             compComments: [],
         }
-
-        this.addComment = this.addComment.bind(this);
-        this.removeComment = this.removeComment.bind(this);
-        this.update = this.update.bind(this);
-    }
-
-    addComment(value){
-        axios.post('/add-component-comment', {
-            author: this.props.currentUser.email,
-            id: this.props.id,
-            value: value,
-            created: new Date().getTime()
-        })
-        .then(response => {
-            if(response.data.success == true){
-                this.update();
-            }
-        })
-    }
-
-    componentWillMount(){
-        this.update();
-    }
-
-    componentWillReceiveProps(nextProps, nextState){
-        if(nextProps.id != this.props.id){
-            this.update(nextProps.id);
-        }
-    }
-
-    update(value){
-        if(value != undefined){
-            axios.get('/get-component-comments/' + value)
-            .then(response => {
-                this.setState({compComments: response.data});
-            });
-        }
-        else{
-            axios.get('/get-component-comments/' + this.props.id)
-            .then(response => {
-                this.setState({compComments: response.data});
-            });
-        }
-    }
-
-    removeComment(id){
-        axios.post('/remove-comment', {id: id})
-        .then(response => {
-            if(response.data.success == true){
-                this.update();
-            }
-        })
     }
 
     render(){
         return(
-            <div class={"knbn-comment-area w-100 knbn-border knbn-no-border-left knbn-no-border-right knbn-no-border-bottom knbnb-bg-transparent" + 
+            <div class={"col-xl-12 knbn-comment-area knbn-border knbn-no-border-left knbn-no-border-right knbn-no-border-bottom knbnb-bg-transparent" + 
             (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}>
-                <div class="col-xl-12 col-12 d-flex mt-2">
-                    <Header2>Comentarii</Header2>
-                </div>
-                <div class={"container-fluid knbn-transition knbn-bg-transparent"}>
-                    <div class={"col-12 px-0 knbn-border-bottom pt-2" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}>
-                        <div class={"col-xl-4 px-0 knbn-transition knbn-bg-transparent"}>
-                        {    
-                            this.state.compComments.length > 0 ? 
-                                this.state.compComments.map(item => {
-                                    return <Comment data={item} key={item.id} remove={this.removeComment}/>
-                                })
-                                : null
-                        }
-                        </div>
+                <div class="row">
+                    <div class="col-xl-12 knbn-font-small mt-2 mb-2">
+                        <ul class="nav nav-pills">
+                            <li class="nav-item">
+                                <div class={"nav-link active btn knbn-no-radius knbn-no-border-right" + 
+                                (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-border-2x knbn-dark-bg-2x-active" : " knbn-snow-bg-2x knbn-snow-border-2x knbn-snow-bg-2x-active")}>
+                                    Comentarii
+                                </div>
+                            </li>
+
+                            <li class="nav-item">
+                                <div class={"nav-link btn knbn-no-radius" + 
+                                (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-color-2x knbn-dark-bg-2x-active" : " knbn-snow-border-2x knbn-snow-color-2x knbn-snow-bg-2x-active")}>
+                                    Înregistrare muncă
+                                </div>
+                            </li>
+                        </ul>
                     </div>
 
-                    <div class={"col-12 px-0" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}>
-                        <div class={"col-xl-4 px-0 knbn-transition knbn-bg-transparent"}>
-                            <CommentInsert id={this.props.id} add={this.addComment}/>
-                        </div>
+                    <div class={"col-xl-12 knbn-transition knbn-bg-transparent"}>
+                    {    
+                        this.props.comments.length > 0 ? 
+                            this.props.comments.map(item => {
+                                return <Comment data={item} key={item.id} remove={this.props.remove}/>
+                            })
+                            : null
+                    }
                     </div>
                 </div>
             </div>

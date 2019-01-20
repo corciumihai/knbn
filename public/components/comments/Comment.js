@@ -9,6 +9,20 @@ import SelectionRemover from '../create/SelectionRemover';
 import ReactHtmlParser from 'react-html-parser';
 import RemoveItem from '../create/RemoveItem';
 
+dateformat.i18n = {
+    dayNames: [
+        'Dum', 'Lun', 'Mar', 'Mie', 'Joi', 'Vin', 'Sâ',
+        'Duminică', 'Luni', 'Marți', 'Miercuri', 'Joi', 'Vineri', 'Sâmbătă'
+    ],
+    monthNames: [
+        'Ian', 'Feb', 'Mar', 'Apr', 'Mai', 'Iun', 'Iul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+        'Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie', 'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie'
+    ],
+    timeNames: [
+        'a', 'p', 'am', 'pm', 'A', 'P', 'AM', 'PM'
+    ]
+};
+
 class Comment extends React.Component{
     constructor(props){
         super(props);
@@ -22,63 +36,46 @@ class Comment extends React.Component{
     }
 
     updateComment(value){
-        if(this.props.data.value != value){
-            axios.post('/component/update-comment', {
-                id: this.props.data.id,
-                value: value,
+        // if(this.props.data.value != value){
+        //     axios.post('/component/update-comment', {
+        //         id: this.props.data.id,
+        //         value: value,
+        //     });
+        // }
+    }
+
+    componentWillMount(){
+        if(this.props.data.owner != undefined){
+            axios.get('/user/get-user-by-email/' + this.props.data.owner).then(response => {
+                this.setState({userData: response.data});
             });
         }
     }
 
-    componentWillMount(){
-        if(this.props.data.author != undefined){
-            this.setState({canEdit: this.props.currentUser.email == this.props.data.author}, () => {
-                axios.get('/user/get-user-by-email/' + this.props.data.author).then(response => {
-                    if(response.data.success == true){
-                        console.log(this.props.currentUser.email == this.props.data.author);
-                        this.setState({userData: response.data});
-                    }
-                });
-            })
+    componentWillReceiveProps(nextState, nextProps){
+        if(nextState.data.owner != undefined){
+            axios.get('/user/get-user-by-email/' + nextState.data.owner).then(response => {
+                this.setState({userData: response.data});
+            });
         }
     }
 
     render(){        
         return(
-            <div class={"knbn-comment" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
-                {this.props.data.value != undefined || this.props.value.length > 0 ?
-                <div class="w-100 knbn-font-small d-flex flex-column mb-1 px-0">
-                    <div class="d-flex flex-row col-xl-12 px-0 mb-2">
-                    {   
-                        this.state.userData.name == undefined || this.state.userData.name.length == 0 ? 
-                            null 
-                            : 
-                            <div class="d-flex flex-row">
-                                <TouchButtonLeft>{this.state.userData.name}</TouchButtonLeft>
-                                <div class="knbn-dark-color-2x"> on {dateformat(new Date(parseInt(this.props.data.created)), "dS \u00B7 mmmm \u00B7 yyyy")}</div>
-                            </div>
-                    }
+            <div class="row mt-2 mb-2">
+                <div class={"col-xl-12 d-flex knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-2x" : " knbn-dark-color-2x")}>
                     {
-                        this.state.canEdit ? 
-                        (
-                            <TouchButtonRight action={(e) => {e.preventDefault();}}>Editează</TouchButtonRight>
-                        )
-                        : null
+                        this.state.userData && this.state.userData.name ?
+                        "Adăugat de " + this.state.userData.name + " pe data de " + dateformat(new Date(this.props.data.created), "dd mmmm yyyy")
+                        :
+                        "Adăugat pe data de " + dateformat(new Date(this.props.data.created), "dd mmmm yyyy")
                     }
-                    </div>
-
-                    <RemoveItem classes="py-2" remove={this.state.canEdit ? (e) => {e.preventDefault(); this.props.remove(this.props.data.id)} : null}>{ReactHtmlParser(this.props.data.value)}</RemoveItem>
-
-                    {/* <EditTextArea
-                        value={this.props.data.value}
-                        canEdit={this.state.canEdit}
-                        save={this.updateComment}
-                        classes={"knbn-font-small"}
-                    /> */}
                 </div>
-                :
-                null
-                }
+                <div class="col-xl-12">
+                    <RemoveItem remove={this.state.canEdit ? (e) => {e.preventDefault(); this.props.remove(this.props.data.id)} : null}>
+                        {ReactHtmlParser(this.props.data.value)
+                    }</RemoveItem>
+                </div>
             </div>
         );
     }

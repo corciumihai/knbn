@@ -1,5 +1,4 @@
 import React from 'react';
-import EditButton from './EditButton';
 import Label from './Label';
 import Small from './Small';
 import { connect } from 'react-redux';
@@ -21,7 +20,7 @@ class EditField extends React.Component{
 
     componentWillMount()
     {
-        if(this.props.value != undefined && this.props.value.length > 0){
+        if(this.props.value != undefined){
             this.setState({value: this.props.value, inEditMode: false})
         }
         else{
@@ -31,7 +30,7 @@ class EditField extends React.Component{
 
     componentWillReceiveProps(nextProps, nextState)
     {
-        if(nextProps.value != undefined && nextProps.value.length > 0){
+        if(nextProps.value != undefined){
             this.setState({value: nextProps.value, inEditMode: false})
         }
         else{
@@ -56,20 +55,18 @@ class EditField extends React.Component{
                 <Label label={this.props.label}/>
                 
                 {this.state.inEditMode == false ? 
-                    this.state.value != undefined && this.state.value.length > 0 ? 
+                    this.state.value != undefined ? 
                     <RemoveItem remove={this.setEditMode}>{this.state.value}</RemoveItem>
                     :
-                    "Introdu valoare"
-  
+                    null
                 :
-
                 <div class={"knbn-input-grp knbn-fake-input-grp input-group knbn-transition knbn-font-medium" + (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
                     <input  type="text" class={"knbn-input form-control knbn-editing-mode knbn-bg-transparent" + 
                             (this.props.themeToggled == true ? 
                                 " knbn-dark-color-4x knbn-dark-bg-2x knbn-dark-bg-2x-active" 
                                 : 
                                 " knbn-snow-color-4x knbn-snow-bg-2x knbn-snow-bg-2x-active")} aria-describedby="knbnHelp" 
-                            placeholder={this.state.value == undefined || this.state.value.length == 0 ? "Introdu numele obiectului" : ""}
+                            placeholder={this.state.value == undefined ? "Introdu nume" : ""}
                             value={this.state.value}
                             onChange={this.setFieldValue}
                     />

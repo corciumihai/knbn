@@ -80,7 +80,6 @@ class EditSelection extends React.Component{
                                 " knbn-dark-bg-2x knbn-dark-bg-2x-active knbn-dark-color-4x" 
                                 : 
                                 " knbn-snow-bg-2x knbn-snow-bg-2x-active knbn-snow-color-4x")} 
-                        id="knbnFieldLabel" 
                         aria-describedby="knbnHelp" 
                         placeholder={this.state.value == undefined || this.state.value.length == 0 ? "Introdu nume" : ""}
                         value={this.state.value}
@@ -92,7 +91,7 @@ class EditSelection extends React.Component{
                         <DropdownMenu >
                         {
                             this.state.filteredItems == undefined || this.state.filteredItems.length == 0 ? 
-                            <div class="col knbn-snow-color-1x">
+                            <div class={"col" + (this.props.themeToggled ? " knbn-dark-bd-2x knbn-dark-color-1x" : " knbn-snow-color-1x")}>
                                 <div class="col-xl-12">Niciun obiect găsit</div>
                             </div>
                             :

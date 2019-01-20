@@ -31,7 +31,7 @@ class UserField extends React.Component{
                         (this.props.themeToggled == true ? 
                             " knbn-dark-bg-2x knbn-dark-bg-2x-active knbn-dark-color-5x" 
                             : 
-                            " knbn-snow-bg-2x knbn-snow-bg-2x-active knbn-snow-color-5x" )} id="knbnFieldLabel" aria-describedby="knbnHelp" 
+                            " knbn-snow-bg-2x knbn-snow-bg-2x-active knbn-snow-color-5x" )} aria-describedby="knbnHelp" 
                             placeholder={this.state.value == undefined || this.state.value.length == 0 ? "Introdu nume persoană" : ""}
                             value={this.state.value}
                             onChange={this.setFieldValue}
@@ -52,7 +52,7 @@ class UserField extends React.Component{
                                 return  <a href="#" key={user.email} onClick={(event)=>{event.preventDefault(); this.setUser(user)}}>
                                     <DropdownItem>
                                         <div class="d-flex flex-row">
-                                            <div class="input-group-text mx-1 d-flex my-auto">
+                                            <div class="mx-1 d-flex my-auto">
                                                 <img class="knbn-profile-pic-large" src={'https://www.gravatar.com/avatar/' + hashForUser}/>
                                             </div>
                                             <div class="d-flex w-100"><div class="w-100 my-auto text-truncate">{user.name + " \u00B7 " + user.email}</div></div>
@@ -116,22 +116,15 @@ class UserField extends React.Component{
 
     selfAssign(event){
         event.preventDefault();
-        axios.get('/current-user').then(response => {
-            if(response.data.success == false){
-                this.setState({currentUser: {}, value: '', filteredUsers: this.state.users})
-            }
-            else{
-                if(response.data.email != this.state.currentUser.email){
-                    this.setState({currentUser: response.data, value: response.data.name, filteredUsers: this.state.users}, () => {this.setUser(this.state.currentUser)});
-                }
-            }
-        });
+
+        this.props.action({email: this.props.currentUser});
     }
 }
 
 const mapStateToProps = (state) => {
     return {
-        themeToggled: state.themeToggled
+        themeToggled: state.themeToggled,
+        currentUser: state.currentUser
     }
 }
 

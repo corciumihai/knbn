@@ -3,18 +3,18 @@
     --main-bg-color:rgb(34, 35, 37);
   }
 
-.form-control, .form-control:focus{
-    background-color: var(--form-ctrl-bg);
-    border: 1px solid var(--form-ctrl-border);
-    color: rgb(245, 219, 170);
+/* .form-control, .form-control:focus{
+    /* background-color: var(--form-ctrl-bg); */
+    /* border: 1px solid var(--form-ctrl-border); */
+    color: rgb(255, 255, 255);
     box-shadow: none;
     border-radius: 0px;
-}
-
+} */
+/* 
 .form-control:focus{
     background-color: var(--form-ctrl-on-focus-bg);
     border: 1px solid var(--form-ctrl-on-focus-border);
-}
+} */
 
 form{
     text-align: center;
@@ -80,8 +80,8 @@ form{
 .profile-img{
     border-radius: 100%;
     border: 1px solid var(--form-ctrl-border);
-    width: 80px;
-    height: 80px;
+    width: 50px;
+    height: 50px;
 }
 
 .set-profile-msg{

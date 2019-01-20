@@ -202,7 +202,7 @@ p{
 }
 
 .knbn-header-2{
-    font-size: 18px !important;
+    font-size: 17px !important;
 }
 
 .knbn-profile-pic{
@@ -218,10 +218,6 @@ p{
 
 .knbn-header-3{
     font-size: 20px !important;
-}
-
-.knbn-header-2{
-    font-size: 18px !important;
 }
 
 .knbn-border-bottom{
@@ -282,6 +278,29 @@ p{
     min-width: 0 !important;
 }
 
-html, body, #app, #app .knbn-container{
+html, body, #app{
     min-height: 100vh !important;
+    background-color: black;
+}
+
+.knbn-font-14{
+    font-size: 14px !important;
+}
+
+.ql-editor{
+    overflow-y: initial !important;
+    word-break: break-all !important;
+}
+
+.knbn-container{
+    min-height: 100vh;
+}
+
+.knbn-no-radius{
+    border-radius: 0 !important;
+}
+
+.knbn-edit-no-border *, .knbn-edit-no-border .ql-toolbar .ql-snow{
+    border: none !important;
+    border-color: transparent;
 }

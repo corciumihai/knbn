@@ -7,132 +7,12 @@ import TextAreaField from './TextAreaField';
 import SelectionField from './SelectionField';
 import { connect } from 'react-redux';
 import Error from './Error';
+import Header2 from '../editor/Header2';
 import Header3 from '../editor/Header3';
+import Menu from '../Menu';
 
 class PRSetup extends React.Component{
-    render(){
-        return(
-            <div class="container-fluid mt-3 col-xl-4 col-sm-8 offset-sm-2 offset-xl-4 col-md-6 offset-md-3 px-2">
-                <Header3>Creator raport problemă</Header3>
-
-                <Error>{this.state.nameError}</Error>
-                <InputField 
-                    label="Nume"
-                    value={this.state.name}
-                    description="Numele tichetului"
-                    action={this.setName}
-                />
-
-                <Error>{this.state.componentError}</Error>
-                <SelectionField
-                    label="Atașează componentă"
-                    action={this.setComponent}
-                    description="Componenta la care tichetul va fi atașat"
-                    value={this.state.component.name}
-                    items={this.state.components}
-                    currentItem={this.state.component}
-                />
-
-                <PriorityField
-                    description="Prioritatea raportului de problemă"
-                    items={this.props.priorities}
-                    action={this.setPriority}
-                    value={this.state.priority}
-                />
-
-                <UserField
-                    user={this.state.assignee}
-                    action={this.setAssignee}
-                    label="Prioritatea raportului de problemă"
-                />
-
-                <TextAreaField
-                    label="Descriere"
-                    action={this.setDescription}
-                    value={this.state.description}
-                    description="Descrierea raportului de problemă"
-                />
-
-                <TextAreaField
-                    label="Pași de testare"
-                    action={this.setTestSteps}
-                    value={this.state.testSteps}
-                    description="Pașii de testare pentru a reproduce problema"
-                />
-
-                <TextAreaField
-                    label="Comportament așteptat"
-                    action={this.setExpectedBehavior}
-                    value={this.state.expectedBehavior}
-                    description="Comportamentul așteptat la aplicarea pașilor de testare"
-                />
-                
-                <TextAreaField
-                    label="Comportament observat"
-                    action={this.setObservedBehavior}
-                    value={this.state.observedBehavior}
-                    description="Comportamentul observat la aplicarea pașilor de testare"
-                />
-
-                <SelectionField
-                    label="Atașează versiune"
-                    action={this.setRelease}
-                    description="Versiune la care raportul de problemă va fi atașat"
-                    value={this.state.release.name}
-                    items={this.state.releases}
-                    currentItem={this.state.release}
-                />
-
-                <SelectionField
-                    label="Tichet blocat"
-                    action={this.setBlockedTicket}
-                    description="Tichetul blocat de crearea acestui raport de problemă"
-                    value={this.state.blockedTicket.name}
-                    items={this.state.tickets}
-                    currentItem={this.state.blockedTicket}
-                />  
-
-                <SelectionField
-                    label="Blocat de tichet"
-                    action={this.setBlockingTicket}
-                    description="Tichetul care blochează acest raport de problemă"
-                    value={this.state.blockingTicket.name}
-                    items={this.state.tickets}
-                    currentItem={this.state.blockingTicket}
-                />  
-                
-                <SelectionField
-                    label="Atașează categorie"
-                    action={this.setCategory}
-                    description="Categoria care va fi atașată la raportul de problemă"
-                    value={this.state.category.name}
-                    items={this.state.categories}
-                    currentItem={this.state.category}
-                />  
-
-                <InputField 
-                    label="Ore de lucru estimate"
-                    value={this.state.estimation}
-                    description="Efortul de muncă estimat in ore"
-                    action={this.setEstimation}
-                />
-                
-                {/* <div class="ticket-section mb-2 d-flex">
-                    <Toggler classToToggle=".knbn-to-collapse"/>
-                    <div class="w-100">
-                        <Label label='Due date'/>
-                        <DatePicker changeDate={this.changeDueDate}/>
-                    </div>
-                </div> */}
-
-                <div class="d-flex flex-row justify-content-center mb-3 ">
-                    <button class={"ticket-dropdown-btn btn btn-primary mr-2 knbn-border" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-color-2x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-color-2x knbn-snow-border-2x")} onClick={this.submitTicket}>Adaugă problemă</button>
-                    <button class={"ticket-dropdown-btn btn btn-primary" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-color-2x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-color-2x knbn-snow-border-2x")}  onClick={this.resetState}>Anulează</button>
-                </div>
-            </div>
-        );
-    }
-
+    
     constructor(props){
         super(props);
 
@@ -157,6 +37,8 @@ class PRSetup extends React.Component{
             observedBehavior: '',
             priority: {},
             release: {},
+            projects: [],
+            project: {},
 
             nameError: '',
             componentError: ''
@@ -181,6 +63,8 @@ class PRSetup extends React.Component{
         this.setTestSteps = this.setTestSteps.bind(this);
         this.setObservedBehavior = this.setObservedBehavior.bind(this);
         this.setExpectedBehavior = this.setExpectedBehavior.bind(this);
+        this.fetchProjects = this.fetchProjects.bind(this);
+        this.setProject = this.setProject.bind(this);
     }
 
     setName(value){
@@ -211,6 +95,11 @@ class PRSetup extends React.Component{
 
     fetchReleases(){axios.get('/get-releases').then(response => {this.setState({releases: response.data})})}
 
+    fetchProjects(){
+        axios.get('/get-projects')
+        .then(response => {this.setState({projects: response.data})})
+    }
+
     setEstimation(value){this.setState({estimation: value});}
 
     setTestSteps(value){this.setState({testSteps: value})}
@@ -219,11 +108,16 @@ class PRSetup extends React.Component{
 
     setObservedBehavior(value){this.setState({observedBehavior: value})}
 
+    setProject(value){
+        this.setState({project: value});
+    }
+
     componentWillMount(){
         this.fetchComponents();
         this.fetchReleases();
         this.fetchTickets();
         this.fetchCategories();
+        this.fetchProjects();
 
         this.setState({priority: this.props.priorities[2]});
     }
@@ -234,6 +128,12 @@ class PRSetup extends React.Component{
             this.setState({nameError: 'Introdu numele tichetului'});
             return false;
         }
+
+        if(this.state.project.id == undefined || this.state.project.id.length == 0 || this.state.project.id <= 0 ){
+            this.setState({projectError: 'Selectează referința unui proiect'});
+            return false;
+        }
+
         // check if attached to a component
         if(this.state.component.id == undefined || this.state.component.id.length == 0 || this.state.component.id <= 0 ){
             this.setState({componentError: 'Selectează o referință a unei componente'});
@@ -260,7 +160,8 @@ class PRSetup extends React.Component{
             priority: this.props.priorities[2],
             release: {},
             nameError: '',
-            componentError: ''
+            componentError: '',
+            project: {}
         })
     }
 
@@ -288,12 +189,172 @@ class PRSetup extends React.Component{
                 expectedBehavior: this.state.expectedBehavior,
                 startDate: new Date().getTime(),
                 lane: 'backlog',
+                project: this.state.project
             }).then(response => {
                 if(response.data.success == true){
                     this.resetState();
                 }
             });
         }
+    }
+
+    render(){
+        return(
+            <div class={"container-fluid knbn-bg-transparent knbn-transition pb-3 knbn-container" + (this.props.themeToggled ? " knbn-dark-bg-1x" : " knbn-snow-bg-1x")}>
+                <Menu/>
+                <div class="row mt-3">
+                    <div class="col-xl-4 offset-xl-4">
+                        <div class="row">
+                            <Header3>Creator raport problemă</Header3>
+                        </div>
+                    {
+                        this.state.projects.length == 0 ? 
+                        <div class="row">
+                            <Header2>Niciun proiect configurat</Header2>
+                            <div class={"knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>Înainte de a adăuga un tichet, creați un proiect, și apoi cel puțin o componentă</div>
+                        </div>
+                        :
+                        this.state.components.length == 0 ? 
+                        <div class="row">
+                            <Header2>Nicio componentă creată</Header2>
+                            <div class={"knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>Înainte de a adăuga un tichet, creați o componentă</div>
+                        </div>
+                        :
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <Error>{this.state.nameError}</Error>
+                                <InputField 
+                                    label="Nume"
+                                    value={this.state.name}
+                                    description="Numele tichetului"
+                                    action={this.setName}
+                                />
+
+                                <Error>{this.state.projectError}</Error>
+                                <SelectionField
+                                    label="Atașează proiect"
+                                    action={this.setProject}
+                                    description="Proiect la care tichetul va fi atașat"
+                                    value={this.state.project.name}
+                                    items={this.state.projects}
+                                    currentItem={this.state.project}
+                                    imgSrc='./images/project.svg'
+                                />
+
+                                <Error>{this.state.componentError}</Error>
+                                <SelectionField
+                                    label="Atașează componentă"
+                                    action={this.setComponent}
+                                    description="Componenta la care tichetul va fi atașat"
+                                    value={this.state.component.name}
+                                    items={this.state.components}
+                                    currentItem={this.state.component}
+                                />
+
+                                <PriorityField
+                                    description="Prioritatea raportului de problemă"
+                                    items={this.props.priorities}
+                                    action={this.setPriority}
+                                    value={this.state.priority}
+                                />
+
+                                <UserField
+                                    user={this.state.assignee}
+                                    action={this.setAssignee}
+                                    label="Prioritatea raportului de problemă"
+                                />
+
+                                <TextAreaField
+                                    label="Descriere"
+                                    action={this.setDescription}
+                                    value={this.state.description}
+                                    description="Descrierea raportului de problemă"
+                                />
+
+                                <TextAreaField
+                                    label="Pași de testare"
+                                    action={this.setTestSteps}
+                                    value={this.state.testSteps}
+                                    description="Pașii de testare pentru a reproduce problema"
+                                />
+
+                                <TextAreaField
+                                    label="Comportament așteptat"
+                                    action={this.setExpectedBehavior}
+                                    value={this.state.expectedBehavior}
+                                    description="Comportamentul așteptat la aplicarea pașilor de testare"
+                                />
+                                
+                                <TextAreaField
+                                    label="Comportament observat"
+                                    action={this.setObservedBehavior}
+                                    value={this.state.observedBehavior}
+                                    description="Comportamentul observat la aplicarea pașilor de testare"
+                                />
+
+                                <SelectionField
+                                    label="Atașează versiune"
+                                    action={this.setRelease}
+                                    description="Versiune la care raportul de problemă va fi atașat"
+                                    value={this.state.release.name}
+                                    items={this.state.releases}
+                                    currentItem={this.state.release}
+                                />
+
+                                <SelectionField
+                                    label="Tichet blocat"
+                                    action={this.setBlockedTicket}
+                                    description="Tichetul blocat de crearea acestui raport de problemă"
+                                    value={this.state.blockedTicket.name}
+                                    items={this.state.tickets}
+                                    currentItem={this.state.blockedTicket}
+                                />  
+
+                                <SelectionField
+                                    label="Blocat de tichet"
+                                    action={this.setBlockingTicket}
+                                    description="Tichetul care blochează acest raport de problemă"
+                                    value={this.state.blockingTicket.name}
+                                    items={this.state.tickets}
+                                    currentItem={this.state.blockingTicket}
+                                />  
+                                
+                                <SelectionField
+                                    label="Atașează categorie"
+                                    action={this.setCategory}
+                                    description="Categoria care va fi atașată la raportul de problemă"
+                                    value={this.state.category.name}
+                                    items={this.state.categories}
+                                    currentItem={this.state.category}
+                                />  
+
+                                <InputField 
+                                    label="Ore de lucru estimate"
+                                    value={this.state.estimation}
+                                    description="Efortul de muncă estimat in ore"
+                                    action={this.setEstimation}
+                                />
+                                
+                                {/* <div class="ticket-section mb-2 d-flex">
+                                    <Toggler classToToggle=".knbn-to-collapse"/>
+                                    <div class="w-100">
+                                        <Label label='Due date'/>
+                                        <DatePicker changeDate={this.changeDueDate}/>
+                                    </div>
+                                </div> */}
+
+                                <div class="d-flex flex-row justify-content-center mb-3 ">
+                                    <button class={"ticket-dropdown-btn btn btn-primary mr-2 knbn-border" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-color-2x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-color-2x knbn-snow-border-2x")} onClick={this.submitTicket}>Adaugă problemă</button>
+                                    <button class={"ticket-dropdown-btn btn btn-primary" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-color-2x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-color-2x knbn-snow-border-2x")}  onClick={this.resetState}>Anulează</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    }
+                    </div>
+                </div>
+            </div>
+        );
     }
 }
 

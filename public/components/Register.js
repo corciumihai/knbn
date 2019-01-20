@@ -3,23 +3,22 @@ import ReactDOM from 'react-dom';
 import bcrypt from 'bcryptjs';
 import axios from 'axios';
 import crypto from 'crypto';
+import store from '../storage/store';
+import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 class Register extends React.Component{
     constructor(props){
         super(props);
 
         this.state = {
-            email: 'free_roaming94@yahoo.com', 
-            password: '12345678',
-            name: 'Mihai',
-            company: 'CompanyX',
-
-            errorEmail: false,
-            errorPass: false,
-            errorName: false,
-            errorNameMsg: '',
-            errorEmailMsg: '',
-            errorPassMsg: '',
+            email: '', 
+            password: '',
+            repeatPassword: '',
+            name: '',
+            company: '',
+            error: '',
+            redirect: false
         };
 
         this.setEmail = this.setEmail.bind(this);
@@ -30,40 +29,36 @@ class Register extends React.Component{
         this.validatePassword = this.validatePassword.bind(this);
         this.validateName = this.validateName.bind(this);
         this.calcGravatar = this.calcGravatar.bind(this);
+        this.setRepeatPassword = this.setRepeatPassword.bind(this);
     }
 
     validateEmail() {
-        if(this.state.email == undefined || this.state.email .length == 0){this.setState({errorEmail: true, errorEmailMsg: 'Invalid e-mail'}); return;}
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        axios.post('/user/checkuser', {email: this.state.email }).then(response => {
-            if(response.data.success == false && response.data.message != undefined && response.data.message.length > 0){
-                this.setState({errorEmail: true, errorEmailMsg: response.data.message})
-            }
-            // TODO 
-            else if(!re.test(String(this.state.email ).toLowerCase())){
-                this.setState({errorEmail: true, errorEmailMsg: 'Invalid e-mail'});
-            }
-            else{
-                this.setState({errorEmail: false, errorEmailMsg: ''});
-            }
-            this.calcGravatar();
-        });
+        if(this.state.email == undefined || this.state.email .length == 0){
+            this.setState({error: 'E-mail necorespunzător'}); 
+            return false;
+        }
+        return true;
     }
 
     validatePassword(){
         if(this.state.password == undefined || this.state.password.length == 0){
-            this.setState({errorPass: true, errorPassMsg: 'Invalid password. It must be at greater than 8 characters and contain at least one uppercase letter'});
+            this.setState({
+                error: 'Parolă necorespunzătoare'
+            });
             return false;
         }
-        // var num = /\d/;
-        // var upper = /[A-Z]+/;
-        this.state.password.length > 7 ? this.setState({errorPass: false, errorPassMsg: ''}) : 
-                            this.setState({errorPass: true, errorPassMsg: 'Invalid password. It must be at greater than 8 characters and contain at least one uppercase letter'})
+        this.state.password.length > 7 ? 
+        this.setState({error: ''}) 
+        : 
+        this.setState({error: 'Parolă necorespunzătoare'})
     }
 
     validateName(){
-        (this.state.name != undefined && this.state.name.length > 0) ? this.setState({errorName: false, errorNameMsg: ''}) : 
-            this.setState({errorName: true, errorNameMsg: 'Enter a name'});
+        (this.state.name != undefined && this.state.name.length > 0) ? 
+        this.setState({error: ''}) 
+        : 
+        this.setState({error: 'Introdu un nume'});
     }
 
     setEmail(event){
@@ -72,6 +67,10 @@ class Register extends React.Component{
 
     setPassword(event){
         this.setState({password: event.target.value});
+    }
+
+    setRepeatPassword(event){
+        this.setState({repeatPassword: event.target.value});
     }
 
     setName(event){
@@ -88,68 +87,94 @@ class Register extends React.Component{
 
     render(){
         return(
-            <form action='/register' method='post'>
-                <div class="form-group">
-                    <div class="col-lg-12 col-xl-12 col-md-12 col-12 d-flex justify-content-center">
-                        <div class="mb-2 d-flex">
-                            <img class='profile-img mx-auto' src={'https://www.gravatar.com/avatar/' + this.state.gravatar}/>
+            <div class={"container-fluid d-flex p-2 h-100" + (this.props.themeToggled ? " knbn-dark-bg-1x" : " knbn-snow-bg-1x")}>
+                <div class="col-xl-2 offset-xl-5 col-lg-4 offset-lg-4 col-md-4 offset-md-4 col-sm-6 offset-sm-3 col-xs-8 offset-xs-2 align-self-center">
+                    <form method="post" action="/register">
+                        <div class="form-group my-0">
+                            <div class="col-lg-12 col-xl-12 col-md-12 col-12 d-flex justify-content-center">
+                                <div class="mb-2 d-flex">
+                                    <img class='profile-img mx-auto' src={'https://www.gravatar.com/avatar/' + this.state.gravatar}/>
+                                </div>
+                            </div>
+                            <div class='set-profile-msg knbn-font-small px-0'>Profile image will be available once you enter your e-mail</div>
                         </div>
-                    </div>
-                    <span class='set-profile-msg'>Profile image will be available once you enter your e-mail</span>
-                </div>
+                        {
+                            this.state.error.length == 0 ? 
+                            null
+                            :
+                            <div class={"col-xl-12 knbn-font-small knbn-error px-1 py-1 mb-2" + (this.props.themeToggled ? " knbn-dark-bg-1x knbn-dark-error-color knbn-dark-bg-error" : " knbn-snow-bg-1x knbn-snow-error-color knbn-snow-bg-error")}>{this.state.error}</div>
+                        }
+                        <div class="form-group">
+                            <input 
+                            type="email" 
+                            class="form-control register-area" 
+                            placeholder="E-mail" 
+                            value={this.state.email} 
+                            onChange={this.setEmail} 
+                            title="E-mail"
+                            onBlur={this.validateEmail}/>
+                        </div>
 
-                <div class="form-group">
-                    <input 
-                    type="email" 
-                    class="form-control register-area" 
-                    placeholder="Email" 
-                    value={this.state.email} 
-                    onChange={this.setEmail} 
-                    title="Email"
-                    name='email'
-                    onBlur={this.validateEmail} />
-                    {this.state.errorEmail == true && this.state.errorEmailMsg != undefined && this.state.errorEmailMsg.length > 0 ? <span class='register-err'>{this.state.errorEmailMsg}</span> : null}
-                </div>
+                        <div class="form-group">
+                            <input 
+                            type="password" 
+                            class="form-control register-area" 
+                            placeholder="Parolă" 
+                            value={this.state.password}
+                            onChange={this.setPassword} 
+                            onBlur={this.validatePassword}
+                            title="Parolă"/>
+                        </div>
 
-                <div class="form-group">
-                    <input 
-                    type="password" 
-                    class="form-control register-area" 
-                    placeholder="Password" 
-                    name='password'
-                    // obfuscate the password value in the html dom
-                    value={this.state.password}
-                    onChange={this.setPassword} title="Password" 
-                    onBlur={this.validatePassword}/>
-                    {this.state.errorPass == true && this.state.errorPassMsg != undefined && this.state.errorPassMsg.length > 0 ? <span class='register-err'>{this.state.errorPassMsg}</span> : null}
-                </div>
+                        <div class="form-group">
+                            <input 
+                            type="password" 
+                            class="form-control register-area" 
+                            placeholder="Repetă parola" 
+                            value={this.state.repeatPassword}
+                            onChange={this.setRepeatPassword} 
+                            onBlur={this.validatePassword}
+                            title="Repetă Parola"/>
+                        </div>
 
-                <div class="form-group">
-                    <input 
-                    type="text" 
-                    class="form-control register-area" 
-                    placeholder="Name" 
-                    value={this.state.name} 
-                    onChange={this.setName}
-                     title="Name" 
-                     name='name'
-                     onBlur={this.validateName}/>
-                    {this.state.errorName == true && this.state.errorNameMsg != undefined && this.state.errorNameMsg.length > 0 ? <span class='register-err'>{this.state.errorNameMsg}</span> : null}
-                </div>
+                        <div class="form-group">
+                            <input 
+                            type="text" 
+                            class="form-control register-area" 
+                            placeholder="Nume" 
+                            value={this.state.name} 
+                            onChange={this.setName}
+                            title="Nume" 
+                            onBlur={this.validateName}/>
+                        </div>
 
-                <div class="form-group">
-                    <input type="text" class="form-control register-area" placeholder="Company" value={this.state.company} onChange={this.setCompany} title="Company" name='company'/>
-                </div>
+                        <div class="form-group">
+                            <input 
+                            type="text" 
+                            class="form-control register-area" 
+                            placeholder="Companie" value={this.state.company}
+                            onChange={this.setCompany} 
+                            title="Companie"/>
+                        </div>
 
-                <button class={this.state.errorEmail || this.state.errorPass || this.state.errorName ? 'btn col-12 register-btn mb-2 disabled' : "btn col-12 register-btn mb-2"}
-                type="submit" 
-                title="Press to register">
-                    Register
-                </button>
-                <span class="already-account">If you already have an account, press <a href='/login'>here</a></span>
-        </form>
+                        <button 
+                        class="btn col-12 register-btn mb-2 knbn-transition"
+                        // type="submit" 
+                        title="Apasă pentru înregistrare">
+                            Înregistrează-te
+                        </button>
+                        <span class="already-account">Dacă ai cont deja, apasă <a href='/login'>aici</a></span>
+                    </form>
+                </div>
+            </div>
         );
     }
 }
 
-ReactDOM.render(<Register/>, document.getElementById('register'));
+const mapStateToProps = (state) => {
+    return {
+        themeToggled: state.themeToggled
+    }
+}
+
+export default connect(mapStateToProps)(Register);

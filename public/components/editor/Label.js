@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 
 const Label = (props) => {
     return(
-        <label for="knbnFieldLabel" class={"knbn-edit-field knbn-bg-transparent knbn-transition" + 
+        <label class={"knbn-edit-field knbn-bg-transparent knbn-transition col px-0" + 
         (props.themeToggled == true ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>
             {props.label}
         </label>

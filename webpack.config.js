@@ -6,8 +6,6 @@ module.exports = {
   context: __dirname,
   devtool: debug ? "inline-sourcemap" : null,
   entry: {
-    login: "./public/components/Login.js",
-    register: "./public/components/Register.js",
     reactRouter: "./public/routers/ReactRouter.js"
   },
   module:{

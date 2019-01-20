@@ -48,7 +48,9 @@ class Ticket extends React.Component{
             remainingPercentage: 0,
             category: '',
             release: '',
-            loading: true,
+            loadingUser: true,
+            loadingCategory: true, 
+            loadingRelease: true
         }
 
         this.flip = this.flip.bind(this);
@@ -57,28 +59,36 @@ class Ticket extends React.Component{
     }
 
     componentDidMount(){
-        axios.get('/user/get-user-by-email/' + this.props.data.assignee).then(response => {
-            var assignee = response.data;
+        if(this.props.data.assignee)
+        {
+            axios.get('/user/get-user-by-email/' + this.props.data.assignee).then(response => {
+                this.setState({assignee: response.data, loadingUser: false});
+            })
+        }
+        else{
+            this.setState({loadingUser: false})
+        }
 
+        if(this.props.data.category){
             axios.get('/category/' + this.props.data.category).then(response => {
-                var category = response.data;
-
-                axios.get('/release/' + this.props.data.releaseID).then(response => {
-                    var totalDays = Math.floor((parseInt(new Date(parseInt(this.props.data.dueDate)).getTime()) - parseInt(new Date(parseInt(this.props.data.startDate)).getTime())) / (24*60*60*1000)) + 1;
-                    var remainingDays = Math.floor((parseInt(new Date(parseInt(this.props.data.dueDate)).getTime()) - parseInt(new Date().getTime())) / (24*60*60*1000)) + 1;
-                    
-                    this.setState({
-                        assignee: assignee, 
-                        release: response.data, 
-                        category: category, 
-                        loading: false,
-                        remainingDays: remainingDays,
-                        remainingPercentage: ((totalDays - remainingDays) / totalDays) * 100,
-                        flipped: this.props.data.flipped,
-                    });
-                });
+                this.setState({category: response.data, loadingCategory: false})
             });
-        });
+        }
+        else{
+            this.setState({loadingCategory: false})
+        }
+
+        if(this.props.data.release){
+            axios.get('/release/' + this.props.data.releaseID).then(response => {
+                this.setState({release: response.data, loadingRelease: false})
+            })
+        }
+        else{
+            this.setState({loadingRelease: false})
+        }
+
+        this.setState({flipped: this.props.data.flipped})
+
     }
 
     shiftForward(){
@@ -97,6 +107,10 @@ class Ticket extends React.Component{
     flip(){this.setState({flipped: !this.state.flipped});}
 
     render(){
+        let loading = this.state.loadingCategory && this.state.loadingRelease && this.state.loadingUser;
+        let hours = this.props.data.estimation - this.props.data.logged;
+        let remainingPercentage = hours < 0 ? -1 : (this.props.data.logged / this.props.data.estimation) * 100;
+
         const {connectDragSource, isDragging} = this.props;
 
         let data = this.props.data;
@@ -116,11 +130,13 @@ class Ticket extends React.Component{
                     <div class={"ticket col px-0"}>
                         <div class="col-xl-12 d-flex px-0 flex-row">
                             <div class="col-9 flex-grow-1 pr-0">
-                                <div class="col-xl-12 pr-0">
-                                    <div class="row pt-1 field">
-                                        <div class={"data col-xl-12 col-12 px-0 text-truncate knbn-font-16 mb-1" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")} title={this.state.loading ? "În așteptare..." : this.props.data.name}>
+                                <div class="col-xl-12 px-0">
+                                    <div class="pt-1 field d-flex flex-row">
+                                        <div title="Tichet" class="mr-2"><img src="./images/ticket.svg" class="mx-auto my-auto"/></div>
+
+                                        <div class={"data col-xl-12 col-12 px-0 text-truncate knbn-font-16 mb-1" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")} title={loading ? "În așteptare..." : this.props.data.name}>
                                         {
-                                            this.state.loading ? 
+                                            loading ? 
                                             <LoadingRing/>
                                             :
                                             this.props.data.name
@@ -132,12 +148,12 @@ class Ticket extends React.Component{
                                     <div class="row field">
                                         <div class={"col-xl-4 col-4 px-0 info text-truncate" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title="Pistă">Pistă</div>
 
-                                        <div class={"col-xl-8 col-8 px-0" + (this.props.themeToggled ? " knbn-dark-color-4x" : " knbn-snow-color-4x")} title={this.state.loading ? "În așteptare..." : this.props.data.lane}>
+                                        <div class={"col-xl-8 col-8 px-0" + (this.props.themeToggled ? " knbn-dark-color-4x" : " knbn-snow-color-4x")} title={loading ? "În așteptare..." : this.props.data.lane}>
                                         {
-                                            this.state.loading ? 
+                                            loading ? 
                                             <LoadingRing/>
                                             :
-                                            (this.props.data.lane == "backlog" ? "Nerezolvat" : this.props.data.lane == "in_progress" ? "În progres" : this.props.data.lane == "done" ? "Rezolvat" : "Închis")
+                                            (this.props.data.lane == "backlog" ? "Nerezolvat" : this.props.data.lane == "in_progress" ? "În progres" : this.props.data.lane == "done" ? "Completat" : "Închis")
                                         }
                                         </div>
                                     </div>
@@ -145,16 +161,18 @@ class Ticket extends React.Component{
                                     <div class="row field">
                                         <div class={"col-xl-4 col-4 px-0 info text-truncate" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title="ID tichet">ID tichet</div>
 
-                                        <div class={"col-xl-8 col-8 px-0" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
+                                        <div class={"px-0" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
                                         {
-                                            this.state.loading ? 
+                                            loading ? 
                                             <LoadingRing/>
                                             :
-                                            <a  title={this.props.data.id} href={(this.props.data.isReport ? "/view/report/" : "/edit/ticket/") + this.props.data.id} class={"knbn-ticket-id knbn-transition knbn-border" + (this.props.themeToggled ? ' knbn-dark-border-3x knbn-dark-color-3x knbn-dark-bg-3x-active' : ' knbn-snow-border-3x knbn-snow-color-3x knbn-snow-bg-3x-active')}>
-                                            {
-                                                this.props.data.id
-                                            }
-                                            </a>
+                                            <Link to={(this.props.data.isReport ? "/view/report/" : "/edit-ticket/") + this.props.data.id}>
+                                                <div title={this.props.data.id} class={"knbn-ticket-id knbn-transition knbn-border" + (this.props.themeToggled ? ' knbn-dark-border-3x knbn-dark-color-3x knbn-dark-bg-3x-active' : ' knbn-snow-border-3x knbn-snow-color-3x knbn-snow-bg-3x-active')}>
+                                                {
+                                                    this.props.data.id
+                                                }
+                                                </div>
+                                            </Link>
                                         }
                                         </div>
                                     </div>
@@ -162,9 +180,9 @@ class Ticket extends React.Component{
                                     <div class="row field">
                                         <div class={"col-xl-4 col-4 px-0 info text-truncate" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title="Zi începere">Zi începere</div>
 
-                                        <div class={"data col-xl-8 col-8 px-0 text-truncate" + (this.props.themeToggled ? " knbn-dark-color-4x" : " knbn-snow-color-4x")} title={this.state.loading ? "În așteptare..." : dateformat(new Date(parseInt(this.props.data.startDate)), "dd \u00B7 mmmm \u00B7 yyyy")}>
+                                        <div class={"data col-xl-8 col-8 px-0 text-truncate" + (this.props.themeToggled ? " knbn-dark-color-4x" : " knbn-snow-color-4x")} title={loading ? "În așteptare..." : dateformat(new Date(parseInt(this.props.data.startDate)), "dd \u00B7 mmmm \u00B7 yyyy")}>
                                         {
-                                            this.state.loading ? 
+                                            loading ? 
                                             <LoadingRing/>
                                             :
                                             dateformat(new Date(parseInt(this.props.data.startDate)), "dd \u00B7 mmmm \u00B7 yyyy")
@@ -175,9 +193,9 @@ class Ticket extends React.Component{
                                     <div class="row field">
                                         <div class={"col-xl-4 col-4 px-0 info text-truncate" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title="Zi limită">Zi limită</div>
 
-                                        <div class={"data col-xl-8 col-8 px-0 text-truncate" + (this.props.themeToggled ? " knbn-dark-color-4x" : " knbn-snow-color-4x")} title={this.state.loading ? "În așteptare..." : dateformat(new Date(parseInt(this.props.data.dueDate)), "dd \u00B7 mmmm \u00B7 yyyy")}>
+                                        <div class={"data col-xl-8 col-8 px-0 text-truncate" + (this.props.themeToggled ? " knbn-dark-color-4x" : " knbn-snow-color-4x")} title={loading ? "În așteptare..." : dateformat(new Date(parseInt(this.props.data.dueDate)), "dd \u00B7 mmmm \u00B7 yyyy")}>
                                         {
-                                            this.state.loading ? 
+                                            loading ? 
                                             <LoadingRing/>
                                             :
                                             dateformat(new Date(parseInt(this.props.data.dueDate)), "dd \u00B7 mmmm \u00B7 yyyy")
@@ -190,12 +208,12 @@ class Ticket extends React.Component{
                             <div class={"col-3 pt-2 px-2 d-flex" + (this.state.flipped ? " hide" : "")}>
                             {
                                 this.state.assignee != undefined && this.state.assignee.email != undefined ? 
-                                    this.state.loading ? 
+                                    loading ? 
                                     <div class="ml-auto mt-3 mr-3"><LoadingRing/></div>
                                     :
                                     <img    class={"assignee-pic ml-auto knbn-transition"} 
                                             src={'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(this.state.assignee.email).toLowerCase().trim()).digest('hex')} 
-                                            alt={this.state.loading ? "În așteptare..." : this.state.assignee.name} title={this.state.loading ? "În așteptare..." : 'Assignee \u00B7 ' + this.state.assignee.name}/> 
+                                            alt={loading ? "În așteptare..." : this.state.assignee.name} title={loading ? "În așteptare..." : 'Assignee \u00B7 ' + this.state.assignee.name}/> 
                                 : null
                             }
                                 
@@ -224,22 +242,31 @@ class Ticket extends React.Component{
                             </Link>
 
                             <div class={"knbn-days-left ml-auto mr-1 text-right d-flex" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title='Versiune'>
-                            { this.state.loading ?  <LoadingRing/> :  <div class="my-auto">{this.state.release != undefined && this.state.release.name != undefined ? this.state.release.name : "Nicio versiune"}</div> }
+                            { loading ?  <LoadingRing/> :  <div class="my-auto">{this.state.release != undefined && this.state.release.name != undefined ? this.state.release.name : "Nicio versiune"}</div> }
                             </div>
 
                             <div class={"knbn-days-left ml-1 mr-1 text-right d-flex" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title='Categorie'>
-                             { this.state.loading ? <LoadingRing/> : <div class="my-auto">{this.state.category != undefined && this.state.category.name != undefined ? this.state.category.name : "Nicio categorie"}</div> }
+                             { loading ? <LoadingRing/> : <div class="my-auto">{this.state.category != undefined && this.state.category.name != undefined ? this.state.category.name : "Nicio categorie"}</div> }
                             </div>
-                            
-                            <div class={"knbn-days-left ml-1 text-right d-flex" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title='Zile rămase'>
-                            { this.state.loading ? <LoadingRing/> : <div class="my-auto">{this.state.remainingDays == 0 ? 'Limită atinsă astăzi' : this.state.remainingDays >= 0 ? this.state.remainingDays + ' zile rămase' : Math.abs(this.state.remainingDays) + ' zile depășite'}</div> }
+
+                            <div class={(this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
+                            {
+                                loading ? 
+                                <LoadingRing/>
+                                :
+                                <a title="Ore rămase / Ore estimate" class={"knbn-ticket-id knbn-transition knbn-border" + (this.props.themeToggled ? ' knbn-dark-border-3x knbn-dark-color-3x knbn-dark-bg-3x-active' : ' knbn-snow-border-3x knbn-snow-color-3x knbn-snow-bg-3x-active')}>
+                                {
+                                    (this.props.data.logged + "h") + "/" + (this.props.data.estimation + "h")
+                                }
+                                </a>
+                            }
                             </div>
-                            
+                                             
                         </div>
 
                         <div class="col-12 px-0">
                             <div class={"knbn-comp-progress progress w-100"} title="Progres"> 
-                                <div class="knbn-comp-progress-bar progress-bar" role="progressbar" style={this.state.remainingDays < 0 ? {width: '100%', backgroundColor: 'rgb(199, 61, 51)'} : {width: this.state.remainingPercentage + '%'}}></div>
+                                <div class="knbn-comp-progress-bar progress-bar" role="progressbar" style={remainingPercentage < 0 ? {width: "100%", backgroundColor: 'rgb(199, 61, 51)'} : {width: remainingPercentage + '%'}}></div>
                             </div>
                         </div>
                     </div>

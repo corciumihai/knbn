@@ -9,7 +9,7 @@ const DropdownItem = (props) => {
                 : 
                 " knbn-snow-bg-2x knbn-snow-color-3x knbn-snow-color-4x-active knbn-snow-bg-2x-active")}>
                 {
-                    props.imgSrc != undefined ? <div class="d-flex"><img class="mr-2" src={props.imgSrc}/></div> : null    
+                    props.imgSrc != undefined ? <div class="d-flex"><img class="mr-2 my-auto" src={props.imgSrc}/></div> : null    
                 }
             {props.children}
         </div>

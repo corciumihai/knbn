@@ -13,38 +13,40 @@ import ProjectSetup from '../components/create/ProjectSetup';
 import Dashboard from '../components/Dashboard';
 import EditTicket from '../components/editor/EditTicket';
 import Wrapper from './Wrapper';
+import LoginPage from '../components/LoginPage';
+import Register from '../components/Register';
+import { createBrowserHistory } from 'history'; 
+import withAuth from './HighOrder';
+import SearchedItems from '../components/SearchedItems';
 
-class ReactRouter extends React.Component{
+class ReactHashRouter extends React.Component{
+    constructor(props){
+        super(props);
+    }
+
     render(){
         return(
             <Provider store={store}>
-
-                <Wrapper> 
-
+                {/* <Wrapper> */}
                     <HashRouter>
-                        <div>
-
-                            <Menu/>
-                            <Switch>
-                                <Route exact path="/" component={Dashboard} />
-                                <Route exact path="/view-project/:id" component={Project} />
-                                <Route exact path="/create-pr" component={PRSetup}/>
-                                <Route exact path="/create-ticket" component={TicketSetup}/>
-                                <Route exact path="/create-cmp" component={CmpSetup}/>
-                                <Route exact path="/create-project" component={ProjectSetup}/>
-                                
-                                <Route exact path="/edit-component/:id" component={EditComponent}/>
-                                <Route exact path="/edit-ticket/:id" component={EditTicket}/>
-                            </Switch>
-                            
-                        </div>
+                        <Switch>
+                            <Route exact path="/register" component={Register} />
+                            <Route path="/login" component={LoginPage} />
+                            <Route exact path="/" component={withAuth(Dashboard)} />
+                            <Route exact path="/view-project/:id" component={withAuth(Project)} />
+                            <Route exact path="/create-pr" component={withAuth(PRSetup)}/>
+                            <Route exact path="/create-ticket" component={withAuth(TicketSetup)}/>
+                            <Route exact path="/create-cmp" component={withAuth(CmpSetup)}/>
+                            <Route exact path="/create-project" component={withAuth(ProjectSetup)}/>
+                            <Route exact path="/edit-component/:id" component={withAuth(EditComponent)}/>
+                            <Route exact path="/edit-ticket/:id" component={withAuth(EditTicket)}/>
+                            <Route exact path="/search/:term" component={withAuth(SearchedItems)}/>
+                        </Switch>
                     </HashRouter>
-
-                </Wrapper>
-
+                {/* </Wrapper> */}
             </Provider>
         )
     }
 }
 
-ReactDom.render(<ReactRouter/>, document.getElementById('app'));
+ReactDom.render(<ReactHashRouter/>, document.getElementById('app'));

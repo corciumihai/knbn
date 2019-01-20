@@ -11,6 +11,9 @@ import Header3 from './Header3';
 import CommentArea from '../comments/CommentArea';
 import ImmutableField from './ImmutableField';
 import dateformat from 'dateformat';
+import Menu from '../Menu';
+import LoadingScreen from '../../components/LoadingScreen';
+import CommentInsert from '../comments/CommentInsert';
 
 class EditTicket extends React.Component{
     constructor(props){
@@ -22,10 +25,15 @@ class EditTicket extends React.Component{
             name: '',
             priority: {},
             description: '',
-            assignee: '',
-            reporter: '',
+            assignee: {},
+            reporter: {},
             release: {},
-            startDate: undefined
+            startDate: undefined, 
+            estimation: 0,
+            comments: [],
+            loadingData: true,
+            loadingRelease: true,
+            loadingReleases: true
         }
 
         this.saveRelease = this.saveRelease.bind(this);
@@ -35,32 +43,65 @@ class EditTicket extends React.Component{
         this.saveAssignee = this.saveAssignee.bind(this);
         this.saveDueDate = this.saveDueDate.bind(this);
         this.saveReporter = this.saveReporter.bind(this);
+        this.saveEstimation = this.saveEstimation.bind(this);
+        this.fetchComments = this.fetchComments.bind(this);
+        this.addComment = this.addComment.bind(this);
     }
 
-    componentWillMount(nextProps, nextState){
+    componentWillMount(){
         axios.get('/get-ticket-data/' + this.props.match.params.id).then( response => {      
             this.setState({
                 id: response.data.id,
                 priority: this.props.priorities.find(item => {return item.dbName == response.data.priority}),
                 description: response.data.description,
                 name: response.data.name,
-                assignee: response.data.assignee,
-                reporter: response.data.reporter,
-                startDate: response.data.startDate
+                assignee: {email: response.data.assignee},
+                reporter: {email: response.data.reporter},
+                startDate: response.data.startDate, 
+                estimation: response.data.estimation,
+                loadingData: false
             });
 
-            axios.get('/get-release/' + response.data.releaseID).then( response => {
+            axios.get('/get-release/' + response.data.releaseID).then(response => {
                 this.setState({
-                    release: response.data
+                    release: response.data, loadingRelease: false
                 });
             });
-        });
+        });        
 
         axios.get('/get-releases').then( response => {
             this.setState({
-                releases: response.data
+                releases: response.data,
+                loadingReleases: false
             })
         });
+
+        this.fetchComments();
+    }
+
+    fetchComments(){
+        axios.get('/ticket/get-comments/' + this.props.match.params.id).then( response => {
+            this.setState({
+                comments: response.data,
+                loadingComments: false
+            })
+        });
+    }
+
+    addComment(value){
+        if(value){
+            axios.post('/ticket/add-comment', {
+                owner: this.props.currentUser,
+                ticket: this.props.match.params.id,
+                created: new Date(),
+                value: value
+            })
+            .then(response => {
+                if(response.status == 200){
+                    this.fetchComments();
+                }
+            })
+        }
     }
 
     saveName(name){
@@ -68,7 +109,7 @@ class EditTicket extends React.Component{
             id: this.state.id, 
             value: name
         }).then( response => {
-            if(response.success == true){
+            if(response.data.success == true){
                 this.setState({name: name});
             }
         });
@@ -80,7 +121,7 @@ class EditTicket extends React.Component{
             value: description
         })
         .then( response => {
-            if(response.success == true){
+            if(response.data.success == true){
                 this.setState({description: description});
             }
         });
@@ -92,7 +133,7 @@ class EditTicket extends React.Component{
             value: release.id
         })
         .then( response => {
-            if(response.success == true){
+            if(response.data.success == true){
                 this.setState({release: release});
             }
         });
@@ -104,7 +145,7 @@ class EditTicket extends React.Component{
             value: priority.dbName
         })
         .then( response => {
-            if(response.success == true){
+            if(response.data.success == true){
                 this.setState({priority: priority});
             }
         });
@@ -116,20 +157,20 @@ class EditTicket extends React.Component{
             value: user.email
         })
         .then( response => {
-            if(response.success == true){
-                this.setState({assignee: user.email});
+            if(response.data.success == true){
+                this.setState({assignee: user});
             }
         });
     }
 
-    saveReporter(user){
+    saveReporter(user){     
         axios.post('/set-ticket/reporter', {
             id: this.state.id,
             value: user.email
         })
         .then( response => {
-            if(response.success == true){
-                this.setState({reporter: user.email});
+            if(response.data.success == true){
+                this.setState({reporter: user});
             }
         });
     }
@@ -140,86 +181,126 @@ class EditTicket extends React.Component{
             date: date
         })
         .then( response => {
-            if(response.success == true){
+            if(response.data.success == true){
+                this.setState({dueDate: date});
+            }
+        });
+    }
+
+    saveEstimation(value){
+        axios.post('/set-component/estimation', {
+            id: this.state.id, 
+            value: value
+        })
+        .then( response => {
+            if(response.data.success == true){
                 this.setState({dueDate: date});
             }
         });
     }
 
     render(){
+        let loading = this.state.loadingData && this.state.loadingRelease && this.state.loadingReleases && this.state.loadingComments;
         return(
-            <div class={"container-fluid px-0 py-2 knbn-transition" + (this.props.themeToggled ? " knbn-dark-bg-1x" : " knbn-snow-bg-1x")}>
-                <div class="col-xl-12 col-12 d-flex">
-                    <Header3>Editor tichet</Header3>
+            <div class={"container-fluid knbn-bg-transparent knbn-transition knbn-container pb-3 h-100" + (this.props.themeToggled ? " knbn-dark-bg-1x" : " knbn-snow-bg-1x")}>
+                <Menu/>
+                
+                    <div class="row mt-3">
+                        <Header3>Editor tichet</Header3>
+                    </div>
+
+                    {
+                        loading? 
+                        <LoadingScreen/>
+                        :
+                        <div class="row">
+                            <div class="col-xl-12 col-12">
+                                <div class="row">
+                                    <EditForm>
+                                        <EditField
+                                            value={this.state.name}
+                                            label='Nume' 
+                                            save={this.saveName}
+                                            description='Numele tichetului când a fost creat'
+                                        />
+
+                                        <EditTextArea
+                                            value={this.state.description}
+                                            save={this.saveDescription}
+                                            label='Descriere' 
+                                            description='Descrierea tichetului când a fost creat'
+                                            canEdit={true}
+                                        />
+
+                                        <EditSelection
+                                            item={this.state.release}
+                                            label="Versiune"
+                                            description='Versiunea atașată tichetului'
+                                            items={this.state.releases}
+                                            save={this.saveRelease}
+                                        />
+
+                                        <EditSelection
+                                            item={this.state.priority}
+                                            label="Prioritate"
+                                            description='Prioritatea tichetului'
+                                            items={this.props.priorities}
+                                            save={this.savePriority}
+                                        />
+
+                                        <EditField
+                                            value={this.state.estimation}
+                                            label='Estimare' 
+                                            save={this.saveEstimation}
+                                            description='Estimare timp pentru rezolvarea tichetului'
+                                        />
+                                    </EditForm>
+                                    <EditForm classes={"offset-xl-4"}>
+                                        <EditUser
+                                            label='Reporter'
+                                            user={this.state.reporter}
+                                            save={this.saveReporter}
+                                            description="Reporter tichetului"
+                                        />
+
+                                        <EditUser
+                                            label='Proprietar'
+                                            user={this.state.assignee}
+                                            save={this.saveAssignee}
+                                            description="Proprietarul tichetului"
+                                        />
+
+                                        {
+                                            this.state.startDate != undefined ?
+                                            <ImmutableField
+                                                label='Dată creare'
+                                                description='Data când a fost creată componenta'
+                                            >{dateformat(new Date(parseInt(this.state.startDate)), "dddd \u00B7 d mmmm \u00B7 yyyy")}</ImmutableField> : null
+                                        }
+
+                                        <EditDate
+                                            editable={true}
+                                            date={this.state.dueDate}
+                                            label='Data limită'
+                                            save={this.saveDueDate}
+                                            description='Data limită pentru componentă'
+                                        />
+                                    </EditForm>
+                                </div>
+                            </div>
+
+                            <CommentArea comments={this.state.comments} remove={this.removeComment}/>
+
+                            <div class={"col-xl-12" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}>
+                                <div class="row">
+                                    <div class={"col-xl-6 knbn-transition knbn-bg-transparent"}>
+                                        <CommentInsert add={this.addComment}/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
-                <div class="col-xl-12 col-12 d-flex flex-xl-row flex-column">
-                    <EditForm>
-                        <EditField
-                            value={this.state.name}
-                            label='Nume' 
-                            save={this.saveName}
-                            description='Numele componentei când a fost creată'
-                        />
-
-                        <EditTextArea
-                            value={this.state.description}
-                            save={this.saveDescription}
-                            label='Descriere' 
-                            description='Descrierea componentei când a fost creată'
-                            canEdit={true}
-                        />
-
-                        <EditSelection
-                            item={this.state.release}
-                            label="Versiune"
-                            description='Versiunea atașată componentei'
-                            items={this.state.releases}
-                            save={this.saveRelease}
-                        />
-
-                        <EditSelection
-                            item={this.state.priority}
-                            label="Prioritate"
-                            description='Prioritatea componentei'
-                            items={this.props.priorities}
-                            save={this.savePriority}
-                        />
-                    </EditForm>
-                    <EditForm classes={"offset-xl-4"}>
-                        <EditUser
-                            label='Reporter'
-                            user={this.state.reporter}
-                            save={this.saveReporter}
-                            description="Reporter tichetului"
-                        />
-
-                        <EditUser
-                            label='Proprietar'
-                            user={this.state.assignee}
-                            save={this.saveAssignee}
-                            description="Proprietarul tichetului"
-                        />
-
-                        {
-                            this.state.startDate != undefined ?
-                            <ImmutableField
-                                label='Dată creare'
-                                description='Data când a fost creată componenta'
-                            >{dateformat(new Date(parseInt(this.state.startDate)), "dddd \u00B7 d mmmm \u00B7 yyyy")}</ImmutableField> : null
-                        }
-
-                        <EditDate
-                            editable={true}
-                            date={this.state.dueDate}
-                            label='Data limită'
-                            save={this.saveDueDate}
-                            description='Data limită pentru componentă'
-                        />
-                    </EditForm>
-                </div>
-
-                <CommentArea id={this.state.id}/>
-            </div>
         );
     }
 }
@@ -227,7 +308,8 @@ class EditTicket extends React.Component{
 const mapStateToProps = (state) => {
     return {
         themeToggled: state.themeToggled,
-        priorities: state.priorities
+        priorities: state.priorities,
+        currentUser: state.currentUser
     }
 }
 

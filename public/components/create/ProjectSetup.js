@@ -5,31 +5,57 @@ import TextAreaField from './TextAreaField';
 import { connect } from 'react-redux';
 import Error from './Error';
 import Header3 from '../editor/Header3';
+import Menu from '../Menu';
 
 class ProjectSetup extends React.Component{
     render(){
         return(
-            <div class="mt-3 mb-auto col-xl-4 col-sm-8 offset-sm-2 offset-xl-4 col-md-6 offset-md-3 px-2">
-                <Header3>Creator Proiect</Header3>
+            <div class={"container-fluid knbn-bg-transparent knbn-transition pb-3 h-100 knbn-container" + (this.props.themeToggled ? " knbn-dark-bg-1x" : " knbn-snow-bg-1x")}>
+                <Menu/>
+                <div class="row mt-3">
+                    <div class="col-xl-4 offset-xl-4">
+                        <div class="row">
+                            <Header3>Creator Proiect</Header3>
+                        </div>
+                    </div>
 
-                <Error>{this.state.nameError}</Error>
-                <InputField 
-                    label="Nume"
-                    value={this.state.name}
-                    description="Numele proiectului"
-                    action={this.setName}
-                />
+                    <div class="col-xl-12">
+                        <div class="row">
+                            <div class="col-xl-4 offset-xl-4">
+                                <Error>{this.state.nameError}</Error>
+                                <InputField 
+                                    label="Nume"
+                                    value={this.state.name}
+                                    description="Numele proiectului"
+                                    action={this.setName}
+                                />
+                            </div>
+                        </div>
+                    </div>
 
-                <TextAreaField
-                    label="Descriere"
-                    action={this.setDescription}
-                    value={this.state.description}
-                    description="Descrierea proiectului"
-                />
+                    <div class="col-xl-12">
+                        <div class="row">
+                            <div class="col-xl-4 offset-xl-4">
+                                <TextAreaField
+                                    label="Descriere"
+                                    action={this.setDescription}
+                                    value={this.state.description}
+                                    description="Descrierea proiectului"
+                                />
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="d-flex flex-row justify-content-center mb-3 ">
-                    <button class={"ticket-dropdown-btn btn btn-primary mr-2 knbn-border" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-color-2x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-color-2x knbn-snow-border-2x")} onClick={this.submitProject}>Adaugă proiect</button>
-                    <button class={"ticket-dropdown-btn btn btn-primary" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-color-2x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-color-2x knbn-snow-border-2x")} onClick={this.resetState}>Anulează</button>
+                    <div class="col-xl-12">
+                        <div class="row">
+                            <div class="col-xl-4 offset-xl-4">
+                                <div class="d-flex flex-row justify-content-center mb-3 ">
+                                    <button class={"ticket-dropdown-btn btn btn-primary mr-2 knbn-border" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-color-2x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-color-2x knbn-snow-border-2x")} onClick={this.submitProject}>Adaugă proiect</button>
+                                    <button class={"ticket-dropdown-btn btn btn-primary" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-color-2x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-color-2x knbn-snow-border-2x")} onClick={this.resetState}>Anulează</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         );

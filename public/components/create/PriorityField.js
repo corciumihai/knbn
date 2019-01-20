@@ -25,7 +25,6 @@ class PriorityField extends React.Component{
                                 " knbn-dark-bg-2x knbn-dark-bg-2x-active knbn-dark-color-4x" 
                                 : 
                                 " knbn-snow-bg-2x knbn-snow-bg-2x-active knbn-snow-color-4x")} 
-                        id="knbnFieldLabel" 
                         aria-describedby="knbnHelp" 
                         placeholder={this.state.value == undefined || this.state.value == undefined || this.state.value.length == 0 ? "Introdu prioritatea" : ""}
                         value={this.state.value}

@@ -26,7 +26,7 @@ class InputField extends React.Component{
                         " knbn-dark-color-4x knbn-dark-bg-2x knbn-dark-bg-2x-active" 
                         : 
                         " knbn-snow-color-4x knbn-snow-bg-2x knbn-snow-bg-4x-active")} aria-describedby="knbnHelp" 
-                    placeholder={this.props.value == undefined || this.props.value.length == 0 ? "Introdu numele obiectului" : ""}
+                    placeholder={this.props.value == undefined || this.props.value.length == 0 ? "Introdu nume" : ""}
                     value={this.props.value}
                     onChange={this.set}
                     />

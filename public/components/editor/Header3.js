@@ -3,9 +3,11 @@ import { connect } from 'react-redux';
 
 const Header3 = (props) => {
     return(
-        <h3 class={"knbn-header-3 w-100 knbn-transition" + (props.themeToggled == true ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>
-            {props.children}
-        </h3>
+        <div class="col-xl-12">
+            <h3 class={"knbn-header-3 w-100 knbn-transition" + (props.themeToggled == true ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>
+                {props.children}
+            </h3>
+        </div>
     );
 }
 

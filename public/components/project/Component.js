@@ -142,50 +142,57 @@ class Component extends React.Component{
         let helpers = {forward: this.shiftForward, backward: this.shiftBackward}
 
         return(
-            <div class={'knbn-section px-4 mb-2 w-100 knbn-transition' + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-shadow-1x" : " knbn-snow-bg-2x knbn-snow-shadow-1x")}>
+            <div class={'knbn-section col-xl-12 mb-2 knbn-transition' + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-shadow-1x" : " knbn-snow-bg-2x knbn-snow-shadow-1x")}>
                 <div class="row">
-                    <div class={"section-head col-xl-12 py-2 knbn-transition"}>
+                    <div class="col-xl-12">
                         <div class="row">
-                            <div class="d-flex flex-row">
-                                <div class={'toggle d-flex knbn-transition knbn-transition' + 
-                                (this.props.themeToggled ? 
-                                    " knbn-dark-bg-3x knbn-dark-bg-3x-active knbn-dark-shadow-3x" 
-                                    : 
-                                    " knbn-snow-bg-3x knbn-snow-bg-3x-active knbn-snow-shadow-3x")} onClick={this.toggle} title='Ascunde componentă'>
-                                    <img src={!this.state.flip ? "./images/expandLight.svg" : "./images/showLight.svg"} class={"d-block mx-auto" + (this.props.themeToggled ? " knbn-img-inverted" : '')}/>
-                                </div>
-
-                                <div class={'toggle d-flex knbn-transition knbn-transition' + 
-                                (this.props.themeToggled ? 
-                                    " knbn-dark-bg-3x knbn-dark-bg-3x-active knbn-dark-shadow-3x" 
-                                    : 
-                                    " knbn-snow-bg-3x knbn-snow-bg-3x-active knbn-snow-shadow-3x")} onClick={this.toggleDesc} title='Arată descriere'>
-                                    <img src={"./images/showDescLight.svg"} class={"d-block mx-auto" + (this.props.themeToggled ? " knbn-img-inverted" : '')}/>
-                                </div>
-
-                                <Link to={"/edit-component/" + this.props.data.id}>
-                                    <div class={'toggle d-flex knbn-transition knbn-transition' + 
-                                    (this.props.themeToggled ? 
-                                        " knbn-dark-bg-3x knbn-dark-bg-3x-active knbn-dark-shadow-3x" 
-                                        : 
-                                        " knbn-snow-bg-3x knbn-snow-bg-3x-active knbn-snow-shadow-3x")} title='Editează componentă'>
-                                        <img src={"./images/editLight.svg"} class={"d-block mx-auto" + (this.props.themeToggled ? " knbn-img-inverted" : '')}/>
-                                    </div>
-                                </Link>
-
-                            </div>
-                            <div class="col">
+                            <div    class={(this.props.data.priority == 'low' ? "prio-1" : this.props.data.priority == 'medium' ? "prio-2" : "prio-3") + " mr-2"} 
+                                    title={this.props.data.priority == 'low' ? "Prioritate mică" : this.props.data.priority == 'medium' ? "Prioritate medie" : "Prioritate înaltă"}/>
+                            
+                            <div class={"section-head col py-2 knbn-transition"}>
                                 <div class="row">
-                                    <div class="col-12">
-                                        <div class="row">
-                                            <div class={"col text-truncate knbn-transition" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>{this.props.data.name}</div>
+                                    <div class="d-flex flex-row">
+                                        <div class={'toggle d-flex knbn-transition knbn-transition' + 
+                                        (this.props.themeToggled ? 
+                                            " knbn-dark-bg-3x knbn-dark-bg-3x-active knbn-dark-shadow-3x" 
+                                            : 
+                                            " knbn-snow-bg-3x knbn-snow-bg-3x-active knbn-snow-shadow-3x")} onClick={this.toggle} title='Ascunde componentă'>
+                                            <img src={!this.state.flip ? "./images/expandLight.svg" : "./images/showLight.svg"} class={"d-block mx-auto" + (this.props.themeToggled ? " knbn-img-inverted" : '')}/>
                                         </div>
+
+                                        <div class={'toggle d-flex knbn-transition knbn-transition' + 
+                                        (this.props.themeToggled ? 
+                                            " knbn-dark-bg-3x knbn-dark-bg-3x-active knbn-dark-shadow-3x" 
+                                            : 
+                                            " knbn-snow-bg-3x knbn-snow-bg-3x-active knbn-snow-shadow-3x")} onClick={this.toggleDesc} title='Arată descriere'>
+                                            <img src={"./images/showDescLight.svg"} class={"d-block mx-auto" + (this.props.themeToggled ? " knbn-img-inverted" : '')}/>
+                                        </div>
+
+                                        <Link to={"/edit-component/" + this.props.data.id}>
+                                            <div class={'toggle d-flex knbn-transition knbn-transition' + 
+                                            (this.props.themeToggled ? 
+                                                " knbn-dark-bg-3x knbn-dark-bg-3x-active knbn-dark-shadow-3x" 
+                                                : 
+                                                " knbn-snow-bg-3x knbn-snow-bg-3x-active knbn-snow-shadow-3x")} title='Editează componentă'>
+                                                <img src={"./images/editLight.svg"} class={"d-block mx-auto" + (this.props.themeToggled ? " knbn-img-inverted" : '')}/>
+                                            </div>
+                                        </Link>
+
                                     </div>
-                                    <div class={"knbn-comp-desc comp-desc col-12" + (this.props.themeToggled ? " knbn-dark-color-2x" : " knbn-snow-color-2x") + (!this.state.showDesc ? " hide" : "")}>{ReactHtmlParser(this.props.data.description)}</div>
-                                </div> 
+                                    <div class="col">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="row">
+                                                    <div class={"col text-truncate knbn-transition" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>{this.props.data.name}</div>
+                                                </div>
+                                            </div>
+                                            <div class={"knbn-comp-desc comp-desc col-12" + (this.props.themeToggled ? " knbn-dark-color-2x" : " knbn-snow-color-2x") + (!this.state.showDesc ? " hide" : "")}>{ReactHtmlParser(this.props.data.description)}</div>
+                                        </div> 
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </div>  
                 </div>
 
                 {this.state.ticketsBacklog.length > 0 || this.state.ticketsProgress.length > 0 || this.state.ticketsDone.length > 0 || this.state.ticketsClosed.length > 0 ?
