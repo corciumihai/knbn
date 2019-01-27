@@ -3,19 +3,15 @@ import Ticket from './Ticket';
 import { DropTarget } from 'react-dnd';
 import { ItemTypes } from './Constants';
 import { connect } from 'react-redux';
-import axios from 'axios';
 
 class LaneBacklog extends React.Component{
     constructor(props){
         super(props);
 
-        this.state = {
-            tickets: [],
-            isOver: false
-        }
-
         this.pushTicket = this.pushTicket.bind(this);
+        this.pushReport = this.pushReport.bind(this);
         this.removeTicket = this.removeTicket.bind(this);
+        this.removeReport = this.removeReport.bind(this);
     }
 
     pushTicket = (ticket) => {        
@@ -24,11 +20,27 @@ class LaneBacklog extends React.Component{
         data.lane = 'backlog';
 
         if(canDrop){
-            this.props.push(ticket);
+            this.props.push(data);
         }
     }
     
+    pushReport = (ticket) => {        
+        const { canDrop } = this.props;
+        let data = ticket;
+        data.lane = 'backlog';
+
+        if(canDrop){
+            this.props.push(ticket);
+        }
+    }
+
     removeTicket = (ticket) => {
+        if(ticket.lane != 'backlog'){
+            this.props.remove(ticket);
+        }
+    }
+
+    removeReport = (ticket) => {
         if(ticket.lane != 'backlog'){
             this.props.remove(ticket);
         }

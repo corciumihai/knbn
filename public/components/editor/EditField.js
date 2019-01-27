@@ -23,18 +23,12 @@ class EditField extends React.Component{
         if(this.props.value != undefined){
             this.setState({value: this.props.value, inEditMode: false})
         }
-        else{
-            this.setState({inEditMode: true});
-        }
     }
 
     componentWillReceiveProps(nextProps, nextState)
     {
         if(nextProps.value != undefined){
             this.setState({value: nextProps.value, inEditMode: false})
-        }
-        else{
-            this.setState({inEditMode: true});
         }
     }
 
@@ -56,16 +50,20 @@ class EditField extends React.Component{
                 
                 {this.state.inEditMode == false ? 
                     this.state.value != undefined ? 
-                    <RemoveItem remove={this.setEditMode}>{this.state.value}</RemoveItem>
+                    <RemoveItem remove={this.setEditMode} canEdit={this.props.canEdit}>
+                        {this.state.value}
+                    </RemoveItem>
                     :
                     null
                 :
-                <div class={"knbn-input-grp knbn-fake-input-grp input-group knbn-transition knbn-font-medium" + (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
-                    <input  type="text" class={"knbn-input form-control knbn-editing-mode knbn-bg-transparent" + 
+                <div class={"input-group knbn-transition knbn-font-medium knbn-border" + (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
+                    <input  type="text" 
+                            class={"knbn-no-border knbn-font-medium knbn-no-box-shadow knbn-no-border-radius knbn-border-transparent form-control knbn-editing-mode knbn-bg-transparent" + 
                             (this.props.themeToggled == true ? 
-                                " knbn-dark-color-4x knbn-dark-bg-2x knbn-dark-bg-2x-active" 
+                                " knbn-dark-color-4x knbn-dark-bg-2x knbn-dark-bg-2x-active knbn-dark-border-2x" 
                                 : 
-                                " knbn-snow-color-4x knbn-snow-bg-2x knbn-snow-bg-2x-active")} aria-describedby="knbnHelp" 
+                                " knbn-snow-color-4x knbn-snow-bg-2x knbn-snow-bg-2x-active knbn-snow-border-2x")} 
+                            aria-describedby="knbnHelp" 
                             placeholder={this.state.value == undefined ? "Introdu nume" : ""}
                             value={this.state.value}
                             onChange={this.setFieldValue}
@@ -83,6 +81,8 @@ class EditField extends React.Component{
 const mapStateToProps = (state) => {
     return {
         themeToggled: state.themeToggled,
+        isAdmin: state.isAdmin,
+        currentUser: state.currentUser
     }
 }
 

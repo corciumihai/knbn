@@ -68,16 +68,16 @@ class SelectionField extends React.Component{
                 <Label label={this.props.label}/>
                 {
                     this.state.currentItem.name != undefined && this.state.currentItem.name.length > 0 ?
-                        <div class={"knbn-input-grp knbn-fake-input-grp input-group dropdown knbn-bg-transparent knbn-transition"  + 
+                        <div class={"knbn-input-grp knbn-fake-input-grp knbn-border input-group dropdown knbn-bg-transparent knbn-transition"  + 
                             (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
                             <SelectionRemover>
                                 <RemoveItemSmall remove={this.remove}>{this.state.currentItem.name}</RemoveItemSmall>
                             </SelectionRemover>
                         </div>
                         :
-                        <div class={"knbn-input-grp knbn-fake-input-grp input-group dropdown knbn-bg-transparent knbn-transition"  + 
+                        <div class={"knbn-input-grp knbn-fake-input-grp input-group dropdown knbn-bg-transparent knbn-transition knbn-border knbn-no-border-radius"  + 
                             (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
-                            <input type="text" class={"knbn-input form-control knbn-bg-transparent knbn-transition" + 
+                            <input type="text" class={"knbn-input form-control knbn-bg-transparent knbn-transition knbn-no-border knbn-font-medium knbn-no-box-shadow knbn-no-border-radius" + 
                             (this.props.themeToggled == true ? 
                                 " knbn-dark-bg-2x knbn-dark-bg-2x-active knbn-dark-color-5x" 
                                 : 
@@ -91,7 +91,7 @@ class SelectionField extends React.Component{
                             <DropdownMenu classes="w-100">
                             {
                                 this.state.filteredItems == undefined || this.state.filteredItems.length == 0 ? 
-                                <div class="col text-truncate">Niciun obiect găsit</div>
+                                <div class="col text-truncate knbn-font-medium">Niciun obiect găsit</div>
                                 :
                                 (
                                     this.state.filteredItems.map(item => 

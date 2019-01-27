@@ -12,7 +12,7 @@ class PriorityField extends React.Component{
         return(
             <div class="form-group knbn-bg-transparent">
                 <Label label="Prioritate"/>
-                <div class={"knbn-input-grp knbn-fake-input-grp input-group dropdown knbn-bg-transparent knbn-transition" + (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
+                <div class={"knbn-input-grp knbn-fake-input-grp input-group dropdown knbn-bg-transparent knbn-transition knbn-border" + (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
 
                     {
                         this.state.priority.name != undefined ? 
@@ -20,7 +20,7 @@ class PriorityField extends React.Component{
                             <RemoveItemSmall remove={this.RemoveItemSmall}>{this.state.priority.name}</RemoveItemSmall>
                         </SelectionRemover>
                         :
-                        <input type="text" class={"knbn-input form-control knbn-bg-transparent knbn-transition" + 
+                        <input type="text" class={"knbn-input form-control knbn-bg-transparent knbn-transition knbn-font-medium knbn-no-border knbn-no-box-shadow knbn-no-border-radius" + 
                             (this.props.themeToggled == true ? 
                                 " knbn-dark-bg-2x knbn-dark-bg-2x-active knbn-dark-color-4x" 
                                 : 

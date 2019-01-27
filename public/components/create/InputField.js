@@ -21,7 +21,7 @@ class InputField extends React.Component{
                 <Label label={this.props.label}/>
                 <div class={"knbn-input-grp knbn-fake-input-grp input-group knbn-transition knbn-border" + (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
                 
-                    <input type="text" class={"knbn-input form-control knbn-editing-mode knbn-bg-transparent knbn-transition" + 
+                    <input type="text" class={"knbn-input form-control knbn-editing-mode knbn-bg-transparent knbn-transition knbn-no-border-radius knbn-no-border knbn-font-medium knbn-no-box-shadow" + 
                     (this.props.themeToggled == true ? 
                         " knbn-dark-color-4x knbn-dark-bg-2x knbn-dark-bg-2x-active" 
                         : 

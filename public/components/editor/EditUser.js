@@ -30,50 +30,38 @@ class EditUser extends React.Component{
     }
 
     componentWillMount(){
-        axios.get('/users/get-users').then(response =>{
+        axios.get('/users/get-users')
+        .then(response =>{
             this.setState({users: response.data, filteredUsers: response.data});
-        });
-
-        this.setState({user: this.props.user}, () => {
-            if(this.state.user != undefined && this.state.user.email != undefined){
-                axios.get('/user/get-user-by-email/' + this.state.user.email).then(response => {
-                    this.setState({user: response.data});
-                });
-            }
         });
     }
 
     componentWillReceiveProps(nextProps, nextState){
-        if(nextProps.user != undefined && nextProps.user.email != this.state.user.email){
-            this.setState({user: nextProps.user}, () => {
-                if(this.state.user != undefined && this.state.user.email != undefined)
-                {
-                    axios.get('/user/get-user-by-email/' + this.state.user.email).then(response => {
-                        this.setState({user: response.data});
-                    });
-                }
+        if(nextProps.user.email){
+            axios.get('/user/get-user-by-email/' + nextProps.user.email)
+            .then(response => {
+                this.setState({user: response.data});
             });
         }
     }
 
     save(){
         this.setState({inEditMode: false}, () => {
-            this.props.save != undefined || this.props.save != null ? this.props.save(this.state.user) : {};
+            this.props.save ? this.props.save(this.state.user) : null;
         }); 
     }
 
     setFieldValue(event){
         this.setState({
             value: event.target.value}, () => {
-            this.setState({
-                filteredUsers: this.state.users.filter(user => {
+            this.setState({filteredUsers: this.state.users.filter(user => {
                 return (user.name.includes(this.state.value)) || (user.email.includes(this.state.value));
             })
         })});
     }
     
     setUser(user){
-        this.setState({user: user, value: user.name})
+        this.setState({user: user, value: user.name});
     }
 
     setEditMode(){
@@ -90,21 +78,20 @@ class EditUser extends React.Component{
             <div class="form-group">
                 <div class={"d-flex flex-row"}>  
                     <Label label={this.props.label}/>
-                    <TouchButtonRight action={this.selfAssign}>Alocă mie</TouchButtonRight>
                 </div>
                 {
                     !this.state.inEditMode ? 
                     <div class={"d-flex flex-row text-truncate"}>
-                        <RemoveItem remove={this.setEditMode}>
-                            <img class="knbn-profile-pic mr-1 my-auto" src={'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(this.state.user.email).toLowerCase().trim()).digest('hex')}/>
-                            {this.state.user.name == undefined || this.state.user.name.length == 0 ? "Niciun user setat" : this.state.user.name + " \u00B7 " + this.state.user.email}
+                        <RemoveItem remove={this.setEditMode} canEdit={this.props.canEdit}>
+                            <img class="knbn-profile-pic mr-1 my-auto" src={this.state.user.email ? 'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(this.state.user.email).toLowerCase().trim()).digest('hex') : null}/>
+                            {!this.state.user.email ? "Niciun user setat" : this.state.user.name + " \u00B7 " + this.state.user.email}
                         </RemoveItem>
                     </div>
 
                     :
-                    <div class={"knbn-input-grp input-group dropdown knbn-bg-transparent knbn-transition" + (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
+                    <div class={"input-group dropdown knbn-bg-transparent knbn-transition knbn-border" + (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
                         <div class="d-flex flex-row w-100">
-                            <input type="text" class={"knbn-input form-control knbn-bg-transparent" + 
+                            <input type="text" class={"knbn-input form-control knbn-bg-transparent knbn-font-medium knbn-no-border knbn-no-border-radius knbn-no-box-shadow" + 
                             (this.props.themeToggled == true ? 
                                 " knbn-dark-bg-2x knbn-dark-bg-2x-active knbn-dark-color-5x" 
                                 : 
@@ -118,13 +105,13 @@ class EditUser extends React.Component{
                             <DropdownMenu>
                             {
                                 this.state.filteredUsers == undefined || this.state.filteredUsers.length == 0 ? 
-                                <div class="col text-truncate">Nicio persoană gasită</div>
+                                <div class="col text-truncate knbn-font-medium">Nicio persoană gasită</div>
                                 :
                                 (
                                     <div>
                                         <a href="#" onClick={(event)=>{event.preventDefault(); this.setUser({name: 'No user'})}}>
                                             <DropdownItem>
-                                                <div class="d-flex w-100"><div class="w-100 my-auto text-truncate">No user</div></div>
+                                                <div class="d-flex w-100"><div class="w-100 my-auto text-truncate">Niciun utilizator</div></div>
                                             </DropdownItem>
                                         </a>
 
@@ -132,11 +119,11 @@ class EditUser extends React.Component{
                                             {
                                                 return  <a href="#" key={user.email} onClick={(event)=>{event.preventDefault(); this.setUser(user)}}>
                                                             <DropdownItem>
-                                                                <div class="d-flex flex-row">
+                                                                <div class="d-flex flex-row knbn-font-medium">
                                                                     <div class="mx-1 d-flex my-auto">
-                                                                        <img class="knbn-profile-pic-large" src={'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(user.email).toLowerCase().trim()).digest('hex')}/>
+                                                                        <img class="knbn-profile-pic" src={'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(user.email).toLowerCase().trim()).digest('hex')}/>
                                                                     </div>
-                                                                    <div class="d-flex w-100"><div class="w-100 my-auto text-truncate">{user.name + " \u00B7 " + user.email}</div></div>
+                                                                    <div class="d-flex w-100 knbn-font-medium"><div class="w-100 my-auto text-truncate">{user.name + " \u00B7 " + user.email}</div></div>
                                                                 </div>
                                                             </DropdownItem>
                                                         </a>
@@ -159,7 +146,8 @@ class EditUser extends React.Component{
 const mapStateToProps = (state) => {
     return {
         themeToggled: state.themeToggled,
-        currentUser: state.currentUser
+        currentUser: state.currentUser,
+        isAdmin: state.isAdmin
     }
 }
 

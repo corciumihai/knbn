@@ -67,24 +67,26 @@ class EditTextArea extends React.Component{
         return(
             <div class="form-group knbn-bg-transparent">
                 {
-                    (this.props.label == undefined || this.props.label.length == 0) ? null : 
+                    (this.props.label == undefined || this.props.label.length == 0) ? 
+                    null 
+                    : 
                     <Label label={this.props.label}/>
                 }
-                
-                {this.state.inEditMode == false ? 
-                    this.state.displayValue != undefined && this.state.displayValue.length > 0 ? 
-                    <RemoveItem remove={this.setEditMode} classes={"w-100"}>{this.state.displayValue}</RemoveItem>
-                    :
-                    "Introdu valoare"
-                    : 
-                    <div class={"knbn-input-grp d-flex flex-row input-group knbn-bg-transparent knbn-transition" + (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
-                        <div class="col px-0">
-                            <ReactQuill modules={quillModules} value={this.state.value} onChange={this.setFieldValue} className={"w-100 h-100 knbn-bg-transparent knbn-comp-desc" + (this.props.themeToggled ? " knbn-dark-color-5x knbn-dark-edit-bd-2x knbn-dark-bg-2x"  : " knbn-snow-bg-2x knbn-snow-color-5x knbn-snow-edit-bd-2x")}/>
+                {
+                    this.state.inEditMode == false ? 
+                        <RemoveItem remove={this.setEditMode} canEdit={this.props.canEdit} classes={"w-100"}>
+                        {
+                            this.state.displayValue.length > 0 ? this.state.displayValue : "Introdu valoare"
+                        }
+                        </RemoveItem>
+                        : 
+                        <div class={"d-flex flex-row input-group knbn-bg-transparent knbn-transition knbn-border knbn-no-box-shadow" + (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
+                            <div class="col px-0">
+                                <ReactQuill modules={quillModules} value={this.state.value} onChange={this.setFieldValue} className={"w-100 h-100 knbn-bg-transparent knbn-comp-desc" + (this.props.themeToggled ? " knbn-dark-color-5x knbn-dark-edit-bd-2x knbn-dark-bg-2x"  : " knbn-snow-bg-2x knbn-snow-color-5x knbn-snow-edit-bd-2x")}/>
+                            </div>
+                            <SaveButton edit={this.state.inEditMode} save={this.save} enableEditMode={()=>{this.setState({inEditMode: true})}}/>
                         </div>
-                        <SaveButton edit={this.state.inEditMode} save={this.save} enableEditMode={()=>{this.setState({inEditMode: true})}}/>
-                    </div>
                 }
-                
                 <Small>{this.props.description}</Small>
             </div>
         );
@@ -94,6 +96,8 @@ class EditTextArea extends React.Component{
 const mapStateToProps = (state) => {
     return {
         themeToggled: state.themeToggled,
+        isAdmin: state.isAdmin,
+        currentUser: state.currentUser
     }
 }
 

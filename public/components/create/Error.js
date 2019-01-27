@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 const Error = (props) => {
     return(
         props.children != undefined && props.children.length > 0 ? 
-            <div class={"knbn-error" + (props.themeToggled ? " knbn-dark-error-color" : " knbn-snow-error-color")}>
-                <div class={"col-12" + (props.themeToggled ? " knbn-dark-bg-error" : " knbn-snow-bg-error")}>{props.children}</div>
+            <div class={"knbn-error mb-2" + (props.themeToggled ? " knbn-dark-error-color" : " knbn-snow-error-color")}>
+                <div class={"col-12 w-100 text-center" + (props.themeToggled ? " knbn-dark-bg-error" : " knbn-snow-bg-error")}>{props.children}</div>
             </div>
             : null
     )

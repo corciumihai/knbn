@@ -129,10 +129,7 @@ p{
     font-size: 13px !important;
     font-weight: normal;
     font-style: normal;
-}
-
-.ql-editor, .knbn-editing-mode{
-    /* font-family: Consolas, monaco, monospace !important; */
+    margin-bottom: 0;
 }
 
 .knbn-no-border-right{
@@ -160,6 +157,7 @@ p{
 }
 
 .knbn-tool{
+    background: transparent !important;
     width: 25px;
     height: 25px;
     cursor: pointer;
@@ -177,11 +175,7 @@ p{
     font-size: 12px !important;
 }
 
-.knbn-ticket-id{
-    text-decoration: none !important;
-    font-size: 13px !important;
-    padding-left: 10px !important;
-    padding-right: 10px !important;
+.knbn-border-radius-50{
     border-radius: 50px !important;
 }
 
@@ -190,7 +184,7 @@ p{
 }
 
 .knbn-border{
-    border: 1px solid !important;
+    border: 1px solid;
 }
 
 .knbn-btn{
@@ -226,6 +220,15 @@ p{
 
 .ql-snow .ql-picker.ql-expanded .ql-picker-options{
     z-index: 100;
+}
+
+.ql-container.ql-snow, .ql-toolbar.ql-snow{
+    border: none !important;
+}
+
+.ql-container{
+    max-height: 100% !important; 
+    height: auto!important;
 }
 
 .knbn-bg-transparent{
@@ -303,4 +306,50 @@ html, body, #app{
 .knbn-edit-no-border *, .knbn-edit-no-border .ql-toolbar .ql-snow{
     border: none !important;
     border-color: transparent;
+}
+
+.knbn-profile-pic-big{
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+}
+
+.knbn-no-box-shadow{
+    box-shadow: none !important;
+}
+
+.knbn-no-border-radius{
+    border-radius: 0 !important;
+}
+
+.knbn-remember{
+    background-color: rgb(81, 141, 12);
+}
+
+.knbn-pointer{
+    cursor: pointer !important;
+}
+
+.knbn-border-right{
+    border-right: 1px solid !important;
+}
+
+.knbn-mandatory-margin{
+    margin-top: 80px !important;
+}
+.knbn-opacity-1{
+    opacity: 1 !important;
+}
+
+.knbn-high-z-index{
+    z-index: 2000 !important;
+}
+
+.knbn-img-size{
+    width: 20px !important;
+    height: 20px !important;
+}
+
+.form-control{
+    height: auto !important;
 }

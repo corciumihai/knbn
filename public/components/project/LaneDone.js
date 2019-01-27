@@ -23,7 +23,7 @@ class LaneDone extends React.Component{
         data.lane = 'done';
 
         if(canDrop){
-            this.props.push(ticket);
+            this.props.push(data);
         }
     }
     

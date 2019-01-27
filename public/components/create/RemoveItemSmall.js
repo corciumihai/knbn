@@ -3,9 +3,11 @@ import { connect } from 'react-redux';
 
 const RemoveItemSmall = (props) => {
     return(
-        <div class={"d-flex flex-row h-100 pr-0 knbn-bg-transparent knbn-transition" + (props.themeToggled ? " knbn-dark-bg-remover knbn-dark-border-2x knbn-dark-color-5x" : " knbn-snow-bg-remover knbn-snow-border-2x knbn-snow-color-5x")}>
+        <div class={"d-flex flex-row h-100 pr-0 knbn-bg-transparent knbn-transition knbn-no-border knbn-no-border-radius" + (props.themeToggled ? " knbn-dark-bg-remover knbn-dark-border-2x knbn-dark-color-5x" : " knbn-snow-bg-remover knbn-snow-border-2x knbn-snow-color-5x") + (props.classes ? " " + props.classes : "")}>
             <div class={"d-flex ml-2 mr-auto knbn-font-medium h-100 text-truncate knbn-transition knbn-bg-transparent"}>
-                {props.children}
+                <div class="my-auto">
+                    {props.children}
+                </div>
             </div>
             {
             props.remove != undefined ? 

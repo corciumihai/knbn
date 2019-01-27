@@ -11,6 +11,8 @@ import Header3 from '../editor/Header3';
 import Header2 from '../editor/Header2';
 import Menu from '../Menu';
 import LoadingScreen from '../LoadingScreen';
+import SubmitButton from './SubmitButton';
+import CancelButton from './CancelButton';
 
 class TicketSetup extends React.Component{
     constructor(props){
@@ -37,8 +39,12 @@ class TicketSetup extends React.Component{
             project: {},
             projects: [],
 
-            nameError: '',
-            projectError: '',
+            filteredReleases: [],
+            filterCategories: [],
+            filteredComponents: [],
+            filteredTickets: [],
+
+            error: '',
 
             loadingProjects: true,
             loadingReleases: true,
@@ -66,10 +72,14 @@ class TicketSetup extends React.Component{
         this.verify = this.verify.bind(this);
         this.setProject = this.setProject.bind(this);
         this.resetState = this.resetState.bind(this);
+        this.filterComponents = this.filterComponents.bind(this);
+        this.filterCategories = this.filterCategories.bind(this);
+        this.filterReleases = this.filterReleases.bind(this);
+        this.filterTickets = this.filterTickets.bind(this);
     }
 
     setName(value){
-        this.setState({name: value, nameError: ''});
+        this.setState({name: value, error: ''});
     }
 
     setAssignee(user){
@@ -77,7 +87,7 @@ class TicketSetup extends React.Component{
     }
 
     setComponent(component){
-        this.setState({component: component, componentError: ''});
+        this.setState({component: component, error: ''});
     }
 
     setBlockedTicket(ticket){
@@ -106,14 +116,46 @@ class TicketSetup extends React.Component{
 
     fetchComponents(){
         axios.get('/get-components/')
-        .then(response => {this.setState({components: response.data, loadingComponents: false})});
+        .then(response => {this.setState({components: response.data, filteredComponents: response.data, loadingComponents: false})});
+    }
+
+    filterComponents(){
+        if(this.state.project.id){
+            this.setState({filteredComponents: this.state.components.filter(item => {return item.project == this.state.project.id})});
+        }
+        else{
+            this.setState({filteredComponents: this.state.components});
+        }
+    }
+
+    filterReleases(){
+        if(this.state.project.id){
+            this.setState({filteredReleases: this.state.releases.filter(item => {return item.project == this.state.project.id})});
+        }
+        else{
+            this.setState({filteredReleases: this.state.releases});
+        }
     }
 
     fetchTickets(){
         axios.get('/get-tickets')
         .then(response => {
-            this.setState({tickets: response.data.tickets, filteredTickets: response.data.tickets, loadingTickets: false});
-        });
+            if(response.status == 200){
+                this.setState({tickets: response.data, filteredTickets: response.data, loadingTickets: false});
+            }
+        })
+        .catch(error => {
+
+        })
+    }
+
+    filterTickets(){
+        if(this.state.project.id){
+            this.setState({filteredTickets: this.state.tickets.filter(item => {return item.project == this.state.project.id})});
+        }
+        else{
+            this.setState({filteredTickets: this.state.tickets});
+        }
     }
 
     fetchCategories(){
@@ -121,11 +163,20 @@ class TicketSetup extends React.Component{
         .then(response => {
             this.setState({categories: response.data, filteredCategories: response.data, loadingCategories: false})
         });
-    }   
+    }
+
+    filterCategories(){
+        if(this.state.project.id){
+            this.setState({filteredCategories: this.state.categories.filter(item => {return item.project == this.state.project.id})});
+        }
+        else{
+            this.setState({filteredCategories: this.state.categories});
+        }
+    }
 
     fetchReleases(){
         axios.get('/get-releases')
-        .then(response => {this.setState({releases: response.data, loadingReleases: false})})
+        .then(response => {this.setState({releases: response.data, filteredReleases: response.data, loadingReleases: false})});
     }
     
     fetchProjects(){
@@ -138,7 +189,12 @@ class TicketSetup extends React.Component{
     }
 
     setProject(value){
-        this.setState({project: value});
+        this.setState({project: value}, () => {
+            this.filterComponents();
+            this.filterCategories();
+            this.filterReleases();
+            this.filterTickets();
+        });
     }
 
     componentWillMount(){
@@ -157,17 +213,17 @@ class TicketSetup extends React.Component{
 
     verify(){
         if(this.state.name == undefined || this.state.name.length == 0){
-            this.setState({nameError: 'Introdu numele tichetului'});
+            this.setState({error: 'Introdu numele tichetului'});
             return false;
         }
 
         if(this.state.project.id == undefined || this.state.project.id.length == 0 || this.state.project.id <= 0 ){
-            this.setState({projectError: 'Selectează referința unui proiect'});
+            this.setState({error: 'Selectează referința unui proiect'});
             return false;
         }
 
         if(this.state.component.id == undefined || this.state.component.id.length == 0 || this.state.component.id <= 0 ){
-            this.setState({componentError: 'Selectează referința unei componente'});
+            this.setState({error: 'Selectează referința unei componente'});
             return false;
         }
 
@@ -187,9 +243,7 @@ class TicketSetup extends React.Component{
             description: '',
             priority: this.props.priorities[0],
             release: {},
-            nameError: '',
-            projectError: '',
-            componentError: '',
+            error: '',
             project: {}
         })
     }
@@ -209,8 +263,8 @@ class TicketSetup extends React.Component{
                 description: this.state.description,
                 priority: this.state.priority.dbName,
                 releaseID: this.state.release.id,
-                dueDate: new Date().getTime(),
-                startDate: new Date().getTime(),
+                dueDate: new Date(),
+                startDate: new Date(),
                 project: this.state.project.id,
                 lane: 'backlog',
             }).then(response => {
@@ -223,15 +277,14 @@ class TicketSetup extends React.Component{
 
     render(){
         return(
-            this.state.loadingCategories || this.state.loadingComponents || this.state.loadingProjects || this.state.loadingReleases 
-            // || this.state.loadingTickets 
+            this.state.loadingCategories || this.state.loadingComponents || this.state.loadingProjects || this.state.loadingReleases || this.state.loadingTickets 
             ? 
             <LoadingScreen/>
             :
             <div class={"container-fluid knbn-bg-transparent knbn-transition pb-3 knbn-container" + (this.props.themeToggled ? " knbn-dark-bg-1x" : " knbn-snow-bg-1x")}>
                 <Menu/>
 
-                <div class="row mt-3">
+                <div class="row mt-3 knbn-mandatory-margin">
                     <div class="col-xl-4 offset-xl-4">
                         <div class="row">
                             <Header3>Creator tichet</Header3>
@@ -241,18 +294,18 @@ class TicketSetup extends React.Component{
                         this.state.projects.length == 0 ? 
                         <div class="row">
                             <Header2>Niciun proiect configurat</Header2>
-                            <div class={"knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>Înainte de a adăuga un tichet, creați un proiect, și apoi cel puțin o componentă</div>
+                            <div class={"col knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>Înainte de a adăuga un tichet, creați un proiect, și apoi cel puțin o componentă</div>
                         </div>
                         :
                         this.state.components.length == 0 ? 
                         <div class="row">
                             <Header2>Nicio componentă creată</Header2>
-                            <div class={"knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>Înainte de a adăuga un tichet, creați o componentă</div>
+                            <div class={"col knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>Înainte de a adăuga un tichet, creați o componentă</div>
                         </div>
                         :
                         <div class="row">
                             <div class="col-xl-12">
-                                <Error>{this.state.nameError}</Error>
+                                <Error>{this.state.error}</Error>
                                 <InputField 
                                     label="Nume"
                                     value={this.state.name}
@@ -260,7 +313,6 @@ class TicketSetup extends React.Component{
                                     action={this.setName}
                                 />
 
-                                <Error>{this.state.projectError}</Error>
                                 <SelectionField
                                     label="Atașează proiect"
                                     action={this.setProject}
@@ -271,13 +323,12 @@ class TicketSetup extends React.Component{
                                     imgSrc='./images/project.svg'
                                 />
 
-                                <Error>{this.state.componentError}</Error>
                                 <SelectionField
                                     label="Atașează componentă"
                                     action={this.setComponent}
                                     description="Componentă la care tichetul va fi atașat"
                                     value={this.state.component.name}
-                                    items={this.state.components}
+                                    items={this.state.filteredComponents}
                                     currentItem={this.state.component}
                                 />
 
@@ -306,34 +357,16 @@ class TicketSetup extends React.Component{
                                     action={this.setRelease}
                                     description="Versiune la care tichetul va fi atașat"
                                     value={this.state.release.name}
-                                    items={this.state.releases}
+                                    items={this.state.filteredReleases}
                                     currentItem={this.state.release}
                                 />
-
-                                <SelectionField
-                                    label="Tichet blocat"
-                                    action={this.setBlockedTicket}
-                                    description="Tichetul blocat de crearea tichetului curent"
-                                    value={this.state.blockedTicket.name}
-                                    items={this.state.tickets}
-                                    currentItem={this.state.blockedTicket}
-                                />  
-
-                                <SelectionField
-                                    label="Blocat de tichet"
-                                    action={this.setBlockingTicket}
-                                    description="Tichetul care blochează tichetul curent"
-                                    value={this.state.blockingTicket.name}
-                                    items={this.state.tickets}
-                                    currentItem={this.state.blockingTicket}
-                                />  
                                 
                                 <SelectionField
                                     label="Atașează categorie"
                                     action={this.setCategory}
                                     description="Categoria tichetului"
                                     value={this.state.category.name}
-                                    items={this.state.categories}
+                                    items={this.state.filteredCategories}
                                     currentItem={this.state.category}
                                 />  
 
@@ -353,8 +386,8 @@ class TicketSetup extends React.Component{
                                 </div> */}
 
                                 <div class="d-flex flex-row justify-content-center mb-3 ">
-                                    <button class={"ticket-dropdown-btn btn btn-primary mr-2 knbn-border" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-color-2x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-color-2x knbn-snow-border-2x")} onClick={this.submitTicket}>Adaugă tichet</button>
-                                    <button class={"ticket-dropdown-btn btn btn-primary" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-color-2x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-color-2x knbn-snow-border-2x")} onClick={this.resetState}>Anulează</button>
+                                    <SubmitButton action={this.submitTicket}>Adaugă tichet</SubmitButton>
+                                    <CancelButton action={this.resetState}>Anulează</CancelButton>
                                 </div>
                             </div>
                         </div>

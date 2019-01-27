@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 const DropdownItem = (props) => {
     return(
-        <div class={"knbn-dropdown-item dropdown-item knbn-transition knbn-bg-transparent d-flex flex-row text-truncate col-12" + 
+        <div class={"knbn-dropdown-item dropdown-item knbn-transition knbn-bg-transparent d-flex flex-row text-truncate col-12 knbn-font-medium" + 
             (props.themeToggled ? 
                 " knbn-dark-bg-2x knbn-dark-color-3x knbn-dark-color-4x-active knbn-dark-bg-2x-active" 
                 : 

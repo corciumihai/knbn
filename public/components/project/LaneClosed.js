@@ -23,7 +23,7 @@ class LaneClosed extends React.Component{
         data.lane = 'closed';
 
         if(canDrop){
-            this.props.push(ticket);
+            this.props.push(data);
         }
     }
     

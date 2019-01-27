@@ -57,7 +57,7 @@ class Menu extends React.Component{
     render(){
         return(
             <div class="row">
-                <nav class={"knbn-navbar navbar navbar-expand-xl navbar-expand-lg navbar-expand-md navbar-dark knbn-transition col-xl-12" + (this.props.themeToggled ? " knbn-dark-bg-2x" : " knbn-snow-bg-2x")}>
+                <nav class={"position-fixed knbn-high-z-index knbn-navbar navbar knbn-border-bottom navbar-expand-xl navbar-expand-lg navbar-expand-md navbar-dark knbn-transition col-xl-12" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-border-2x")}>
                     <a class={"knbn-navbar-brand navbar-brand knbn-transition" + (this.props.themeToggled ? " knbn-dark-color-2x knbn-dark-color-2x-active" : " knbn-snow-color-2x knbn-snow-color-2x-active")} href="/">Bord KNBN</a>
 
                     <div class="knbn-navbar-toggler navbar-toggler" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Comută navigație" onClick={this.toggle}>
@@ -77,7 +77,7 @@ class Menu extends React.Component{
                                                 </NavLink>
                                     })
                                     :
-                                    "Niciun proiect configurat"
+                                    <div class="col knbn-font-small">Niciun proiect configurat</div>
                                 }
                                 </DropdownMenu>
                                 

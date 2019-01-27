@@ -1,13 +1,11 @@
 import React from 'react';
-import EditTextArea from '../editor/EditTextArea';
 import axios from 'axios';
-import TouchButtonRight from '../editor/TouchButtonRight';
-import TouchButtonLeft from '../editor/TouchButtonLeft';
 import dateformat from 'dateformat';
 import { connect } from 'react-redux';
-import SelectionRemover from '../create/SelectionRemover';
 import ReactHtmlParser from 'react-html-parser';
 import RemoveItem from '../create/RemoveItem';
+import ReactQuill from 'react-quill';
+
 
 dateformat.i18n = {
     dayNames: [
@@ -29,52 +27,101 @@ class Comment extends React.Component{
 
         this.state = {
             canEdit: false,
-            userData: {}
+            userData: {},
+            editMode: false,
+            comment: ''
         }
 
-        this.updateComment = this.updateComment.bind(this);
-    }
-
-    updateComment(value){
-        // if(this.props.data.value != value){
-        //     axios.post('/component/update-comment', {
-        //         id: this.props.data.id,
-        //         value: value,
-        //     });
-        // }
+        this.save = this.save.bind(this);
+        this.setEditMode = this.setEditMode.bind(this);
+        this.setComment = this.setComment.bind(this);
     }
 
     componentWillMount(){
-        if(this.props.data.owner != undefined){
-            axios.get('/user/get-user-by-email/' + this.props.data.owner).then(response => {
-                this.setState({userData: response.data});
+        this.setState({comment: this.props.data.value}, () => {
+            if(this.props.data.owner){
+                axios.get('/user/get-user-by-email/' + this.props.data.owner).then(response => {
+                    this.setState({userData: response.data, canEdit: response.data.email == this.props.currentUser});
+                });
+            }
+        })
+    }
+
+    componentWillReceiveProps(nextProps, nextState){
+        if(nextProps.data.value != this.state.comment){
+            this.setState({comment: nextProps.data.value});
+        }
+
+        if(nextProps.data.owner){
+            axios.get('/user/get-user-by-email/' + nextProps.data.owner).then(response => {
+                this.setState({userData: response.data, canEdit: response.data.email == this.props.currentUser});
             });
         }
     }
 
-    componentWillReceiveProps(nextState, nextProps){
-        if(nextState.data.owner != undefined){
-            axios.get('/user/get-user-by-email/' + nextState.data.owner).then(response => {
-                this.setState({userData: response.data});
-            });
-        }
+    setComment(value){
+        this.setState({comment: value});
     }
 
-    render(){        
+    save(){
+        this.props.update({id: this.props.data.id, value: this.state.comment});
+        this.setState({editMode: false, comment: ''});
+    }
+
+    setEditMode(){
+        this.setState({editMode: true})
+    }
+
+    render(){
+        let quillModules = {
+            toolbar: [
+              ['bold', 'italic', 'underline','strike', 'blockquote'],
+              [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
+              ['link'],
+              ['clean']
+            ],
+        }
+
         return(
-            <div class="row mt-2 mb-2">
-                <div class={"col-xl-12 d-flex knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-2x" : " knbn-dark-color-2x")}>
+            <div class="col-xl-12">
+                <div class="row mt-2 mb-2">
+                    <div class="col-xl-12 d-flex flex-row">
+                        <div class={"d-flex knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-dark-color-5x")}>
+                            {
+                                this.state.userData && this.state.userData.name ?
+                                this.state.userData.name + " \u00B7 " + dateformat(this.props.data.created, "dd mmmm yyyy")
+                                :
+                                "Adăugat pe " + dateformat(this.props.data.created, "dd mmmm yyyy")
+                            }
+                        </div>
+
+                        <div class="ml-auto"> 
+                            <div class={"knbn-font-small knbn-pointer px-2 py-1" + (this.props.themeToggled ? " knbn-dark-color-2x knbn-dark-onselect": " knbn-snow-color-2x knbn-snow-onselect")}
+                                onClick={this.state.editMode ? this.save : this.setEditMode}>
+                            {
+                                this.state.editMode ? "Salvează" : "Editează"
+                            }
+                            </div>
+                        </div>
+
+                    </div>
+                        
+                    <div class="col-xl-12">
                     {
-                        this.state.userData && this.state.userData.name ?
-                        "Adăugat de " + this.state.userData.name + " pe data de " + dateformat(new Date(this.props.data.created), "dd mmmm yyyy")
+                        this.state.editMode ? 
+                        <div class={"knbn-border" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}>
+                            <ReactQuill     modules={quillModules} 
+                                            value={this.state.comment} 
+                                            onChange={this.setComment} 
+                                            className={"w-100 h-100 knbn-bg-transparent knbn-no-border knbn-edit-no-border knbn-comp-desc" + (this.props.themeToggled ? " knbn-dark-color-5x knbn-dark-edit-bd-2x" : " knbn-snow-color-5x knbn-snow-edit-bd-2x")}
+                            />
+                        </div>
                         :
-                        "Adăugat pe data de " + dateformat(new Date(this.props.data.created), "dd mmmm yyyy")
+                        <RemoveItem remove={this.state.canEdit ? (e) => {e.preventDefault(); this.props.remove({id: this.props.data.id})} : null}>
+                            {ReactHtmlParser(this.props.data.value)}
+                        </RemoveItem>
                     }
-                </div>
-                <div class="col-xl-12">
-                    <RemoveItem remove={this.state.canEdit ? (e) => {e.preventDefault(); this.props.remove(this.props.data.id)} : null}>
-                        {ReactHtmlParser(this.props.data.value)
-                    }</RemoveItem>
+                    </div>
                 </div>
             </div>
         );

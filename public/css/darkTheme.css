@@ -1,8 +1,8 @@
 :root{
     --t-dark-bg-1x: rgb(34, 34, 34);
-    --t-dark-bg-2x: rgb(46, 46, 46);
+    --t-dark-bg-2x: rgb(53, 53, 53);
     --t-dark-bg-3x: rgb(61, 61, 61);
-    --t-dark-bg-4x: rgb(73, 73, 73);
+    --t-dark-bg-4x: rgb(87, 87, 87);
     --t-dark-bg-5x: rgb(88, 88, 88);
 
     --t-dark-bg-1x-active: var(--t-dark-bg-2x);
@@ -24,7 +24,7 @@
     --t-dark-border-1x: rgb(60, 60, 60);
     --t-dark-border-2x: rgb(70, 70, 70);
     --t-dark-border-3x: rgb(80, 80, 80);
-    --t-dark-border-4x: rgb(90, 90, 90);
+    --t-dark-border-4x: rgb(95, 95, 95);
 
     --t-dark-border-1x-active: var(--t-dark-border-2x);
     --t-dark-border-2x-active: var(--t-dark-border-3x);
@@ -42,8 +42,14 @@
     --t-dark-box-shadow-4x: 2px 4px 3px rgb(54, 54, 54);
 
     --t-dark-border-onselect: rgb(111, 146, 163);
+    --t-dark-bg-onselect: rgba(111, 146, 163, 0.185);
+
     --t-dark-color-error: rgb(252, 74, 74);
     --t-dark-bg-error: rgba(226, 69, 69, 0.137);
+
+    --t-dark-color-success: rgb(160, 252, 74);
+    --t-dark-bg-success: rgba(145, 226, 69, 0.137);
+
     --t-dark-bg-remover: rgba(194, 221, 226, 0.116);
     --t-dark-bd-remover: rgba(255, 255, 255, 0.144);
 }
@@ -187,9 +193,11 @@
 }
 
 .knbn-dark-onselect:hover, 
-.knbn-dark-onselect:focus, 
+.knbn-dark-onselect:focus,
 .knbn-dark-onselect:active{
     border-color: var(--t-dark-border-onselect) !important;
+    /* background-color: var(--t-dark-bg-onselect) !important; */
+    color: white !important;
 }
 
 .knbn-dark-edit-bd-2x >.ql-toolbar, 
@@ -261,4 +269,16 @@
 
 .knbn-dark-bd-remover{
     border-color: var(--t-dark-bd-remover) !important;
+}
+
+.knbn-dark-success-color{
+    color: var(--t-dark-color-success) !important;
+}
+
+.knbn-dark-bg-success{
+    background-color: var(--t-dark-bg-success) !important;
+}
+
+.knbn-dark-bg-2x-full-active{
+    background-color: var(--t-dark-bg-2x) !important;
 }

@@ -10,6 +10,9 @@ import Error from './Error';
 import Header2 from '../editor/Header2';
 import Header3 from '../editor/Header3';
 import Menu from '../Menu';
+import SubmitButton from './SubmitButton';
+import CancelButton from './CancelButton';
+import Success from '../messages/Success';
 
 class PRSetup extends React.Component{
     
@@ -39,15 +42,11 @@ class PRSetup extends React.Component{
             release: {},
             projects: [],
             project: {},
-
-            nameError: '',
-            componentError: ''
+            error: '',
         }
 
         this.setAssignee = this.setAssignee.bind(this);
         this.setComponent = this.setComponent.bind(this);
-        this.setBlockedTicket = this.setBlockedTicket.bind(this);
-        this.setBlockingTicket = this.setBlockingTicket.bind(this);
         this.setCategory = this.setCategory.bind(this);
         this.setEstimation = this.setEstimation.bind(this);
         this.setDescription = this.setDescription.bind(this);
@@ -65,27 +64,28 @@ class PRSetup extends React.Component{
         this.setExpectedBehavior = this.setExpectedBehavior.bind(this);
         this.fetchProjects = this.fetchProjects.bind(this);
         this.setProject = this.setProject.bind(this);
+        this.resetError = this.resetError.bind(this);
     }
 
     setName(value){
-        this.setState({name: value, nameError: ''});
+        this.setState({name: value}, this.resetError);
+    }
+    
+    resetError(){
+        this.setState({error: ''});
     }
 
-    setAssignee(user){this.setState({assignee: user})}
+    setAssignee(user){this.setState({assignee: user}, this.resetError)}
 
-    setComponent(component){this.setState({component: component, componentError: ''});}
+    setComponent(component){this.setState({component: component}, this.resetError);}
 
-    setBlockedTicket(ticket){this.setState({blockedTicket: ticket});}
+    setCategory(category){this.setState({category: category}, this.resetError);}
 
-    setBlockingTicket(ticket){this.setState({blockingTicket: ticket});}
+    setDescription(value){this.setState({description: value}, this.resetError);}
 
-    setCategory(category){this.setState({category: category});}
+    setPriority(prio){this.setState({priority: prio}, this.resetError)};
 
-    setDescription(value){this.setState({description: value});}
-
-    setPriority(prio){this.setState({priority: prio})};
-
-    setRelease(release){this.setState({release: release});}
+    setRelease(release){this.setState({release: release}, this.resetError);}
 
     fetchComponents(){axios.get('/get-components').then(response => {this.setState({components: response.data})});}
 
@@ -100,16 +100,16 @@ class PRSetup extends React.Component{
         .then(response => {this.setState({projects: response.data})})
     }
 
-    setEstimation(value){this.setState({estimation: value});}
+    setEstimation(value){this.setState({estimation: value}, this.resetError);}
 
-    setTestSteps(value){this.setState({testSteps: value})}
+    setTestSteps(value){this.setState({testSteps: value}, this.resetError)}
 
-    setExpectedBehavior(value){this.setState({expectedBehavior: value})}
+    setExpectedBehavior(value){this.setState({expectedBehavior: value}, this.resetError)}
 
-    setObservedBehavior(value){this.setState({observedBehavior: value})}
+    setObservedBehavior(value){this.setState({observedBehavior: value}, this.resetError)}
 
     setProject(value){
-        this.setState({project: value});
+        this.setState({project: value}, this.resetError);
     }
 
     componentWillMount(){
@@ -123,20 +123,19 @@ class PRSetup extends React.Component{
     }
 
     verify(){
-        // check name not empty
         if(this.state.name == undefined || this.state.name.length == 0){
-            this.setState({nameError: 'Introdu numele tichetului'});
+            this.setState({error: 'Introdu numele tichetului'});
             return false;
         }
 
         if(this.state.project.id == undefined || this.state.project.id.length == 0 || this.state.project.id <= 0 ){
-            this.setState({projectError: 'Selectează referința unui proiect'});
+            this.setState({error: 'Selectează referința unui proiect'});
             return false;
         }
 
         // check if attached to a component
         if(this.state.component.id == undefined || this.state.component.id.length == 0 || this.state.component.id <= 0 ){
-            this.setState({componentError: 'Selectează o referință a unei componente'});
+            this.setState({error: 'Selectează o referință a unei componente'});
             return false;
         }
 
@@ -159,9 +158,8 @@ class PRSetup extends React.Component{
             observedBehavior: '',
             priority: this.props.priorities[2],
             release: {},
-            nameError: '',
-            componentError: '',
-            project: {}
+            project: {},
+            error: ''
         })
     }
 
@@ -169,7 +167,7 @@ class PRSetup extends React.Component{
         event.preventDefault();
 
         if(this.verify() == true){
-            axios.post('/add-pr', {
+            axios.post('/reports/add-report', {
                 name: this.state.name,
                 assignee: this.state.assignee.email,
                 component: this.state.component.id,
@@ -178,23 +176,26 @@ class PRSetup extends React.Component{
                 category: this.state.category.id,
                 estimation: parseInt(this.state.estimation),
                 description: this.state.description,
+                reporter: this.state.reporter.email ? this.state.reporter.email : this.props.currentUser,
                 testSteps: this.state.testSteps,
-                expectedBehavior: this.state.expectedBehavior,
-                observedBehavior: this.state.observedBehavior,
+                expected: this.state.expectedBehavior,
+                observed: this.state.observedBehavior,
                 priority: this.state.priority.dbName,
                 releaseID: this.state.release.id,
-                dueDate: new Date().getTime(),
+                dueDate: new Date(),
                 testSteps: this.state.testSteps,
-                observedBehavior: this.state.observedBehavior,
-                expectedBehavior: this.state.expectedBehavior,
-                startDate: new Date().getTime(),
+                startDate: new Date(),
                 lane: 'backlog',
-                project: this.state.project
+                project: this.state.project.id
             }).then(response => {
-                if(response.data.success == true){
-                    this.resetState();
+                console.log(response)
+                if(response.status == 200){
+                    this.setState({success: true}, this.resetState);
                 }
-            });
+            })
+            .catch(error => {
+                this.setState({error: error.response.data.error});
+            })
         }
     }
 
@@ -202,7 +203,7 @@ class PRSetup extends React.Component{
         return(
             <div class={"container-fluid knbn-bg-transparent knbn-transition pb-3 knbn-container" + (this.props.themeToggled ? " knbn-dark-bg-1x" : " knbn-snow-bg-1x")}>
                 <Menu/>
-                <div class="row mt-3">
+                <div class="row mt-3 knbn-mandatory-margin">
                     <div class="col-xl-4 offset-xl-4">
                         <div class="row">
                             <Header3>Creator raport problemă</Header3>
@@ -211,18 +212,17 @@ class PRSetup extends React.Component{
                         this.state.projects.length == 0 ? 
                         <div class="row">
                             <Header2>Niciun proiect configurat</Header2>
-                            <div class={"knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>Înainte de a adăuga un tichet, creați un proiect, și apoi cel puțin o componentă</div>
+                            <div class={"col knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>Înainte de a adăuga un tichet, creați un proiect, și apoi cel puțin o componentă</div>
                         </div>
                         :
                         this.state.components.length == 0 ? 
                         <div class="row">
                             <Header2>Nicio componentă creată</Header2>
-                            <div class={"knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>Înainte de a adăuga un tichet, creați o componentă</div>
+                            <div class={"col knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>Înainte de a adăuga un tichet, creați o componentă</div>
                         </div>
                         :
                         <div class="row">
                             <div class="col-xl-12">
-                                <Error>{this.state.nameError}</Error>
                                 <InputField 
                                     label="Nume"
                                     value={this.state.name}
@@ -230,7 +230,6 @@ class PRSetup extends React.Component{
                                     action={this.setName}
                                 />
 
-                                <Error>{this.state.projectError}</Error>
                                 <SelectionField
                                     label="Atașează proiect"
                                     action={this.setProject}
@@ -241,7 +240,6 @@ class PRSetup extends React.Component{
                                     imgSrc='./images/project.svg'
                                 />
 
-                                <Error>{this.state.componentError}</Error>
                                 <SelectionField
                                     label="Atașează componentă"
                                     action={this.setComponent}
@@ -300,24 +298,6 @@ class PRSetup extends React.Component{
                                     items={this.state.releases}
                                     currentItem={this.state.release}
                                 />
-
-                                <SelectionField
-                                    label="Tichet blocat"
-                                    action={this.setBlockedTicket}
-                                    description="Tichetul blocat de crearea acestui raport de problemă"
-                                    value={this.state.blockedTicket.name}
-                                    items={this.state.tickets}
-                                    currentItem={this.state.blockedTicket}
-                                />  
-
-                                <SelectionField
-                                    label="Blocat de tichet"
-                                    action={this.setBlockingTicket}
-                                    description="Tichetul care blochează acest raport de problemă"
-                                    value={this.state.blockingTicket.name}
-                                    items={this.state.tickets}
-                                    currentItem={this.state.blockingTicket}
-                                />  
                                 
                                 <SelectionField
                                     label="Atașează categorie"
@@ -343,9 +323,16 @@ class PRSetup extends React.Component{
                                     </div>
                                 </div> */}
 
+                                <Error>{this.state.error}</Error>
+                                {
+                                    this.state.success ? 
+                                    <Success>Raport de problemă adăugat cu succes</Success>
+                                    :null
+                                }
+
                                 <div class="d-flex flex-row justify-content-center mb-3 ">
-                                    <button class={"ticket-dropdown-btn btn btn-primary mr-2 knbn-border" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-color-2x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-color-2x knbn-snow-border-2x")} onClick={this.submitTicket}>Adaugă problemă</button>
-                                    <button class={"ticket-dropdown-btn btn btn-primary" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-color-2x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-color-2x knbn-snow-border-2x")}  onClick={this.resetState}>Anulează</button>
+                                    <SubmitButton action={this.submitTicket}>Adaugă problemă</SubmitButton>
+                                    <CancelButton action={this.resetState}>Anulează</CancelButton>
                                 </div>
 
                             </div>
@@ -361,7 +348,8 @@ class PRSetup extends React.Component{
 const mapStateToProps = (state) => {
     return {
         themeToggled: state.themeToggled,
-        priorities: state.priorities
+        priorities: state.priorities,
+        currentReporter: state.currentReporter
     }
 }
 

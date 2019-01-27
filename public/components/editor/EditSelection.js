@@ -65,17 +65,17 @@ class EditSelection extends React.Component{
                 <Label label={this.props.label}/>
                 {
                     this.state.inEditMode == false ? 
-            
-                        (this.state.tempItem == undefined || this.state.tempItem.name == undefined || this.state.tempItem.name.length == 0) ? 
-                        <RemoveItem remove={this.setEditMode}>Nicio valoare</RemoveItem>
-                        :
-                        <RemoveItem remove={this.setEditMode}>{this.state.tempItem.name}</RemoveItem>
-
+                        <RemoveItem remove={this.setEditMode} canEdit={this.props.canEdit}>
+                            {this.state.tempItem && this.state.tempItem.name ? 
+                                this.state.tempItem.name
+                                :
+                                "Nicio valoare"
+                            }
+                        </RemoveItem>
                     :
+                    <div class={"input-group dropdown knbn-bg-transparent knbn-transition knbn-border knbn-no-box-shadow" + (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
 
-                    <div class={"knbn-input-grp knbn-fake-input-grp input-group dropdown knbn-bg-transparent knbn-transition" + (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
-
-                        <input type="text" class={"knbn-input form-control knbn-bg-transparent" + 
+                        <input type="text" class={"knbn-input form-control knbn-bg-transparent knbn-no-border knbn-no-border-radius knbn-font-medium knbn-no-box-shadow" + 
                             (this.props.themeToggled == true ? 
                                 " knbn-dark-bg-2x knbn-dark-bg-2x-active knbn-dark-color-4x" 
                                 : 
@@ -92,7 +92,7 @@ class EditSelection extends React.Component{
                         {
                             this.state.filteredItems == undefined || this.state.filteredItems.length == 0 ? 
                             <div class={"col" + (this.props.themeToggled ? " knbn-dark-bd-2x knbn-dark-color-1x" : " knbn-snow-color-1x")}>
-                                <div class="col-xl-12">Niciun obiect găsit</div>
+                                <div class="col-xl-12 knbn-font-medium">Niciun obiect găsit</div>
                             </div>
                             :
                             this.state.filteredItems.map(item => {
@@ -113,6 +113,8 @@ class EditSelection extends React.Component{
 const mapStateToProps = (state) => {
     return {
         themeToggled: state.themeToggled,
+        isAdmin: state.isAdmin, 
+        currentUser: state.currentUser
     }
 }
 

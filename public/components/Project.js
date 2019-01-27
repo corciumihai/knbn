@@ -7,6 +7,8 @@ import {connect} from 'react-redux';
 import Header3 from './editor/Header3';
 import Menu from './Menu';
 import LoadingScreen from './LoadingScreen';
+import Filters from './Filters';
+import Filter from './filters/Filter';
 
 class Project extends React.Component{
     constructor(props){
@@ -51,8 +53,14 @@ class Project extends React.Component{
         return(
             <div class={"container-fluid knbn-bg-transparent knbn-transition pb-3 h-100 knbn-container" + (this.props.themeToggled ? " knbn-dark-bg-1x" : " knbn-snow-bg-1x")}>
                 <Menu/>
-                <div class="row mt-3">
+                
+                <div class="row mt-3 knbn-mandatory-margin">
                     <div class="col-xl-12">
+                        <Filters>
+                            <Filter action={this.props.togglePR} trigger={this.props.filterPR}>Arată RP-urile</Filter>
+                            <Filter>Doar tichetele mele</Filter>
+                        </Filters>
+
                         <div class="row">
                             <Header3>
                                 {this.state.data.name}
@@ -84,8 +92,19 @@ class Project extends React.Component{
 
 const mapStateToProps = (state) => {
     return {
-        themeToggled: state.themeToggled
+        themeToggled: state.themeToggled,
+        filterPR: state.filterPR,
     }
 }
 
-export default DragDropContext(HTML5Backend)(connect(mapStateToProps)(Project));
+const mapDispatchToProps = (dispatch) => {
+    return {
+        togglePR: () => {
+            dispatch({
+                type: 'KNNB_TOGGLE_PR',
+            });
+        }
+    }
+}
+
+export default DragDropContext(HTML5Backend)(connect(mapStateToProps, mapDispatchToProps)(Project));

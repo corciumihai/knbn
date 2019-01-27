@@ -21,9 +21,7 @@ app.use(cookieParser());
 
 app.post('/login', handlers.login);
 
-app.get('/checktoken', 
-handlers.checkToken,
-function(request, response){
+app.get('/checktoken', handlers.checkToken, (request, response) => {
     response.sendStatus(200);
 });
 
@@ -64,14 +62,30 @@ app.post('/checkuser', (request, response) => {
 
 app.post('/register', (request, response) => {
     let data = request.body;
-    data.password = bcrypt.hashSync(data.password, 8);
-    var query = database.query('INSERT INTO users SET ?', data, function(error, result, fields){
-        if(error){
-            response.redirect('/register'); 
-            return;
+
+    bcrypt.hash(data.password, 10, (error, hash) => {
+        if(error) {
+            console.log(error);
+            response.status(500);
+            response.json({error: 'Eroare internă'});
         }
-        response.redirect('/login');
-    });
+        else{
+            let newData = data;
+            delete newData.password;
+            newData.password = hash;
+
+            database.query('INSERT INTO users SET ?', newData, function(error, result, fields){
+                if(error){
+                    response.status(500);
+                    response.json({error: 'Eroare internă ' + error.code});
+                }
+                else{
+                    response.sendStatus(200);
+                }
+            });
+        }
+    })
+    
 });
 
 app.get('/current-user', (request, response) => {
@@ -148,11 +162,13 @@ app.get('/get-components', (request, response) => {
 });
 
 app.get('/get-categories', (request, response) => {
-    database.query('SELECT id, name FROM categories', (error, result, fields) => {
+    database.query('SELECT * FROM categories', (error, result, fields) => {
         if(error){
-            console.log('Database error when fetching releases 3: ' + error.code);
-            return;
+            response.statusCode= 500;
+            response.json({error: 'Eroare interna ' + error.code});
         }
+
+        response.statusCode= 200;
         response.send(result);
     })
 });
@@ -177,6 +193,19 @@ app.get('/get-release/:id', (request, response) => {
     })
 });
 
+app.get('/get-category/:id', (request, response) => {
+    database.query('SELECT * FROM categories WHERE id = ?', request.params.id, (error, result, fields) => {
+        if(error){
+            response.statusCode= 500;
+            response.json({error: 'Eroare interna ' + error.code});;
+        }
+        else{
+            response.statuse = 200;
+            response.send(result[0]);
+        }
+    })
+});
+
 app.post('/add/ticket', (request, response) => {
     var reporter = request.user.email;
     let data = request.body;
@@ -188,21 +217,18 @@ app.post('/add/ticket', (request, response) => {
     });
 });
 
-app.post('/add-pr', (request, response) => {
-    let data = request.body;
+app.post('/reports/add-report', (request, response) => {    
+    console.log(request.body);
 
-    if(request.user != request.user && request.user.email != undefined){
-        data.reporter = request.user.email;
-    }else{
-        data.reporter = '';
-    }
-    
-    database.query('INSERT INTO prs SET ?', data, (error, fields, result) => {
+    database.query('INSERT INTO reports SET ?', request.body, (error, fields, result) => {
         if(error){
-            console.log(error); 
-            response.send({success: false});
+            console.log(error);
+            response.statusCode = 500;
+            response.json({error: 'Eroare interna ' + error.code});
         }
-        response.send({success: true})
+        else{
+            response.sendStatus(200);
+        }
     });
 });
 
@@ -224,23 +250,19 @@ app.post('/add-ticket', (request, response) => {
     });
 });
 
-app.post('/add-cmp', (request, response) => {
+app.post('/component/add-component', (request, response) => {
     let data = request.body;      
-    
     if(data.owner == undefined){
-        if(request.user != request.user && request.user.email != undefined){
-            data.owner = request.user.email;
-        }else{
-            data.owner = '';
-        }
     }
 
     database.query('INSERT INTO components SET ?', data, (error, fields, result) => {
         if(error){
-            console.log(error); 
-            response.send({success: false, error: error.sqlMessage});
+            response.statusCode= 500;
+            response.json({error: 'Eroare interna ' + error.code});
         }
-        else{response.send({success: true})}
+        else{
+            response.sendStatus(200);
+        }
     });
 });
 
@@ -255,18 +277,57 @@ app.post('/add-component-comment', (request, response) => {
 });
 
 app.post('/add-project', (request, response) => {
-    database.query('INSERT INTO projects SET ?', request.body, (error, result, fields) => {
+    let data = request.body;
+
+    let categories = data.categories;
+    let releases = data.releases;
+
+    delete data.categories;
+    delete data.releases;
+
+    data.startDate = new Date();
+    console.log(data);
+
+    if(data.name){
+        database.query('INSERT INTO projects SET ?', data, (error, result, fields) => {
         if(error){
-            console.log(error);
-            return;
+            response.statusCode= 500;
+            response.json({error: 'Eroare interna ' + error.code});
         }
-        response.send({success: true});
+        else{
+            let projectID = result.insertId;
+            if(categories.length > 0){
+                categories.map(category => {
+                    database.query('INSERT INTO categories SET ?', {name: category.name, project: projectID}, (error, result, fields) => {
+                        if(error){
+                            response.statusCode= 500;
+                            response.json({error: 'Eroare interna ' + error.code});
+                        }
+                    })
+                })
+            }
+
+            if(releases.length > 0){
+                releases.map(release => {
+                    database.query('INSERT INTO releases SET ?', {name: release.name, project: projectID}, (error, result, fields) => {
+                        if(error){
+                            response.statusCode= 500;
+                            response.json({error: 'Eroare interna ' + error.code});
+                        }
+                    })
+                })
+            }
+
+            response.statusCode= 200;
+            response.send();
+        }
     });
+    }
 });
 
 app.get('/category/:id', (request, response) => {
     if(request.params.id != undefined && request.params.id != null && request.params.id != 0){
-        database.query('SELECT name FROM disciplines WHERE id = ?', request.params.id, (error, result, fields) => {
+        database.query('SELECT name FROM categories WHERE id = ?', request.params.id, (error, result, fields) => {
             if(error){
                 console.log(error);
                 response.send({});
@@ -327,11 +388,43 @@ app.post('/remove-comment', (request, response) => {
 app.get('/component/get-tickets/:compID', (request, response) => {
     database.query('SELECT * FROM tickets WHERE component = ?', request.params.compID, (error, result, fields) => {
         if(error){
-            response.send([]);
+            response.statusCode = 500;
+            response.json({error: 'Tichetele nu s-au putut fi incarcate ' + error.code});
         }
-        response.send(result);
+        else{
+            response.statusCode = 200;
+            response.send(result);
+        }
     });
 });
+
+app.get('/component/get-reports/:compID', (request, response) => {
+    database.query('SELECT * FROM reports WHERE component = ?', request.params.compID, (error, result, fields) => {
+        if(error){
+            response.statusCode = 500;
+            response.json({error: 'Tichetele nu s-au putut fi incarcate ' + error.code});
+        }
+        else{
+            response.statusCode = 200;
+            response.send(result);
+        }
+    });
+});
+
+app.get('/component/get-reports/:compID', (request, response) => {
+    database.query('SELECT * FROM reports WHERE component = ?', request.params.compID, (error, result, fields) => {
+        if(error){
+            console.log(error);
+            response.statusCode = 500;
+            response.json({error: 'Eroare interna ' + error.code});
+        }
+        else{
+            response.statusCode = 200;
+            response.send(result);
+        }
+    });
+});
+
 
 app.get('/get-tickets/:projID', (request, response) => {
     database.query('SELECT * FROM tickets WHERE project = ?', request.params.projID, (error, result, fields) => {
@@ -340,6 +433,19 @@ app.get('/get-tickets/:projID', (request, response) => {
             return;
         }
         response.send(result);
+    });
+});
+
+app.get('/get-tickets', (request, response) => {
+    database.query('SELECT * FROM tickets', request.params.projID, (error, result, fields) => {
+        if(error){
+            response.statusCode= 500;
+            response.send([]);
+        }
+        else{
+            response.statusCode= 200;
+            response.send(result);
+        }
     });
 });
 
@@ -418,14 +524,14 @@ app.post('/set-component/wip', (request, response) => {
     });
 });
 
-app.post('/set-component/owner', (request, response) => {
+app.post('/component/set-owner', (request, response) => {
     database.query('UPDATE components SET owner = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
         if(error){
-            console.log(error); 
-            response.send({success: false});
+            response.statusCode= 500;
+            response.send({error: 'Eroare interna ' + error.code});
         }
         else{
-            response.send({success: true});
+            response.sendStatus(200);
         }
     });
 });
@@ -524,6 +630,24 @@ app.post('/set-ticket/release', (request, response) => {
     }
 });
 
+app.post('/set-ticket/category', (request, response) => {
+    if(request.body.value){
+        database.query('UPDATE tickets SET category = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
+            if(error){
+                response.statusCode= 500;
+                response.json({error: 'Eroare interna ' + error.code});
+            }
+            else{
+                response.sendStatus(200);
+            }
+        });
+    }
+    else{
+        response.statusCode= 500;
+        response.json({error: 'Eroare interna'});
+    }
+});
+
 app.post('/set-ticket/assignee', (request, response) => {
     console.log(request.body);
 
@@ -580,27 +704,53 @@ app.get('/get-project-details/:id', (request, response) => {
     })
 });
 
-app.post('/update-lane', (request, response) => {
-    database.query('UPDATE tickets SET lane = ? WHERE id = ?', [request.body.lane, request.body.id], (error, result, fields) => {
-        if(error){
-            console.log(error);
-            response.send({success: false});
-        }else{
-            response.send({success: true});
-        }
-    })
+app.post('/ticket/update-lane', (request, response) => {
+    if(!request.body.isReport){
+        database.query('UPDATE tickets SET lane = ? WHERE id = ?', [request.body.lane, request.body.id], (error, result, fields) => {
+            if(error){
+                response.statusCode = 500;
+                response.json({error: 'Eroare interna ' + error.code});
+            }else{
+                response.sendStatus(200);
+            }
+        })
+    }
+    else{
+        database.query('UPDATE reports SET lane = ? WHERE id = ?', [request.body.lane, request.body.id], (error, result, fields) => {
+            if(error){
+                response.statusCode = 500;
+                response.json({error: 'Eroare interna ' + error.code});
+            }else{
+                response.sendStatus(200);
+            }
+        })
+    }
+    
 });
 
-app.post('/ticket/add-comment/', (request, response) => {    
+app.post('/ticket/add-comment', (request, response) => {    
     database.query('INSERT INTO ticket_comments SET ?', request.body, (error, result, fields) => {
         if(error){
-            response.sendStatus(400);
+            response.status(500);
+            response.json({error: 'Eroare interna ' + error.code});
         }
         else{
             response.sendStatus(200);
         }       
     })
-})
+});
+
+app.post('/ticket/update-comment', (request, response) => {    
+    database.query('UPDATE ticket_comments SET value = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
+        if(error){
+            response.status(500);
+            response.json({error: 'Eroare interna ' + error.code});
+        }
+        else{
+            response.sendStatus(200);
+        }       
+    })
+});
 
 app.get('/ticket/get-comments/:id', (request, response) => {
     database.query('SELECT * FROM ticket_comments WHERE ticket = ?', request.params.id, (error, result, fields) => {
@@ -609,6 +759,64 @@ app.get('/ticket/get-comments/:id', (request, response) => {
         }
         else{
             response.send(result);
+        }
+    })
+})
+
+app.post('/comment/remove', (request, response) => {
+    database.query('DELETE FROM ticket_comments WHERE id = ?', request.body.id, (error, result, fields) => {
+        if(error){
+            response.sendStatus(400);
+        }
+        else{
+            response.sendStatus(200);
+        }
+    })
+})
+
+app.get('/ticket/logged-hours/:id', (request, response) => {
+    database.query('SELECT SUM(hours) AS hours FROM tickets_worklogs WHERE ticket = ?', request.params.id, (error, result, fields) => {
+        if(error){
+            response.status(500);
+            response.json({error: 'Eroare interna ' + error.code});
+        }
+        else{
+            response.status(200);
+            response.json(result[0]);
+        }
+    })
+})
+
+app.post('/forgot', (request, response) => {
+    database.query('SELECT * FROM users WHERE email = ?', request.body.email, (error, result, fields) => {
+        if(error){
+            response.status(500);
+            response.json({error: 'Eroare interna ' + error.code});
+        }
+        else{
+            if(!result[0]){
+                response.status(404);
+                response.json({error: 'E-mail-ul nu există în baza de date'});
+            }
+            else{
+                bcrypt.hash(request.body.password, 10, (error , hash) => {
+                    if(error){
+                        response.status(500);
+                        response.json({error: 'Eroare interna ' + error});
+                    }
+                    else{
+                        database.query('UPDATE users SET password = ? WHERE email = ?', [hash, request.body.email], (error, result, fields) => {
+                            if(error){
+                                response.status(500)
+                                response.json({error: 'Eroare internă ' + error.code})
+                            }
+                            else{
+                                response.sendStatus(200);
+                            }
+                        })
+                    }
+                })
+            }
         }
     })
 })
@@ -631,6 +839,60 @@ app.get('/search/:term', (request, response) => {
             })
         })
     });    
+});
+
+app.post('/ticket/add-worklog', (request, response) => {
+    let data = request.body;
+    data.created = new Date();
+    database.query('INSERT INTO tickets_worklogs SET ?', request.body, (error, result, fields) => {
+        if(error){
+            response.statusCode= 500;
+            response.json({error: 'Eroare interna ' + error.code});
+        }
+        else{
+            response.statusCode= 200;
+            response.send();
+        }
+    })
+});
+
+app.post('/ticket/update-worklog', (request, response) => {
+    database.query('UPDATE tickets_worklogs SET comment = ?, hours = ? WHERE id = ?', [request.body.comment, request.body.hours, request.body.id], (error, result, fields) => {
+        if(error){
+            response.statusCode= 500;
+            response.json({error: 'Eroare interna ' + error.code});
+        }
+        else{
+            response.sendStatus(200);
+        }
+    })
+});
+
+app.post('/ticket/remove-worklog', (request, response) => {
+    console.log(request.body.id);
+
+    database.query('DELETE FROM tickets_worklogs WHERE id = ?', request.body.id, (error, result, fields) => {
+        if(error){
+            response.statusCode= 500;
+            response.json({error: 'Eroare interna ' + error.code});
+        }
+        else{
+            response.sendStatus(200);
+        }
+    })
+});
+
+app.get('/ticket/get-worklogs/:id', (request, response) => {
+    database.query('SELECT * FROM tickets_worklogs WHERE ticket = ?', request.params.id, (error, result, fields) => {
+        if(error){
+            response.statusCode= 500;
+            response.json({error: 'Eroare interna ' + error.code});
+        }
+        else{
+            response.statusCode= 200;
+            response.send(result);
+        }
+    })
 });
 
 /* ********************************************************************************************************************* */

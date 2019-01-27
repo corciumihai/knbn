@@ -23,7 +23,7 @@ class LaneProgress extends React.Component{
         data.lane = 'in_progress';
 
         if(canDrop){
-            this.props.push(ticket);
+            this.props.push(data);
         }
     }
     

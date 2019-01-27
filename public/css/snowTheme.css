@@ -1,6 +1,6 @@
 :root{
-    --t-snow-bg-1x: rgb(245, 245, 245);
-    --t-snow-bg-2x: rgb(255, 255, 255);
+    --t-snow-bg-1x: rgb(255, 255, 255);
+    --t-snow-bg-2x: rgb(235, 235, 235);
     --t-snow-bg-3x: rgb(255, 255, 255);
     --t-snow-bg-4x: rgb(255, 255, 255);
     --t-snow-bg-5x: rgb(255, 255, 255);
@@ -38,9 +38,9 @@
     --t-snow-box-shadow-3x: 2px 4px 3px rgb(230, 230, 230);
     --t-snow-box-shadow-4x: 2px 4px 3px rgb(228, 228, 228);
 
-    --t-snow-border-onselect: rgb(111, 146, 163);
+    --t-snow-border-onselect: rgb(126, 190, 41);
+    --t-snow-bg-onselect: rgba(125, 190, 41, 0.199);
 
-    --t-snow-border-onselect: rgb(111, 146, 163);
     --t-snow-color-error: rgb(252, 74, 74);
     --t-snow-bg-error: rgba(226, 69, 69, 0.137);
     --t-snow-bg-remover: rgb(231, 231, 231);
@@ -189,6 +189,7 @@
 .knbn-snow-onselect:focus, 
 .knbn-snow-onselect:active{
     border-color: var(--t-snow-border-onselect) !important;
+    background-color: var(--t-snow-bg-onselect) !important;
 }
 
 .knbn-snow-edit-bd-2x >.ql-toolbar, 

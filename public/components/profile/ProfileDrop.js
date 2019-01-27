@@ -22,6 +22,12 @@ const mapDispatchToProps = (dispatch) => {
             dispatch({
                 type: 'KNBN_SET_TOKEN_EXPIRE',
             });
+        },
+        setAdmin: (admin) => {
+            dispatch({
+                type: 'KNBN_SET_ADMIN_RIGHT',
+                payload: admin
+            });
         }
     }
 }
@@ -34,6 +40,7 @@ class ProfileDrop extends React.Component{
             redirect: false,
             name: '',
             gravatar: '',
+            isAdmin: false,
             email: ''
         }
 
@@ -42,7 +49,6 @@ class ProfileDrop extends React.Component{
 
     logout(){
         this.props.logOut();
-
         this.setState({redirect: true});
     }
 
@@ -50,11 +56,12 @@ class ProfileDrop extends React.Component{
         if(this.props.user){
             axios.get('/user/get-user-by-email/' + this.props.user)
             .then(response => {
-                var md5 = crypto.createHash('md5');
                 this.setState({
                     email: this.props.user, 
                     name: response.data.name,
-                    gravatar: 'https://www.gravatar.com/avatar/' + md5.update(String(response.data.email).toLowerCase().trim()).digest('hex')});
+                    isAdmin: response.data.isAdmin,
+                    gravatar: 'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(response.data.email).toLowerCase().trim()).digest('hex')}, 
+                    () => {this.props.setAdmin(this.state.isAdmin)});
             });
         }
     }
@@ -63,11 +70,13 @@ class ProfileDrop extends React.Component{
         if(nextProps.user){
             axios.get('/user/get-user-by-email/' + nextProps.user)
             .then(response => {
-                var md5 = crypto.createHash('md5');
+                
                 this.setState({
-                    email:this.props.user, 
+                    email: this.props.user, 
                     name: response.data.name,
-                    gravatar: 'https://www.gravatar.com/avatar/' + md5.update(String(response.data.email).toLowerCase().trim()).digest('hex')});
+                    isAdmin: response.data.isAdmin,
+                    gravatar: 'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(response.data.email).toLowerCase().trim()).digest('hex')},
+                    () => {this.props.setAdmin(this.state.isAdmin)});
             });
         }
     }

@@ -1,132 +1,135 @@
 import React from 'react';
-import crypto from 'crypto';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import { Redirect, Link } from 'react-router-dom';
 import bcrypt from 'bcryptjs';
-import { Redirect } from 'react-router-dom'
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 
 class LoginForm extends React.Component{
     constructor(props){
         super(props);
 
         this.state = {
-            email: 'free_roaming94@yahoo.com', 
-            password: '12345678',
-            remember: false,
+            email: '', 
+            password: 'A12345678',
             error: '',
-            redirect: false
+            redirect: false,
         };
 
         this.setEmail = this.setEmail.bind(this);
         this.setPassword = this.setPassword.bind(this);
-        // this.remember = this.remember.bind(this);
-        // this.validateEmail = this.validateEmail.bind(this);
-        // this.validatePassword = this.validatePassword.bind(this);
-        this.validate = this.validate.bind(this);
+        this.remember = this.remember.bind(this);
         this.submit = this.submit.bind(this);
+        this.resetError = this.resetError.bind(this);
+        this.validate = this.validate.bind(this);
     }
 
-    // validateEmail(event) {
-    //     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    // }
-
-    // validatePassword(){
-    //     // var num = /d/;
-    //     // var upper = /[A-Z]/;
-    //     this.state.password.length > 7 /*&& num.test(this.state.password) && upper.test(this.state.password)*/ ? this.setState({errorPass: false, errorPassMsg: ''}) : 
-    //         this.setState({errorPass: true, errorPassMsg: 'Invalid password'});
-    // }
+    componentWillMount(){
+        let email = cookies.get('knbn-email');
+        if(email){
+            this.setState({email: email})
+        }
+    }
 
     setEmail(event){
-        this.setState({email: event.target.value});
+        this.setState({email: event.target.value}, this.resetError);
     }
 
     setPassword(event){
-        this.setState({password: event.target.value});
+        this.setState({password: event.target.value}, this.resetError);
     }
 
-    // remember(){
-    //     this.setState({remember: !this.state.remember});
-    // }
+    validate(callback){
+        if(!this.state.email){
+            this.setState({error: 'Introdu un e-mail'})
+        }
+        else if(!this.state.password){
+            this.setState({error: 'Introdu o parolă'})
+        }
+        else{
+            callback();
+        }
+    }
 
-    // calcGravatar(email){
-    //     var md5 = crypto.createHash('md5');
-    //     var hash = md5.update(String(this.state.email).toLowerCase().trim()).digest('hex');
-    //     this.setState({gravatar: hash})
-    // }
+    remember(){
+        this.setState({remember: !this.state.remember});
+    }
 
-    validate(){
-        axios.post('/checkuser', {email: this.state.email, password: this.state.email}).then(response => {
-            if(response.data.success == false){
-                this.setState({error: response.data.message});
-            }
-        });
+    resetError(){
+        this.setState({error: '', fromCookie: false});
     }
 
     submit(event){
         event.preventDefault();
 
-        axios.post('/login', {username: this.state.email, password: this.state.password})
-        .then(response => {
-            if(response.status == 200){
-                this.props.setToken(response.data.jwtToken);
-                this.setState({redirect: true});
-            }
-            else{
-                this.setState({error: 'Eroare la logare! Incercați din nou'})
-            }
-        })
+        this.validate(() => {
+            axios.post('/login', {username: this.state.email, password: this.state.password})
+            .then(response => {
+                if(response.status == 200){
+                    cookies.set('knbn-email', this.state.email, {path: '/'});
+                    this.props.setToken(response.data.jwtToken);
+                    this.setState({redirect: true});
+                }
+            })
+            .catch(error => {
+                if(error.response.status == 500 || error.response.status == 404){
+                    this.setState({error: error.response.data.error});
+                }
+            });
+        });
     }
 
     render(){
         return(
             <div>
                 {this.state.redirect ? 
-
                     <Redirect to="/"/>
                 :
-                
                     <form>
-                        <div class="form-group">
-                            <div class="col-lg-12 col-xl-12 col-md-12 col-12 d-flex justify-content-center">
-                                <div class="mb-2 d-flex">
-                                    <img class='profile-img mx-auto' src={'https://www.gravatar.com/avatar/' + this.state.gravatar}/>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xl-12">{this.state.error}</div>
-
                         <div class="form-group">
                             <input 
                             type="email" 
-                            class="form-control register-area" 
-                            placeholder="Email" 
+                            class={"form-control knbn-font-medium knbn-no-box-shadow knbn-no-border-radius knbn-transition" + (this.props.themeToggled ? " knbn-dark-onselect knbn-dark-bg-2x knbn-dark-border-2x knbn-dark-color-5x" : " knbn-snow-onselect")}
+                            placeholder="E-mail" 
                             value={this.state.email} 
-                            onChange={this.setEmail} title="Email" 
+                            onChange={this.setEmail} title="E-mail" 
                             onBlur={this.validateEmail}/>
                         </div>
+                        
                         <div class="form-group">
                             <input 
                             type="password" 
-                            class="form-control register-area" 
-                            placeholder="Password" 
+                            class={"form-control knbn-font-medium knbn-no-box-shadow knbn-no-border-radius knbn-transition" + (this.props.themeToggled ? " knbn-dark-onselect knbn-dark-bg-2x knbn-dark-border-2x knbn-dark-color-5x" : " knbn-snow-onselect")}
+                            placeholder="Parolă" 
                             value={this.state.password} 
                             onChange={this.setPassword} 
-                            title="Password" 
+                            title="Parolă" 
                             onBlur={this.validatePassword}/>
                         </div>
 
-                        <div class="d-flex flex-row justify-content-center my-2 knbn-rmb-container" onClick={this.remember}>
-                            <div class={"knbn-remember mr-2 d-flex" + (this.state.remember ? " knbn-remember-active" : "")}>
-                                <img src="./images/save.svg" class="mx-auto my-auto knbn-img-inverted"/>
-                                </div>
-                            <span class="knbn-rmb">Remember password</span>
+                        <button 
+                        class={"btn col-12 mb-2 knbn-no-border-radius knbn-font-medium knbn-no-box-shadow knbn-transition knbn-bg-transparent" + (this.props.themeToggled ? " knbn-dark-border-1x knbn-dark-onselect knbn-dark-bg-2x knbn-dark-color-5x" : " knbn-snow-border-1x knbn-snow-onselect")} 
+                        title="Apasă pentru logare" 
+                        onClick={this.submit}>
+                            Logare
+                        </button>
+
+                        <div class="d-flex justify-content-center">
+                            <Link to='/forgot'>
+                                <div class="knbn-font-small">Parolă uitată</div>
+                            </Link>
                         </div>
 
-                        <button class="btn col-12 register-btn mb-2" title="Press to login" onClick={this.submit}>Logare</button>
+                        <div class={"text-center w-100 knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-2x" : " knbn-snow-color-2x")}>Dacă nu ai cont, apasă <Link to='/register'>aici</Link></div>
 
-                        <a href='/forgotpass' class="forgot">Forgot password</a> 
+                        {this.state.error ?
+                            <div class={"col-xl-12 knbn-error text-center mt-1" + (this.props.themeToggled ? " knbn-dark-error-color knbn-dark-bg-error" : " knbn-snow-error-color knbn-snow-bg-error")}>
+                                {this.state.error}
+                            </div>
+                            :
+                            null
+                        }
                     </form>
                 }
             </div>
@@ -136,7 +139,7 @@ class LoginForm extends React.Component{
 
 const mapStateToProps = (state) => {
     return {
-        themeToggled: state.themeToggled
+        themeToggled: state.themeToggled,
     }
 }
 

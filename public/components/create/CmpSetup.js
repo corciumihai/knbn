@@ -10,6 +10,9 @@ import Error from './Error';
 import Header3 from '../editor/Header3';
 import Header2 from '../editor/Header2';
 import Menu from '../Menu';
+import SubmitButton from './SubmitButton';
+import CancelButton from './CancelButton';
+import Success from '../messages/Success';
 
 class CmpSetup extends React.Component{
     constructor(props){
@@ -28,7 +31,8 @@ class CmpSetup extends React.Component{
             nameError: '',
             project: {},
             projectNameError: '',
-            projects: []
+            projects: [],
+            filteredReleases: []
         }
 
         this.setAssignee = this.setAssignee.bind(this);
@@ -43,34 +47,64 @@ class CmpSetup extends React.Component{
         this.setProject = this.setProject.bind(this);
         this.verify = this.verify.bind(this);
         this.fetchProjects = this.fetchProjects.bind(this);
+        this.resetError = this.resetError.bind(this);
     }
 
-    setName(value){this.setState({name: value, nameError: ''});}
+    setName(value){this.setState({name: value}, this.resetError);}
 
-    setAssignee(user){this.setState({assignee: user})}
+    setAssignee(user){this.setState({assignee: user}, this.resetError)}
 
-    setCategory(category){this.setState({category: category});}
+    setCategory(category){this.setState({category: category}, this.resetError);}
 
-    setDescription(value){this.setState({description: value});}
+    setDescription(value){this.setState({description: value}, this.resetError);}
 
-    setPriority(prio){this.setState({priority: prio})};
+    setPriority(prio){this.setState({priority: prio}, this.resetError)};
 
-    setRelease(release){this.setState({release: release});}
+    setRelease(release){this.setState({release: release}, this.resetError);}
     
     setProject(project){
-        this.setState({project: project, projectNameError: ''});
+        this.setState({project: project}, () => {
+            this.state.project.id ? 
+            this.setState({filteredReleases: this.state.releases.filter(item => {return item.project == this.state.project.id}, this.resetError)})
+            :
+            this.setState({filteredReleases: this.state.releases})
+        });
     }
 
-    fetchTickets(){axios.get('/get-tickets').then(response => {this.setState({tickets: response.data.tickets, filteredTickets: response.data.tickets});});}
+    fetchTickets(){
+        axios.get('/get-tickets')
+        .then(response => {
+            this.setState({
+                tickets: response.data.tickets, 
+                filteredTickets: response.data.tickets
+            });
+        });
+    }
 
-    fetchCategories(){axios.get('/get-categories').then(response => {this.setState({categories: response.data, filteredCategories: response.data})});}
+    fetchCategories(){
+        axios.get('/get-categories')
+        .then(response => {
+            this.setState({
+                categories: response.data, 
+                filteredCategories: response.data
+            });
+        });
+    }
 
-    fetchReleases(){axios.get('/get-releases').then(response => {this.setState({releases: response.data})})}
+    fetchReleases(){
+        axios.get('/get-releases')
+        .then(response => {
+            this.setState({
+                releases: response.data, 
+                filteredReleases: response.data
+            })
+        })
+    }
 
     fetchProjects(){axios.get('/get-projects').then(response => {this.setState({projects: response.data})})}
 
     setEstimation(value){
-        this.setState({estimation: value});
+        this.setState({estimation: value}, this.resetError);
     }
 
     componentWillMount(){
@@ -85,18 +119,22 @@ class CmpSetup extends React.Component{
         this.setState({priority: nextProps.priorities[0]});
     }
 
-    verify(){
+    verify(callback){
         if(this.state.name == undefined || this.state.name.length == 0){
-            this.setState({nameError: 'Enter a ticket name'});
-            return false;
+            this.setState({error: 'Introdu numele componentei'});
         }
 
-        if(this.state.project.name == undefined || this.state.project.name.length == 0){
-            this.setState({projectNameError: 'Enter a project reference'});
-            return false;
+        else if(this.state.project.name == undefined || this.state.project.name.length == 0){
+            this.setState({error: 'Introdu o referință pentru proiect'});
         }
 
-        return true;
+        else if(this.state.release.project != this.state.project.id){
+            this.setState({error: "Versiunea nu există pentru proiectul selectat"})
+        }
+        
+        else{
+            callback();
+        }
     }
 
     resetState(){
@@ -114,11 +152,15 @@ class CmpSetup extends React.Component{
         })
     }
 
+    resetError(){
+        this.setState({error: ''});
+    }
+
     submitComponent(event){
         event.preventDefault();
 
-        if(this.verify() == true){
-            axios.post('/add-cmp', {
+        this.verify(() => {
+            axios.post('/component/add-component', {
                 name: this.state.name,
                 owner: this.state.assignee.email,
                 category: this.state.category.id,
@@ -128,11 +170,11 @@ class CmpSetup extends React.Component{
                 startDate: new Date().getTime(),
                 project: this.state.project.id
             }).then(response => {
-                if(response.data.success == true){
-                    this.resetState();
+                if(response.status == 200){
+                    this.setState({success: 'Componentă adăugată cu succes'}, this.resetState);
                 }
             });
-        }
+        })
     }
 
     render(){
@@ -140,7 +182,7 @@ class CmpSetup extends React.Component{
             <div class={"container-fluid knbn-bg-transparent knbn-transition pb-3 knbn-container" + (this.props.themeToggled ? " knbn-dark-bg-1x" : " knbn-snow-bg-1x")}>
                 <Menu/>
             
-                <div class="row mt-3">
+                <div class="row mt-3 knbn-mandatory-margin">
                     <div class="col-xl-4 offset-xl-4">
                         <div class="row">
                             <Header3>Creator Componentă</Header3>
@@ -149,19 +191,17 @@ class CmpSetup extends React.Component{
                             this.state.projects.length == 0 ? 
                             <div class="row">
                                 <Header2>Niciun proiect configurat</Header2>
-                                <div class={"knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>Înainte de a adăuga o componentă, creați un proiect</div>
+                                <div class={"col knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>Înainte de a adăuga o componentă, creați un proiect</div>
                             </div>
                             :
                             <div class="row">
                                 <div class="col-xl-12">
-                                    <Error>{this.state.nameError}</Error>
                                     <InputField 
                                         label="Nume"
                                         value={this.state.name}
                                         description="Numele tichetului înregistrat în baza de date"
                                         action={this.setName}
                                     />
-                                    <Error>{this.state.projectNameError}</Error>
                                     <SelectionField
                                         label="Atașează proiect"
                                         action={this.setProject}
@@ -195,7 +235,7 @@ class CmpSetup extends React.Component{
                                         action={this.setRelease}
                                         description="Versiune la care se atașează componenta"
                                         value={this.state.release.name}
-                                        items={this.state.releases}
+                                        items={this.state.filteredReleases}
                                         currentItem={this.state.release}
                                     />
                                     
@@ -207,10 +247,13 @@ class CmpSetup extends React.Component{
                                         items={this.state.categories}
                                         currentItem={this.state.category}
                                     />  
+                                    
+                                    <Error>{this.state.error}</Error>
+                                    <Success>{this.state.success}</Success>
 
                                     <div class="d-flex flex-row justify-content-center mb-3 ">
-                                        <button class={"ticket-dropdown-btn btn btn-primary mr-2 knbn-border" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-color-2x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-color-2x knbn-snow-border-2x")} onClick={this.submitComponent}>Adaugă componentă</button>
-                                        <button class={"ticket-dropdown-btn btn btn-primary" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-color-2x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-color-2x knbn-snow-border-2x")} onClick={this.resetState}>Anulează</button>
+                                        <SubmitButton action={this.submitComponent}>Adaugă componentă</SubmitButton>
+                                        <CancelButton action={this.resetState}>Anulează</CancelButton>
                                     </div>
                                 </div>
                             </div>
