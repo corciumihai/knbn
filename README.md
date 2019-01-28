@@ -1,2 +1,2 @@
-# knbn
+# KNBN
 Bachelor Degree Thesis
