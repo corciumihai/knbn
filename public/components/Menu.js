@@ -9,23 +9,9 @@ import KNBNNavLink from './menu/KNBNNavLink';
 import DropdownItem from './menu/DropdownItem';
 import { connect } from 'react-redux';
 import ThemeToggler from './menu/ThemeToggler';
+import Cookies from 'universal-cookie';
 
-const mapStatetoProps = (state) => {
-    return {
-        themeToggled: state.themeToggled,
-        currentUser: state.currentUser
-    }
-}
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        loadProfile: () => {
-            dispatch({
-                type: 'KNBN_LOAD_TOKEN',
-            });
-        },
-    }
-}
+const cookies = new Cookies();
 
 class Menu extends React.Component{
     constructor(props){
@@ -39,6 +25,7 @@ class Menu extends React.Component{
 
         this.toggle = this.toggle.bind(this);
         this.getProjects = this.getProjects.bind(this);
+        this.setLastAccessedProject = this.setLastAccessedProject.bind(this);
     }
 
     getProjects(){
@@ -47,9 +34,13 @@ class Menu extends React.Component{
         });
     }
 
+    setLastAccessedProject(id){
+        cookies.set('knbn-lastProject', id, {path: '/', maxAge: 1800000});
+    }
+
     toggle(){this.setState({toggle: !this.state.toggle});}
 
-    componentWillMount(){
+    componentDidMount(){
         this.getProjects();
         this.props.loadProfile();
     }
@@ -72,7 +63,7 @@ class Menu extends React.Component{
                                 <DropdownMenu>
                                 {   this.state.projects.length > 0 ?
                                     this.state.projects.map(project => {
-                                        return  <NavLink key={project.id} to={"/view-project/" + project.id}>
+                                        return  <NavLink key={project.id} to={"/view-project/" + project.id} onClick={() =>{this.setLastAccessedProject(project.id)}}>
                                                     <DropdownItem imgSrc={'./images/project.svg'}>{project.name}</DropdownItem>
                                                 </NavLink>
                                     })
@@ -101,7 +92,7 @@ class Menu extends React.Component{
                                         <DropdownItem imgSrc="./images/pr.svg">Raport de problemă</DropdownItem>
                                     </NavLink>
                                     <NavLink to="/create-cmp">
-                                        <DropdownItem imgSrc="./images/comp.svg">Componentă</DropdownItem>
+                                        <DropdownItem imgSrc="./images/comp.svg">Modul</DropdownItem>
                                     </NavLink>
                                 </DropdownMenu>
 
@@ -118,5 +109,23 @@ class Menu extends React.Component{
         );
     }
 }
+
+const mapStatetoProps = (state) => {
+    return {
+        themeToggled: state.themeToggled,
+        currentUser: state.currentUser
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        loadProfile: () => {
+            dispatch({
+                type: 'KNBN_LOAD_TOKEN',
+            });
+        },
+    }
+}
+
 
 export default connect(mapStatetoProps, mapDispatchToProps)(Menu);

@@ -1,12 +1,12 @@
 :root{
-    --t-snow-bg-1x: rgb(255, 255, 255);
-    --t-snow-bg-2x: rgb(235, 235, 235);
+    --t-snow-bg-1x: rgb(247, 245, 245);
+    --t-snow-bg-2x: rgb(255, 255, 255);
     --t-snow-bg-3x: rgb(255, 255, 255);
     --t-snow-bg-4x: rgb(255, 255, 255);
     --t-snow-bg-5x: rgb(255, 255, 255);
 
-    --t-snow-bg-1x-active: rgb(214, 214, 214);
-    --t-snow-bg-2x-active: rgb(245, 245, 245);
+    --t-snow-bg-1x-active: rgb(255, 255, 255);
+    --t-snow-bg-2x-active: rgb(241, 241, 241);
     --t-snow-bg-3x-active: rgb(233, 233, 233);
     --t-snow-bg-4x-active: rgb(238, 238, 238);
 
@@ -22,7 +22,7 @@
     --t-snow-color-4x-active: var(--t-snow-color-5x);
 
     --t-snow-border-1x: rgb(201, 201, 201);
-    --t-snow-border-2x: rgb(160, 160, 160);
+    --t-snow-border-2x: rgb(230, 230, 230);
     --t-snow-border-3x: rgb(201, 201, 201);
     --t-snow-border-4x: rgb(201, 201, 201);
 
@@ -33,13 +33,13 @@
     --t-snow-bg-ondrop: rgba(78, 199, 255, 0.24);
     --t-snow-bd-ondrop: rgba(78, 184, 255, 0.336);
 
-    --t-snow-box-shadow-1x: 2px 4px 3px rgb(230, 230, 230);
-    --t-snow-box-shadow-2x: 2px 4px 3px rgb(230, 230, 230);
+    --t-snow-box-shadow-1x: 2px 4px 3px rgb(228, 228, 228);
+    --t-snow-box-shadow-2x: 2px 4px 3px rgb(216, 216, 216);
     --t-snow-box-shadow-3x: 2px 4px 3px rgb(230, 230, 230);
     --t-snow-box-shadow-4x: 2px 4px 3px rgb(228, 228, 228);
 
-    --t-snow-border-onselect: rgb(126, 190, 41);
-    --t-snow-bg-onselect: rgba(125, 190, 41, 0.199);
+    --t-snow-border-onselect: rgb(117, 93, 93);
+    --t-snow-bg-onselect: rgba(81, 41, 190, 0.199);
 
     --t-snow-color-error: rgb(252, 74, 74);
     --t-snow-bg-error: rgba(226, 69, 69, 0.137);
@@ -189,7 +189,6 @@
 .knbn-snow-onselect:focus, 
 .knbn-snow-onselect:active{
     border-color: var(--t-snow-border-onselect) !important;
-    background-color: var(--t-snow-bg-onselect) !important;
 }
 
 .knbn-snow-edit-bd-2x >.ql-toolbar, 

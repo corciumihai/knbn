@@ -10,11 +10,11 @@ class Register extends React.Component{
         super(props);
 
         this.state = {
-            email: 'free_roaming94@yahoo.com', 
-            password: 'A12345678',
-            repeatPassword: 'A12345678',
-            name: 'Mihai Corciu',
-            company: 'Continental',
+            email: '', 
+            password: '',
+            repeatPassword: '',
+            name: '',
+            company: '',
             isAdmin: false,
             error: '',
             success: false
@@ -134,10 +134,11 @@ class Register extends React.Component{
 
     render(){
         return(
-            <div class={"container-fluid d-flex p-2 h-100 knbn-container" + (this.props.themeToggled ? " knbn-dark-bg-1x" : " knbn-snow-bg-1x")}>
+            <div class={"container-fluid d-flex p-2 h-100 knbn-container knbn-font-medium" + (this.props.themeToggled ? " knbn-dark-bg-1x" : " knbn-snow-bg-1x")}>                    
                 <div class="col-xl-2 offset-xl-5 col-lg-4 offset-lg-4 col-md-4 offset-md-4 col-sm-6 offset-sm-3 col-xs-8 offset-xs-2 align-self-center">
                     <form>
-                        
+                        <div class={"col text-center mb-3" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>Înregistrare</div>
+
                         <div class="form-group">
                             <input 
                             type="email" 
@@ -182,12 +183,12 @@ class Register extends React.Component{
                             />
                         </div>
 
-                        <div class="d-flex flex-row justify-content-center form-group knbn-pointer" onClick={this.setAdmin}>
+                        {/* <div class="d-flex flex-row justify-content-center form-group knbn-pointer" onClick={this.setAdmin}>
                             <div class={"d-flex flex-row knbn-border mr-2" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x") + (this.state.isAdmin ? " knbn-remember" : "")}>
                                 <img src="./images/save.svg" class="mx-auto my-auto"/>
                             </div>
                             <div class={"knbn-font-medium" + (this.props.themeToggled ?  " knbn-dark-color-2x" : " knbn-snow-color-2x")}>Is Administrator</div>
-                        </div>
+                        </div> */}
 
                         <div class="form-group">
                             <input 

@@ -82,7 +82,7 @@ class CmpSetup extends React.Component{
     }
 
     fetchCategories(){
-        axios.get('/get-categories')
+        axios.get('category/multi/get')
         .then(response => {
             this.setState({
                 categories: response.data, 
@@ -92,7 +92,7 @@ class CmpSetup extends React.Component{
     }
 
     fetchReleases(){
-        axios.get('/get-releases')
+        axios.get('release/multi/get')
         .then(response => {
             this.setState({
                 releases: response.data, 
@@ -185,13 +185,13 @@ class CmpSetup extends React.Component{
                 <div class="row mt-3 knbn-mandatory-margin">
                     <div class="col-xl-4 offset-xl-4">
                         <div class="row">
-                            <Header3>Creator Componentă</Header3>
+                            <Header3>Creare Modul</Header3>
                         </div>
                         {
                             this.state.projects.length == 0 ? 
                             <div class="row">
                                 <Header2>Niciun proiect configurat</Header2>
-                                <div class={"col knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>Înainte de a adăuga o componentă, creați un proiect</div>
+                                <div class={"col knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>Înainte de a adăuga un modul, creați un proiect</div>
                             </div>
                             :
                             <div class="row">
@@ -199,19 +199,19 @@ class CmpSetup extends React.Component{
                                     <InputField 
                                         label="Nume"
                                         value={this.state.name}
-                                        description="Numele tichetului înregistrat în baza de date"
+                                        description="Numele modulului înregistrat"
                                         action={this.setName}
                                     />
                                     <SelectionField
                                         label="Atașează proiect"
                                         action={this.setProject}
-                                        description="Project to be attached to"
+                                        description="Proiectul în care se va afla modulul"
                                         items={this.state.projects}
                                         currentItem={this.state.project}
                                     />
 
                                     <PriorityField
-                                        description="Prioritatea componentei"
+                                        description="Prioritatea modulului"
                                         items={this.props.priorities}
                                         action={this.setPriority}
                                         value={this.state.priority}
@@ -220,20 +220,20 @@ class CmpSetup extends React.Component{
                                     <UserField
                                         user={this.state.assignee}
                                         action={this.setAssignee}
-                                        label="Proprietarul curent al componentei"
+                                        label="Proprietarul curent al modulului"
                                     />
 
                                     <TextAreaField
                                         label="Descriere"
                                         action={this.setDescription}
                                         value={this.state.description}
-                                        description="Descrierea componentei"
+                                        description="Descrierea modulului"
                                     />
 
                                     <SelectionField
                                         label="Atașează versiune"
                                         action={this.setRelease}
-                                        description="Versiune la care se atașează componenta"
+                                        description="Versiune la care se atașează modulul"
                                         value={this.state.release.name}
                                         items={this.state.filteredReleases}
                                         currentItem={this.state.release}
@@ -242,7 +242,7 @@ class CmpSetup extends React.Component{
                                     <SelectionField
                                         label="Atașează categorie"
                                         action={this.setCategory}
-                                        description="Categoria componentei"
+                                        description="Categoria modulului"
                                         value={this.state.category.name}
                                         items={this.state.categories}
                                         currentItem={this.state.category}
@@ -252,7 +252,7 @@ class CmpSetup extends React.Component{
                                     <Success>{this.state.success}</Success>
 
                                     <div class="d-flex flex-row justify-content-center mb-3 ">
-                                        <SubmitButton action={this.submitComponent}>Adaugă componentă</SubmitButton>
+                                        <SubmitButton action={this.submitComponent}>Adaugă modulul</SubmitButton>
                                         <CancelButton action={this.resetState}>Anulează</CancelButton>
                                     </div>
                                 </div>

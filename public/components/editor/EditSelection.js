@@ -28,7 +28,7 @@ class EditSelection extends React.Component{
         this.saveTemporary = this.saveTemporary.bind(this);
     }
 
-    componentWillMount(){
+    componentDidMount(){
         this.setState({items: this.props.items, filteredItems: this.props.items, inEditMode: false, tempItem: this.props.item, value: this.props.item.name});
     }
 

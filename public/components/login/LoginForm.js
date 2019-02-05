@@ -87,6 +87,7 @@ class LoginForm extends React.Component{
                     <Redirect to="/"/>
                 :
                     <form>
+                        <div class={"col text-center knbn-font-medium mb-3" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>Autentificare</div>
                         <div class="form-group">
                             <input 
                             type="email" 
@@ -112,7 +113,7 @@ class LoginForm extends React.Component{
                         class={"btn col-12 mb-2 knbn-no-border-radius knbn-font-medium knbn-no-box-shadow knbn-transition knbn-bg-transparent" + (this.props.themeToggled ? " knbn-dark-border-1x knbn-dark-onselect knbn-dark-bg-2x knbn-dark-color-5x" : " knbn-snow-border-1x knbn-snow-onselect")} 
                         title="Apasă pentru logare" 
                         onClick={this.submit}>
-                            Logare
+                            Autentificare
                         </button>
 
                         <div class="d-flex justify-content-center">

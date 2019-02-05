@@ -9,6 +9,8 @@ import Menu from './Menu';
 import LoadingScreen from './LoadingScreen';
 import Filters from './Filters';
 import Filter from './filters/Filter';
+import Error from './create/Error';
+import DissmisableError from './messages/DismisableError';
 
 class Project extends React.Component{
     constructor(props){
@@ -17,11 +19,14 @@ class Project extends React.Component{
         this.state = {
             components: [],
             data: {},
-            loading: true
+            loading: true,
+            error: ''
         }
+
+        this.setError = this.setError.bind(this);
     }
 
-    componentWillMount(){
+    componentDidMount(){
         axios.get('/get-project-details/' + this.props.match.params.id)
         .then(response => {
             var projectData = response.data;
@@ -49,6 +54,10 @@ class Project extends React.Component{
         }); 
     }
 
+    setError(error){
+        this.setState({error: error});
+    }
+
     render(){
         return(
             <div class={"container-fluid knbn-bg-transparent knbn-transition pb-3 h-100 knbn-container" + (this.props.themeToggled ? " knbn-dark-bg-1x" : " knbn-snow-bg-1x")}>
@@ -56,11 +65,15 @@ class Project extends React.Component{
                 
                 <div class="row mt-3 knbn-mandatory-margin">
                     <div class="col-xl-12">
-                        <Filters>
-                            <Filter action={this.props.togglePR} trigger={this.props.filterPR}>Arată RP-urile</Filter>
-                            <Filter>Doar tichetele mele</Filter>
-                        </Filters>
+                        <DissmisableError dismissError={() => {this.setState({error: ''})}}>{this.state.error}</DissmisableError>
 
+                        <Filters>
+                            <Filter action={this.props.toggleTickets} trigger={this.props.filterTickets}>Arată doar tichete</Filter>
+                            <Filter action={this.props.togglePR} trigger={this.props.filterPR}>Arată doar RP-uri</Filter>
+                            <Filter action={this.props.onlyUserTickets} trigger={this.props.userOnly}>Doar tichetele mele</Filter>
+                            <Filter action={this.props.hideClosed} trigger={this.props.hiddenClosed}>Ascunde tichetele închise</Filter>
+                        </Filters>
+                        
                         <div class="row">
                             <Header3>
                                 {this.state.data.name}
@@ -73,7 +86,7 @@ class Project extends React.Component{
                                 this.state.components.map(comp => {
                                     let data = comp;
                                     data.project = this.props.match.params.id;
-                                    return <Component key={comp.id} data={comp}/>
+                                    return <Component key={comp.id} data={comp} setError={(error) => {this.setState({error: error})}}/>
                                 })
                                 :
                                 <div class="col-12">
@@ -94,14 +107,42 @@ const mapStateToProps = (state) => {
     return {
         themeToggled: state.themeToggled,
         filterPR: state.filterPR,
+        userOnly: state.userOnly,
+        hiddenClosed: state.hiddenClosed,
+        filterTickets: state.filterTickets,
+        collapseAll: state.collapseAll
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        toggleTickets: () => {
+            dispatch({
+                type: 'KNNB_TOGGLE_TICKETS',
+            });
+        },
+
         togglePR: () => {
             dispatch({
                 type: 'KNNB_TOGGLE_PR',
+            });
+        },
+
+        onlyUserTickets: () => {
+            dispatch({
+                type: 'KNNB_TOGGLE_USER_ONLY',
+            });
+        },
+
+        hideClosed: () => {
+            dispatch({
+                type: 'KNNB_TOGGLE_HIDE_CLOSED',
+            });
+        },
+
+        collapseAllElements: () => {
+            dispatch({
+                type: 'KNNB_TOGGLE_COLLAPSE',
             });
         }
     }

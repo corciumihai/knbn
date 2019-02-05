@@ -27,9 +27,9 @@ class EditPR extends React.Component{
     }
 
     componentDidMount(){
-        axios.get('/get-pr-data/' + this.props.match.params.ticketID).then(response => {     
+        axios.get('/pr/get-data/' + this.props.match.params.ticketID).then(response => {     
             this.setState({data: response.data}, () => {
-                axios.get('/get-releases').then(response => {
+                axios.get('release/multi/get').then(response => {
                     this.setState({releases: response.data});
                 });
             });

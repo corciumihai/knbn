@@ -54,7 +54,7 @@ class ProfileDrop extends React.Component{
 
     componentWillMount(){
         if(this.props.user){
-            axios.get('/user/get-user-by-email/' + this.props.user)
+            axios.get('/user/' + this.props.user)
             .then(response => {
                 this.setState({
                     email: this.props.user, 
@@ -68,7 +68,7 @@ class ProfileDrop extends React.Component{
 
     componentWillReceiveProps(nextProps, nextState){
         if(nextProps.user){
-            axios.get('/user/get-user-by-email/' + nextProps.user)
+            axios.get('/user/' + nextProps.user)
             .then(response => {
                 
                 this.setState({
@@ -95,7 +95,7 @@ class ProfileDrop extends React.Component{
             
                     <DropdownMenu>
                         <NavLink to="">
-                            <DropdownItem>Profil</DropdownItem>
+                            <DropdownItem imgSrc="./images/profile.svg">Profil</DropdownItem>
                         </NavLink>
                         <a onClick={this.logout}><DropdownItem imgSrc="./images/logout.svg">Ieșire</DropdownItem></a>
                     </DropdownMenu>

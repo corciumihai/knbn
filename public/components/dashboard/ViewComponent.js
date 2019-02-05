@@ -15,7 +15,7 @@ class ViewComponent extends React.Component{
     }
 
     componentWillMount(){
-        Axios.get('/user/get-user-by-email/' + this.props.data.owner)
+        Axios.get('/user/' + this.props.data.owner)
         .then(response => {
             this.setState({owner: response.data})
         })

@@ -43,7 +43,7 @@ class EditField extends React.Component{
         this.props.save != null || this.props.save != undefined ? this.props.save(this.state.value) : {}
     }
 
-    render(){
+    render(){        
         return(
             <div class="form-group knbn-bg-transparent">
                 <Label label={this.props.label}/>

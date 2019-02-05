@@ -76,7 +76,7 @@ class EditTicket extends React.Component{
     }
 
     componentWillMount(){
-        axios.get('/get-ticket-data/' + this.props.match.params.id).then( response => {      
+        axios.get('/ticket/get-data/' + this.props.match.params.id).then( response => {      
             this.setState({
                 id: response.data.id,
                 priority: this.props.priorities.find(item => {return item.dbName == response.data.priority}),
@@ -94,7 +94,7 @@ class EditTicket extends React.Component{
             });
 
             if(response.data.releaseID){
-                axios.get('/get-release/' + response.data.releaseID).then(response => {
+                axios.get('/release/get/' + response.data.releaseID).then(response => {
                     this.setState({
                         release: response.data, loadingRelease: false
                     });
@@ -102,7 +102,7 @@ class EditTicket extends React.Component{
             }
             
             if(response.data.category){
-                axios.get('/get-category/' + response.data.category).then(response => {
+                axios.get('/category/get/' + response.data.category).then(response => {
                     this.setState({
                         category: response.data, loadingCategory: false
                     });
@@ -110,7 +110,7 @@ class EditTicket extends React.Component{
             }
         });        
 
-        axios.get('/get-releases').then( response => {
+        axios.get('release/multi/get').then( response => {
             this.setState({
                 releases: response.data,
                 filteredReleases: response.data,
@@ -118,7 +118,7 @@ class EditTicket extends React.Component{
             }, this.filterReleases);
         });
 
-        axios.get('/get-categories').then( response => {
+        axios.get('category/multi/get').then( response => {
             if(response.status == 200){
                 this.setState({
                     categories: response.data,
@@ -233,7 +233,7 @@ class EditTicket extends React.Component{
     }
 
     removeComment(item){
-        axios.post('/comment/remove', item)
+        axios.post('/ticket/remove/comment', item)
         .then(response => {
             if(response.status == 200){
                 this.fetchComments();
@@ -243,7 +243,7 @@ class EditTicket extends React.Component{
 
     removeWorklog(worklog){        
         if(worklog){
-            axios.post('/ticket/remove-worklog', worklog)
+            axios.post('/ticket/remove/worklog', worklog)
             .then(response => {
                 if(response.status == 200){
                     this.fetchWorklogs();
@@ -256,7 +256,7 @@ class EditTicket extends React.Component{
     }
 
     saveName(name){
-        axios.post('/set-ticket/name', {
+        axios.post('/ticket/set/name', {
             id: this.state.id, 
             value: name
         }).then( response => {
@@ -267,7 +267,7 @@ class EditTicket extends React.Component{
     }
 
     saveDescription(description){
-        axios.post('/set-ticket/description', {
+        axios.post('/ticket/set/description', {
             id: this.state.id,
             value: description
         })
@@ -279,7 +279,7 @@ class EditTicket extends React.Component{
     }
 
     saveRelease(release){        
-        axios.post('/set-ticket/release', {
+        axios.post('/ticket/set/release', {
             id: this.state.id, 
             value: release.id
         })
@@ -291,7 +291,7 @@ class EditTicket extends React.Component{
     }
 
     saveCategory(category){        
-        axios.post('/set-ticket/category', {
+        axios.post('/ticket/set/category', {
             id: this.state.id, 
             value: category.id
         })
@@ -303,7 +303,7 @@ class EditTicket extends React.Component{
     }
 
     savePriority(priority){
-        axios.post('/set-ticket/priority', {
+        axios.post('/ticket/set/priority', {
             id: this.state.id, 
             value: priority.dbName
         })
@@ -315,7 +315,7 @@ class EditTicket extends React.Component{
     }
 
     saveAssignee(user){
-        axios.post('/set-ticket/assignee', {
+        axios.post('/ticket/set/assignee', {
             id: this.state.id,
             value: user.email
         })
@@ -329,7 +329,7 @@ class EditTicket extends React.Component{
     }
 
     saveReporter(user){     
-        axios.post('/set-ticket/reporter', {
+        axios.post('/ticket/set/reporter', {
             id: this.state.id,
             value: user.email
         })
@@ -355,7 +355,7 @@ class EditTicket extends React.Component{
     }
 
     saveEstimation(value){
-        axios.post('/set-component/estimation', {
+        axios.post('/ticket/set/estimation', {
             id: this.state.id, 
             value: value
         })

@@ -91,9 +91,9 @@ class PRSetup extends React.Component{
 
     fetchTickets(){axios.get('/get-tickets').then(response => {this.setState({tickets: response.data.tickets, filteredTickets: response.data.tickets});});}
 
-    fetchCategories(){axios.get('/get-categories').then(response => {this.setState({categories: response.data, filteredCategories: response.data})});}
+    fetchCategories(){axios.get('category/multi/get').then(response => {this.setState({categories: response.data, filteredCategories: response.data})});}
 
-    fetchReleases(){axios.get('/get-releases').then(response => {this.setState({releases: response.data})})}
+    fetchReleases(){axios.get('release/multi/get').then(response => {this.setState({releases: response.data})})}
 
     fetchProjects(){
         axios.get('/get-projects')

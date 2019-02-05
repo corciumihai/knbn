@@ -159,7 +159,7 @@ class TicketSetup extends React.Component{
     }
 
     fetchCategories(){
-        axios.get('/get-categories')
+        axios.get('category/multi/get')
         .then(response => {
             this.setState({categories: response.data, filteredCategories: response.data, loadingCategories: false})
         });
@@ -175,7 +175,7 @@ class TicketSetup extends React.Component{
     }
 
     fetchReleases(){
-        axios.get('/get-releases')
+        axios.get('release/multi/get')
         .then(response => {this.setState({releases: response.data, filteredReleases: response.data, loadingReleases: false})});
     }
     

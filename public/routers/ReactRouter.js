@@ -19,6 +19,7 @@ import { createBrowserHistory } from 'history';
 import withAuth from './HighOrder';
 import SearchedItems from '../components/SearchedItems';
 import Forgot from '../components/login/Forgot';
+import EditReport from '../components/editor/EditReport';
 
 class ReactHashRouter extends React.Component{
     constructor(props){
@@ -41,6 +42,7 @@ class ReactHashRouter extends React.Component{
                         <Route exact path="/create-project" component={withAuth(ProjectSetup)} />
                         <Route exact path="/edit-component/:id" component={withAuth(EditComponent)} />
                         <Route exact path="/edit-ticket/:id" component={withAuth(EditTicket)} />
+                        <Route exact path="/edit-report/:id" component={withAuth(EditReport)} />
                         <Route exact path="/search/:term" component={withAuth(SearchedItems)} />
                     </Switch>
                 </HashRouter>

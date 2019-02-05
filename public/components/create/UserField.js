@@ -97,7 +97,7 @@ class UserField extends React.Component{
     }
 
     componentWillReceiveProps(nextProps, nextState){
-        axios.get('/user/get-user-by-email/' + nextProps.user.email).then(response =>{
+        axios.get('/user/' + nextProps.user.email).then(response =>{
             this.setState({
                 currentUser: response.data, value: response.data.name
             });

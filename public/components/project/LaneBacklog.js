@@ -8,42 +8,15 @@ class LaneBacklog extends React.Component{
     constructor(props){
         super(props);
 
-        this.pushTicket = this.pushTicket.bind(this);
-        this.pushReport = this.pushReport.bind(this);
-        this.removeTicket = this.removeTicket.bind(this);
-        this.removeReport = this.removeReport.bind(this);
+        this.push = this.push.bind(this);
     }
 
-    pushTicket = (ticket) => {        
-        const { canDrop } = this.props;
-        let data = ticket;
-        data.lane = 'backlog';
-
-        if(canDrop){
-            this.props.push(data);
-        }
-    }
-    
-    pushReport = (ticket) => {        
-        const { canDrop } = this.props;
-        let data = ticket;
-        data.lane = 'backlog';
-
-        if(canDrop){
-            this.props.push(ticket);
-        }
-    }
-
-    removeTicket = (ticket) => {
-        if(ticket.lane != 'backlog'){
-            this.props.remove(ticket);
-        }
-    }
-
-    removeReport = (ticket) => {
-        if(ticket.lane != 'backlog'){
-            this.props.remove(ticket);
-        }
+    push = (ticket) => {
+        let data = Object.assign({}, ticket, {
+            lane: 'backlog'
+        });
+        
+        this.props.push(data);
     }
 
     render(){
@@ -58,11 +31,10 @@ class LaneBacklog extends React.Component{
                     (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}> 
                 {
                     this.props.items.map(ticket => {
-                        return <Ticket 
-                                    data={ticket} 
-                                    key={ticket.id} 
-                                    remove={this.removeTicket} 
-                                    helpers={this.props.helpers}
+                        return  <Ticket 
+                                data={ticket} 
+                                key={ticket.id + ticket.isReport}
+                                helpers={this.props.helpers}
                                 />
                     })
                 }
@@ -74,12 +46,16 @@ class LaneBacklog extends React.Component{
 
 let target = {
     drop(props, monitor, component){
-        if(monitor.canDrop()) component.pushTicket(monitor.getItem());
+        component.push(monitor.getItem());
     },
 
     canDrop(props, monitor){
         if(monitor.getItem().component == props.compID){
             switch(monitor.getItem().lane){
+                case 'backlog': {
+                    return true;
+                }
+
                 case 'done': {
                     return true;
                 }

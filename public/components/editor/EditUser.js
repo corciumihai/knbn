@@ -38,7 +38,7 @@ class EditUser extends React.Component{
 
     componentWillReceiveProps(nextProps, nextState){
         if(nextProps.user.email){
-            axios.get('/user/get-user-by-email/' + nextProps.user.email)
+            axios.get('/user/' + nextProps.user.email)
             .then(response => {
                 this.setState({user: response.data});
             });
@@ -109,12 +109,6 @@ class EditUser extends React.Component{
                                 :
                                 (
                                     <div>
-                                        <a href="#" onClick={(event)=>{event.preventDefault(); this.setUser({name: 'No user'})}}>
-                                            <DropdownItem>
-                                                <div class="d-flex w-100"><div class="w-100 my-auto text-truncate">Niciun utilizator</div></div>
-                                            </DropdownItem>
-                                        </a>
-
                                         {this.state.filteredUsers.map(user => 
                                             {
                                                 return  <a href="#" key={user.email} onClick={(event)=>{event.preventDefault(); this.setUser(user)}}>
@@ -130,7 +124,6 @@ class EditUser extends React.Component{
                                             })
                                         }
                                     </div>
-                                    
                                 )
                             }
                             </DropdownMenu>

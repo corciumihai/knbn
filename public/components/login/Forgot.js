@@ -9,9 +9,9 @@ class Forgot extends React.Component {
         super();
 
         this.state = {
-            email: 'free_roaming94@yahoo.com',
-            newPass: 'A12345678',
-            confirmPass: 'A12345678',
+            email: '',
+            newPass: '',
+            confirmPass: '',
             success: false
         }
 
@@ -98,6 +98,7 @@ class Forgot extends React.Component {
             <div class={"knbn-container col-xl-12 d-flex" + (this.props.themeToggled ? " knbn-dark-bg-1x" : " knbn-snow-bg-1x")}>
                 <div class="col-xl-2 offset-xl-5 col-lg-4 offset-lg-4 col-md-4 offset-md-4 col-sm-6 offset-sm-3 col-xs-8 offset-xs-2 align-self-center knbn-bg-transparent">
                     <form>
+                        <div class={"col text-center knbn-font-medium mb-3" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>Resetare parolă</div>
                         <div class="form-group">
                             <input 
                                 type="email" 

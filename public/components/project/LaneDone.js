@@ -3,34 +3,20 @@ import Ticket from './Ticket';
 import { DropTarget } from 'react-dnd';
 import { ItemTypes } from './Constants';
 import { connect } from 'react-redux';
-import axios from 'axios';
 
 class LaneDone extends React.Component{
     constructor(props){
         super(props);
 
-        this.state = {
-            tickets: [],
-        }
-
-        this.pushTicket = this.pushTicket.bind(this);
-        this.removeTicket = this.removeTicket.bind(this);
+        this.push = this.push.bind(this);
     }
 
-    pushTicket = (ticket) => {        
-        const { canDrop } = this.props;
-        let data = ticket;
-        data.lane = 'done';
+    push = (ticket) => {
+        let data = Object.assign({}, ticket, {
+            lane: 'done'
+        });
 
-        if(canDrop){
-            this.props.push(data);
-        }
-    }
-    
-    removeTicket = (ticket) => {
-        if(ticket.lane != 'done'){
-            this.props.remove(ticket);
-        }
+        this.props.push(data);
     }
 
     render(){
@@ -45,11 +31,10 @@ class LaneDone extends React.Component{
                     (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}> 
                 {
                     this.props.items.map(ticket => {
-                        return <Ticket 
-                                    data={ticket} 
-                                    key={ticket.id} 
-                                    remove={this.removeTicket} 
-                                    helpers={this.props.helpers}
+                        return  <Ticket 
+                                data={ticket} 
+                                key={ticket.id + ticket.isReport} 
+                                helpers={this.props.helpers}
                                 />
                     })
                 }
@@ -61,7 +46,7 @@ class LaneDone extends React.Component{
 
 let target = {
     drop(props, monitor, component){
-        if(monitor.canDrop()) component.pushTicket(monitor.getItem());
+        component.push(monitor.getItem());
     },
 
     canDrop(props, monitor){
@@ -72,6 +57,10 @@ let target = {
                 }
 
                 case 'in_progress': {
+                    return true;
+                }
+
+                case 'done': {
                     return true;
                 }
     

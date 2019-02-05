@@ -28,10 +28,6 @@ const source = {
         ticketData = Object.assign({flipped: component.state.flipped}, ticketData);
 
         return ticketData;
-    },
-
-    endDrag(props, monitor, component){
-        props.remove(monitor.getItem());
     }
 }
 
@@ -62,7 +58,7 @@ class Ticket extends React.Component{
     componentDidMount(){
         if(this.props.data.assignee)
         {
-            axios.get('/user/get-user-by-email/' + this.props.data.assignee).then(response => {
+            axios.get('/user/' + this.props.data.assignee).then(response => {
                 this.setState({assignee: response.data, loadingUser: false});
             })
         }
@@ -142,7 +138,7 @@ class Ticket extends React.Component{
                             <div class="col-9 flex-grow-1 pr-0">
                                 <div class="col-xl-12 px-0">
                                     <div class="pt-1 field d-flex flex-row">
-                                        <div title="Tichet" class="mr-2"><img src="./images/ticket.svg" class="mx-auto my-auto"/></div>
+                                        <div title="Tichet" class="mr-2"><img src={this.props.data.isReport ? "./images/pr.svg" : "./images/ticket.svg"} class="mx-auto my-auto"/></div>
 
                                         <div class={"data col-xl-12 col-12 px-0 text-truncate knbn-font-16 mb-1" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")} title={loading ? "Se încarcă..." : this.props.data.name}>
                                         {
@@ -186,19 +182,38 @@ class Ticket extends React.Component{
                                         }
                                         </div>
                                     </div>
-
-                                    <div class="row field">
-                                        <div class={"col-xl-4 col-4 px-0 info text-truncate" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title="Zi începere">Ziua creării</div>
-
-                                        <div class={"data col-xl-8 col-8 px-0 text-truncate" + (this.props.themeToggled ? " knbn-dark-color-4x" : " knbn-snow-color-4x")} title={loading ? "Se încarcă..." : dateformat(new Date(parseInt(this.props.data.startDate)), "dd \u00B7 mmmm \u00B7 yyyy")}>
-                                        {
-                                            loading ? 
-                                            <LoadingRing/>
-                                            :
-                                            dateformat(this.props.data.startDate, "dd \u00B7 mmmm \u00B7 yyyy")
-                                        }
+                                    
+                                    {
+                                        this.props.data.isReport ? 
+                                        <div class="row field">
+                                            <div class={"col-xl-4 col-4 px-0 info text-truncate" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title="Zi începere">Sursă eroare</div>
+                                            {
+                                                loading ? 
+                                                <LoadingRing/>
+                                                :
+                                                <Link to={'/nothing'}>
+                                                    <div class={"knbn-border-radius-50 knbn-font-small knbn-transition knbn-border px-2 mr-1" + (this.props.themeToggled ? ' knbn-dark-border-4x knbn-dark-color-3x knbn-dark-bg-3x-active' : ' knbn-snow-border-3x knbn-snow-color-3x knbn-snow-bg-3x-active')}>
+                                                    {
+                                                        'Tichet ' + this.props.data.id
+                                                    }
+                                                    </div>
+                                                </Link>
+                                            }
                                         </div>
-                                    </div>
+                                    :                                    
+                                        <div class="row field">
+                                            <div class={"col-xl-4 col-4 px-0 info text-truncate" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title="Zi începere">Ziua creării</div>
+
+                                            <div class={"data col-xl-8 col-8 px-0 text-truncate" + (this.props.themeToggled ? " knbn-dark-color-4x" : " knbn-snow-color-4x")} title={loading ? "Se încarcă..." : dateformat(new Date(parseInt(this.props.data.startDate)), "dd \u00B7 mmmm \u00B7 yyyy")}>
+                                            {
+                                                loading ? 
+                                                <LoadingRing/>
+                                                :
+                                                dateformat(this.props.data.startDate, "dd \u00B7 mmmm \u00B7 yyyy")
+                                            }
+                                            </div>
+                                        </div>
+                                    }
 
                                     <div class="row field">
                                         <div class={"col-xl-4 col-4 px-0 info text-truncate" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title="Zi limită">Ziua limită</div>
@@ -215,13 +230,13 @@ class Ticket extends React.Component{
                                 </div>
                             </div>
 
-                            <div class={"col-3 pt-2 px-2 d-flex" + (this.state.flipped ? " hide" : "")}>
+                            <div class="col-3 pt-2 px-2 d-flex">
                             {
-                                this.state.assignee != undefined && this.state.assignee.email != undefined ? 
+                                this.state.assignee && this.state.assignee.email ? 
                                     loading ? 
                                     <div class="ml-auto mt-3 mr-3"><LoadingRing/></div>
                                     :
-                                    <img    class={"assignee-pic ml-auto knbn-transition knbn-border" + (this.props.themeToggled ? " knbn-dark-border-3x" : " knbn-snow-border-3x")} 
+                                    <img    class={"ml-auto knbn-transition knbn-border" + (this.state.flipped ? " knbn-profile-pic-medium" : " knbn-profile-pic-big") + (this.props.themeToggled ? " knbn-dark-border-3x" : " knbn-snow-border-3x")} 
                                             src={'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(this.state.assignee.email).toLowerCase().trim()).digest('hex')} 
                                             alt={loading ? "Se încarcă..." : this.state.assignee.name} title={loading ? "Se încarcă..." : 'Asignat \u00B7 ' + this.state.assignee.name}/> 
                                 : null
@@ -260,7 +275,7 @@ class Ticket extends React.Component{
                                     { 
                                         loading ?  <LoadingRing/> 
                                         :  
-                                        <div class={"knbn-border-radius-50 knbn-font-small knbn-transition knbn-border text-center px-2 mr-1 text-truncate" + (this.props.themeToggled ? ' knbn-dark-border-4x knbn-dark-color-3x knbn-dark-bg-3x-active' : ' knbn-snow-border-3x knbn-snow-color-3x knbn-snow-bg-3x-active')}>
+                                        <div class={"knbn-border-radius-50 knbn-font-small knbn-transition knbn-border text-center px-2 mr-1 text-truncate" + (this.props.themeToggled ? ' knbn-dark-border-4x knbn-dark-color-3x knbn-dark-bg-3x-active' : ' knbn-snow-border-3x knbn-snow-color-3x knbn-snow-bg-3x-active knbn-snow-bg-2x')}>
                                         {
                                             this.state.release != undefined && this.state.release.name != undefined ? this.state.release.name : "Nicio versiune"
                                         }
@@ -320,7 +335,8 @@ const collect = (connect, monitor) => {
 
 const mapStateToProps = (state) => {
     return {
-        themeToggled: state.themeToggled
+        themeToggled: state.themeToggled,
+        collapseAll: state.collapseAll
     }
 }
 

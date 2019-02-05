@@ -3,34 +3,20 @@ import Ticket from './Ticket';
 import { DropTarget } from 'react-dnd';
 import { ItemTypes } from './Constants';
 import { connect } from 'react-redux';
-import axios from 'axios';
 
 class LaneProgress extends React.Component{
     constructor(props){
         super(props);
 
-        this.state = {
-            tickets: [],
-        }
-
-        this.pushTicket = this.pushTicket.bind(this);
-        this.removeTicket = this.removeTicket.bind(this);
+        this.push = this.push.bind(this);
     }
 
-    pushTicket = (ticket) => {
-        const { canDrop } = this.props;
-        let data = ticket;
-        data.lane = 'in_progress';
-
-        if(canDrop){
-            this.props.push(data);
-        }
-    }
-    
-    removeTicket = (ticket) => {
-        if(ticket.lane != 'in_progress'){
-            this.props.remove(ticket);
-        }
+    push = (ticket) => {
+        let data = Object.assign({}, ticket, {
+            lane: 'in_progress'
+        });
+        
+        this.props.push(data);
     }
 
     render(){
@@ -45,11 +31,10 @@ class LaneProgress extends React.Component{
                     (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}> 
                 {
                     this.props.items.map(ticket => {
-                        return <Ticket 
-                                    data={ticket} 
-                                    key={ticket.id} 
-                                    remove={this.removeTicket} 
-                                    helpers={this.props.helpers}
+                        return  <Ticket 
+                                data={ticket} 
+                                key={ticket.id + ticket.isReport}
+                                helpers={this.props.helpers}
                                 />
                     })
                 }
@@ -60,14 +45,18 @@ class LaneProgress extends React.Component{
 }
 
 let target = {
-    drop(props, monitor, component){        
-        if(monitor.canDrop()) component.pushTicket(monitor.getItem());
+    drop(props, monitor, component){    
+        component.push(monitor.getItem());
     },
 
     canDrop(props, monitor){
         if(monitor.getItem().component == props.compID){
             switch(monitor.getItem().lane){
                 case 'backlog': {
+                    return true;
+                }
+
+                case 'in_progress': {
                     return true;
                 }
 

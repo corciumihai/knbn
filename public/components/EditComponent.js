@@ -48,11 +48,11 @@ class EditComponent extends React.Component{
                 release: {id: response.data.releaseID}
             }, () => {
                 if(this.state.release.id){
-                    axios.get('/get-release/' + this.state.release.id).then( response => {
+                    axios.get('/release/get/' + this.state.release.id).then( response => {
                         this.setState({
                             release: response.data
                         }, () => {
-                            axios.get('/get-releases').then( response => {
+                            axios.get('release/multi/get').then( response => {
                                 this.setState({
                                     releases: response.data,
                                     filteredReleases: response.data.filter(item => {return item.project == this.state.project})

@@ -59,12 +59,12 @@ module.exports = class JwtToken{
         request.cookies.jwtToken;
 
         if(!token){
-            response.sendStatus(401);
+            response.sendStatus(403);
         }
         else{
             jwt.verify(token, secret.secret, (error, decoded) => {
                 if(error){
-                    response.sendStatus(401);
+                    response.sendStatus(403);
                 }
                 else{
                     // request.email = decoded.email;

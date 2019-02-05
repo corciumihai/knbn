@@ -40,7 +40,7 @@ class Comment extends React.Component{
     componentWillMount(){
         this.setState({comment: this.props.data.value}, () => {
             if(this.props.data.owner){
-                axios.get('/user/get-user-by-email/' + this.props.data.owner).then(response => {
+                axios.get('/user/' + this.props.data.owner).then(response => {
                     this.setState({userData: response.data, canEdit: response.data.email == this.props.currentUser});
                 });
             }
@@ -53,7 +53,7 @@ class Comment extends React.Component{
         }
 
         if(nextProps.data.owner){
-            axios.get('/user/get-user-by-email/' + nextProps.data.owner).then(response => {
+            axios.get('/user/' + nextProps.data.owner).then(response => {
                 this.setState({userData: response.data, canEdit: response.data.email == this.props.currentUser});
             });
         }

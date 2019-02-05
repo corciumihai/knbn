@@ -58,7 +58,7 @@ class Worklog extends React.Component{
         }
 
         if(this.props.data.owner != undefined){
-            axios.get('/user/get-user-by-email/' + this.props.data.owner).then(response => {
+            axios.get('/user/' + this.props.data.owner).then(response => {
                 this.setState({userData: response.data, canEdit: this.props.currentUser == response.data.email});
             });
         }
@@ -74,7 +74,7 @@ class Worklog extends React.Component{
         }
 
         if(nextState.data.owner != undefined){
-            axios.get('/user/get-user-by-email/' + nextState.data.owner).then(response => {
+            axios.get('/user/' + nextState.data.owner).then(response => {
                 this.setState({userData: response.data});
             });
         }

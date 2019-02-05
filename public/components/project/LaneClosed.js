@@ -3,34 +3,20 @@ import Ticket from './Ticket';
 import { DropTarget } from 'react-dnd';
 import { ItemTypes } from './Constants';
 import { connect } from 'react-redux';
-import axios from 'axios';
 
 class LaneClosed extends React.Component{
     constructor(props){
         super(props);
 
-        this.state = {
-            tickets: [],
-        }
-
-        this.pushTicket = this.pushTicket.bind(this);
-        this.removeTicket = this.removeTicket.bind(this);
+        this.push = this.push.bind(this);
     }
 
-    pushTicket = (ticket) => {        
-        const { canDrop } = this.props;
-        let data = ticket;
-        data.lane = 'closed';
+    push = (ticket) => {
+        let data = Object.assign({}, ticket, {
+            lane: 'closed'
+        });
 
-        if(canDrop){
-            this.props.push(data);
-        }
-    }
-    
-    removeTicket = (ticket) => {
-        if(ticket.lane != 'closed'){
-            this.props.remove(ticket);
-        }
+        this.props.push(data);
     }
 
     render(){
@@ -44,12 +30,14 @@ class LaneClosed extends React.Component{
                     (canDrop ? (this.props.themeToggled ? ' knbn-dark-ondrop' : ' knbn-snow-ondrop') : "") +
                     (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}> 
                 {
+                    this.props.hidden ? 
+                    null
+                    :
                     this.props.items.map(ticket => {
-                        return <Ticket 
-                                    data={ticket} 
-                                    key={ticket.id} 
-                                    remove={this.removeTicket} 
-                                    helpers={this.props.helpers}
+                        return  <Ticket 
+                                data={ticket} 
+                                key={ticket.id + ticket.isReport}
+                                helpers={this.props.helpers}
                                 />
                     })
                 }
@@ -61,13 +49,17 @@ class LaneClosed extends React.Component{
 
 let target = {
     drop(props, monitor, component){
-        if(monitor.canDrop()) component.pushTicket(monitor.getItem());
+        component.push(monitor.getItem());
     },
 
     canDrop(props, monitor){
         if(monitor.getItem().component == props.compID){
             switch(monitor.getItem().lane){
                 case 'done': {
+                    return true;
+                }
+
+                case 'closed': {
                     return true;
                 }
     
@@ -81,7 +73,8 @@ let target = {
 
 const mapStateToProps = (state) => {
     return {
-        themeToggled: state.themeToggled
+        themeToggled: state.themeToggled,
+        hidden: state.hiddenClosed
     }
 }
 

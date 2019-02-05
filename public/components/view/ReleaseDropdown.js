@@ -10,7 +10,7 @@ class ReleaseDropdown extends React.Component{
     }
 
     componentWillMount(){
-        axios.get('/get-releases').then(response => {
+        axios.get('release/multi/get').then(response => {
             this.setState({releases: response.data});
         }, () => {console.log(this.state.releases)})
     }

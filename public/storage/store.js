@@ -10,8 +10,11 @@ initialState = {
     themeToggled: cookies.get('darkmode') == "true",
     currentUser: '',
     priorities: [{id: 0, name: 'Minimă', dbName: 'low'}, {id: 1, name: 'Medie', dbName: 'medium'}, {id: 2, name: 'Maximă', dbName: 'high'}],
-    saltRounds: 10,
-    filterPR: false
+    filterPR: cookies.get('filterPR') == 'true',
+    userOnly: cookies.get('userOnly') == 'true',
+    hiddenClosed: cookies.get('hiddenClosed') == 'true',
+    filterTickets: cookies.get('filterTickets') == 'true',
+    collapseAll: cookies.get('collapseAll') == 'true'
 }
 
 const reducer = (state = initialState, action) => {
@@ -23,11 +26,42 @@ const reducer = (state = initialState, action) => {
             });
         }
 
-        case 'KNNB_TOGGLE_PR': {
-            console.log('here');
-            
+        case 'KNNB_TOGGLE_TICKETS': {
+            cookies.set('filterTickets', !state.filterTickets, {path: '/', maxAge: 1800000});
+            cookies.set('filterPR', state.filterPR == true ? false : false, {path: '/', maxAge: 1800000});
             return Object.assign({}, state, {
-                filterPR: !state.filterPR
+                filterTickets: !state.filterTickets,
+                filterPR: state.filterPR == true ? false : false
+            });
+        }
+
+        case 'KNNB_TOGGLE_PR': {
+            cookies.set('filterPR', !state.filterPR, {path: '/', maxAge: 1800000});
+            cookies.set('filterTickets', state.filterTickets == true ? false : false, {path: '/', maxAge: 1800000});
+            return Object.assign({}, state, {
+                filterPR: !state.filterPR,
+                filterTickets: state.filterTickets == true ? false : false
+            });
+        }
+
+        case 'KNNB_TOGGLE_HIDE_CLOSED': {
+            cookies.set('hiddenClosed', !state.hiddenClosed, {path: '/', maxAge: 1800000}); 
+            return Object.assign({}, state, {
+                hiddenClosed: !state.hiddenClosed
+            });
+        }
+
+        case 'KNNB_TOGGLE_COLLAPSE': {
+            cookies.set('collapseAll', !state.collapseAll, {path: '/', maxAge: 1800000}); 
+            return Object.assign({}, state, {
+                collapseAll: !state.collapseAll
+            });
+        }
+
+        case 'KNNB_TOGGLE_USER_ONLY': {   
+            cookies.set('userOnly', !state.userOnly, {path: '/', maxAge: 1800000});          
+            return Object.assign({}, state, {
+                userOnly: !state.userOnly
             });
         }
 

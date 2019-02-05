@@ -15,182 +15,171 @@ class Component extends React.Component{
 
         this.state = {
             flip: false,
-            ticketsBacklog: [],
-            ticketsProgress: [],
-            ticketsDone: [],
-            ticketsClosed: [],
 
-            reportsBacklog: [],
-            reportsProgress: [],
-            reportsDone: [],
-            reportsClosed: [],
+            tickets: [],
+            filteredTickets: [],
 
             wip: this.props.data.wip,
             showDesc: false,
-
-            showPRs: false
         }
 
         this.toggle = this.toggle.bind(this);
         this.toggleDesc = this.toggleDesc.bind(this);
         this.push = this.push.bind(this);
-        this.removeBacklog = this.removeBacklog.bind(this);
-        this.removeProgress = this.removeProgress.bind(this);
-        this.removeDone = this.removeDone.bind(this);
         this.shiftBackward = this.shiftBackward.bind(this);
         this.shiftForward = this.shiftForward.bind(this);
-        this.showPR = this.showPR.bind(this);
-        this.refresh = this.refresh.bind(this);
+        this.filter = this.filter.bind(this);
     }
 
     componentDidMount(){
-        this.refresh();
+        axios.all([
+            axios.get('/component/get-tickets/' + this.props.data.id),
+            axios.get('/component/get-reports/' + this.props.data.id)
+        ])
+        .then(axios.spread((tickets, reports) => {
+            this.setState({
+                tickets: update(this.state.tickets, {
+                    $push: tickets.data.concat(reports.data).sort((a, b) => a.startDate > b.startDate),
+                })
+            }, () => {
+                this.setState({filteredTickets: this.filter( this.state.tickets )});
+            })
+        }))
     }
 
-    refresh(){
-        axios.get('/component/get-tickets/' + this.props.data.id)
-        .then(response => {
-            if(response.status == 200){
-                let tickets = response.data;
-
-                this.setState({
-                    ticketsBacklog: tickets.filter(item => (item.component == this.props.data.id && item.lane == 'backlog' && item.project == this.props.data.project)),
-                    ticketsProgress: tickets.filter(item => (item.component == this.props.data.id && item.lane == 'in_progress' && item.project == this.props.data.project)),
-                    ticketsDone: tickets.filter(item => (item.component == this.props.data.id && item.lane == 'done' && item.project == this.props.data.project)),
-                    ticketsClosed: tickets.filter(item => (item.component == this.props.data.id && item.lane == 'closed' && item.project == this.props.data.project)),
-                });
-            }
-        })
-        .catch(error => {
-            console.log(error.response.data.error);
-        })
-
-        axios.get('/component/get-reports/' + this.props.data.id)
-        .then(response => {
-            if(response.status == 200){
-                let tickets = response.data;
-
-                this.setState({
-                    reportsBacklog: tickets.filter(item => (item.component == this.props.data.id && item.lane == 'backlog' && item.project == this.props.data.project)),
-                    reportsProgress: tickets.filter(item => (item.component == this.props.data.id && item.lane == 'in_progress' && item.project == this.props.data.project)),
-                    reportsDone: tickets.filter(item => (item.component == this.props.data.id && item.lane == 'done' && item.project == this.props.data.project)),
-                    reportsClosed: tickets.filter(item => (item.component == this.props.data.id && item.lane == 'closed' && item.project == this.props.data.project)),
-                });
-            }
-        })
-        .catch(error => {
-            console.log(error.response.data.error);
-        })
+    toggle(){
+        this.setState({flip: !this.state.flip});
     }
 
-    showPR(){
-        this.setState({showPRs: !this.state.showPRs});
+    toggleDesc(){
+        this.setState({showDesc: !this.state.showDesc});
     }
-
-    toggle(){this.setState({flip: !this.state.flip});}
-
-    toggleDesc(){this.setState({showDesc: !this.state.showDesc});}
 
     push(ticket){
-        axios.post('/ticket/update-lane', {lane: ticket.lane, id: ticket.id, isReport: ticket.isReport})
-        .then(response => {
-            if(response.status == 200){
-                this.refresh();
-            }
-        })
-        .catch(error => {
-            console.log(error.response.data.error);
-        })
-    }
-
-    removeBacklog(ticket){
-        ticket.isReport ? 
-        this.setState({ticketsBacklog: update(this.state.ticketsBacklog, {$splice: [[this.state.ticketsBacklog.indexOf(this.state.ticketsBacklog.find(item => {return item.id == ticket.id})), 1]] }) })
-        :
-        this.setState({reportsBacklog: update(this.state.reportsBacklog, {$splice: [[this.state.reportsBacklog.indexOf(this.state.reportsBacklog.find(item => {return item.id == ticket.id})), 1]] }) })
-    }
-
-    removeProgress(ticket){
-        ticket.isReport ?
-        this.setState({ticketsProgress: update(this.state.ticketsProgress, {$splice: [[this.state.ticketsProgress.indexOf(this.state.ticketsProgress.find(item => {return item.id == ticket.id})), 1]] }) })
-        :
-        this.setState({reportsProgress: update(this.state.reportsProgress, {$splice: [[this.state.reportsProgress.indexOf(this.state.reportsProgress.find(item => {return item.id == ticket.id})), 1]] }) })
-    }
-
-    removeDone(ticket){
-        ticket.isReport ?
-        this.setState({ticketsDone: update(this.state.ticketsDone, {$splice: [[this.state.ticketsDone.indexOf(this.state.ticketsDone.find(item => {return item.id == ticket.id})), 1]] }) })
-        :
-        this.setState({reportsDone: update(this.state.reportsDone, {$splice: [[this.state.reportsDone.indexOf(this.state.reportsDone.find(item => {return item.id == ticket.id})), 1]] }) })
+        if(ticket){
+            axios.post(ticket.isReport ? '/report/update-lane' : '/ticket/update-lane', {lane: ticket.lane, id: ticket.id})
+            .then(response => {
+                if(response.status == 200){
+                    this.setState({
+                        tickets: update(this.state.tickets, {
+                            $splice: [[this.state.tickets.indexOf(this.state.tickets.find(item => item.id == ticket.id && item.isReport == ticket.isReport)), 1]],
+                            $push: [ticket],
+                        })
+                    }, () => {
+                        this.setState({ 
+                            filteredTickets: this.filter( this.state.tickets.sort( (a, b) => a.startDate > b.startDate) ) 
+                        });
+                    });
+                }
+            })
+            .catch(error => {
+                this.props.setError(error.response.data.error);
+            })
+        }
+        else{
+            this.props.setError('Elementul selectat nu există')
+        }
     }
 
     shiftForward(ticket){
-        let data = ticket;
-
+        let data;
         switch(ticket.lane){
-            case "backlog":{
-                data.lane = 'in_progress';
-                
-                this.removeBacklog(ticket);
+            case 'backlog':
+                data = Object.assign({}, ticket, {
+                    lane: 'in_progress'
+                });
+
                 break;
-            }
 
-            case "in_progress":{
-                data.lane = 'done';
+            case 'in_progress':
+                data = Object.assign({}, ticket, {
+                    lane: 'done'
+                });
 
-                this.removeProgress(ticket);
                 break;
-            }
 
-            case "done":{
-                data.lane = 'closed';
+            case 'done':
+                data = Object.assign({}, ticket, {
+                    lane: 'closed'
+                });
 
-                this.removeDone(ticket);
                 break;
-            }
 
-            default: {break;}
+            case 'closed':
+                //do nothing
+                break;
         }
 
         this.push(data);
     }
 
-    shiftBackward(ticket, lane){
-        let data = ticket;
-
+    shiftBackward(ticket){
+        let data;
         switch(ticket.lane){
-            case "in_progress":{
-                data.lane = 'backlog';
-
-                this.removeProgress(ticket);
+            case 'backlog':
                 break;
-            }
 
-            case "done":{                
-                data.lane = 'in_progress';
+            case 'in_progress':
+                data = Object.assign({}, ticket, {
+                    lane: 'backlog'
+                });
 
-                this.removeDone(ticket);
                 break;
-            }
 
-            default: {break;}
+            case 'done':
+                data = Object.assign({}, ticket, {
+                    lane: 'in_progress'
+                });
+
+                break;
+
+            case 'closed':
+                //do nothing
+                break;
         }
 
         this.push(data);
+    }
+
+    filter(set){
+        if(this.props.userOnly && this.props.filterPR){
+           return set.filter(item => (item.assignee == this.props.currentUser || item.reporter == this.props.currentUser) && (item.isReport))
+        }
+        else if(this.props.userOnly && this.props.filterTickets){
+            return set.filter(item => (item.assignee == this.props.currentUser || item.reporter == this.props.currentUser) && (!item.isReport))
+        }
+        else if(this.props.userOnly){
+            return set.filter(item => item.assignee == this.props.currentUser || item.reporter == this.props.currentUser)
+        }
+        else if(this.props.filterPR){
+            return set.filter(item => item.isReport)
+        }
+        else if(this.props.filterTickets){
+            return set.filter(item => !item.isReport)
+        }
+        else{
+            return set;
+        }
+    }
+
+    componentWillReceiveProps(nextProps, nextState){
+        if(nextProps != this.props){
+            this.setState({filteredTickets: this.filter(this.state.tickets)})
+        }
     }
 
     render(){
         let helpers = {forward: this.shiftForward, backward: this.shiftBackward}
 
         return(
-            <div class={'knbn-section col-xl-12 mb-2 knbn-transition' + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-shadow-1x" : " knbn-snow-bg-2x knbn-snow-shadow-1x")}>
+            <div class={'knbn-section col-xl-12 mb-2 knbn-transition knbn-border-top knbn-border-bottom' + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-shadow-1x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-shadow-1x knbn-snow-border-2x")}>
                 <div class="row">
                     <div class="col-xl-12">
                         <div class="row">
                             <div    class={(this.props.data.priority == 'low' ? "prio-1" : this.props.data.priority == 'medium' ? "prio-2" : "prio-3") + " mr-2"} 
                                     title={this.props.data.priority == 'low' ? "Prioritate mică" : this.props.data.priority == 'medium' ? "Prioritate medie" : "Prioritate înaltă"}/>
                             
-                            <div class={"section-head col py-2 knbn-transition"}>
+                            <div class={"section-head col py-2 knbn-transition" + (!this.state.flip ? " knbn-border-bottom" +  (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x") : " ")}>
                                 <div class="row">
                                     <div class="d-flex flex-row">
                                         <div class={'toggle d-flex knbn-transition knbn-transition' + 
@@ -235,98 +224,46 @@ class Component extends React.Component{
                         </div>
                     </div>  
                 </div>
-
                 {
-                    !this.props.filterPR ? 
-                    this.state.ticketsBacklog.length > 0 || this.state.ticketsProgress.length > 0 || this.state.ticketsDone.length > 0 || this.state.ticketsClosed.length > 0 ?
-                    <div class="row">
-                        <div class={!this.state.flip ? "section-body col" : "section-body col reduce"}>
-                            <div class="row">
-                                {/* BACKLOG */}
-                                <LaneBacklog 
-                                    items={this.state.ticketsBacklog} 
-                                    compID={this.props.data.id} 
-                                    helpers={helpers}
-                                    push={this.push}
-                                    remove={this.removeBacklog}
-                                />
+                <div class="row">
+                    <div class={
+                        !this.state.flip ? "section-body col" : "section-body col reduce"}>
+                        <div class="row">
+                            {/* BACKLOG */}
+                            <LaneBacklog 
+                                items={this.state.filteredTickets.filter(item => item.lane == 'backlog')} 
+                                compID={this.props.data.id} 
+                                helpers={helpers}
+                                push={this.push}
+                            />
 
-                                {/* IN PROGRESS */}
-                                <LaneProgress 
-                                    items={this.state.ticketsProgress} 
-                                    compID={this.props.data.id} 
-                                    wip={this.state.wip}
-                                    helpers={helpers}
-                                    push={this.push}
-                                    remove={this.removeProgress}
-                                />
+                            {/* IN PROGRESS */}
+                            <LaneProgress 
+                                items={this.state.filteredTickets.filter(item => item.lane == 'in_progress')} 
+                                compID={this.props.data.id} 
+                                wip={this.state.wip}
+                                helpers={helpers}
+                                push={this.push}
+                            />
 
-                                {/* DONE */}
-                                <LaneDone 
-                                    items={this.state.ticketsDone} 
-                                    compID={this.props.data.id}
-                                    helpers={helpers}
-                                    push={this.push}
-                                    remove={this.removeDone}
-                                />
+                            {/* DONE */}
+                            <LaneDone 
+                                items={this.state.filteredTickets.filter(item => item.lane == 'done')} 
+                                compID={this.props.data.id}
+                                helpers={helpers}
+                                push={this.push}
+                            />
 
-                                {/* CLOSED */}
-                                <LaneClosed 
-                                    items={this.state.ticketsClosed} 
-                                    compID={this.props.data.id}
-                                    helpers={helpers}
-                                    push={this.push}
-                                />
-                            </div>
+                            {/* CLOSED */}
+                            <LaneClosed 
+                                items={this.state.filteredTickets.filter(item => item.lane == 'closed')} 
+                                compID={this.props.data.id}
+                                helpers={helpers}
+                                push={this.push}
+                            />
                         </div>
                     </div>
-                    : null
-
-                    :
-                    
-                    this.state.reportsBacklog.length > 0 || this.state.reportsProgress.length > 0 || this.state.reportsDone.length > 0 || this.state.reportsClosed.length > 0 ?
-                    <div class="row">
-                        <div class={!this.state.flip ? "section-body col" : "section-body col reduce"}>
-                            <div class="row">
-                                {/* BACKLOG */}
-                                <LaneBacklog 
-                                    items={this.state.reportsBacklog} 
-                                    compID={this.props.data.id} 
-                                    helpers={helpers}
-                                    push={this.push}
-                                    remove={this.removeBacklog}
-                                />
-
-                                {/* IN PROGRESS */}
-                                <LaneProgress 
-                                    items={this.state.reportsProgress} 
-                                    compID={this.props.data.id} 
-                                    wip={this.state.wip}
-                                    helpers={helpers}
-                                    push={this.push}
-                                    remove={this.removeProgress}
-                                />
-
-                                {/* DONE */}
-                                <LaneDone 
-                                    items={this.state.reportsDone} 
-                                    compID={this.props.data.id}
-                                    helpers={helpers}
-                                    push={this.push}
-                                    remove={this.removeDone}
-                                />
-
-                                {/* CLOSED */}
-                                <LaneClosed 
-                                    items={this.state.reportsClosed} 
-                                    compID={this.props.data.id}
-                                    helpers={helpers}
-                                    push={this.push}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    :null
+                </div>
             }
             </div>
         );
@@ -336,7 +273,10 @@ class Component extends React.Component{
 const mapStateToProps = (state) => {
     return {
         themeToggled: state.themeToggled,
-        filterPR: state.filterPR
+        filterPR: state.filterPR,
+        userOnly: state.userOnly,
+        currentUser: state.currentUser,
+        filterTickets: state.filterTickets
     }
 }
 

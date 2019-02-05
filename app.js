@@ -88,38 +88,18 @@ app.post('/register', (request, response) => {
     
 });
 
-app.get('/current-user', (request, response) => {
-    // if(request.isAuthenticated()){
-        // response.send({email: request.user.email, name: request.user.name});
-    // }
-    // else{
-        // response.send({success: false});
-    // }
-});
-
 app.get('/user/:email', (request, response) => {
-    database.query('SELECT name FROM users WHERE email = ?', [request.params.email], (error, result, fields) => {
-        if(error || result == undefined || result.length == 0){
-            response.send({success: false}); return;
-        }
-        response.send({success: true, name: result[0].name});
-    });
-});
-
-app.get('/user/get-user-by-email/:email', (request, response) => {
     if(request.params.email != undefined && request.params.email.length > 0){
         database.query('SELECT * FROM users WHERE email = ?', request.params.email, (error, result, fields) => {
             if(error){
-                console.log(error); 
-                response.send({});
+                response.statusCode = 500;
+                response.json({error: 'Eroare interna' + error.code});
             }
             else{
+                response.statusCode = 200;
                 response.send(result[0]);
             }
         });
-    }
-    else{
-        response.send({});
     }
 });
 
@@ -161,7 +141,7 @@ app.get('/get-components', (request, response) => {
     })
 });
 
-app.get('/get-categories', (request, response) => {
+app.get('/category/multi/get', (request, response) => {
     database.query('SELECT * FROM categories', (error, result, fields) => {
         if(error){
             response.statusCode= 500;
@@ -173,7 +153,7 @@ app.get('/get-categories', (request, response) => {
     })
 });
 
-app.get('/get-releases', (request, response) => {
+app.get('/release/multi/get', (request, response) => {
     database.query('SELECT * FROM releases', (error, result, fields) => {
         if(error){
             console.log('Database error when fetching releases 4: ' + error.code);
@@ -183,17 +163,22 @@ app.get('/get-releases', (request, response) => {
     })
 });
 
-app.get('/get-release/:id', (request, response) => {
-    database.query('SELECT * FROM releases WHERE id = ?', request.params.id, (error, result, fields) => {
-        if(error){
-            console.log('Database error when fetching releases 5: ' + error.code);
-            response.send({});;
-        }
-        response.send(result[0]);
-    })
+app.get('/release/get/:id', (request, response) => {
+    if(request.params.id){
+        database.query('SELECT * FROM releases WHERE id = ?', request.params.id, (error, result, fields) => {
+            if(error){
+                response.statusCode = 500;
+                response.json({error: 'Eroare interna ' + error.code});
+            }
+            else{
+                response.statusCode = 200;
+                response.send(result[0]);
+            }
+        })
+    }
 });
 
-app.get('/get-category/:id', (request, response) => {
+app.get('/category/get/:id', (request, response) => {
     database.query('SELECT * FROM categories WHERE id = ?', request.params.id, (error, result, fields) => {
         if(error){
             response.statusCode= 500;
@@ -548,7 +533,7 @@ app.post('/set-component/due-date', (request, response) => {
     });
 });
 
-app.post('/set-ticket/name', (request, response) => {
+app.post('/ticket/set/name', (request, response) => {
     if(request.body.value != undefined && request.body.value.length > 0){
         database.query('UPDATE tickets SET name = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
             if(error){
@@ -565,10 +550,20 @@ app.post('/set-ticket/name', (request, response) => {
     }
 });
 
-app.post('/set-component/estimation', (request, response) => {
-    let value = parseInt(request.body.value);
+app.post('/report/set/name', (request, response) => {
+    database.query('UPDATE reports SET name = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
+        if(error){
+            response.statusCode = 500;
+            response.json({error: 'Eroare interna ' + error.code});
+        }
+        else{
+            response.sendStatus(200);
+        }
+    });
+});
 
-    database.query('UPDATE tickets SET estimation = ? WHERE id = ?', [value, request.body.id], (error, result, fields) => {
+app.post('/ticket/set/estimation', (request, response) => {
+    database.query('UPDATE tickets SET estimation = ? WHERE id = ?', [parseInt(request.body.value), request.body.id], (error, result, fields) => {
         if(error){
             console.log(error); 
             response.send({success: false});
@@ -579,7 +574,19 @@ app.post('/set-component/estimation', (request, response) => {
     });
 });
 
-app.post('/set-ticket/description', (request, response) => {
+app.post('/report/set/estimation', (request, response) => {
+    database.query('UPDATE reports SET estimation = ? WHERE id = ?', [parseInt(request.body.value), request.body.id], (error, result, fields) => {
+        if(error){
+            response.status = 500;
+            response.json({error: 'Eroare interna ' + error.code});
+        }
+        else{
+            response.sendStatus(200);
+        }
+    });
+});
+
+app.post('/ticket/set/description', (request, response) => {
     if(request.body.value != undefined && request.body.value.length > 0){
         database.query('UPDATE tickets SET description = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
             if(error){
@@ -596,7 +603,19 @@ app.post('/set-ticket/description', (request, response) => {
     }
 });
 
-app.post('/set-ticket/priority', (request, response) => {
+app.post('/report/set/description', (request, response) => {
+    database.query('UPDATE reports SET description = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
+        if(error){
+            response.statusCode = 500;
+            response.send({error: 'Eroare interna ' + error.code});
+        }
+        else{
+            response.sendStatus(200);
+        }
+    });
+});
+
+app.post('/ticket/set/priority', (request, response) => {
     if(request.body.value != undefined && request.body.value.length > 0){
         database.query('UPDATE tickets SET priority = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
             if(error){
@@ -613,7 +632,19 @@ app.post('/set-ticket/priority', (request, response) => {
     }
 });
 
-app.post('/set-ticket/release', (request, response) => {    
+app.post('/report/set/priority', (request, response) => {
+    database.query('UPDATE reports SET priority = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
+        if(error){
+            console.log(error); 
+            response.send({success: false});
+        }
+        else{
+            response.send({success: true});
+        }
+    });
+});
+
+app.post('/ticket/set/release', (request, response) => {    
     if(request.body.value != undefined && request.body.value > 0){
         database.query('UPDATE tickets SET releaseID = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
             if(error){
@@ -630,7 +661,19 @@ app.post('/set-ticket/release', (request, response) => {
     }
 });
 
-app.post('/set-ticket/category', (request, response) => {
+app.post('/report/set/release', (request, response) => {    
+    database.query('UPDATE reports SET releaseID = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
+        if(error){
+            response.statusCode = 500;
+            response.json({error: 'Eroare interna ' + error.code});
+        }
+        else{
+            response.sendStatus(200);
+        }
+    });
+});
+
+app.post('/ticket/set/category', (request, response) => {
     if(request.body.value){
         database.query('UPDATE tickets SET category = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
             if(error){
@@ -648,9 +691,19 @@ app.post('/set-ticket/category', (request, response) => {
     }
 });
 
-app.post('/set-ticket/assignee', (request, response) => {
-    console.log(request.body);
+app.post('/report/set/category', (request, response) => {
+    database.query('UPDATE reports SET category = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
+        if(error){
+            response.statusCode= 500;
+            response.json({error: 'Eroare interna ' + error.code});
+        }
+        else{
+            response.sendStatus(200);
+        }
+    }); 
+});
 
+app.post('/ticket/set/assignee', (request, response) => {
     database.query('UPDATE tickets SET assignee = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
         if(error){
             console.log(error); 
@@ -662,7 +715,19 @@ app.post('/set-ticket/assignee', (request, response) => {
     });
 });
 
-app.post('/set-ticket/reporter', (request, response) => {
+app.post('/report/set/assignee', (request, response) => {
+    database.query('UPDATE reports SET assignee = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
+        if(error){
+            response.statusCode = 500;
+            response.json({error: 'Eroare interna ' + error.code});
+        }
+        else{
+            response.sendStatus(200);'/ticket/set/reporter'
+        }
+    });
+});
+
+app.post('/ticket/set/reporter', (request, response) => {
     database.query('UPDATE tickets SET reporter = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
         if(error){
             console.log(error); 
@@ -674,15 +739,27 @@ app.post('/set-ticket/reporter', (request, response) => {
     });
 });
 
-app.get('/get-ticket-data/:id', (request, response) => {
+app.post('/report/set/reporter', (request, response) => {
+    database.query('UPDATE reports SET reporter = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
+        if(error){
+            response.statusCode = 500;
+            response.json({error: 'Eroare interna ' + error.code});
+        }
+        else{
+            response.sendStatus(200);
+        }
+    });
+});
+
+app.get('/ticket/get-data/:id', (request, response) => {
     database.query('SELECT * FROM tickets WHERE id = ?', request.params.id, (error, result, fields) => {
         if(error){console.log(error); return;}
         response.send(result[0]);
     });
 });
 
-app.get('/get-pr-data/:id', (request, response) => {
-    database.query('SELECT * FROM prs WHERE id = ?', request.params.id, (error, result, fields) => {
+app.get('/report/get-data/:id', (request, response) => {
+    database.query('SELECT * FROM reports WHERE id = ?', request.params.id, (error, result, fields) => {
         if(error){console.log(error); return;}
         response.send(result[0]);
     });
@@ -705,27 +782,14 @@ app.get('/get-project-details/:id', (request, response) => {
 });
 
 app.post('/ticket/update-lane', (request, response) => {
-    if(!request.body.isReport){
-        database.query('UPDATE tickets SET lane = ? WHERE id = ?', [request.body.lane, request.body.id], (error, result, fields) => {
-            if(error){
-                response.statusCode = 500;
-                response.json({error: 'Eroare interna ' + error.code});
-            }else{
-                response.sendStatus(200);
-            }
-        })
-    }
-    else{
-        database.query('UPDATE reports SET lane = ? WHERE id = ?', [request.body.lane, request.body.id], (error, result, fields) => {
-            if(error){
-                response.statusCode = 500;
-                response.json({error: 'Eroare interna ' + error.code});
-            }else{
-                response.sendStatus(200);
-            }
-        })
-    }
-    
+    database.query('UPDATE tickets SET lane = ? WHERE id = ?', [request.body.lane, request.body.id], (error, result, fields) => {
+        if(error){
+            response.statusCode = 500;
+            response.json({error: 'Eroare interna ' + error.code});
+        }else{
+            response.sendStatus(200);
+        }
+    })
 });
 
 app.post('/ticket/add-comment', (request, response) => {    
@@ -763,8 +827,19 @@ app.get('/ticket/get-comments/:id', (request, response) => {
     })
 })
 
-app.post('/comment/remove', (request, response) => {
+app.post('/ticket/remove/comment', (request, response) => {
     database.query('DELETE FROM ticket_comments WHERE id = ?', request.body.id, (error, result, fields) => {
+        if(error){
+            response.sendStatus(400);
+        }
+        else{
+            response.sendStatus(200);
+        }
+    })
+})
+
+app.post('/report/remove/comment', (request, response) => {
+    database.query('DELETE FROM report_comments WHERE id = ?', request.body.id, (error, result, fields) => {
         if(error){
             response.sendStatus(400);
         }
@@ -786,6 +861,76 @@ app.get('/ticket/logged-hours/:id', (request, response) => {
         }
     })
 })
+
+
+
+
+app.post('/report/update-lane', (request, response) => {
+    if(!request.body.isReport){
+        database.query('UPDATE reports SET lane = ? WHERE id = ?', [request.body.lane, request.body.id], (error, result, fields) => {
+            if(error){
+                response.statusCode = 500;
+                response.json({error: 'Eroare interna ' + error.code});
+            }else{
+                response.sendStatus(200);
+            }
+        })
+    }
+    
+});
+
+app.post('/report/add-comment', (request, response) => {    
+    database.query('INSERT INTO report_comments SET ?', request.body, (error, result, fields) => {
+        if(error){
+            response.status(500);
+            response.json({error: 'Eroare interna ' + error.code});
+        }
+        else{
+            response.sendStatus(200);
+        }       
+    })
+});
+
+app.post('/report/update-comment', (request, response) => {    
+    database.query('UPDATE report_comments SET value = ? WHERE id = ?', [request.body.value, request.body.id], (error, result, fields) => {
+        if(error){
+            response.status(500);
+            response.json({error: 'Eroare interna ' + error.code});
+        }
+        else{
+            response.sendStatus(200);
+        }       
+    })
+});
+
+app.get('/report/get-comments/:id', (request, response) => {
+    database.query('SELECT * FROM report_comments WHERE report = ?', request.params.id, (error, result, fields) => {
+        if(error){
+            response.statusCode = 500;
+            response.json({error: 'Eroare interna ' + error.code});
+        }
+        else{
+            console.log('here');
+            response.statusCode = 200;
+            response.send(result);
+        }
+    })
+})
+
+// app.get('/report/logged-hours/:id', (request, response) => {
+//     database.query('SELECT SUM(hours) AS hours FROM tickets_worklogs WHERE ticket = ?', request.params.id, (error, result, fields) => {
+//         if(error){
+//             response.status(500);
+//             response.json({error: 'Eroare interna ' + error.code});
+//         }
+//         else{
+//             response.status(200);
+//             response.json(result[0]);
+//         }
+//     })
+// })
+
+
 
 app.post('/forgot', (request, response) => {
     database.query('SELECT * FROM users WHERE email = ?', request.body.email, (error, result, fields) => {
@@ -856,6 +1001,21 @@ app.post('/ticket/add-worklog', (request, response) => {
     })
 });
 
+app.post('/report/add-worklog', (request, response) => {
+    let data = request.body;
+    data.created = new Date();
+    database.query('INSERT INTO report_worklogs SET ?', request.body, (error, result, fields) => {
+        if(error){
+            response.statusCode= 500;
+            response.json({error: 'Eroare interna ' + error.code});
+        }
+        else{
+            response.statusCode= 200;
+            response.send();
+        }
+    })
+});
+
 app.post('/ticket/update-worklog', (request, response) => {
     database.query('UPDATE tickets_worklogs SET comment = ?, hours = ? WHERE id = ?', [request.body.comment, request.body.hours, request.body.id], (error, result, fields) => {
         if(error){
@@ -868,7 +1028,19 @@ app.post('/ticket/update-worklog', (request, response) => {
     })
 });
 
-app.post('/ticket/remove-worklog', (request, response) => {
+app.post('/report/update-worklog', (request, response) => {
+    database.query('UPDATE report_worklogs SET comment = ?, hours = ? WHERE id = ?', [request.body.comment, request.body.hours, request.body.id], (error, result, fields) => {
+        if(error){
+            response.statusCode= 500;
+            response.json({error: 'Eroare interna ' + error.code});
+        }
+        else{
+            response.sendStatus(200);
+        }
+    })
+});
+
+app.post('/ticket/remove/worklog', (request, response) => {
     console.log(request.body.id);
 
     database.query('DELETE FROM tickets_worklogs WHERE id = ?', request.body.id, (error, result, fields) => {
@@ -884,6 +1056,19 @@ app.post('/ticket/remove-worklog', (request, response) => {
 
 app.get('/ticket/get-worklogs/:id', (request, response) => {
     database.query('SELECT * FROM tickets_worklogs WHERE ticket = ?', request.params.id, (error, result, fields) => {
+        if(error){
+            response.statusCode= 500;
+            response.json({error: 'Eroare interna ' + error.code});
+        }
+        else{
+            response.statusCode= 200;
+            response.send(result);
+        }
+    })
+});
+
+app.get('/report/get-worklogs/:id', (request, response) => {
+    database.query('SELECT * FROM report_worklogs WHERE report = ?', request.params.id, (error, result, fields) => {
         if(error){
             response.statusCode= 500;
             response.json({error: 'Eroare interna ' + error.code});
