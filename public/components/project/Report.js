@@ -6,7 +6,6 @@ import crypto from 'crypto';
 import dateformat from 'dateformat';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import LoadingBar from './LoadingBar';
 
 dateformat.i18n = {
     dayNames: [
@@ -30,7 +29,7 @@ const source = {
     }
 }
 
-class Ticket extends React.Component{
+class Report extends React.Component{
     constructor(props){
         super(props);
 
@@ -44,10 +43,12 @@ class Ticket extends React.Component{
             priority: '',
             category: {},
             release: {},
+            blocked: {},
             lane: 'backlog',
             assignee: {},
             reporter: {},
             hours: 0,
+            isReport: this.props.data.isReport,
             flipped: this.props.data.flipped != undefined ? this.props.data.flipped : false,
         }
 
@@ -59,8 +60,8 @@ class Ticket extends React.Component{
 
     componentDidMount(){
         axios.all([
-            axios.get('/ticket/get/' + this.props.data.id),
-            axios.get('/ticket/get/hours/' + this.props.data.id),
+            axios.get('/report/get/' + this.props.data.id),
+            axios.get('/report/get/hours/' + this.props.data.id),
         ])
         .then(axios.spread((data, hours) => {
             if(data.status == 200 && hours.status == 200){
@@ -78,6 +79,7 @@ class Ticket extends React.Component{
                     hours: hours.data && hours.data.hours ? hours.data.hours : 0,
                     assignee: data.data.assignee ? {email: data.data.assignee} : {},
                     reporter: data.data.reporter ? {email: data.data.reporter} : {},
+                    blocked: data.data.blocked ? {id: data.data.blocked} : {},
                     flipped: this.props.data.flipped,
                 }, () => {
                     if(this.state.assignee.email){
@@ -127,6 +129,18 @@ class Ticket extends React.Component{
                             this.props.setError(error.response.data.error)
                         })
                     }
+
+                    if(this.state.blocked.id){
+                        axios.get('/ticket/get/' + this.state.blocked.id)
+                        .then(response => {
+                            if(response.status == 200){
+                                this.setState({blocked: response.data})
+                            }
+                        })
+                        .catch(error => {
+                            this.props.setError(error.response.data.error)
+                        })
+                    }
                 })
             }
         }))
@@ -137,7 +151,7 @@ class Ticket extends React.Component{
 
     remove(){
         if(this.props.data.id){
-            axios.post('/ticket/remove', {id: this.props.data.id})
+            axios.post('/report/remove', {id: this.props.data.id})
             .then(response => {
                 if(response.status == 200){
                     this.props.refresh();
@@ -152,7 +166,6 @@ class Ticket extends React.Component{
     shiftForward(){
         let data = this.props.data;
         data.flipped = this.state.flipped;
-        
         this.props.helpers.forward(data);
     }
 
@@ -165,6 +178,8 @@ class Ticket extends React.Component{
     flip(){this.setState({flipped: !this.state.flipped});}
 
     render(){
+        console.log(this.state);
+        
         let remainingPercentage = (this.state.estimation - this.state.hours) < 0 ? -1 : (this.state.hours / this.state.estimation) * 100;
         const {connectDragSource, isDragging} = this.props;
 
@@ -177,7 +192,7 @@ class Ticket extends React.Component{
 
                     <div class={"ticket col px-0"}>
                         <div class="col-xl-12 d-flex px-0 flex-row">
-                            <div class="col flex-grow-1 pr-0">
+                            <div class="col pr-0">
                                 <div class="col-xl-12 px-0">
                                     <div class="pt-1 field d-flex flex-row">
                                         {
@@ -186,7 +201,7 @@ class Ticket extends React.Component{
                                             :null
                                         }
                                         
-                                        <div title="Tichet" class="mr-2"><img src="./images/ticket.svg" class={"mx-auto my-auto"}/></div>
+                                        <div title="Tichet" class="mr-2"><img src="./images/pr.svg" class={"mx-auto my-auto"}/></div>
 
                                         {
                                             <div class={"col px-0 text-truncate knbn-font-16 mb-1 d-flex" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
@@ -214,7 +229,7 @@ class Ticket extends React.Component{
 
                                         <div class={"px-0" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
                                         {
-                                            <Link to={"/edit/ticket/" + this.props.data.id}>
+                                            <Link to={"/edit/report/" + this.props.data.id}>
                                                 <div title={this.state.id} class={"knbn-border-radius-50 knbn-font-small knbn-transition knbn-border text-center px-2 mr-1" + (this.props.themeToggled ? ' knbn-dark-border-4x knbn-dark-color-3x knbn-dark-bg-3x-active' : ' knbn-snow-border-3x knbn-snow-color-3x knbn-snow-bg-3x-active')}>
                                                 {
                                                     this.props.data.id
@@ -224,17 +239,31 @@ class Ticket extends React.Component{
                                         }
                                         </div>
                                     </div>
-                                                                       
-                                    <div class="row field">
-                                        <div class={"col-xl-4 col-4 px-0 info text-truncate" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title="Zi începere">Ziua creării</div>
-
-                                        <div class={"data col-xl-8 col-8 px-0 text-truncate" + (this.props.themeToggled ? " knbn-dark-color-4x" : " knbn-snow-color-4x")} title={dateformat(this.state.startDate, "dd \u00B7 mmmm \u00B7 yyyy")}>
-                                        {
-                                            dateformat(this.state.startDate, "dd \u00B7 mmmm \u00B7 yyyy")
-                                        }
+                                    {   
+                                        this.state.blocked.id ? 
+                                        <div class="row field">
+                                            <div class={"col-xl-4 col-4 px-0 info text-truncate" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title="Zi începere">Sursă eroare</div>
+                                            <div>
+                                                <Link to={'/edit/ticket/' + this.state.blocked.id}>
+                                                        <div class={"knbn-border-radius-50 knbn-font-small knbn-transition knbn-border" + (this.props.themeToggled ? ' knbn-dark-border-4x knbn-dark-color-3x knbn-dark-bg-3x-active' : ' knbn-snow-border-3x knbn-snow-color-3x knbn-snow-bg-3x-active')}>
+                                                        {
+                                                            <div class="text-truncate px-2" title={this.state.blocked.name ? this.state.blocked.name : this.state.blocked.id}>{this.state.blocked.name ? this.state.blocked.name : this.state.blocked.id}</div>
+                                                        }
+                                                        </div>
+                                                </Link>
+                                            </div>
                                         </div>
-                                    </div>
+                                        :
+                                        <div class="row field">
+                                            <div class={"col-xl-4 col-4 px-0 info text-truncate" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title="Zi începere">Ziua creării</div>
 
+                                            <div class={"data col-xl-8 col-8 px-0 text-truncate" + (this.props.themeToggled ? " knbn-dark-color-4x" : " knbn-snow-color-4x")} title={dateformat(this.state.startDate, "dd \u00B7 mmmm \u00B7 yyyy")}>
+                                            {
+                                                dateformat(this.state.startDate, "dd \u00B7 mmmm \u00B7 yyyy")
+                                            }
+                                            </div>
+                                        </div>
+                                    }     
                                     <div class="row field">
                                         <div class={"col-xl-4 col-4 px-0 info text-truncate" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} title="Zi limită">Ziua limită</div>
 
@@ -247,7 +276,7 @@ class Ticket extends React.Component{
                                 </div>
                             </div>
 
-                            <div class=" pt-2 px-2 d-flex flex-column">
+                            <div class="pt-2 px-2 d-flex flex-column">
                                 <div class="mx-auto">
                                 { 
                                    this.state.assignee.email ?
@@ -287,7 +316,7 @@ class Ticket extends React.Component{
                                         <img src={this.props.themeToggled ? "./images/right.svg" : "./images/bRight.svg"} class={"d-block mx-auto"}/>
                                     </div>       
 
-                                    <Link to={"/edit/ticket/" + this.props.data.id}>
+                                    <Link to={"/edit/report/" + this.props.data.id}>
                                         <div class={"knbn-tool d-flex knbn-transition knbn-border" + (this.props.themeToggled ? " knbn-dark-border-4x knbn-dark-bg-4x-active" : " knbn-snow-border-2x knbn-snow-bg-4x-active")}>
                                             <img src={this.props.isAdmin || this.state.assignee.email == this.props.currentUser || this.state.reporter.email == this.props.currentUser ? (this.props.themeToggled ? "./images/edit.svg" : "./images/bEdit.svg") : (this.props.themeToggled ? "./images/view.svg" : "./images/bView.svg")} data-toggle="modal" data-target="#editModal" title="Editează tichet" class={"d-block mx-auto"}/>
                                         </div>
@@ -331,7 +360,7 @@ class Ticket extends React.Component{
 
                         <div class="col-12 px-0">
                             <div class={"knbn-comp-progress progress w-100 knbn-transition"} style={{backgroundColor: (this.props.themeToggled ? 'rgb(100, 100, 100)' : 'rgb(209, 209, 209)')}} title="Progres"> 
-                                <div class="knbn-comp-progress-bar progress-bar  knbn-transition" role="progressbar" style={remainingPercentage < 0 ? {width: "100%", backgroundColor: 'rgb(199, 61, 51)'} : {width: remainingPercentage + '%'}}></div>
+                                <div class="knbn-comp-progress-bar progress-bar" role="progressbar" style={remainingPercentage < 0 ? {width: "100%", backgroundColor: 'rgb(199, 61, 51)'} : {width: remainingPercentage + '%'}}></div>
                             </div>
                         </div>
                     </div>
@@ -359,4 +388,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps)(DragSource(ItemTypes.TICKET, source, collect)(Ticket));
+export default connect(mapStateToProps)(DragSource(ItemTypes.TICKET, source, collect)(Report));

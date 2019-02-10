@@ -3,6 +3,8 @@ import Ticket from './Ticket';
 import { DropTarget } from 'react-dnd';
 import { ItemTypes } from './Constants';
 import { connect } from 'react-redux';
+import Report from './Report';
+
 
 class LaneDone extends React.Component{
     constructor(props){
@@ -31,13 +33,24 @@ class LaneDone extends React.Component{
                     (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}> 
                 {
                     this.props.items.map(ticket => {
-                        return  <Ticket 
-                                data={ticket} 
-                                key={this.props.items.indexOf(ticket)}
-                                helpers={this.props.helpers}
-                                setError={this.props.setError}
-                                refresh={this.props.refresh}
-                                />
+                        if(ticket.isReport){
+                            return  <Report 
+                            data={ticket} 
+                            key={this.props.items.indexOf(ticket)}
+                            helpers={this.props.helpers}
+                            setError={this.props.setError}
+                            refresh={this.props.refresh}
+                            />
+                        }
+                        else{
+                            return  <Ticket 
+                            data={ticket} 
+                            key={this.props.items.indexOf(ticket)}
+                            helpers={this.props.helpers}
+                            setError={this.props.setError}
+                            refresh={this.props.refresh}
+                            />
+                        }
                     })
                 }
                 </div>

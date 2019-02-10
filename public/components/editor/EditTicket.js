@@ -407,7 +407,7 @@ class EditTicket extends React.Component{
             })
             .then(response => {
                 if(response.status == 200){
-                    this.setState({dueDate: date});
+                    this.setState({estimation: value});
                 }
             })
             .catch(error => {
@@ -510,7 +510,7 @@ class EditTicket extends React.Component{
                                         this.state.startDate != undefined ?
                                         <ImmutableField
                                             label='Dată creare'
-                                            description='Data când a fost creată componenta'
+                                            description='Data când a fost creat tichetul'
                                         >{dateformat(new Date(this.state.startDate), "dddd \u00B7 d mmmm \u00B7 yyyy")}</ImmutableField> : null
                                     }
 
@@ -519,7 +519,7 @@ class EditTicket extends React.Component{
                                         date={this.state.dueDate}
                                         label='Data limită'
                                         save={this.saveDueDate}
-                                        description='Data limită pentru componentă'
+                                        description='Data limită pentru tichet'
                                     />
                                 </EditForm>
                             </div>

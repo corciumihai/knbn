@@ -289,8 +289,8 @@ p{
 }
 
 .knbn-loading{
-    border-radius: 5px !important;
-    height: 13px;
+    border-radius: 50px !important;
+    height: 1em;
 }
 
 .knbn-0-width{

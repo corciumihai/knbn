@@ -152,7 +152,7 @@ class Project extends React.Component{
                                     :
                                     <div class="col-12">
                                         <span class={"knbn-font-medium" + (this.props.themeToggled ? " knbn-dark-color-2x" : " knbn-snow-color-2x")}>
-                                            Acest proiect nu conține componente/tichete. Începeți prin a adăuga o componentă și apoi una sau mai multe tichete.
+                                            Acest proiect nu conține componente/tichete. Începeți prin a adăuga un modul și apoi una sau mai multe tichete.
                                         </span> 
                                     </div>
                                 }

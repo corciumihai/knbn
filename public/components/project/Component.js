@@ -41,7 +41,10 @@ class Component extends React.Component{
                 axios.get('/component/get/reports/' + this.props.data.id)
             ])
             .then(axios.spread((tickets, reports) => {
-                this.setState({ tickets: tickets.data.concat(reports.data).sort((a, b) => a.startDate > b.startDate),
+                let reportData = reports.data;
+                reportData.map(item => {item.isReport = true; return item});
+
+                this.setState({ tickets: tickets.data.concat(reportData).sort((a, b) => a.startDate > b.startDate),
                 }, () => {
                     if(this.props.data.owner){
                         axios.get('/user/' + this.props.data.owner)
@@ -112,7 +115,7 @@ class Component extends React.Component{
     }
 
     push(ticket){
-        if(ticket){
+        if(ticket){            
             this.setState({
                 tickets: update(this.state.tickets, {
                     $splice: [[this.state.tickets.indexOf(this.state.tickets.find(item => item.id == ticket.id && item.isReport == ticket.isReport)), 1]],
@@ -248,7 +251,10 @@ class Component extends React.Component{
             axios.get('/component/get/reports/' + this.props.data.id)
         ])
         .then(axios.spread((tickets, reports) => {
-            this.setState({ tickets: tickets.data.concat(reports.data).sort((a, b) => a.startDate > b.startDate)})
+            let reportData = reports.data;
+            reportData.map(item => {item.isReport = true; return item});
+
+            this.setState({ tickets: tickets.data.concat(reportData).sort((a, b) => a.startDate > b.startDate)})
         }))
         .catch(error => {
             this.props.setError(error.response.data.error)
@@ -279,7 +285,7 @@ class Component extends React.Component{
                                             (this.props.themeToggled ? 
                                                 " knbn-dark-bg-3x knbn-dark-bg-3x-active knbn-dark-shadow-3x" 
                                                 : 
-                                                " knbn-snow-bg-4x knbn-snow-bg-3x-active knbn-snow-shadow-3x")} onClick={this.toggle} title='Ascunde componentă'>
+                                                " knbn-snow-bg-4x knbn-snow-bg-3x-active knbn-snow-shadow-3x")} onClick={this.toggle} title='Ascunde modul'>
                                                 <img src={!this.state.flip ? (this.props.themeToggled  ? "./images/reducer.svg" : "./images/bReducer.svg") : (this.props.themeToggled  ? "./images/expand.svg" : "./images/bExpand.svg")} class={"d-block mx-auto"}/>
                                             </div>
                                             :null
@@ -301,7 +307,7 @@ class Component extends React.Component{
                                             (this.props.themeToggled ? 
                                                 " knbn-dark-bg-3x knbn-dark-bg-3x-active knbn-dark-shadow-3x" 
                                                 : 
-                                                " knbn-snow-bg-4x knbn-snow-bg-3x-active knbn-snow-shadow-3x")} title='Editează componentă'>
+                                                " knbn-snow-bg-4x knbn-snow-bg-3x-active knbn-snow-shadow-3x")} title='Editează modul'>
                                                 <img src={this.props.isAdmin || this.props.data.owner == this.props.currentUser ? (this.props.themeToggled ? "./images/edit.svg" : "./images/bEdit.svg") : (this.props.themeToggled ? "./images/view.svg" : "./images/bView.svg")} class={"d-block mx-auto"}/>
                                             </div>
                                         </Link>

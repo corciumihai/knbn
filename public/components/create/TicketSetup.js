@@ -244,13 +244,13 @@ class TicketSetup extends React.Component{
                         this.state.projects.length == 0 ? 
                         <div class="row">
                             <Header2>Niciun proiect configurat</Header2>
-                            <div class={"col knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>Înainte de a adăuga un tichet, creați un proiect, și apoi cel puțin o componentă</div>
+                            <div class={"col knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>Înainte de a adăuga un tichet, creați un proiect, și apoi cel puțin un modul</div>
                         </div>
                         :
                         this.state.components.length == 0 ? 
                         <div class="row">
-                            <Header2>Niciun modul creat</Header2>
-                            <div class={"col knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>Înainte de a adăuga un tichet, creați o componentă</div>
+                            <Header2>Nici un modul creat</Header2>
+                            <div class={"col knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>Înainte de a adăuga un tichet, creați un modul</div>
                         </div>
                         :
                         <div class="row">

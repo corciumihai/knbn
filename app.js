@@ -309,7 +309,7 @@ app.get('/release/:id', handlers.checkToken, (request, response) => {
 });
 
 app.get('/component/get/tickets/:compID', handlers.checkToken, (request, response) => {
-    database.query('SELECT * FROM tickets WHERE component = ?', request.params.compID, (error, result, fields) => {
+    database.query('SELECT id, lane, component, name, assignee, reporter FROM tickets WHERE component = ?', request.params.compID, (error, result, fields) => {
         if(error){
             response.statusCode = 500;
             response.json({error: 'Tichetele nu s-au putut fi incarcate ' + error.code});
@@ -322,7 +322,7 @@ app.get('/component/get/tickets/:compID', handlers.checkToken, (request, respons
 });
 
 app.get('/component/get/reports/:compID', handlers.checkToken, (request, response) => {
-    database.query('SELECT * FROM reports WHERE component = ?', request.params.compID, (error, result, fields) => {
+    database.query('SELECT id, lane, component, name, assignee, reporter FROM reports WHERE component = ?', request.params.compID, (error, result, fields) => {
         if(error){
             response.statusCode = 500;
             response.json({error: 'Tichetele nu s-au putut fi incarcate ' + error.code});

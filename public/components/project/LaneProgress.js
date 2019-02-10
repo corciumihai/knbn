@@ -3,6 +3,8 @@ import Ticket from './Ticket';
 import { DropTarget } from 'react-dnd';
 import { ItemTypes } from './Constants';
 import { connect } from 'react-redux';
+import Report from './Report';
+
 
 class LaneProgress extends React.Component{
     constructor(props){
@@ -32,13 +34,24 @@ class LaneProgress extends React.Component{
                     (this.props.items.length >= this.props.wip ? " knbn-wip-limit" : "")}> 
                 {
                     this.props.items.map(ticket => {
-                        return  <Ticket 
-                                data={ticket} 
-                                key={this.props.items.indexOf(ticket)}
-                                helpers={this.props.helpers}
-                                setError={this.props.setError}
-                                refresh={this.props.refresh}
-                                />
+                        if(ticket.isReport){
+                            return <Report 
+                            data={ticket} 
+                            key={this.props.items.indexOf(ticket)}
+                            helpers={this.props.helpers}
+                            setError={this.props.setError}
+                            refresh={this.props.refresh}
+                            />
+                        }
+                        else{
+                            return  <Ticket 
+                            data={ticket} 
+                            key={this.props.items.indexOf(ticket)}
+                            helpers={this.props.helpers}
+                            setError={this.props.setError}
+                            refresh={this.props.refresh}
+                            />
+                        }
                     })
                 }
                 </div>

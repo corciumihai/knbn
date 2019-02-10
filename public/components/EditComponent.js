@@ -238,14 +238,14 @@ class EditComponent extends React.Component{
                                         canEdit={this.props.isAdmin || this.props.currentUser == this.state.owner.email || this.state.owner.email == undefined}
                                         label='Nume' 
                                         save={this.saveName}
-                                        description='Numele componentei când a fost creată'
+                                        description='Numele modulului'
                                     />
 
                                     <EditTextArea
                                         value={this.state.description}
                                         save={this.saveDescription}
                                         label='Descriere' 
-                                        description='Descrierea componentei când a fost creată'
+                                        description='Descrierea modulului'
                                         canEdit={this.props.isAdmin || this.props.currentUser == this.state.owner.email || this.state.owner.email == undefined}
                                     />
 
@@ -253,7 +253,7 @@ class EditComponent extends React.Component{
                                         item={this.state.release}
                                         canEdit={this.props.isAdmin || this.props.currentUser == this.state.owner.email || this.state.owner.email == undefined}
                                         label="Versiune"
-                                        description='Versiunea atașată componentei'
+                                        description='Versiunea atașată modulului'
                                         items={this.state.releases}
                                         save={this.saveRelease}
                                     />
@@ -262,7 +262,7 @@ class EditComponent extends React.Component{
                                         item={this.state.category}
                                         canEdit={this.props.isAdmin || this.props.currentUser == this.state.owner.email || this.state.owner.email == undefined}
                                         label="Categorie"
-                                        description='Categoria atașată componentei'
+                                        description='Categoria atașată modulului'
                                         items={this.state.categories}
                                         save={this.saveCategory}
                                     />
@@ -271,7 +271,7 @@ class EditComponent extends React.Component{
                                         item={this.state.priority}
                                         canEdit={this.props.isAdmin || this.props.currentUser == this.state.owner.email || this.state.owner.email == undefined}
                                         label="Prioritate"
-                                        description='Prioritatea componentei'
+                                        description='Prioritatea modulului'
                                         items={this.props.priorities}
                                         save={this.savePriority}
                                     />

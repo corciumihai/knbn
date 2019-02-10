@@ -121,7 +121,7 @@ class CmpSetup extends React.Component{
 
     verify(callback){
         if(this.state.name == undefined || this.state.name.length == 0){
-            this.setState({error: 'Introdu numele componentei'});
+            this.setState({error: 'Introdu numele modulului'});
         }
 
         else if(this.state.project.name == undefined || this.state.project.name.length == 0){
@@ -158,7 +158,7 @@ class CmpSetup extends React.Component{
         this.verify(() => {
             axios.post('/component/add', {
                 name: this.state.name,
-                owner: this.state.assignee.email,
+                owner: this.state.assignee.email ? this.state.assignee.email : this.props.currentUser,
                 category: this.state.category.id,
                 description: this.state.description,
                 priority: this.state.priority.dbName,
@@ -167,7 +167,7 @@ class CmpSetup extends React.Component{
                 project: this.state.project.id
             }).then(response => {
                 if(response.status == 200){
-                    this.setState({success: 'Componentă adăugată cu succes'}, this.resetState);
+                    this.setState({success: 'Modul adăugat cu succes'}, this.resetState);
                 }
             })
             .catch(error => {
@@ -269,7 +269,8 @@ class CmpSetup extends React.Component{
 const mapStateToProps = (state) => {
     return {
         themeToggled: state.themeToggled,
-        priorities: state.priorities
+        priorities: state.priorities,
+        currentUser: state.currentUser
     }
 }
 

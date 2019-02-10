@@ -83,7 +83,7 @@ class WorklogInsert extends React.Component{
                         />
                     </div>
                     
-                    <AddButton save={this.add}/>
+                    <AddButton save={this.addComment}/>
                 </div>
 
                 <Small>{this.props.description}</Small>
