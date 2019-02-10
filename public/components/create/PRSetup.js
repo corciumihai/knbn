@@ -6,13 +6,16 @@ import UserField from './UserField';
 import TextAreaField from './TextAreaField';
 import SelectionField from './SelectionField';
 import { connect } from 'react-redux';
-import Error from './Error';
 import Header2 from '../editor/Header2';
 import Header3 from '../editor/Header3';
 import Menu from '../Menu';
 import SubmitButton from './SubmitButton';
 import CancelButton from './CancelButton';
 import Success from '../messages/Success';
+import DismissableError from '../messages/DismisableError';
+import Label from '../editor/Label';
+import Small from '../editor/Small';
+import DatePicker from './DatePicker';
 
 class PRSetup extends React.Component{
     
@@ -28,8 +31,7 @@ class PRSetup extends React.Component{
             reporter: {},
             assignee: {},
             component: {},
-            blockedTicket: {},
-            blockingTicket: {},
+            blocker: {},
             category: {},
             categories: [],
             dueDate: new Date(),
@@ -50,96 +52,165 @@ class PRSetup extends React.Component{
         this.setCategory = this.setCategory.bind(this);
         this.setEstimation = this.setEstimation.bind(this);
         this.setDescription = this.setDescription.bind(this);
-        this.fetchComponents = this.fetchComponents.bind(this);
-        this.fetchCategories = this.fetchCategories.bind(this);
-        this.fetchTickets = this.fetchTickets.bind(this);
         this.setPriority = this.setPriority.bind(this);
         this.submitTicket = this.submitTicket.bind(this);
         this.setRelease = this.setRelease.bind(this);
-        this.fetchReleases = this.fetchReleases.bind(this);
         this.setName = this.setName.bind(this);
         this.verify = this.verify.bind(this);
         this.setTestSteps = this.setTestSteps.bind(this);
         this.setObservedBehavior = this.setObservedBehavior.bind(this);
         this.setExpectedBehavior = this.setExpectedBehavior.bind(this);
-        this.fetchProjects = this.fetchProjects.bind(this);
         this.setProject = this.setProject.bind(this);
-        this.resetError = this.resetError.bind(this);
+        this.setErrorSource = this.setErrorSource.bind(this);
+        this.setDueDate = this.setDueDate.bind(this);
+        this.filterProjectDependencies = this.filterProjectDependencies.bind(this);
+    }
+
+    componentDidMount(){
+        axios.all([
+            axios.get('/component/get'),
+            axios.get('/tickets/get'),
+            axios.get('category/multi/get'),
+            axios.get('release/multi/get'),
+            axios.get('/project/getall')
+        ])
+        .then(axios.spread(
+            (components, tickets, categories, releases, projects) => {
+                if(components.status == 200 && tickets.status == 200 && releases.status == 200 && projects.status == 200){
+                    this.setState({
+                        components: components.data, filteredComponents: components.data,
+                        tickets: tickets.data, filteredTickets: tickets.data,
+                        categories: categories.data, filteredCategories: categories.data,
+                        releases: releases.data, filteredReleases: releases.data,
+                        projects: projects.data,
+                        priority: this.props.priorities[2]
+                    })
+                }
+            }
+        ))
+        .catch(error => {
+            this.setState({error: error.response.data.error})
+        })
+    }
+
+    filterProjectDependencies(){
+        if(this.state.project.id){
+            this.setState({
+                filteredComponents: this.state.components.filter(item => item.project == this.state.project.id),
+                filteredCategories: this.state.categories.filter(item => item.project == this.state.project.id),
+                filteredReleases: this.state.releases.filter(item => item.project == this.state.project.id),
+                filteredTickets: this.state.tickets.filter(item => item.project == this.state.project.id)
+            })
+        }
+        else{
+            this.setState({
+                filteredComponents: this.state.components,
+                filteredCategories: this.state.categories,
+                filteredReleases: this.state.releases,
+                filteredTickets: this.state.tickets
+            })
+        }
     }
 
     setName(value){
-        this.setState({name: value}, this.resetError);
-    }
-    
-    resetError(){
-        this.setState({error: ''});
+        this.setState({name: value});
     }
 
-    setAssignee(user){this.setState({assignee: user}, this.resetError)}
-
-    setComponent(component){this.setState({component: component}, this.resetError);}
-
-    setCategory(category){this.setState({category: category}, this.resetError);}
-
-    setDescription(value){this.setState({description: value}, this.resetError);}
-
-    setPriority(prio){this.setState({priority: prio}, this.resetError)};
-
-    setRelease(release){this.setState({release: release}, this.resetError);}
-
-    fetchComponents(){axios.get('/get-components').then(response => {this.setState({components: response.data})});}
-
-    fetchTickets(){axios.get('/get-tickets').then(response => {this.setState({tickets: response.data.tickets, filteredTickets: response.data.tickets});});}
-
-    fetchCategories(){axios.get('category/multi/get').then(response => {this.setState({categories: response.data, filteredCategories: response.data})});}
-
-    fetchReleases(){axios.get('release/multi/get').then(response => {this.setState({releases: response.data})})}
-
-    fetchProjects(){
-        axios.get('/get-projects')
-        .then(response => {this.setState({projects: response.data})})
+    setAssignee(user){
+        this.setState({assignee: user})
     }
 
-    setEstimation(value){this.setState({estimation: value}, this.resetError);}
+    setProject(project){
+        this.setState({project: project}, () => {
+            this.filterProjectDependencies();
 
-    setTestSteps(value){this.setState({testSteps: value}, this.resetError)}
-
-    setExpectedBehavior(value){this.setState({expectedBehavior: value}, this.resetError)}
-
-    setObservedBehavior(value){this.setState({observedBehavior: value}, this.resetError)}
-
-    setProject(value){
-        this.setState({project: value}, this.resetError);
+            if(!project.id){
+                this.setComponent({});
+                this.setErrorSource({});
+                this.setCategory({});
+                this.setRelease({});
+            }
+        });
     }
 
-    componentWillMount(){
-        this.fetchComponents();
-        this.fetchReleases();
-        this.fetchTickets();
-        this.fetchCategories();
-        this.fetchProjects();
-
-        this.setState({priority: this.props.priorities[2]});
+    setComponent(component){
+        if(component.project){
+            this.setState({component: component}, () => {
+                this.setProject(this.state.projects.find(item => item.id == component.project))
+            });
+        }
+        else{
+            this.setState({component: component, blocker: {}});
+        }
     }
 
-    verify(){
+    setCategory(category){
+        this.setState({category: category}, () => {
+            if(category.project){
+                this.setProject(this.state.projects.find(item => item.id == category.project));
+            }
+        });
+    }
+
+    setRelease(release){
+        this.setState({release: release}, () => {
+            if(release.project){
+                this.setProject(this.state.projects.find(item => item.id == release.project));
+            }
+        });
+    }
+
+    setDescription(value){
+        this.setState({description: value});
+    }
+
+    setPriority(prio){
+        this.setState({priority: prio})
+    }
+
+    setEstimation(value){
+        this.setState({estimation: value});
+    }
+
+    setTestSteps(value){
+        this.setState({testSteps: value})
+    }
+
+    setExpectedBehavior(value){
+        this.setState({expectedBehavior: value})
+    }
+
+    setObservedBehavior(value){
+        this.setState({observedBehavior: value})
+    }
+
+    setErrorSource(ticket){
+        this.setState({blocker: ticket}, () => {
+            if(ticket.component){
+                this.setComponent(this.state.components.find(item => item.id == ticket.component))
+            }
+        });
+    }
+
+    setDueDate(date){
+        this.setState({dueDate: date});
+    }
+
+    verify(callback){
         if(this.state.name == undefined || this.state.name.length == 0){
             this.setState({error: 'Introdu numele tichetului'});
-            return false;
         }
 
-        if(this.state.project.id == undefined || this.state.project.id.length == 0 || this.state.project.id <= 0 ){
+        else if(this.state.project.id == undefined || this.state.project.id.length == 0 || this.state.project.id <= 0 ){
             this.setState({error: 'Selectează referința unui proiect'});
-            return false;
         }
 
-        // check if attached to a component
-        if(this.state.component.id == undefined || this.state.component.id.length == 0 || this.state.component.id <= 0 ){
+        else if(this.state.component.id == undefined || this.state.component.id.length == 0 || this.state.component.id <= 0 ){
             this.setState({error: 'Selectează o referință a unei componente'});
-            return false;
         }
-
-        return true;
+        else{
+            callback();
+        }
     }
 
     resetState(){
@@ -147,8 +218,7 @@ class PRSetup extends React.Component{
             name: '',
             assignee: {},
             component: {},
-            blockedTicket: {},
-            blockingTicket: {},
+            blocker: {},
             category: {},
             dueDate: new Date(),
             estimation: 0,
@@ -166,13 +236,12 @@ class PRSetup extends React.Component{
     submitTicket(event){
         event.preventDefault();
 
-        if(this.verify() == true){
-            axios.post('/reports/add-report', {
+        this.verify(() => {
+            axios.post('/reports/add', {
                 name: this.state.name,
-                assignee: this.state.assignee.email,
+                assignee: this.state.assignee.email ? this.state.assignee.email : this.props.currentUser,
                 component: this.state.component.id,
-                blockedTicket: this.state.blockedTicket.id,
-                blockingTicket: this.state.blockingTicket.id,
+                blocked: this.state.blocker.id,
                 category: this.state.category.id,
                 estimation: parseInt(this.state.estimation),
                 description: this.state.description,
@@ -182,13 +251,12 @@ class PRSetup extends React.Component{
                 observed: this.state.observedBehavior,
                 priority: this.state.priority.dbName,
                 releaseID: this.state.release.id,
-                dueDate: new Date(),
+                dueDate: this.state.dueDate,
                 testSteps: this.state.testSteps,
                 startDate: new Date(),
                 lane: 'backlog',
                 project: this.state.project.id
             }).then(response => {
-                console.log(response)
                 if(response.status == 200){
                     this.setState({success: true}, this.resetState);
                 }
@@ -196,7 +264,7 @@ class PRSetup extends React.Component{
             .catch(error => {
                 this.setState({error: error.response.data.error});
             })
-        }
+        })
     }
 
     render(){
@@ -205,9 +273,6 @@ class PRSetup extends React.Component{
                 <Menu/>
                 <div class="row mt-3 knbn-mandatory-margin">
                     <div class="col-xl-4 offset-xl-4">
-                        <div class="row">
-                            <Header3>Creator raport problemă</Header3>
-                        </div>
                     {
                         this.state.projects.length == 0 ? 
                         <div class="row">
@@ -223,34 +288,47 @@ class PRSetup extends React.Component{
                         :
                         <div class="row">
                             <div class="col-xl-12">
+                                <Header3>Creator Raport problemă</Header3>
+
                                 <InputField 
                                     label="Nume"
                                     value={this.state.name}
-                                    description="Numele tichetului"
+                                    description="Numele raportului problemă"
                                     action={this.setName}
                                 />
 
                                 <SelectionField
                                     label="Atașează proiect"
                                     action={this.setProject}
-                                    description="Proiect la care tichetul va fi atașat"
+                                    description="Proiect la care raportul problemă va fi atașat"
                                     value={this.state.project.name}
                                     items={this.state.projects}
                                     currentItem={this.state.project}
-                                    imgSrc='./images/project.svg'
+                                    imgSrc={this.props.themeToggled ? "./images/project.svg" : "./images/bProject.svg"}
                                 />
 
                                 <SelectionField
                                     label="Atașează componentă"
                                     action={this.setComponent}
-                                    description="Componenta la care tichetul va fi atașat"
+                                    description="Componenta la care raportul problemă va fi atașat"
                                     value={this.state.component.name}
-                                    items={this.state.components}
+                                    items={this.state.filteredComponents}
+                                    imgSrc={"./images/module.svg"}
                                     currentItem={this.state.component}
                                 />
 
+                                <SelectionField
+                                    label="Sursa erorii"
+                                    action={this.setErrorSource}
+                                    description="Tichetul ce provoaca eroarea"
+                                    value={this.state.blocker.name}
+                                    items={this.state.filteredTickets}
+                                    imgSrc={"./images/ticket.svg"}
+                                    currentItem={this.state.blocker}
+                                />
+
                                 <PriorityField
-                                    description="Prioritatea raportului de problemă"
+                                    description="Prioritatea raportuluiproblemă"
                                     items={this.props.priorities}
                                     action={this.setPriority}
                                     value={this.state.priority}
@@ -259,14 +337,14 @@ class PRSetup extends React.Component{
                                 <UserField
                                     user={this.state.assignee}
                                     action={this.setAssignee}
-                                    label="Prioritatea raportului de problemă"
+                                    label="Prioritatea raportului problemă"
                                 />
 
                                 <TextAreaField
                                     label="Descriere"
                                     action={this.setDescription}
                                     value={this.state.description}
-                                    description="Descrierea raportului de problemă"
+                                    description="Descrierea raportului problemă"
                                 />
 
                                 <TextAreaField
@@ -293,18 +371,20 @@ class PRSetup extends React.Component{
                                 <SelectionField
                                     label="Atașează versiune"
                                     action={this.setRelease}
-                                    description="Versiune la care raportul de problemă va fi atașat"
+                                    description="Versiune la care raport problemă va fi atașat"
                                     value={this.state.release.name}
-                                    items={this.state.releases}
+                                    items={this.state.filteredReleases}
+                                    imgSrc={this.props.themeToggled ? "./images/release.svg" : "./images/bRelease.svg"}
                                     currentItem={this.state.release}
                                 />
                                 
                                 <SelectionField
                                     label="Atașează categorie"
                                     action={this.setCategory}
-                                    description="Categoria care va fi atașată la raportul de problemă"
+                                    description="Categoria care va fi atașată la raport problemă"
                                     value={this.state.category.name}
-                                    items={this.state.categories}
+                                    items={this.state.filteredCategories}
+                                    imgSrc={this.props.themeToggled ? "./images/category.svg" : "./images/bCategory.svg"}
                                     currentItem={this.state.category}
                                 />  
 
@@ -315,23 +395,24 @@ class PRSetup extends React.Component{
                                     action={this.setEstimation}
                                 />
                                 
-                                {/* <div class="ticket-section mb-2 d-flex">
-                                    <Toggler classToToggle=".knbn-to-collapse"/>
-                                    <div class="w-100">
-                                        <Label label='Due date'/>
-                                        <DatePicker changeDate={this.changeDueDate}/>
+                                <div class="ticket-section mb-3">
+                                    <Label label="Zi limită"></Label>
+                                    <div class="d-flex">
+                                        <div class="mx-auto">
+                                            <DatePicker action={this.setDueDate} date={this.state.dueDate}/>
+                                        </div>
                                     </div>
-                                </div> */}
+                                    <Small>Ziua limită propusă pentru sarcină</Small>
+                                </div>
 
-                                <Error>{this.state.error}</Error>
-                                {
-                                    this.state.success ? 
-                                    <Success>Raport de problemă adăugat cu succes</Success>
-                                    :null
-                                }
+                                {/* <Success>Raport de problemă adăugat cu succes</Success> */}
 
+                                <div class="col">
+                                    <DismissableError dismissError={() => {this.setState({error: ''})}}>{this.state.error}</DismissableError>
+                                </div>
+                                
                                 <div class="d-flex flex-row justify-content-center mb-3 ">
-                                    <SubmitButton action={this.submitTicket}>Adaugă problemă</SubmitButton>
+                                    <SubmitButton action={this.submitTicket}>Adaugă raport problemă</SubmitButton>
                                     <CancelButton action={this.resetState}>Anulează</CancelButton>
                                 </div>
 
@@ -349,7 +430,7 @@ const mapStateToProps = (state) => {
     return {
         themeToggled: state.themeToggled,
         priorities: state.priorities,
-        currentReporter: state.currentReporter
+        currentUser: state.currentUser
     }
 }
 

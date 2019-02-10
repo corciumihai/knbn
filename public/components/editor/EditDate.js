@@ -21,7 +21,7 @@ class EditDate extends React.Component{
         this.setDate = this.setDate.bind(this);
     }
 
-    componentWillMount(){
+    componentDidMount(){
         this.setState({date: this.props.date});
     }
 
@@ -53,39 +53,33 @@ class EditDate extends React.Component{
                 {
                     !this.state.inEditMode ? 
                     <div class={"d-flex flex-row text-truncate"}>
-                        <RemoveItem remove={this.setEdiMode}>
+                        <RemoveItem remove={this.setEdiMode} canEdit={this.props.canEdit}>
                             {dateformat(this.state.date, "dddd \u00B7 d mmmm \u00B7 yyyy")}
                         </RemoveItem>
                     </div>
                     :
-                    null
+                    <div class={"d-flex flex-column w-100 knbn-border knbn-transition" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}>
+                        <div class={"input-group knbn-transition mb-1 knbn-border-bottom knbn-transition" + 
+                        (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}>
+                            <div class={"knbn-no-border knbn-font-medium knbn-no-box-shadow knbn-no-border-radius knbn-border-transparent form-control knbn-editing-mode knbn-bg-transparent" + 
+                            (this.props.themeToggled == true ? 
+                                " knbn-dark-color-4x knbn-dark-bg-2x knbn-dark-bg-2x-active knbn-dark-border-2x" 
+                                : 
+                                " knbn-snow-color-4x knbn-snow-bg-2x knbn-snow-bg-2x-active knbn-snow-border-2x")}>
+                                {dateformat(this.state.date, "dddd \u00B7 d mmmm \u00B7 yyyy")}
+                            </div>
 
-                    // !this.props.editable ? 
-                    // <div class={"knbn-input-grp knbn-fake-input-grp knbn-immutable input-group knbn-transition" + 
-                    // (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
-                    //     <div class={"knbn-fake-input form-control text-truncate knbn-transition" + 
-                    //     (this.props.themeToggled == true ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
-                    //         {/* {dateformat(new Date(this.state.date), "dddd \u00B7 mmmm dS \u00B7 yyyy")} */}
-                    //     </div>
-                    // </div>
-                    // :
-                    // <div class="d-flex flex-column w-100">
-                    //     <div class={"knbn-input-grp knbn-fake-input-grp input-group knbn-transition" + 
-                    //     (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
-                    //         <div class={"knbn-fake-input form-control text-truncate knbn-transition" + 
-                    //         (this.props.themeToggled == true ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
-                    //             {/* {dateformat(new Date(this.state.date), "dddd \u00B7 mmmm dS \u00B7 yyyy")} */}
-                    //         </div>
-
-                    //         <EditButton edit={this.state.inEditMode} save={this.save} enableEditMode={this.setEdiMode}/>
-                    //     </div>
-                    //     {
-                    //     this.state.inEditMode ? 
-                    //         <DatePicker changeDate={this.setDate}/>
-                    //         :
-                    //         null
-                    //     }
-                    // </div>                    
+                            <EditButton edit={this.state.inEditMode} save={this.save} enableEditMode={this.setEdiMode}/>
+                        </div>
+                        {
+                        this.state.inEditMode ? 
+                            <div class="mx-auto">
+                                <DatePicker date={this.state.date} action={this.setDate}/>
+                            </div>
+                            :
+                            null
+                        }
+                    </div>                    
                 }
                 <Small>{this.props.description}</Small>
             </div>

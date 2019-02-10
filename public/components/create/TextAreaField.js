@@ -18,7 +18,7 @@ class TextAreaField extends React.Component{
 
     componentWillReceiveProps(nextProps, nextState){
         if(nextProps.value != this.state.value){
-            this.setState({value: nextProps.value, displayValue: ReactHtmlParser(nextProps.value)});
+            this.setState({value: nextProps.value ? nextProps.value : '', displayValue: ReactHtmlParser(nextProps.value)});
         }
     }
 
@@ -42,7 +42,7 @@ class TextAreaField extends React.Component{
                     <Label label={this.props.label}/>
                 }
                 <div class={"input-group knbn-bg-transparent knbn-transition knbn-border" + (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-3x knbn-snow-onselect")}>
-                    <ReactQuill modules={quillModules} value={this.state.value} onChange={this.setFieldValue} className={"w-100 h-100 knbn-bg-transparent knbn-transition knbn-comp-desc" + (this.props.themeToggled ? " knbn-dark-color-5x knbn-dark-bg-2x knbn-dark-edit-bd-2x" : " knbn-snow-color-5x knbn-snow-bg-2x knbn-snow-edit-bd-2x")}/>
+                    <ReactQuill modules={quillModules} value={this.state.value} onChange={this.setFieldValue} className={"w-100 h-100 knbn-bg-transparent knbn-transition" + (this.props.themeToggled ? " knbn-dark-color-5x knbn-dark-bg-2x knbn-dark-edit-bd-2x" : " knbn-snow-color-4x knbn-snow-bg-3x knbn-snow-bg-3x-active knbn-snow-edit-bd-2x")}/>
                 </div> 
                 <Small>{this.props.description}</Small>
             </div>

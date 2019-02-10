@@ -12,7 +12,7 @@ class PriorityField extends React.Component{
         return(
             <div class="form-group knbn-bg-transparent">
                 <Label label="Prioritate"/>
-                <div class={"knbn-input-grp knbn-fake-input-grp input-group dropdown knbn-bg-transparent knbn-transition knbn-border" + (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
+                <div class={"knbn-input-grp knbn-fake-input-grp input-group dropdown knbn-bg-transparent knbn-transition knbn-border" + (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-3x knbn-snow-onselect")}>
 
                     {
                         this.state.priority.name != undefined ? 
@@ -24,7 +24,7 @@ class PriorityField extends React.Component{
                             (this.props.themeToggled == true ? 
                                 " knbn-dark-bg-2x knbn-dark-bg-2x-active knbn-dark-color-4x" 
                                 : 
-                                " knbn-snow-bg-2x knbn-snow-bg-2x-active knbn-snow-color-4x")} 
+                                " knbn-snow-color-4x knbn-snow-bg-3x knbn-snow-bg-3x-active")} 
                         aria-describedby="knbnHelp" 
                         placeholder={this.state.value == undefined || this.state.value == undefined || this.state.value.length == 0 ? "Introdu prioritatea" : ""}
                         value={this.state.value}
@@ -65,7 +65,7 @@ class PriorityField extends React.Component{
         this.RemoveItemSmall = this.RemoveItemSmall.bind(this);
     }
 
-    componentWillMount(){
+    componentDidMount(){
         this.setState({items: this.props.priorities, priority: this.props.value, filteredItems: this.props.priorities, value: this.props.value.name});
     }
 
@@ -78,7 +78,6 @@ class PriorityField extends React.Component{
     }
 
     setValue(e){
-        console.log(e.target.value);
         this.setState({value: e.target.value}, () => {this.filterItems();});
     }
 

@@ -7,15 +7,6 @@ import {connect} from 'react-redux';
 import axios from 'axios';
 import crypto from 'crypto';
 
-
-const mapStatetoProps = (state) => {
-    return {
-        gravatar: state.gravatar,
-        themeToggled: state.themeToggled,
-        currentUser: state.currentUser,
-    }
-}
-
 const mapDispatchToProps = (dispatch) => {
     return {
         logOut: () => {
@@ -52,12 +43,12 @@ class ProfileDrop extends React.Component{
         this.setState({redirect: true});
     }
 
-    componentWillMount(){
-        if(this.props.user){
-            axios.get('/user/' + this.props.user)
+    componentDidMount(){
+        if(this.props.currentUser){
+            axios.get('/user/' + this.props.currentUser)
             .then(response => {
                 this.setState({
-                    email: this.props.user, 
+                    email: this.props.currentUser, 
                     name: response.data.name,
                     isAdmin: response.data.isAdmin,
                     gravatar: 'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(response.data.email).toLowerCase().trim()).digest('hex')}, 
@@ -67,16 +58,15 @@ class ProfileDrop extends React.Component{
     }
 
     componentWillReceiveProps(nextProps, nextState){
-        if(nextProps.user){
-            axios.get('/user/' + nextProps.user)
+        if(nextProps.currentUser){
+            axios.get('/user/' + nextProps.currentUser)
             .then(response => {
-                
                 this.setState({
-                    email: this.props.user, 
+                    email: nextProps.currentUser, 
                     name: response.data.name,
                     isAdmin: response.data.isAdmin,
-                    gravatar: 'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(response.data.email).toLowerCase().trim()).digest('hex')},
-                    () => {this.props.setAdmin(this.state.isAdmin)});
+                    gravatar: 'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(response.data.email).toLowerCase().trim()).digest('hex')
+                }, () => {this.props.setAdmin(this.state.isAdmin)});
             });
         }
     }
@@ -94,14 +84,22 @@ class ProfileDrop extends React.Component{
                     </KNBNNavLink>
             
                     <DropdownMenu>
-                        <NavLink to="">
-                            <DropdownItem imgSrc="./images/profile.svg">Profil</DropdownItem>
+                        <NavLink to={"/edit/profile/" + this.props.currentUser}>
+                            <DropdownItem imgSrc={this.props.themeToggled ? "./images/profile.svg" : "./images/bProfile.svg"}>Profil</DropdownItem>
                         </NavLink>
-                        <a onClick={this.logout}><DropdownItem imgSrc="./images/logout.svg">Ieșire</DropdownItem></a>
+                        <a onClick={this.logout}><DropdownItem imgSrc={this.props.themeToggled ? "./images/disconnect.svg" : "./images/bDisconnect.svg"}>Ieșire</DropdownItem></a>
                     </DropdownMenu>
                 </li>
             </ul>
         );
+    }
+}
+
+const mapStatetoProps = (state) => {
+    return {
+        gravatar: state.gravatar,
+        themeToggled: state.themeToggled,
+        currentUser: state.currentUser,
     }
 }
 

@@ -66,7 +66,7 @@ p{
     display: flex;
 }
 
-.prio-1, .prio-2, .prio-3{
+.prio-1, .prio-2, .prio-3, .no-prio{
     width: 4px;
 }
 
@@ -109,7 +109,6 @@ p{
 .knbn-comp-progress{
     height: 2px !important;
     border-radius: none !important;
-    background-color: rgb(100, 100, 100);
 }
 
 .knbn-comp-progress-bar{
@@ -131,6 +130,7 @@ p{
     font-style: normal;
     margin-bottom: 0;
 }
+
 
 .knbn-no-border-right{
     border-right: none !important;
@@ -177,6 +177,15 @@ p{
 
 .knbn-border-radius-50{
     border-radius: 50px !important;
+}
+
+.knbn-border-radius-full{
+    border-radius: 100% !important;
+}
+
+
+.knbn-border-radius-5{
+    border-radius: 5px !important;
 }
 
 .knbn-transition{
@@ -298,6 +307,8 @@ html, body, #app{
 }
 
 .ql-editor{
+    font-family: Consolas, monaco, monospace !important;
+    font-size: 13px !important;
     overflow-y: initial !important;
     word-break: break-all !important;
 }
@@ -341,6 +352,10 @@ html, body, #app{
     border-right: 1px solid !important;
 }
 
+.knbn-border-left{
+    border-left: 1px solid !important;
+}
+
 .knbn-mandatory-margin{
     margin-top: 80px !important;
 }
@@ -359,4 +374,75 @@ html, body, #app{
 
 .form-control{
     height: auto !important;
+}
+
+.knbn-max-h-200{
+    max-height: 200px;
+}
+
+.knbn-overflow{
+    overflow-y: auto;
+}
+
+.knbn-wip-limit{
+    background-color: rgba(230, 15, 0, 0.342) !important;
+}
+
+.knbn-padding-2{
+    padding: 2px !important;
+}
+
+.knbn-profile-pic-xl{
+    width: 100px;
+    height: 100px;
+}
+
+.knbn-muted{
+    color: rgba(114, 114, 114, 0.747) !important;
+}
+
+.no-prio{
+    background-color: rgb(112, 112, 112) !important;
+}
+
+.knbn-current-day{
+    background-color: rgb(156, 68, 68) !important;
+}
+
+.knbn-current-day:hover, .knbn-current-day:focus, .knbn-current-day:active{
+    background-color: rgb(124, 54, 54) !important;
+}
+
+.knbn-btn-dis:hover, .knbn-btn-dis:focus, .knbn-btn-dis:active{
+    background-color: rgba(85, 85, 85, 0.986) !important;
+}
+
+.knbn-date-btn{
+    padding: 0px;
+    width: 30px;
+    height: 30px;
+    margin-left: 1px;
+    margin-bottom: 1px;
+    text-align: center;
+}
+
+.knbn-date-btn-valid{
+    background-color: rgb(74, 104, 61) !important;
+}
+
+.knbn-date-btn-valid:hover, .knbn-date-btn-valid:active, .knbn-date-btn-valid:focus{
+    background-color: rgb(79, 145, 66) !important;
+}
+
+.knbn-date-btn-invalid:hover, .knbn-date-btn-valid:active, .knbn-date-btn-valid:focus{
+    background-color: rgb(78, 78, 78) !important;
+    color: white;
+}
+
+.knbn-calendar{
+    width: 240px !important;
+}
+
+ol{
+    margin-bottom: 0;
 }

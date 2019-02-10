@@ -72,7 +72,7 @@ class CmpSetup extends React.Component{
     }
 
     fetchTickets(){
-        axios.get('/get-tickets')
+        axios.get('/tickets/get')
         .then(response => {
             this.setState({
                 tickets: response.data.tickets, 
@@ -101,13 +101,13 @@ class CmpSetup extends React.Component{
         })
     }
 
-    fetchProjects(){axios.get('/get-projects').then(response => {this.setState({projects: response.data})})}
+    fetchProjects(){axios.get('/project/getall').then(response => {this.setState({projects: response.data})})}
 
     setEstimation(value){
         this.setState({estimation: value}, this.resetError);
     }
 
-    componentWillMount(){
+    componentDidMount(){
         this.fetchReleases();
         this.fetchCategories();
         this.fetchProjects();
@@ -126,10 +126,6 @@ class CmpSetup extends React.Component{
 
         else if(this.state.project.name == undefined || this.state.project.name.length == 0){
             this.setState({error: 'Introdu o referință pentru proiect'});
-        }
-
-        else if(this.state.release.project != this.state.project.id){
-            this.setState({error: "Versiunea nu există pentru proiectul selectat"})
         }
         
         else{
@@ -160,7 +156,7 @@ class CmpSetup extends React.Component{
         event.preventDefault();
 
         this.verify(() => {
-            axios.post('/component/add-component', {
+            axios.post('/component/add', {
                 name: this.state.name,
                 owner: this.state.assignee.email,
                 category: this.state.category.id,
@@ -173,7 +169,10 @@ class CmpSetup extends React.Component{
                 if(response.status == 200){
                     this.setState({success: 'Componentă adăugată cu succes'}, this.resetState);
                 }
-            });
+            })
+            .catch(error => {
+                this.setState({error: error.response.data.error});
+            })
         })
     }
 
@@ -184,9 +183,6 @@ class CmpSetup extends React.Component{
             
                 <div class="row mt-3 knbn-mandatory-margin">
                     <div class="col-xl-4 offset-xl-4">
-                        <div class="row">
-                            <Header3>Creare Modul</Header3>
-                        </div>
                         {
                             this.state.projects.length == 0 ? 
                             <div class="row">
@@ -196,6 +192,8 @@ class CmpSetup extends React.Component{
                             :
                             <div class="row">
                                 <div class="col-xl-12">
+                                    <Header3>Creare Modul</Header3>
+
                                     <InputField 
                                         label="Nume"
                                         value={this.state.name}
@@ -207,6 +205,7 @@ class CmpSetup extends React.Component{
                                         action={this.setProject}
                                         description="Proiectul în care se va afla modulul"
                                         items={this.state.projects}
+                                        imgSrc={this.props.themeToggled ? "./images/project.svg" : "./images/bProject.svg"}
                                         currentItem={this.state.project}
                                     />
 
@@ -236,6 +235,7 @@ class CmpSetup extends React.Component{
                                         description="Versiune la care se atașează modulul"
                                         value={this.state.release.name}
                                         items={this.state.filteredReleases}
+                                        imgSrc={this.props.themeToggled ? "./images/release.svg" : "./images/bRelease.svg"}
                                         currentItem={this.state.release}
                                     />
                                     
@@ -245,6 +245,7 @@ class CmpSetup extends React.Component{
                                         description="Categoria modulului"
                                         value={this.state.category.name}
                                         items={this.state.categories}
+                                        imgSrc={this.props.themeToggled ? "./images/category.svg" : "./images/bCategory.svg"}
                                         currentItem={this.state.category}
                                     />  
                                     

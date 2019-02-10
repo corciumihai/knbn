@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import ReactHtmlParser from 'react-html-parser';
 import RemoveItem from '../create/RemoveItem';
 import ReactQuill from 'react-quill';
+import striptags from 'striptags';
 
 dateformat.i18n = {
     dayNames: [
@@ -48,7 +49,7 @@ class Worklog extends React.Component{
         this.remove = this.remove.bind(this);
     }
 
-    componentWillMount(){
+    componentDidMount(){
         if(this.props.data.comment){
             this.setState({comment: this.props.data.comment})
         }
@@ -66,7 +67,7 @@ class Worklog extends React.Component{
 
     componentWillReceiveProps(nextState, nextProps){
         if(nextState.data.comment != this.state.comment){
-            this.setState({comment: nextState.data.comment, h})
+            this.setState({comment: nextState.data.comment})
         }
 
         if(nextState.data.hours){
@@ -107,7 +108,7 @@ class Worklog extends React.Component{
             <div class="col-xl-12">
                 <div class="row mt-2 mb-2">
                     <div class="col-xl-12 d-flex flex-row">
-                        <div class={"d-flex knbn-font-small text-truncate" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-dark-color-5x")}>
+                        <div class={"d-flex knbn-font-small text-truncate" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
                         {
                             this.state.userData && this.state.userData.name ?
                             this.state.userData.name + " \u00B7 " + this.props.data.hours + " ore \u00B7 " + dateformat(this.props.data.created, "dd mmmm yyyy")
@@ -116,7 +117,11 @@ class Worklog extends React.Component{
                         }
                         </div>
 
-                        <div class="ml-auto"> 
+                        <div class="ml-auto d-flex flex-row"> 
+                            <div class={"knbn-font-small knbn-pointer px-2 py-1" + (this.props.themeToggled ? " knbn-dark-color-2x knbn-dark-onselect": " knbn-snow-color-2x knbn-snow-onselect")}
+                                onClick={this.remove}>
+                                Elimină
+                            </div>
                             <div class={"knbn-font-small knbn-pointer px-2 py-1" + (this.props.themeToggled ? " knbn-dark-color-2x knbn-dark-onselect": " knbn-snow-color-2x knbn-snow-onselect")}
                                 onClick={this.state.editMode ? this.save : this.setEditMode}>
                                 {
@@ -129,12 +134,12 @@ class Worklog extends React.Component{
                     <div class="col-xl-12">
                     {
                         this.state.editMode ? 
-                        <div class={"knbn-border" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}>
+                        <div class={"knbn-border" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-3x")}>
                             <input  type="text" 
                                     class={"knbn-input form-control knbn-editing-mode knbn-bg-transparent knbn-transition knbn-no-border-radius knbn-no-border knbn-font-medium knbn-no-box-shadow knbn-border-bottom" + (this.props.themeToggled == true ? 
                                     " knbn-dark-color-4x knbn-dark-bg-2x knbn-dark-bg-2x-active knbn-dark-border-2x" 
                                     : 
-                                    " knbn-snow-color-4x knbn-snow-bg-2x knbn-snow-bg-4x-active knbn-snow-border-2x")} 
+                                    " knbn-snow-color-4x knbn-snow-bg-3x knbn-snow-bg-4x-active knbn-snow-border-3x")} 
                                     aria-describedby="knbnHelp" 
                                     placeholder={this.state.hours ? "" : "Introdu ore muncă"}
                                     value={this.state.hours}
@@ -149,11 +154,10 @@ class Worklog extends React.Component{
                         :
                         <RemoveItem remove={this.state.canEdit ? (e) => {e.preventDefault(); this.remove();} : null}>
                         {
-                            this.props.data.comment ? ReactHtmlParser(this.props.data.comment) : <div class={this.props.themeToggled ? "knbn-dark-color-2x" : "knbn-snow-color-2x"}>Fără comentariu</div>
+                            this.props.data.comment.length && striptags(this.props.data.comment).length ? ReactHtmlParser(this.props.data.comment) : <div class={this.props.themeToggled ? "knbn-dark-color-2x" : "knbn-snow-color-2x"}>Fără comentariu</div>
                         }
                         </RemoveItem>
-                    }   
-                    
+                    }
                     </div>
                 </div>
             </div>

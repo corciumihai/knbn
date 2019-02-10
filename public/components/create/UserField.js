@@ -11,6 +11,67 @@ import SelectionRemover from './SelectionRemover';
 import RemoveItemSmall from './RemoveItemSmall';
 
 class UserField extends React.Component{
+    constructor(props){
+        super(props);
+
+        this.state = {
+            value: '',
+            filteredUsers: [],
+            users: [],
+            currentUser: {}, 
+        }
+
+        this.setFieldValue = this.setFieldValue.bind(this);
+        this.selfAssign = this.selfAssign.bind(this);
+        this.setUser = this.setUser.bind(this);
+        this.removeUser = this.removeUser.bind(this);
+    }
+
+    componentDidMount(){
+        axios.get('/users/get')
+        .then(response =>{
+            this.setState({
+                users: response.data, 
+                filteredUsers: response.data,
+            });
+        })
+        .catch(error => {
+            this.setState({error: error.response.data.error})
+        })
+    }
+
+    componentWillReceiveProps(nextProps, nextState){
+        if(nextProps.user.email){
+            axios.get('/user/' + nextProps.user.email)
+            .then(response =>{
+                this.setState({
+                    currentUser: response.data, value: response.data.name ? response.data.name : ''
+                });
+            });
+        }
+        else{
+            this.setState({
+                currentUser: {}, value: ''
+            });
+        }
+    }
+
+    setFieldValue(event){this.setState({value: event.target.value}, () => {this.setState({filteredUsers: this.state.users.filter(user => {return (user.name.includes(this.state.value)) || (user.email.includes(this.state.value));})})});}
+    
+    setUser(user){
+        this.props.action(user);
+    }
+
+    removeUser(){
+        this.setUser({});
+    }
+
+    selfAssign(event){
+        event.preventDefault();
+
+        this.props.action({email: this.props.currentUser});
+    }
+
     render(){
         return(
             <div class="form-group">
@@ -19,10 +80,10 @@ class UserField extends React.Component{
                     <TouchButtonRight action={this.selfAssign}>Alocă mie</TouchButtonRight>
                 </div>
                 <div class={"knbn-input-grp knbn-fake-input-grp input-group dropdown knbn-bg-transparent knbn-transition knbn-border knbn-font-medium"  + 
-                (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
+                (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-3x knbn-snow-onselect")}>
                 {
                     <div class={"d-flex flex-row w-100 knbn-no-border"}>
-                    {this.state.currentUser.email != undefined && this.state.currentUser.email.length > 0 ?
+                    {this.state.currentUser.email ?
                         <SelectionRemover>
                             <RemoveItemSmall remove={this.removeUser}>{this.state.currentUser.name + ' \u00b7 ' + this.state.currentUser.email}</RemoveItemSmall>
                         </SelectionRemover>
@@ -31,7 +92,7 @@ class UserField extends React.Component{
                         (this.props.themeToggled == true ? 
                             " knbn-dark-bg-2x knbn-dark-bg-2x-active knbn-dark-color-5x" 
                             : 
-                            " knbn-snow-bg-2x knbn-snow-bg-2x-active knbn-snow-color-5x" )} aria-describedby="knbnHelp" 
+                            " knbn-snow-color-4x knbn-snow-bg-3x knbn-snow-bg-3x-active")} aria-describedby="knbnHelp" 
                             placeholder={this.state.value == undefined || this.state.value.length == 0 ? "Introdu nume persoană" : ""}
                             value={this.state.value}
                             onChange={this.setFieldValue}
@@ -69,55 +130,6 @@ class UserField extends React.Component{
                 <Small>{this.props.label}</Small>
             </div>
         );
-    }
-
-    constructor(props){
-        super(props);
-
-        this.state = {
-            value: '',
-            filteredUsers: [],
-            users: [],
-            currentUser: {}, 
-        }
-
-        this.setFieldValue = this.setFieldValue.bind(this);
-        this.selfAssign = this.selfAssign.bind(this);
-        this.setUser = this.setUser.bind(this);
-        this.removeUser = this.removeUser.bind(this);
-    }
-
-    componentWillMount(){
-        axios.get('/users/get-users').then(response =>{
-            this.setState({
-                users: response.data, 
-                filteredUsers: response.data,
-            });
-        });
-    }
-
-    componentWillReceiveProps(nextProps, nextState){
-        axios.get('/user/' + nextProps.user.email).then(response =>{
-            this.setState({
-                currentUser: response.data, value: response.data.name
-            });
-        });
-    }
-
-    setFieldValue(event){this.setState({value: event.target.value}, () => {this.setState({filteredUsers: this.state.users.filter(user => {return (user.name.includes(this.state.value)) || (user.email.includes(this.state.value));})})});}
-    
-    setUser(user){
-        this.props.action(user);
-    }
-
-    removeUser(){
-        this.setUser({});
-    }
-
-    selfAssign(event){
-        event.preventDefault();
-
-        this.props.action({email: this.props.currentUser});
     }
 }
 

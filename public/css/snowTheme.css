@@ -1,14 +1,14 @@
 :root{
-    --t-snow-bg-1x: rgb(247, 245, 245);
-    --t-snow-bg-2x: rgb(255, 255, 255);
-    --t-snow-bg-3x: rgb(255, 255, 255);
+    --t-snow-bg-1x: rgb(247, 247, 247);
+    --t-snow-bg-2x: rgb(250, 250, 250);
+    --t-snow-bg-3x: rgb(250, 250, 250);
     --t-snow-bg-4x: rgb(255, 255, 255);
     --t-snow-bg-5x: rgb(255, 255, 255);
 
     --t-snow-bg-1x-active: rgb(255, 255, 255);
     --t-snow-bg-2x-active: rgb(241, 241, 241);
-    --t-snow-bg-3x-active: rgb(233, 233, 233);
-    --t-snow-bg-4x-active: rgb(238, 238, 238);
+    --t-snow-bg-3x-active: rgb(255, 255, 255);
+    --t-snow-bg-4x-active: rgb(255, 255, 255);
 
     --t-snow-color-1x: rgb(0, 0, 0);
     --t-snow-color-2x: rgb(100, 100, 100);
@@ -22,9 +22,9 @@
     --t-snow-color-4x-active: var(--t-snow-color-5x);
 
     --t-snow-border-1x: rgb(201, 201, 201);
-    --t-snow-border-2x: rgb(230, 230, 230);
-    --t-snow-border-3x: rgb(201, 201, 201);
-    --t-snow-border-4x: rgb(201, 201, 201);
+    --t-snow-border-2x: rgb(226, 226, 226);
+    --t-snow-border-3x: rgb(179, 179, 179);
+    --t-snow-border-4x: rgb(82, 82, 82);
 
     --t-snow-border-1x-active: var(--t-snow-border-2x);
     --t-snow-border-2x-active: var(--t-snow-border-3x);
@@ -33,20 +33,19 @@
     --t-snow-bg-ondrop: rgba(78, 199, 255, 0.24);
     --t-snow-bd-ondrop: rgba(78, 184, 255, 0.336);
 
-    --t-snow-box-shadow-1x: 2px 4px 3px rgb(228, 228, 228);
-    --t-snow-box-shadow-2x: 2px 4px 3px rgb(216, 216, 216);
+    --t-snow-box-shadow-1x: 2px 4px 3px rgba(0, 0, 0, 0.082);
+    --t-snow-box-shadow-2x: 2px 4px 3px rgba(0, 0, 0, 0.075);
     --t-snow-box-shadow-3x: 2px 4px 3px rgb(230, 230, 230);
     --t-snow-box-shadow-4x: 2px 4px 3px rgb(228, 228, 228);
 
-    --t-snow-border-onselect: rgb(117, 93, 93);
+    --t-snow-border-onselect: rgb(123, 180, 48);
     --t-snow-bg-onselect: rgba(81, 41, 190, 0.199);
 
     --t-snow-color-error: rgb(252, 74, 74);
     --t-snow-bg-error: rgba(226, 69, 69, 0.137);
-    --t-snow-bg-remover: rgb(231, 231, 231);
+    --t-snow-bg-remover: rgb(226, 226, 226);
     --t-snow-bd-remover: rgb(170, 170, 170);
 }
-
 .knbn-snow-bg-1x{
     background-color: var(--t-snow-bg-1x) !important;
 }
@@ -85,6 +84,12 @@
 .knbn-snow-bg-4x-active:focus, 
 .knbn-snow-bg-4x-active:active{
     background-color: var(--t-snow-bg-4x-active) !important;
+}
+
+.knbn-snow-border-4x-active:hover, 
+.knbn-snow-borderbg-4x-active:focus, 
+.knbn-snow-border-4x-active:active{
+    border-color: var(--t-snow-border-4x-active) !important;
 }
 
 .knbn-snow-color-1x{
@@ -186,7 +191,7 @@
 }
 
 .knbn-snow-onselect:hover, 
-.knbn-snow-onselect:focus, 
+.knbn-snow-onselect:focus,
 .knbn-snow-onselect:active{
     border-color: var(--t-snow-border-onselect) !important;
 }
@@ -234,7 +239,7 @@
 }
 
 .knbn-snow-edit-bd-2x .ql-snow .ql-stroke{
-    stroke: white !important;
+    stroke: rgb(0, 0, 0) !important;
 }
 
 .knbn-snow-edit-bd-2x .ql-snow .ql-bold:hover .ql-stroke, 
@@ -261,3 +266,16 @@
 .knbn-snow-bd-remover{
     border-color: var(--t-snow-bd-remover) !important;
 }
+
+.knbn-snow-success-color{
+    color: var(--t-snow-color-success) !important;
+}
+
+.knbn-snow-bg-success{
+    background-color: var(--t-snow-bg-success) !important;
+}
+
+.knbn-snow-bg-2x-full-active{
+    background-color: var(--t-snow-bg-2x) !important;
+}
+

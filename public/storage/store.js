@@ -9,12 +9,14 @@ var initialState = {};
 initialState = {
     themeToggled: cookies.get('darkmode') == "true",
     currentUser: '',
+    redirect: cookies.get('jwtToken') == undefined,
     priorities: [{id: 0, name: 'Minimă', dbName: 'low'}, {id: 1, name: 'Medie', dbName: 'medium'}, {id: 2, name: 'Maximă', dbName: 'high'}],
     filterPR: cookies.get('filterPR') == 'true',
     userOnly: cookies.get('userOnly') == 'true',
     hiddenClosed: cookies.get('hiddenClosed') == 'true',
     filterTickets: cookies.get('filterTickets') == 'true',
-    collapseAll: cookies.get('collapseAll') == 'true'
+    collapseAll: cookies.get('collapseAll') == 'true',
+    isAdmin: false
 }
 
 const reducer = (state = initialState, action) => {
@@ -65,24 +67,31 @@ const reducer = (state = initialState, action) => {
             });
         }
 
-        case 'KNBN_LOAD_TOKEN': {
+        case 'KNBN_LOAD_TOKEN': {            
             let token = cookies.get('jwtToken');
             let decoded = jwt.decode(token);
             
-            return Object.assign({}, state, {
-                currentUser: decoded.username
-            });
+            if(!decoded){
+                return Object.assign({}, state, {
+                    redirect: true
+                });
+            }
+            else{
+                return Object.assign({}, state, {
+                    currentUser: decoded.username
+                });
+            }
         }
 
         case 'KNBN_SET_TOKEN': {
-            cookies.set('jwtToken', action.payload, {path: '/', maxAge: 1800000});                        
+            cookies.set('jwtToken', action.payload, {path: '/', maxAge: 1800});                        
             return Object.assign({}, state, {
                 jwtToken: action.payload,
             });
         }
 
         case 'KNBN_SET_TOKEN_EXPIRE': {
-            cookies.set('jwtToken', {maxAge: Date.now()});
+            cookies.set('jwtToken', '', {maxAge: 1});
         }
 
         case 'KNBN_SET_ADMIN_RIGHT': {            

@@ -14,7 +14,7 @@ class EditSelection extends React.Component{
         super(props);
 
         this.state = {
-            value: 'asdad',
+            value: '',
             inEditMode: false,
             items: [],
             filteredItems: [],
@@ -29,7 +29,7 @@ class EditSelection extends React.Component{
     }
 
     componentDidMount(){
-        this.setState({items: this.props.items, filteredItems: this.props.items, inEditMode: false, tempItem: this.props.item, value: this.props.item.name});
+        this.setState({items: this.props.items, filteredItems: this.props.items, inEditMode: false, tempItem: this.props.item, value: this.props.item.name ? this.props.item.name: ''});
     }
 
     componentWillReceiveProps(nextProps, nextState){
@@ -56,7 +56,7 @@ class EditSelection extends React.Component{
     }
 
     saveTemporary(item){
-        this.setState({tempItem: item, value: item.name})
+        this.setState({tempItem: item, value: item.name ? item.name: ''})
     }
 
     render(){
@@ -65,11 +65,11 @@ class EditSelection extends React.Component{
                 <Label label={this.props.label}/>
                 {
                     this.state.inEditMode == false ? 
-                        <RemoveItem remove={this.setEditMode} canEdit={this.props.canEdit}>
+                        <RemoveItem remove={this.setEditMode} canEdit={this.props.canEdit} mute={this.state.tempItem == undefined || this.state.tempItem.name == undefined}>
                             {this.state.tempItem && this.state.tempItem.name ? 
                                 this.state.tempItem.name
                                 :
-                                "Nicio valoare"
+                                "Nicio referință"
                             }
                         </RemoveItem>
                     :
@@ -79,9 +79,9 @@ class EditSelection extends React.Component{
                             (this.props.themeToggled == true ? 
                                 " knbn-dark-bg-2x knbn-dark-bg-2x-active knbn-dark-color-4x" 
                                 : 
-                                " knbn-snow-bg-2x knbn-snow-bg-2x-active knbn-snow-color-4x")} 
+                                " knbn-snow-color-4x knbn-snow-bg-3x knbn-snow-bg-3x-active knbn-snow-border-3x")} 
                         aria-describedby="knbnHelp" 
-                        placeholder={this.state.value == undefined || this.state.value.length == 0 ? "Introdu nume" : ""}
+                        placeholder={this.state.value == undefined || this.state.value.length == 0 ? "Introdu caractere" : ""}
                         value={this.state.value}
                         onChange={this.setFieldValue}
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"/>
@@ -95,10 +95,17 @@ class EditSelection extends React.Component{
                                 <div class="col-xl-12 knbn-font-medium">Niciun obiect găsit</div>
                             </div>
                             :
-                            this.state.filteredItems.map(item => {
+                            <div>
+                                <a href="#" onClick={(event)=>{event.preventDefault(); this.saveTemporary({})}}>
+                                    <DropdownItem>Niciun element</DropdownItem>
+                                </a>
+                            {
+                                this.state.filteredItems.map(item => {
                                 return   <a href="#" key={item.id} onClick={(event)=>{event.preventDefault(); this.saveTemporary(item)}}>
                                             <DropdownItem >{item.name}</DropdownItem>
                                         </a>})
+                            }
+                            </div>
                         }
                         </DropdownMenu>
                     </div>

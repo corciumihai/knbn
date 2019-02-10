@@ -32,7 +32,7 @@ class EditReport extends React.Component{
             reporter: {},
             release: {},
             category: {},
-            canEdit: false,
+            blocked: {},
             
             estimation: 0,
 
@@ -65,28 +65,32 @@ class EditReport extends React.Component{
         this.toggleSection = this.toggleSection.bind(this);
         this.updateWorklog = this.updateWorklog.bind(this);
         this.updateComment = this.updateComment.bind(this);
-        this.filterReleases = this.filterReleases.bind(this);
-        this.filterCategories = this.filterCategories.bind(this);
         this.saveCategory = this.saveCategory.bind(this);
-        this.eraseError = this.eraseError.bind(this);
+        this.fetchComments = this.fetchComments.bind(this);
+        this.fetchWorklogs = this.fetchWorklogs.bind(this);
+        this.saveExpected = this.saveExpected.bind(this);
+        this.saveTestSteps = this.saveTestSteps.bind(this);
+        this.saveObserved = this.saveObserved.bind(this);
+        this.saveBlocked = this.saveBlocked.bind(this);
+        this.saveDueDate = this.saveDueDate.bind(this);
     }
 
     componentDidMount(){
         axios.all([
-            axios.get('/report/get-data/' + this.props.match.params.id),
+            axios.get('/report/get/' + this.props.match.params.id),
             axios.get('/release/multi/get'),
             axios.get('/category/multi/get'),
-            axios.get('/report/get-comments/' + this.props.match.params.id),
-            axios.get('/report/get-worklogs/' + this.props.match.params.id)
+            axios.get('/report/get/comments/' + this.props.match.params.id),
+            axios.get('/report/get/worklogs/' + this.props.match.params.id),
         ])
         .then(axios.spread((reportData, releases, categories, comments, worklogs) => {
             axios.all([
-                axios.get('/release/get/' + reportData.data.releaseID),
-                axios.get('/category/get/' + reportData.data.category)
+                reportData.data.blocked ? axios.get('/ticket/get/' + reportData.data.blocked) : null,
+                axios.get('/component/get/tickets/' + reportData.data.component)
             ])
-            .then(axios.spread((release, category) => {
+            .then(axios.spread((blocked, tickets) => {
                 this.setState({
-                    id: reportData.data,
+                    id: reportData.data.id,
                     priority: this.props.priorities.find(item => {return item.dbName == reportData.data.priority}),
                     description: reportData.data.description,
                     name: reportData.data.name,
@@ -96,16 +100,32 @@ class EditReport extends React.Component{
                     dueDate: reportData.data.dueDate,
                     estimation: reportData.data.estimation,
                     project: reportData.data.project,
+                    testSteps: reportData.data.testSteps,
+                    expected: reportData.data.expected,
+                    observed: reportData.data.observed,
                     releases: releases,
-                    filteredReleases: releases.data,
+                    filteredReleases: releases.data.filter(item => item.project == reportData.data.project),
                     categories: categories.data,
-                    filteredCategories: categories.data,
+                    filteredCategories: categories.data.filter(item => item.project == reportData.data.project),
                     comments: comments.data,
                     worklogs: worklogs.data,
-                    canEdit: this.props.isAdmin || reportData.data.assignee == this.props.currentUser || reportData.data.reporter == this.props.currentUser,
-                    release: release.data,
-                    category: category.data,
+                    blocked: reportData.data.blocked ? blocked.data : {},
+                    tickets: tickets.data,
                     loading: false
+                }, () => {
+                    if(reportData.data.releaseID){
+                        axios.get('/release/get/' + reportData.data.releaseID)
+                        .then(response => {
+                            this.setState({release: response.data})
+                        })
+                    }
+
+                    if(reportData.data.category){
+                        axios.get('/category/get/' + reportData.data.category)
+                        .then(response => {
+                            this.setState({category: response.data,})
+                        })
+                    }
                 })
             }))
         }))
@@ -115,15 +135,30 @@ class EditReport extends React.Component{
     }
 
     componentWillReceiveProps(nextProps, nextState){
-        this.setState({canEdit: nextProps.isAdmin || this.state.assignee.email == nextProps.currentUser || this.state.reporter.email == nextProps.currentUser});
     }
 
-    filterReleases(){
-        this.setState({filteredReleases: this.state.releases.filter(item => {return item.project == this.state.project})});
+    fetchComments(){
+        axios.get('/report/get/comments/' + this.state.id)
+        .then(response => {
+            if(response.status == 200){
+                this.setState({comments: response.data})
+            }
+        })
+        .catch(error => {
+            this.setState({error: error.response.data.error});
+        })
     }
 
-    filterCategories(){
-        this.setState({filteredCategories: this.state.categories.filter(item => {return item.project == this.state.project})});
+    fetchWorklogs(){
+        axios.get('/report/get/worklogs/' + this.state.id)
+        .then(response => {
+            if(response.status == 200){
+                this.setState({worklogs: response.data})
+            }
+        })
+        .catch(error => {
+            this.setState({error: error.response.data.error});
+        })
     }
 
     toggleSection(value){
@@ -133,16 +168,16 @@ class EditReport extends React.Component{
     addComment(item){
         if(item){
             let data = item;
-            data.ticket = this.props.match.params.id;
+            data.report = this.props.match.params.id;
 
-            axios.post('/report/add-comment', data)
+            axios.post('/report/add/comment', data)
             .then(response => {
                 if(response.status == 200){
                     this.fetchComments();
                 }
             })
             .catch(error => {
-                this.setState({commentError: error.response.data.error});
+                this.setState({commentAreaError: error.response.data.error});
             })
         }
     }
@@ -150,9 +185,10 @@ class EditReport extends React.Component{
     addWorklog(item){
         if(item){
             let data = item;
-            data.ticket = this.state.id;
+            data.report = this.state.id;
+            data.created = new Date();
 
-            axios.post('/report/add-worklog', data)
+            axios.post('/report/add/worklog', data)
             .then(response => {
                 if(response.status == 200){
                     this.fetchWorklogs();
@@ -166,7 +202,7 @@ class EditReport extends React.Component{
 
     updateWorklog(item){
         if(item){
-            axios.post('/report/update-worklog', item)
+            axios.post('/report/update/worklog', item)
             .then(response => {
                 if(response.status == 200){
                     this.fetchWorklogs();
@@ -180,7 +216,7 @@ class EditReport extends React.Component{
 
     updateComment(item){
         if(item){
-            axios.post('/report/update-comment', item)
+            axios.post('/report/update/comment', item)
             .then(response => {
                 if(response.status == 200){
                     this.fetchComments();
@@ -199,11 +235,14 @@ class EditReport extends React.Component{
                 this.fetchComments();
             }
         })
+        .catch(error => {
+            this.setState({commentAreaError: error.response.data.error});
+        })
     }
 
-    removeWorklog(worklog){        
+    removeWorklog(worklog){
         if(worklog){
-            axios.post('/report/remove-worklog', worklog)
+            axios.post('/report/remove/worklog', worklog)
             .then(response => {
                 if(response.status == 200){
                     this.fetchWorklogs();
@@ -213,24 +252,33 @@ class EditReport extends React.Component{
                 this.setState({commentAreaError: error.response.data.error});
             })
         }
+        else{
+            this.setState({error: "Elementul nu există"})
+        }
     }
 
     saveName(name){
-        axios.post('/report/set/name', {id: this.state.id, value: name})
-        .then( response => {
-            if(response.status == 200){
-                this.setState({name: name});
-            }
-        })
-        .catch(error => {
-            this.setState({error: error.response.data.error});
-        })
+        if(name.length){
+            axios.post('/report/set/name', {id: this.state.id, value: name})
+            .then(response => {
+                if(response.status == 200){
+                    this.setState({name: name});
+                }
+            })
+            .catch(error => {
+                this.setState({error: error.response.data.error});
+            })
+        }
+        else{
+            this.setState({error: "Numele nu poate fi omis"});
+        }
+        
     }
 
     saveDescription(description){
-        axios.post('/report/set/description', {id: this.state.id,value: description})
-        .then( response => {
-            if(response.data.success == true){
+        axios.post('/report/set/desc', {id: this.state.id,value: description})
+        .then(response => {
+            if(response.status == 200){
                 this.setState({description: description});
             }
         })
@@ -264,61 +312,118 @@ class EditReport extends React.Component{
     }
 
     savePriority(priority){
-        if(priority){
-            axios.post('/ticket/set/priority', {id: this.state.id, value: priority.dbName})
-            .then( response => {
+        axios.post('/report/set/priority', {id: this.state.id, value: priority.dbName})
+        .then(response => {
+            if(response.status == 200){
+                this.setState({priority: priority});
+            }
+        })
+        .catch(error => {
+            this.setState({error: error.response.data.error});
+        })
+    }
+
+    saveAssignee(user){
+        if(user.email){
+            axios.post('/report/set/assignee', {id: this.state.id, value: user.email})
+            .then(response => {
                 if(response.status == 200){
-                    this.setState({priority: priority});
+                    this.setState({assignee: user})
                 }
             })
             .catch(error => {
-                this.setState({error: error.response.data.error});
+                this.setState({error: error.response.data.error})
             })
         }
     }
 
-    saveAssignee(user){
-        axios.post('/report/set/assignee', {id: this.state.id, value: user.email})
-        .then( response => {
-            if(response.status == 200){
-                this.setState({
-                    assignee: user, 
-                    canEdit: this.props.isAdmin || user.email == this.props.currentUser || this.state.reporter.email == this.props.currentUser});
-            }
-        })
-        .catch(error => {
-            this.setState({error: error.response.data.error})
-        })
-    }
-
-    saveReporter(user){     
-        axios.post('/report/set/reporter', { id: this.state.id, value: user.email})
-        .then( response => {
-            if(response.status == 200){
-                this.setState({
-                    reporter: user, 
-                    canEdit: this.props.isAdmin || user.email == this.props.currentUser || this.state.assignee.email == this.props.currentUser});
-            }
-        })
-        .catch(error => {
-            this.setState({error: error.response.data.error})
-        })
+    saveReporter(user){
+        if(user.email){
+            axios.post('/report/set/reporter', { id: this.state.id, value: user.email})
+            .then(response => {
+                if(response.status == 200){
+                    this.setState({reporter: user});
+                }
+            })
+            .catch(error => {
+                this.setState({error: error.response.data.error})
+            })
+        }
     }
 
     saveEstimation(value){
-        axios.post('/report/set/estimation', {id: this.state.id, value: value})
-        .then( response => {
+        axios.post('/report/set/estimation', {id: this.state.id, value: value.length > 0 ? value : 0})
+        .then(response => {
+            if(response.status == 200){
+                this.setState({estimation: value.length > 0 ? value : 0});
+            }
+        })
+        .catch(error => {
+            this.setState({error: error.response.data.error})
+        })
+    }
+
+    saveTestSteps(value){
+        axios.post('/report/set/teststeps', {id: this.state.id, value: value})
+        .then(response => {
+            if(response.status == 200){
+                this.setState({testSteps: value});
+            }
+        })
+        .catch(error => {
+            this.setState({error: error.response.data.error});
+        })
+    }
+
+    saveExpected(value){
+        axios.post('/report/set/expected', {id: this.state.id, value: value})
+        .then(response => {
+            if(response.status == 200){
+                this.setState({expected: value});
+            }
+        })
+        .catch(error => {
+            this.setState({error: error.response.data.error});
+        })
+    }
+
+    saveObserved(value){
+        axios.post('/report/set/observed', {id: this.state.id, value: value})
+        .then(response => {
+            if(response.status == 200){
+                this.setState({observed: value});
+            }
+        })
+        .catch(error => {
+            this.setState({error: error.response.data.error});
+        })
+    }
+
+    saveBlocked(item){
+        axios.post('/report/set/blocked', {id: this.state.id, ticket: item})
+        .then(response => {
+            if(response.status == 200){
+                this.setState({blocked: item})
+            }
+        })
+        .catch(error => {
+            this.setState({error: error.response.data.error});
+        })
+    }
+
+    saveDueDate(date){        
+        axios.post('/report/set/dueDate', {
+            id: this.state.id, 
+            date: date
+        })
+        .then(response => {
             if(response.status == 200){
                 this.setState({dueDate: date});
             }
         })
         .catch(error => {
-            this.setState({error: error.response.data.error})
+            this.setState({error: error.response.data.error});
         })
-    }
-
-    eraseError(){
-        this.setState({error: ''});
     }
 
     render(){
@@ -327,10 +432,12 @@ class EditReport extends React.Component{
                 <Menu/>
 
                 <div class="row knbn-mandatory-margin">
-                    <Header3>Editor tichet</Header3>
+                    <div class="col-12">
+                        <Header3>Editor Raport problemă</Header3>
+                    </div>
                 </div>
 
-                <DismissableError dismissError={this.eraseError}>{this.state.error}</DismissableError>
+                <DismissableError dismissError={() => {this.setState({error: ''})}}>{this.state.error}</DismissableError>
 
                 {
                     this.state.loading ? 
@@ -345,15 +452,48 @@ class EditReport extends React.Component{
                                         label='Nume' 
                                         save={this.saveName}
                                         description='Numele tichetului când a fost creat'
-                                        canEdit={this.state.canEdit}
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.reporter.email || this.props.currentUser == this.state.assignee.email}
+                                    />
+
+                                    <EditSelection
+                                        item={this.state.blocked}
+                                        label="Tichet sursă eroare"
+                                        description='Tichetul ce generează eroarea'
+                                        items={this.state.tickets}
+                                        save={this.saveBlocked}
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.reporter.email || this.props.currentUser == this.state.assignee.email}
                                     />
 
                                     <EditTextArea
                                         value={this.state.description}
                                         save={this.saveDescription}
-                                        canEdit={this.state.canEdit}
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.reporter.email || this.props.currentUser == this.state.assignee.email}
                                         label='Descriere' 
                                         description='Descrierea tichetului când a fost creat'
+                                    />
+
+                                    <EditTextArea
+                                        value={this.state.testSteps}
+                                        save={this.saveTestSteps}
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.reporter.email || this.props.currentUser == this.state.assignee.email}
+                                        label='Pași de testare' 
+                                        description='Pașii de testare configurati de cel ce a testat'
+                                    />
+
+                                    <EditTextArea
+                                        value={this.state.expected}
+                                        save={this.saveExpected}
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.reporter.email || this.props.currentUser == this.state.assignee.email}
+                                        label='Comportament așteptat' 
+                                        description='Comportamenul normal al funcționalității'
+                                    />
+
+                                    <EditTextArea
+                                        value={this.state.observed}
+                                        save={this.saveObserved}
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.reporter.email || this.props.currentUser == this.state.assignee.email}
+                                        label='Comportament observat' 
+                                        description='Comportamenul observat al funcționalității'
                                     />
 
                                     <EditSelection
@@ -362,7 +502,7 @@ class EditReport extends React.Component{
                                         description='Versiunea atașată tichetului'
                                         items={this.state.filteredReleases}
                                         save={this.saveRelease}
-                                        canEdit={this.state.canEdit}
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.reporter.email || this.props.currentUser == this.state.assignee.email}
                                     />
 
                                     <EditSelection
@@ -371,7 +511,7 @@ class EditReport extends React.Component{
                                         description='Categoria atașată tichetului'
                                         items={this.state.filteredCategories}
                                         save={this.saveCategory}
-                                        canEdit={this.state.canEdit}
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.reporter.email || this.props.currentUser == this.state.assignee.email}
                                     />
 
                                     <EditSelection
@@ -380,7 +520,7 @@ class EditReport extends React.Component{
                                         description='Prioritatea tichetului'
                                         items={this.props.priorities}
                                         save={this.savePriority}
-                                        canEdit={this.state.canEdit}
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.reporter.email || this.props.currentUser == this.state.assignee.email}
                                     />
 
                                     <EditField
@@ -388,7 +528,7 @@ class EditReport extends React.Component{
                                         label='Estimare' 
                                         save={this.saveEstimation}
                                         description='Estimare timp pentru rezolvarea tichetului'
-                                        canEdit={this.state.canEdit}
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.reporter.email || this.props.currentUser == this.state.assignee.email}
                                     />
                                 </EditForm>
                                 <EditForm classes={"offset-xl-4"}>
@@ -397,7 +537,7 @@ class EditReport extends React.Component{
                                         user={this.state.reporter}
                                         save={this.saveReporter}
                                         description="Reporter tichetului"
-                                        canEdit={this.state.canEdit || this.state.reporter.email == undefined}
+                                        canEdit={this.props.isAdmin || this.state.reporter.email == this.props.currentUser || !this.state.reporter.email}
                                     />
 
                                     <EditUser
@@ -405,7 +545,7 @@ class EditReport extends React.Component{
                                         user={this.state.assignee}
                                         save={this.saveAssignee}
                                         description="Proprietarul tichetului"
-                                        canEdit={this.state.canEdit || this.state.assignee.email == undefined}
+                                        canEdit={true}
                                     />
 
                                     {
@@ -417,7 +557,7 @@ class EditReport extends React.Component{
                                     }
 
                                     <EditDate
-                                        editable={true}
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.reporter.email || this.props.currentUser == this.state.assignee.email}
                                         date={this.state.dueDate}
                                         label='Data limită'
                                         save={this.saveDueDate}
@@ -436,7 +576,9 @@ class EditReport extends React.Component{
                             {
                                 !this.state.toggleSection ? 
                                     <div class="row">
-                                        <Header3>Comentarii</Header3>
+                                        <div class="col-12">
+                                            <Header3>Comentarii</Header3>
+                                        </div>
                                     {
                                         this.state.comments.length > 0 ? 
                                             this.state.comments.map(item => {
@@ -450,7 +592,9 @@ class EditReport extends React.Component{
                                     </div>
                                 :
                                     <div class="row">
-                                        <Header3>Raport muncă</Header3>
+                                        <div class="col-12">
+                                            <Header3>Raport muncă</Header3>
+                                        </div>
                                     {
                                         this.state.worklogs.length > 0 ? 
                                         this.state.worklogs.map(item => {
@@ -470,7 +614,7 @@ class EditReport extends React.Component{
                                 !this.state.toggleSection ? 
                                 <CommentInsert add={this.addComment}/>
                                 :
-                                this.state.canEdit ? 
+                                this.props.currentUser == this.state.reporter.email || this.props.currentUser == this.state.assignee.email ? 
                                     <WorklogInsert add={this.addWorklog}/>
                                     :
                                     null

@@ -35,9 +35,10 @@ class Comment extends React.Component{
         this.save = this.save.bind(this);
         this.setEditMode = this.setEditMode.bind(this);
         this.setComment = this.setComment.bind(this);
+        this.remove = this.remove.bind(this);
     }
 
-    componentWillMount(){
+    componentDidMount(){
         this.setState({comment: this.props.data.value}, () => {
             if(this.props.data.owner){
                 axios.get('/user/' + this.props.data.owner).then(response => {
@@ -63,6 +64,10 @@ class Comment extends React.Component{
         this.setState({comment: value});
     }
 
+    remove(){
+        this.props.remove({id: this.props.data.id});
+    }
+
     save(){
         this.props.update({id: this.props.data.id, value: this.state.comment});
         this.setState({editMode: false, comment: ''});
@@ -86,7 +91,7 @@ class Comment extends React.Component{
             <div class="col-xl-12">
                 <div class="row mt-2 mb-2">
                     <div class="col-xl-12 d-flex flex-row">
-                        <div class={"d-flex knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-dark-color-5x")}>
+                        <div class={"d-flex knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
                             {
                                 this.state.userData && this.state.userData.name ?
                                 this.state.userData.name + " \u00B7 " + dateformat(this.props.data.created, "dd mmmm yyyy")
@@ -95,25 +100,36 @@ class Comment extends React.Component{
                             }
                         </div>
 
-                        <div class="ml-auto"> 
-                            <div class={"knbn-font-small knbn-pointer px-2 py-1" + (this.props.themeToggled ? " knbn-dark-color-2x knbn-dark-onselect": " knbn-snow-color-2x knbn-snow-onselect")}
-                                onClick={this.state.editMode ? this.save : this.setEditMode}>
+                        <div class="ml-auto d-flex flex-row"> 
                             {
-                                this.state.editMode ? "Salvează" : "Editează"
+                                this.state.userData.email == this.props.currentUser || this.props.isAdmin ? 
+                                <div class={"knbn-font-small knbn-pointer px-2 py-1" + (this.props.themeToggled ? " knbn-dark-color-2x knbn-dark-onselect": " knbn-snow-color-2x knbn-snow-onselect")}
+                                onClick={this.remove}>
+                                    Elimină
+                                </div>
+                                :null
                             }
-                            </div>
+                            {
+                                this.state.userData.email == this.props.currentUser || this.props.isAdmin ? 
+                                <div class={"knbn-font-small knbn-pointer px-2 py-1" + (this.props.themeToggled ? " knbn-dark-color-2x knbn-dark-onselect": " knbn-snow-color-2x knbn-snow-onselect")}
+                                onClick={this.state.editMode ? this.save : this.setEditMode}>
+                                {
+                                    this.state.editMode ? "Salvează" : "Editează"
+                                }
+                                </div>
+                                :null
+                            }
                         </div>
-
                     </div>
                         
                     <div class="col-xl-12">
                     {
                         this.state.editMode ? 
-                        <div class={"knbn-border" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}>
+                        <div class={"knbn-border" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-3x")}>
                             <ReactQuill     modules={quillModules} 
                                             value={this.state.comment} 
                                             onChange={this.setComment} 
-                                            className={"w-100 h-100 knbn-bg-transparent knbn-no-border knbn-edit-no-border knbn-comp-desc" + (this.props.themeToggled ? " knbn-dark-color-5x knbn-dark-edit-bd-2x" : " knbn-snow-color-5x knbn-snow-edit-bd-2x")}
+                                            className={"w-100 h-100 knbn-bg-transparent knbn-no-border knbn-edit-no-border" + (this.props.themeToggled ? " knbn-dark-color-5x knbn-dark-edit-bd-2x" : " knbn-snow-color-5x knbn-snow-edit-bd-2x")}
                             />
                         </div>
                         :
@@ -131,7 +147,8 @@ class Comment extends React.Component{
 const mapStateToProps = (state) => {
     return {
         themeToggled: state.themeToggled,
-        currentUser: state.currentUser
+        currentUser: state.currentUser,
+        isAdmin: state.isAdmin
     }
 }
 

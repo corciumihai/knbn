@@ -1,11 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" width="20" height="20" viewBox="0 0 20 20">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #fff;
-        fill-rule: evenodd;
-      }
-    </style>
-  </defs>
-  <path d="M13.905,7.533 L9.296,12.816 C9.270,12.847 9.225,12.852 9.191,12.874 C9.190,12.874 9.190,12.875 9.190,12.875 C9.190,12.875 9.190,12.875 9.189,12.875 C9.036,12.977 8.836,13.018 8.676,12.933 C8.620,12.903 8.606,12.850 8.577,12.805 C8.574,12.802 8.569,12.803 8.567,12.800 L6.097,10.140 C5.951,9.982 5.993,9.761 6.191,9.644 C6.389,9.528 6.668,9.562 6.814,9.719 L8.953,12.022 L13.197,7.157 C13.344,6.989 13.621,6.937 13.817,7.040 C14.012,7.144 14.052,7.365 13.905,7.533 Z" class="cls-1"/>
-</svg>
+<?xml version="1.0" standalone="no"?><!-- Generator: Gravit.io --><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="isolation:isolate" viewBox="0 0 20 20" width="20" height="20"><defs><clipPath id="_clipPath_GmUpAYCjgnHMGBI2XiYuLO52FxOryNc8"><rect width="20" height="20"/></clipPath></defs><g clip-path="url(#_clipPath_GmUpAYCjgnHMGBI2XiYuLO52FxOryNc8)"><rect width="20" height="20" style="fill:rgb(40,40,40)" fill-opacity="0"/><line x1="8.039" y1="13.268" x2="14.575" y2="6.732" vector-effect="non-scaling-stroke" stroke-width="1.5" stroke="rgb(255,255,255)" stroke-linejoin="miter" stroke-linecap="square" stroke-miterlimit="3"/><line x1="8.039" y1="13.268" x2="5.425" y2="10.654" vector-effect="non-scaling-stroke" stroke-width="1.5" stroke="rgb(255,255,255)" stroke-linejoin="miter" stroke-linecap="square" stroke-miterlimit="3"/></g></svg>

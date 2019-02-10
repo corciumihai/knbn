@@ -12,12 +12,7 @@ const RemoveItemSmall = (props) => {
             {
             props.remove != undefined ? 
             <div class="d-flex my-auto ml-2 knbn-transition" onClick={props.remove}>
-                {
-                    props.imageSrc != undefined && props.imageSrc.length > 0? 
-                    <img src={props.imageSrc} class={"my-auto knbn-remove-btn mr-1 knbn-transition" + (props.themeToggled ? "" : " knbn-img-inverted")}/>
-                    :
-                    <img src="./images/close.svg" class={"my-auto knbn-remove-btn mr-1 knbn-transition"  + (props.themeToggled ? "" : " knbn-img-inverted")}/>
-                }
+                <img src={props.themeToggled ? "./images/remove.svg" : "./images/bRemove.svg"} class={"my-auto knbn-remove-btn mr-1 knbn-transition"}/>
             </div>
             : null
             }

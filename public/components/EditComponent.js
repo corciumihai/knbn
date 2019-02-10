@@ -5,11 +5,11 @@ import EditTextArea from './editor/EditTextArea';
 import EditSelection from './editor/EditSelection';
 import axios from 'axios';
 import EditUser from './editor/EditUser';
-import EditDate from './editor/EditDate';
-import CommentArea from './comments/CommentArea';
+import { Redirect } from 'react-router-dom';
 import Header3 from './editor/Header3';
 import { connect } from 'react-redux';
 import Menu from './Menu';
+import DismisableError from './messages/DismisableError';
 
 class EditComponent extends React.Component{
     constructor(props){
@@ -17,14 +17,16 @@ class EditComponent extends React.Component{
 
         this.state = {
             releases: [],
-            filteredReleases: [],
+            categories: [],
             id: undefined,
             name: '',
             priority: {},
             description: '',
             owner: {},
             release: {},
-            canEdit: false
+            category: {},
+            canEdit: false,
+            redirect: false
         }
 
         this.saveRelease = this.saveRelease.bind(this);
@@ -32,181 +34,262 @@ class EditComponent extends React.Component{
         this.saveDescription = this.saveDescription.bind(this);
         this.savePriority = this.savePriority.bind(this);
         this.saveOwner = this.saveOwner.bind(this);
+        this.saveCategory = this.saveCategory.bind(this);
         this.saveDueDate = this.saveDueDate.bind(this);
     }
 
-    componentWillMount(){
-        axios.get('/get-component-data/' + this.props.match.params.id).then( response => {      
-            this.setState({
-                id: response.data.id,
-                priority: this.props.priorities.find(item => {return item.dbName == response.data.priority}),
-                description: response.data.description,
-                name: response.data.name,
-                owner: {email: response.data.owner},
-                project: response.data.project,
-                canEdit: this.props.isAdmin || this.props.currentUser == response.data.owner,
-                release: {id: response.data.releaseID}
-            }, () => {
-                if(this.state.release.id){
-                    axios.get('/release/get/' + this.state.release.id).then( response => {
-                        this.setState({
-                            release: response.data
-                        }, () => {
-                            axios.get('release/multi/get').then( response => {
-                                this.setState({
-                                    releases: response.data,
-                                    filteredReleases: response.data.filter(item => {return item.project == this.state.project})
-                                })
-                            });
-                        });
-                    });
+    componentDidMount(){
+        axios.all([
+            axios.get('/component/get/' + this.props.match.params.id)
+        ])
+        .then(axios.spread((component) => {
+                if(component.data.id){
+                    this.setState({
+                        id: component.data.id,
+                        priority: this.props.priorities.find(item => item.dbName == component.data.priority),
+                        description: component.data.description,
+                        name: component.data.name,
+                        release: {id: component.data.releaseID},
+                        category: {id: component.data.category},
+                        owner: {email: component.data.owner},
+                        project: component.data.project,
+                        release: {id: component.data.releaseID}
+                    }, () => {
+                        if(this.state.category.id){
+                            axios.get('/category/get/' + this.state.category.id)
+                            .then(response => {
+                                this.setState({category: response.data});
+                            })
+                        }
+
+                        if(this.state.release.id){
+                            axios.get('/release/get/' + this.state.release.id)
+                            .then(response => {
+                                this.setState({release: response.data});
+                            })
+                            .catch(error => {
+                                this.setState({error: error.response.data.error})
+                            })
+                        }
+
+                        if(this.state.project){
+                            axios.all([
+                                axios.get('/release/multi/get/' + this.state.project),
+                                axios.get('/category/multi/get/' + this.state.project)
+                            ])
+                            .then(axios.spread((releases, categories) => {
+                                    if(releases.data){
+                                        this.setState({releases: releases.data})
+                                    }
+                    
+                                    if(categories.data){
+                                        this.setState({categories: categories.data})
+                                    }
+                                }
+                            ))
+                            .catch(error => {
+                                this.setState({error: error.response.data.error})
+                            })
+                        }
+                    })
                 }
-            });
-        });
+                else{
+                    this.setState({redirect: true})
+                }
+            }
+        ))
+        .catch(error => {
+            this.setState({error: error.response.data.error})
+        })
     }
 
     componentWillReceiveProps(nextProps, nextState){
-        this.setState({canEdit: nextProps.isAdmin || nextProps.currentUser == this.state.owner.email});
     }
 
     saveRelease(release){
-        axios.post('/set-component/release', {
+        axios.post('/component/set/release', {
             id: this.state.id, 
             value: release.id
         })
-        .then( response => {
-            if(response.success == true){
+        .then(response => {
+            if(response.status == 200){
                 this.setState({release: release});
             }
-        });
+        })
+        .catch(error => {
+            this.setState({error: error.response.data.error})
+        })
+    }
+
+    saveCategory(category){
+        axios.post('/component/set/category', {
+            id: this.state.id, 
+            value: category.id
+        })
+        .then( response => {
+            if(response.status == 200){
+                this.setState({category: category});
+            }
+        })
+        .catch(error => {
+            this.setState({error: error.response.data.error})
+        })
     }
 
     saveName(name){
-        axios.post('/set-component/name', {
+        axios.post('/component/set/name', {
             id: this.state.id, 
             value: name
         }).then( response => {
-            if(response.success == true){
+            if(response.status == 200){
                 this.setState({name: name});
             }
-        });
+        })
+        .catch(error => {
+            this.setState({error: error.response.data.error})
+        })
     }
 
     saveDescription(description){
-        axios.post('/set-component/desc', {
+        axios.post('/component/set/desc', {
             id: this.state.id,
             value: description
         })
         .then( response => {
-            if(response.success == true){
+            if(response.status == 200){
                 this.setState({description: description});
             }
-        });
+        })
+        .catch(error => {
+            this.setState({error: error.response.data.error})
+        })
     }
 
     savePriority(priority){
-        axios.post('/set-component/prio', {
+        axios.post('/component/set/priority', {
             id: this.state.id, 
             value: priority.dbName
         })
         .then( response => {
-            if(response.success == true){
+            if(response.status == 200){
                 this.setState({priority: priority});
             }
-        });
+        })
+        .catch(error => {
+            this.setState({error: error.response.data.error})
+        })
     }
 
     saveOwner(user){
-        axios.post('/component/set-owner', {
+        axios.post('/component/set/owner', {
             id: this.state.id,
             value: user.email
         })
         .then(response => {
             if(response.status == 200){
-                this.setState({owner: {email: user.email}, canEdit: user.email == this.props.currentUser || this.props.isAdmin});
+                this.setState({owner: {email: user.email}});
             }
         })
         .catch(error => {
-            console.log(error.response.data.error)
+            this.setState({error: error.response.data.error})
         })
     }
 
     saveDueDate(date){
-        axios.post('/set-component/due-date', {
+        axios.post('/component/set/dueDate', {
             id: this.state.id, 
             value: date
         })
         .then( response => {
-            if(response.success == true){
+            if(response.status == 200){
                 this.setState({dueDate: date});
             }
-        });
+        })
+        .catch(error => {
+            this.setState({error: error.response.data.error})
+        })
     }
 
     render(){
-        console.log(this.state.canEdit)
+        if(this.state.redirect) {
+            return <Redirect to="/"></Redirect>
+        }
+        else{
+            return(
+                <div class={"container-fluid knbn-bg-transparent knbn-transition pb-3 h-100 knbn-container" + (this.props.themeToggled ? " knbn-dark-bg-1x" : " knbn-snow-bg-1x")}>
+                    <Menu/>
 
-        return(
-            <div class={"container-fluid knbn-bg-transparent knbn-transition pb-3 h-100 knbn-container" + (this.props.themeToggled ? " knbn-dark-bg-1x" : " knbn-snow-bg-1x")}>
-                <Menu/>
-
-                <div class="row mt-3 knbn-mandatory-margin">
-                    <Header3>Editor componentă</Header3>
-                </div>
-                
-                <div class="row ">
-                    <div class="col-xl-12 col-12">
-                        <div class="row">
-                            <EditForm>
-                                <EditField
-                                    value={this.state.name}
-                                    canEdit={this.state.canEdit}
-                                    label='Nume' 
-                                    save={this.saveName}
-                                    description='Numele componentei când a fost creată'
-                                />
-
-                                <EditTextArea
-                                    value={this.state.description}
-                                    save={this.saveDescription}
-                                    label='Descriere' 
-                                    description='Descrierea componentei când a fost creată'
-                                    canEdit={this.state.canEdit}
-                                />
-
-                                <EditSelection
-                                    item={this.state.release}
-                                    canEdit={this.state.canEdit}
-                                    label="Versiune"
-                                    description='Versiunea atașată componentei'
-                                    items={this.state.filteredReleases}
-                                    save={this.saveRelease}
-                                />
-
-                                <EditSelection
-                                    item={this.state.priority}
-                                    canEdit={this.state.canEdit}
-                                    label="Prioritate"
-                                    description='Prioritatea componentei'
-                                    items={this.props.priorities}
-                                    save={this.savePriority}
-                                />
-                            </EditForm>
-                            <EditForm classes={"offset-xl-4"}>
-                                <EditUser
-                                    label='Editează proprietar'
-                                    user={this.state.owner}
-                                    save={this.saveOwner}
-                                    canEdit={this.state.canEdit || this.state.owner.email == undefined}
-                                />
-                            </EditForm>
+                    <div class="row mt-3 knbn-mandatory-margin">
+                        <div class="col-12">
+                            <Header3>Editor Modul</Header3>
                         </div>
                     </div>
 
-                    {/* <CommentArea id={this.state.id}/> */}
+                    <div class="col-12">
+                        <DismisableError dismissError={() => {this.setState({error: ''})}}>{this.state.error}</DismisableError>
+                    </div>
+                    
+                    <div class="row ">
+                        <div class="col-xl-12 col-12">
+                            <div class="row">
+                                <EditForm>
+                                    <EditField
+                                        value={this.state.name}
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.owner.email || this.state.owner.email == undefined}
+                                        label='Nume' 
+                                        save={this.saveName}
+                                        description='Numele componentei când a fost creată'
+                                    />
+
+                                    <EditTextArea
+                                        value={this.state.description}
+                                        save={this.saveDescription}
+                                        label='Descriere' 
+                                        description='Descrierea componentei când a fost creată'
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.owner.email || this.state.owner.email == undefined}
+                                    />
+
+                                    <EditSelection
+                                        item={this.state.release}
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.owner.email || this.state.owner.email == undefined}
+                                        label="Versiune"
+                                        description='Versiunea atașată componentei'
+                                        items={this.state.releases}
+                                        save={this.saveRelease}
+                                    />
+
+                                    <EditSelection
+                                        item={this.state.category}
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.owner.email || this.state.owner.email == undefined}
+                                        label="Categorie"
+                                        description='Categoria atașată componentei'
+                                        items={this.state.categories}
+                                        save={this.saveCategory}
+                                    />
+
+                                    <EditSelection
+                                        item={this.state.priority}
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.owner.email || this.state.owner.email == undefined}
+                                        label="Prioritate"
+                                        description='Prioritatea componentei'
+                                        items={this.props.priorities}
+                                        save={this.savePriority}
+                                    />
+                                </EditForm>
+                                <EditForm classes={"offset-xl-4"}>
+                                    <EditUser
+                                        label='Editează proprietar'
+                                        user={this.state.owner}
+                                        save={this.saveOwner}
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.owner.email || this.state.owner.email == undefined}
+                                    />
+                                </EditForm>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        );
+            );
+        }
     }
 }
 

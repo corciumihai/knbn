@@ -24,17 +24,20 @@ class LaneProgress extends React.Component{
 
         return connectDropTarget(
             <div class={'column col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 d-flex flex-column px-0'} >
-                <div class={'column-name w-100 knbn-transition' + (this.props.themeToggled ? " knbn-dark-color-2x" : " knbn-snow-color-2x")}>ÎN PROGRES</div>
+                <div class={'column-name w-100 knbn-transition' + (this.props.themeToggled ? " knbn-dark-color-2x" : " knbn-snow-color-2x")}>{"ÎN PROGRES (max. " + this.props.wip + " tichete)"}</div>
                 <div class={'knbn-lane col pt-1 px-1 knbn-transition mb-2 knbn-border knbn-bg-transparent' + 
                     ((this.props.classes == undefined || this.props.classes.length == 0) ? '' : ' ' + this.props.classes) + 
                     (canDrop ? (this.props.themeToggled ? ' knbn-dark-ondrop' : ' knbn-snow-ondrop') : "") +
-                    (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}> 
+                    (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x") + 
+                    (this.props.items.length >= this.props.wip ? " knbn-wip-limit" : "")}> 
                 {
                     this.props.items.map(ticket => {
                         return  <Ticket 
                                 data={ticket} 
-                                key={ticket.id + ticket.isReport}
+                                key={this.props.items.indexOf(ticket)}
                                 helpers={this.props.helpers}
+                                setError={this.props.setError}
+                                refresh={this.props.refresh}
                                 />
                     })
                 }

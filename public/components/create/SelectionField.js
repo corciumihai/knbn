@@ -26,11 +26,10 @@ class SelectionField extends React.Component{
         this.remove = this.remove.bind(this);
     }
 
-    componentWillMount(){
+    componentDidMount(){
         this.setState({
             items: this.props.items, 
             filteredItems:  this.props.items, 
-            // value:  this.props.currentItem.name,
             currentItem:  this.props.currentItem
         });
     }
@@ -39,7 +38,6 @@ class SelectionField extends React.Component{
         this.setState({
             items: nextProps.items, 
             filteredItems: nextProps.items, 
-            // value: nextProps.currentItem.name,
             currentItem: nextProps.currentItem
         });
     }
@@ -76,12 +74,12 @@ class SelectionField extends React.Component{
                         </div>
                         :
                         <div class={"knbn-input-grp knbn-fake-input-grp input-group dropdown knbn-bg-transparent knbn-transition knbn-border knbn-no-border-radius"  + 
-                            (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
+                            (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-3x knbn-snow-onselect")}>
                             <input type="text" class={"knbn-input form-control knbn-bg-transparent knbn-transition knbn-no-border knbn-font-medium knbn-no-box-shadow knbn-no-border-radius" + 
                             (this.props.themeToggled == true ? 
                                 " knbn-dark-bg-2x knbn-dark-bg-2x-active knbn-dark-color-5x" 
                                 : 
-                                " knbn-snow-bg-2x knbn-snow-bg-2x-active knbn-snow-color-5x" )} aria-describedby="knbnHelp" 
+                                " knbn-snow-color-4x knbn-snow-bg-3x knbn-snow-bg-3x-active" )} aria-describedby="knbnHelp" 
                                 placeholder={this.state.value == undefined || this.state.value.length == 0 ? "Introdu nume" : ""}
                                 value={this.state.value}
                                 onChange={this.setFieldValue}
@@ -100,7 +98,7 @@ class SelectionField extends React.Component{
                                                     <DropdownItem >
                                                         <div class="w-100 my-auto text-truncate d-flex flex-row">
                                                             <div class="d-flex mr-2">
-                                                                <img src={this.props.imgSrc != undefined ? this.props.imgSrc : './images/comp.svg'} class="my-auto mx-auto"/>
+                                                                <img src={this.props.imgSrc != undefined ? this.props.imgSrc : null} class="my-auto mx-auto"/>
                                                             </div>
                                                             {item.name}
                                                         </div>

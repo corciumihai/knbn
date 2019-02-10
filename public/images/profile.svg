@@ -1,11 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" width="20" height="20" viewBox="0 0 20 20">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #fff;
-        fill-rule: evenodd;
-      }
-    </style>
-  </defs>
-  <path d="M13.906,14.388 L13.906,16.812 L5.600,16.812 L5.600,14.388 C5.600,12.800 6.635,11.467 8.062,10.989 C7.143,10.417 6.525,9.405 6.525,8.241 C6.525,6.451 7.972,5.000 9.756,5.000 C11.541,5.000 12.987,6.451 12.987,8.241 C12.987,9.406 12.369,10.419 11.449,10.990 C12.873,11.470 13.906,12.801 13.906,14.388 Z" class="cls-1"/>
-</svg>
+<?xml version="1.0" standalone="no"?><!-- Generator: Gravit.io --><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="isolation:isolate" viewBox="0 0 20 20" width="20" height="20"><defs><clipPath id="_clipPath_YgiA9kYTUNkODi8d5wlTfZhLKH8F1WUq"><rect width="20" height="20"/></clipPath></defs><g clip-path="url(#_clipPath_YgiA9kYTUNkODi8d5wlTfZhLKH8F1WUq)"><rect width="20" height="20" style="fill:rgb(47,47,47)" fill-opacity="0"/><path d=" M 5.882 7.118 C 5.882 4.845 7.727 3 10 3 C 12.273 3 14.118 4.845 14.118 7.118 C 14.118 9.39 12.273 11.235 10 11.235 C 7.727 11.235 5.882 9.39 5.882 7.118 Z " fill-rule="evenodd" fill="rgb(255,255,255)"/><path d=" M 3.837 17 C 4.049 13.783 6.729 11.235 10 11.235 C 13.271 11.235 15.951 13.783 16.163 17 L 14.614 17 C 14.406 14.636 12.418 12.779 10 12.779 C 7.582 12.779 5.594 14.636 5.386 17 L 3.837 17 Z " fill-rule="evenodd" fill="rgb(255,255,255)"/></g></svg>

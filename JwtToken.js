@@ -67,7 +67,6 @@ module.exports = class JwtToken{
                     response.sendStatus(403);
                 }
                 else{
-                    // request.email = decoded.email;
                     next();
                 }
             })

@@ -29,11 +29,14 @@ class EditUser extends React.Component{
         this.setEditMode = this.setEditMode.bind(this);
     }
 
-    componentWillMount(){
-        axios.get('/users/get-users')
+    componentDidMount(){
+        axios.get('/users/get')
         .then(response =>{
             this.setState({users: response.data, filteredUsers: response.data});
-        });
+        })
+        .catch(error => {
+            this.setState({error: error.response.data.error})
+        })
     }
 
     componentWillReceiveProps(nextProps, nextState){
@@ -70,7 +73,9 @@ class EditUser extends React.Component{
 
     selfAssign(event){
         event.preventDefault();
-        this.props.save != undefined || this.props.save != null ? this.props.save({email: this.props.currentUser}) : {};
+        this.setState({inEditMode: false}, () => {
+            this.props.save != undefined || this.props.save != null ? this.props.save({email: this.props.currentUser}) : null;
+        })
     }
 
     render(){
@@ -78,16 +83,23 @@ class EditUser extends React.Component{
             <div class="form-group">
                 <div class={"d-flex flex-row"}>  
                     <Label label={this.props.label}/>
+                {
+                    this.props.canEdit ? 
+                    <div class="d-flex">
+                        <div class={"ml-auto knbn-pointer knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} onClick={this.selfAssign}>Aloca mie</div>
+                    </div>
+                    :
+                    null
+                }
                 </div>
                 {
                     !this.state.inEditMode ? 
-                    <div class={"d-flex flex-row text-truncate"}>
+                    <div class={"d-flex text-truncate"}>
                         <RemoveItem remove={this.setEditMode} canEdit={this.props.canEdit}>
                             <img class="knbn-profile-pic mr-1 my-auto" src={this.state.user.email ? 'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(this.state.user.email).toLowerCase().trim()).digest('hex') : null}/>
                             {!this.state.user.email ? "Niciun user setat" : this.state.user.name + " \u00B7 " + this.state.user.email}
                         </RemoveItem>
-                    </div>
-
+                    </div>                        
                     :
                     <div class={"input-group dropdown knbn-bg-transparent knbn-transition knbn-border" + (this.props.themeToggled ? " knbn-dark-border-2x knbn-dark-onselect" : " knbn-snow-border-2x knbn-snow-onselect")}>
                         <div class="d-flex flex-row w-100">
@@ -95,7 +107,7 @@ class EditUser extends React.Component{
                             (this.props.themeToggled == true ? 
                                 " knbn-dark-bg-2x knbn-dark-bg-2x-active knbn-dark-color-5x" 
                                 : 
-                                " knbn-snow-bg-2x knbn-snow-bg-2x-active knbn-snow-color-5x" )} aria-describedby="knbnHelp" 
+                                " knbn-snow-color-4x knbn-snow-bg-3x knbn-snow-bg-3x-active knbn-snow-border-3x")} aria-describedby="knbnHelp" 
                                 placeholder={this.state.value == undefined || this.state.value.length == 0 ? "Introdu nume user" : ""}
                                 value={this.state.value}
                                 onChange={this.setFieldValue}

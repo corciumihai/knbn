@@ -17,6 +17,7 @@ import Worklog from '../comments/Worklog';
 import WorklogInsert from '../comments/WorklogInsert';
 import Comment from '../comments/Comment';
 import CommentInsert from '../comments/CommentInsert';
+import DismisableError from '../messages/DismisableError';
 
 class EditTicket extends React.Component{
     constructor(props){
@@ -31,7 +32,6 @@ class EditTicket extends React.Component{
             reporter: {},
             release: {},
             category: {},
-            canEdit: false,
             
             estimation: 0,
 
@@ -75,65 +75,73 @@ class EditTicket extends React.Component{
         this.saveCategory = this.saveCategory.bind(this);
     }
 
-    componentWillMount(){
-        axios.get('/ticket/get-data/' + this.props.match.params.id).then( response => {      
-            this.setState({
-                id: response.data.id,
-                priority: this.props.priorities.find(item => {return item.dbName == response.data.priority}),
-                description: response.data.description,
-                name: response.data.name,
-                assignee: {email: response.data.assignee},
-                reporter: {email: response.data.reporter},
-                startDate: response.data.startDate,
-                dueDate: response.data.dueDate,
-                estimation: response.data.estimation,
-                project: response.data.project,
-                loadingData: false,
-            }, () => {
-                this.setState({canEdit: this.props.isAdmin || this.state.assignee.email == this.props.currentUser || this.state.reporter.email == this.props.currentUser})
-            });
-
-            if(response.data.releaseID){
-                axios.get('/release/get/' + response.data.releaseID).then(response => {
-                    this.setState({
-                        release: response.data, loadingRelease: false
-                    });
-                });
-            }
-            
-            if(response.data.category){
-                axios.get('/category/get/' + response.data.category).then(response => {
-                    this.setState({
-                        category: response.data, loadingCategory: false
-                    });
-                });
-            }
-        });        
-
-        axios.get('release/multi/get').then( response => {
-            this.setState({
-                releases: response.data,
-                filteredReleases: response.data,
-                loadingReleases: false
-            }, this.filterReleases);
-        });
-
-        axios.get('category/multi/get').then( response => {
-            if(response.status == 200){
+    componentDidMount(){
+        axios.all([
+            axios.get('/ticket/get/' + this.props.match.params.id),
+            axios.get('release/multi/get'),
+            axios.get('category/multi/get'),
+            axios.get('/ticket/get/comments/' + this.props.match.params.id),
+            axios.get('/ticket/get/worklogs/' + this.props.match.params.id)
+        ])
+        .then(axios.spread(
+            (ticket, releases, categories, comments, worklogs) => {
                 this.setState({
-                    categories: response.data,
-                    filteredCategories: response.data,
-                    loadingCategories: false
-                }, this.filterCategories);
-            }
-        });
+                    id: ticket.data.id,
+                    priority: this.props.priorities.find(item => {return item.dbName == ticket.data.priority}),
+                    description: ticket.data.description,
+                    name: ticket.data.name,
+                    assignee: {email: ticket.data.assignee},
+                    reporter: {email: ticket.data.reporter},
+                    startDate: ticket.data.startDate,
+                    dueDate: ticket.data.dueDate,
+                    estimation: ticket.data.estimation,
+                    project: ticket.data.project,
+                    releases: releases.data,
+                    filteredReleases: releases.data,
+                    categories: categories.data,
+                    filteredCategories: categories.data,
+                    comments: comments.data,
+                    worklogs: worklogs.data,
+                    loading: false,
+                }, () => {
+                    if(ticket.data.releaseID){
+                        axios.get('/release/get/' + ticket.data.releaseID)
+                        .then(response => {
+                            if(response.status == 200){
+                                this.setState({release: response.data})
+                            }
+                        })
+                        .catch(error => {
+                            this.setState({error: error.response.data.error})
+                        })
+                    }
+                    
+                    if(ticket.data.category){
+                        axios.get('/category/get/' + ticket.data.category)
+                        .then(response => {
+                            if(response.status == 200){
+                                this.setState({category: response.data})
+                            }
+                        })
+                        .catch(error => {
+                            this.setState({error: error.response.data.error})
+                        })
+                    }
 
-        this.fetchComments();
-        this.fetchWorklogs();
+                    this.filterReleases();
+                    this.filterCategories();
+                })
+                .catch(error => {
+                    this.setState({error: error.response.data.error})
+                })
+            }
+        ))
+        .catch(error => {
+            this.setState({error: error.response.data.error})
+        })
     }
 
     componentWillReceiveProps(nextProps, nextState){
-        this.setState({canEdit: nextProps.isAdmin || this.state.assignee.email == nextProps.currentUser || this.state.reporter.email == nextProps.currentUser}, () => console.log(this.state.canEdit));
     }
 
     filterReleases(){
@@ -149,25 +157,27 @@ class EditTicket extends React.Component{
     }
 
     fetchComments(){
-        axios.get('/ticket/get-comments/' + this.props.match.params.id)
+        axios.get('/ticket/get/comments/' + this.props.match.params.id)
         .then(response => {
-            this.setState({
-                comments: response.data,
-                loadingComments: false
-            })
-        });
+            if(response.status == 200){
+                this.setState({comments: response.data})
+            }
+        })
+        .catch(error => {
+            this.setState({error: error.response.data.error});
+        })
     }
 
     fetchWorklogs(){
-        axios.get('/ticket/get-worklogs/' + this.props.match.params.id)
+        axios.get('/ticket/get/worklogs/' + this.props.match.params.id)
         .then(response => {
             if(response.status == 200){
-                this.setState({
-                    worklogs: response.data,
-                    loadingWorklogs: false
-                });
+                this.setState({worklogs: response.data})
             }
-        });
+        })
+        .catch(error => {
+            this.setState({error: error.response.data.error});
+        })
     }
 
     addComment(item){
@@ -175,7 +185,7 @@ class EditTicket extends React.Component{
             let data = item;
             data.ticket = this.props.match.params.id;
 
-            axios.post('/ticket/add-comment', data)
+            axios.post('/ticket/add/comment', data)
             .then(response => {
                 if(response.status == 200){
                     this.fetchComments();
@@ -191,8 +201,9 @@ class EditTicket extends React.Component{
         if(item){
             let data = item;
             data.ticket = this.state.id;
+            data.created = new Date();
 
-            axios.post('/ticket/add-worklog', data)
+            axios.post('/ticket/add/worklog', data)
             .then(response => {
                 if(response.status == 200){
                     this.fetchWorklogs();
@@ -206,7 +217,7 @@ class EditTicket extends React.Component{
 
     updateWorklog(item){
         if(item){
-            axios.post('/ticket/update-worklog', item)
+            axios.post('/ticket/update/worklog', item)
             .then(response => {
                 if(response.status == 200){
                     this.fetchWorklogs();
@@ -220,7 +231,7 @@ class EditTicket extends React.Component{
 
     updateComment(item){
         if(item){
-            axios.post('/ticket/update-comment', item)
+            axios.post('/ticket/update/comment', item)
             .then(response => {
                 if(response.status == 200){
                     this.fetchComments();
@@ -239,6 +250,9 @@ class EditTicket extends React.Component{
                 this.fetchComments();
             }
         })
+        .catch(error => {
+            this.setState({error: error.response.data.error});
+        })
     }
 
     removeWorklog(worklog){        
@@ -256,114 +270,150 @@ class EditTicket extends React.Component{
     }
 
     saveName(name){
-        axios.post('/ticket/set/name', {
-            id: this.state.id, 
-            value: name
-        }).then( response => {
-            if(response.data.success == true){
-                this.setState({name: name});
-            }
-        });
+        if(name.length){
+            axios.post('/ticket/set/name', {
+                id: this.state.id, 
+                value: name
+            })
+            .then(response => {
+                if(response.status == 200){
+                    this.setState({name: name});
+                }
+            })
+            .catch(error => {
+                this.setState({error: error.response.data.error});
+            })
+        }
+        else{
+            this.setState({error: "Numele nu poate fi omis"});
+        }
     }
 
     saveDescription(description){
-        axios.post('/ticket/set/description', {
-            id: this.state.id,
-            value: description
-        })
-        .then( response => {
-            if(response.data.success == true){
-                this.setState({description: description});
-            }
-        });
+        if(description.length){
+            axios.post('/ticket/set/desc', {
+                id: this.state.id,
+                value: description
+            })
+            .then( response => {
+                if(response.status == 200){
+                    this.setState({description: description});
+                }
+            })
+            .catch(error => {
+                this.setState({error: error.response.data.error});
+            })
+        }
     }
 
-    saveRelease(release){        
-        axios.post('/ticket/set/release', {
-            id: this.state.id, 
-            value: release.id
-        })
-        .then( response => {
-            if(response.data.success == true){
-                this.setState({release: release});
-            }
-        });
+    saveRelease(release){
+        if(release.id){
+            axios.post('/ticket/set/release', {
+                id: this.state.id, 
+                value: release.id
+            })
+            .then(response => {
+                if(response.status == 200){
+                    this.setState({release: release});
+                }
+            })
+            .catch(error => {
+                this.setState({error: error.response.data.error});
+            })
+        }  
     }
 
-    saveCategory(category){        
-        axios.post('/ticket/set/category', {
-            id: this.state.id, 
-            value: category.id
-        })
-        .then(response => {
-            if(response.data.success == true){
-                this.setState({category: category});
-            }
-        });
+    saveCategory(category){
+        if(category.id){
+            axios.post('/ticket/set/category', {id: this.state.id, value: category.id})
+            .then(response => {
+                if(response.status == 200){
+                    this.setState({category: category});
+                }
+            })
+            .catch(error => {
+                this.setState({error: error.response.data.error});
+            })
+        }    
     }
 
     savePriority(priority){
-        axios.post('/ticket/set/priority', {
-            id: this.state.id, 
-            value: priority.dbName
-        })
-        .then( response => {
-            if(response.data.success == true){
-                this.setState({priority: priority});
-            }
-        });
+        if(priority){
+            axios.post('/ticket/set/priority', {
+                id: this.state.id, 
+                value: priority.dbName
+            })
+            .then(response => {
+                if(response.status == 200){
+                    this.setState({priority: priority});
+                }
+            })
+            .catch(error => {
+                this.setState({error: error.response.data.error});
+            })
+        }
     }
 
     saveAssignee(user){
-        axios.post('/ticket/set/assignee', {
-            id: this.state.id,
-            value: user.email
-        })
-        .then( response => {
-            if(response.data.success == true){
-                this.setState({
-                    assignee: user, 
-                    canEdit: this.props.isAdmin || user.email == this.props.currentUser || this.state.reporter.email == this.props.currentUser});
-            }
-        });
+        if(user.email){
+            axios.post('/ticket/set/assignee', {id: this.state.id, value: user.email})
+            .then(response => {
+                if(response.status == 200){
+                    this.setState({assignee: user})
+                }
+            })
+            .catch(error => {
+                this.setState({error: error.response.data.error})
+            })
+        }
     }
 
-    saveReporter(user){     
-        axios.post('/ticket/set/reporter', {
-            id: this.state.id,
-            value: user.email
-        })
-        .then( response => {
-            if(response.data.success == true){
-                this.setState({
-                    reporter: user, 
-                    canEdit: this.props.isAdmin || user.email == this.props.currentUser || this.state.assignee.email == this.props.currentUser});
-            }
-        });
+    saveReporter(user){
+        if(user.email){
+            axios.post('/ticket/set/reporter', { id: this.state.id, value: user.email})
+            .then(response => {
+                if(response.status == 200){
+                    this.setState({reporter: user});
+                }
+            })
+            .catch(error => {
+                this.setState({error: error.response.data.error})
+            })
+        }
     }
 
     saveDueDate(date){
-        axios.post('/set-component/due-date', {
+        console.log(date)
+        
+        axios.post('/ticket/set/dueDate', {
             id: this.state.id, 
             date: date
         })
-        .then( response => {
-            if(response.data.success == true){
+        .then(response => {
+            if(response.status == 200){
                 this.setState({dueDate: date});
             }
-        });
+        })
+        .catch(error => {
+            this.setState({error: error.response.data.error});
+        })
     }
 
     saveEstimation(value){
-        axios.post('/ticket/set/estimation', {
-            id: this.state.id, 
-            value: value
-        })
-        .then( response => {
-            if(response.data.success == true){
-                this.setState({dueDate: date});
-            }
-        });
+        if(value.length){
+            axios.post('/ticket/set/estimation', {
+                id: this.state.id, 
+                value: value
+            })
+            .then(response => {
+                if(response.status == 200){
+                    this.setState({dueDate: date});
+                }
+            })
+            .catch(error => {
+                this.setState({error: error.response.data.error});
+            })
+        }
     }
 
     render(){
@@ -372,159 +422,167 @@ class EditTicket extends React.Component{
             <div class={"container-fluid knbn-bg-transparent knbn-transition knbn-container pb-3 h-100" + (this.props.themeToggled ? " knbn-dark-bg-1x" : " knbn-snow-bg-1x")}>
                 <Menu/>
                 
-                    <div class="row knbn-mandatory-margin">
-                        <Header3>Editor tichet</Header3>
+                <div class="row knbn-mandatory-margin">
+                    <div class="col-12">
+                        <Header3>Editor Tichet</Header3>
                     </div>
+                </div>
 
-                    {
-                        loading? 
-                        <LoadingScreen/>
-                        :
-                        <div class="row">
-                            <div class="col-xl-12 col-12">
-                                <div class="row">
-                                    <EditForm>
-                                        <EditField
-                                            value={this.state.name}
-                                            label='Nume' 
-                                            save={this.saveName}
-                                            description='Numele tichetului când a fost creat'
-                                            canEdit={this.state.canEdit}
-                                        />
+                <DismisableError dismissError={()=>{this.setState({error: ''})}}>{this.state.error}</DismisableError>
 
-                                        <EditTextArea
-                                            value={this.state.description}
-                                            save={this.saveDescription}
-                                            canEdit={this.state.canEdit}
-                                            label='Descriere' 
-                                            description='Descrierea tichetului când a fost creat'
-                                        />
+                {
+                    loading? 
+                    <LoadingScreen/>
+                    :
+                    <div class="row">
+                        <div class="col-xl-12 col-12">
+                            <div class="row">
+                                <EditForm>
+                                    <EditField
+                                        value={this.state.name}
+                                        label='Nume' 
+                                        save={this.saveName}
+                                        description='Numele tichetului când a fost creat'
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.reporter.email || this.props.currentUser == this.state.assignee.email}
+                                    />
 
-                                        <EditSelection
-                                            item={this.state.release}
-                                            label="Versiune"
-                                            description='Versiunea atașată tichetului'
-                                            items={this.state.filteredReleases}
-                                            save={this.saveRelease}
-                                            canEdit={this.state.canEdit}
-                                        />
+                                    <EditTextArea
+                                        value={this.state.description}
+                                        save={this.saveDescription}
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.reporter.email || this.props.currentUser == this.state.assignee.email}
+                                        label='Descriere' 
+                                        description='Descrierea tichetului când a fost creat'
+                                    />
 
-                                        <EditSelection
-                                            item={this.state.category}
-                                            label="Categorie"
-                                            description='Categoria atașată tichetului'
-                                            items={this.state.filteredCategories}
-                                            save={this.saveCategory}
-                                            canEdit={this.state.canEdit}
-                                        />
+                                    <EditSelection
+                                        item={this.state.release}
+                                        label="Versiune"
+                                        description='Versiunea atașată tichetului'
+                                        items={this.state.filteredReleases}
+                                        save={this.saveRelease}
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.reporter.email || this.props.currentUser == this.state.assignee.email}
+                                    />
 
-                                        <EditSelection
-                                            item={this.state.priority}
-                                            label="Prioritate"
-                                            description='Prioritatea tichetului'
-                                            items={this.props.priorities}
-                                            save={this.savePriority}
-                                            canEdit={this.state.canEdit}
-                                        />
+                                    <EditSelection
+                                        item={this.state.category}
+                                        label="Categorie"
+                                        description='Categoria atașată tichetului'
+                                        items={this.state.filteredCategories}
+                                        save={this.saveCategory}
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.reporter.email || this.props.currentUser == this.state.assignee.email}
+                                    />
 
-                                        <EditField
-                                            value={this.state.estimation}
-                                            label='Estimare' 
-                                            save={this.saveEstimation}
-                                            description='Estimare timp pentru rezolvarea tichetului'
-                                            canEdit={this.state.canEdit}
-                                        />
-                                    </EditForm>
-                                    <EditForm classes={"offset-xl-4"}>
-                                        <EditUser
-                                            label='Supervizor'
-                                            user={this.state.reporter}
-                                            save={this.saveReporter}
-                                            description="Reporter tichetului"
-                                            canEdit={this.state.canEdit || this.state.reporter.email == undefined}
-                                        />
+                                    <EditSelection
+                                        item={this.state.priority}
+                                        label="Prioritate"
+                                        description='Prioritatea tichetului'
+                                        items={this.props.priorities}
+                                        save={this.savePriority}
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.reporter.email || this.props.currentUser == this.state.assignee.email}
+                                    />
 
-                                        <EditUser
-                                            label='Asignat'
-                                            user={this.state.assignee}
-                                            save={this.saveAssignee}
-                                            description="Proprietarul tichetului"
-                                            canEdit={this.state.canEdit || this.state.assignee.email == undefined}
-                                        />
+                                    <EditField
+                                        value={this.state.estimation}
+                                        label='Estimare' 
+                                        save={this.saveEstimation}
+                                        description='Estimare timp pentru rezolvarea tichetului'
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.reporter.email || this.props.currentUser == this.state.assignee.email}
+                                    />
+                                </EditForm>
+                                <EditForm classes={"offset-xl-4"}>
+                                    <EditUser
+                                        label='Supervizor'
+                                        user={this.state.reporter}
+                                        save={this.saveReporter}
+                                        description="Reporter tichetului"
+                                        canEdit={this.props.isAdmin || this.props.isAdmin || this.props.currentUser == this.state.reporter.email || !this.state.reporter.email}
+                                    />
 
-                                        {
-                                            this.state.startDate != undefined ?
-                                            <ImmutableField
-                                                label='Dată creare'
-                                                description='Data când a fost creată componenta'
-                                            >{dateformat(new Date(this.state.startDate), "dddd \u00B7 d mmmm \u00B7 yyyy")}</ImmutableField> : null
-                                        }
+                                    <EditUser
+                                        label='Asignat'
+                                        user={this.state.assignee}
+                                        save={this.saveAssignee}
+                                        description="Proprietarul tichetului"
+                                        canEdit={true}
+                                    />
 
-                                        <EditDate
-                                            editable={true}
-                                            date={this.state.dueDate}
-                                            label='Data limită'
-                                            save={this.saveDueDate}
-                                            description='Data limită pentru componentă'
-                                        />
-                                    </EditForm>
-                                </div>
+                                    {
+                                        this.state.startDate != undefined ?
+                                        <ImmutableField
+                                            label='Dată creare'
+                                            description='Data când a fost creată componenta'
+                                        >{dateformat(new Date(this.state.startDate), "dddd \u00B7 d mmmm \u00B7 yyyy")}</ImmutableField> : null
+                                    }
+
+                                    <EditDate
+                                        canEdit={this.props.isAdmin || this.props.currentUser == this.state.reporter.email || this.props.currentUser == this.state.assignee.email}
+                                        date={this.state.dueDate}
+                                        label='Data limită'
+                                        save={this.saveDueDate}
+                                        description='Data limită pentru componentă'
+                                    />
+                                </EditForm>
                             </div>
+                        </div>
 
-                            <CommentArea
-                                flag={this.state.toggleSection}
-                                toggle={this.toggleSection}
-                                error={this.state.commentAreaError}
-                            >
-                                <div class={"col-xl-12 knbn-transition knbn-bg-transparent mb-2 knbn-border-bottom" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}>
-                                {
-                                    !this.state.toggleSection ? 
-                                        <div class="row">
+                        <CommentArea
+                            flag={this.state.toggleSection}
+                            toggle={this.toggleSection}
+                            error={this.state.commentAreaError}
+                        >
+                            <div class={"col-xl-12 knbn-transition knbn-bg-transparent mb-2 knbn-border-bottom" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}>
+                            {
+                                !this.state.toggleSection ? 
+                                    <div class="row">
+                                        <div class="col-12">
                                             <Header3>Comentarii</Header3>
-                                        {
-                                            this.state.comments.length > 0 ? 
-                                                this.state.comments.map(item => {
-                                                    return <Comment data={item} key={item.id} update={this.updateComment} remove={this.removeComment}/>
-                                                })
-                                                : 
-                                                <div class={"col knbn-font-medium" + (this.props.themeToggled ? " knbn-dark-color-2x" : " knbn-snow-color-2x")}>
-                                                    Nici un comentariu încă
-                                                </div>
-                                        }
                                         </div>
-                                    :
-                                        <div class="row">
-                                            <Header3>Raport muncă</Header3>
-                                        {
-                                            this.state.worklogs.length > 0 ? 
-                                            this.state.worklogs.map(item => {
-                                                return <Worklog data={item} key={item.id} update={this.updateWorklog} remove={this.removeWorklog}/>
+                                    {
+                                        this.state.comments.length > 0 ? 
+                                            this.state.comments.map(item => {
+                                                return <Comment data={item} key={item.id} update={this.updateComment} remove={this.removeComment}/>
                                             })
                                             : 
                                             <div class={"col knbn-font-medium" + (this.props.themeToggled ? " knbn-dark-color-2x" : " knbn-snow-color-2x")}>
-                                                Nici un raport de muncă încă
+                                                Nici un comentariu încă
                                             </div>
-                                        }
+                                    }
+                                    </div>
+                                :
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <Header3>Raport muncă</Header3>
                                         </div>
-                                }
-                                </div>
+                                    {
+                                        this.state.worklogs.length > 0 ? 
+                                        this.state.worklogs.map(item => {
+                                            return <Worklog data={item} key={item.id} update={this.updateWorklog} remove={this.removeWorklog}/>
+                                        })
+                                        : 
+                                        <div class={"col knbn-font-medium" + (this.props.themeToggled ? " knbn-dark-color-2x" : " knbn-snow-color-2x")}>
+                                            Nici un raport de muncă încă
+                                        </div>
+                                    }
+                                    </div>
+                            }
+                            </div>
 
-                                <div class={"col-xl-6 knbn-transition knbn-bg-transparent"}>
-                                {
-                                    !this.state.toggleSection ? 
-                                    <CommentInsert add={this.addComment}/>
+                            <div class={"col-xl-6 knbn-transition knbn-bg-transparent"}>
+                            {
+                                !this.state.toggleSection ? 
+                                <CommentInsert add={this.addComment}/>
+                                :
+                                this.props.currentUser == this.state.reporter.email || this.props.currentUser == this.state.assignee.email ? 
+                                    <WorklogInsert add={this.addWorklog}/>
                                     :
-                                    this.state.canEdit ? 
-                                        <WorklogInsert add={this.addWorklog}/>
-                                        :
-                                        null
-                                }
-                                    
-                                </div>
-                            </CommentArea>
-                        </div>
-                    }
-                </div>
+                                    null
+                            }
+                                
+                            </div>
+                        </CommentArea>
+                    </div>
+                }
+            </div>
         );
     }
 }

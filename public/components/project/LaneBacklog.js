@@ -33,8 +33,10 @@ class LaneBacklog extends React.Component{
                     this.props.items.map(ticket => {
                         return  <Ticket 
                                 data={ticket} 
-                                key={ticket.id + ticket.isReport}
+                                key={this.props.items.indexOf(ticket)}
                                 helpers={this.props.helpers}
+                                setError={this.props.setError}
+                                refresh={this.props.refresh}
                                 />
                     })
                 }

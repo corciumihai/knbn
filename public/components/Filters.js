@@ -8,10 +8,9 @@ class Filters extends React.Component{
 
     render(){
         return(
-            <div class="row mb-3">
-                <div class={"col-xl-12 py-2 knbn-border-top knbn-border-bottom knbn-transition" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-border-2x")}>
-                    <div class="row">
-                        <div class={"px-3 mr-2 knbn-font-medium" + (this.props.themeToggled ? " knbn-dark-color-2x" : " knbn-snow-color-2x")}>Filtre</div>
+            <div class={"row mb-3"}>
+                <div class={"col-xl-12 py-2 knbn-border-top knbn-border-bottom knbn-transition" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-border-1x  knbn-dark-shadow-1x" : " knbn-snow-bg-2x knbn-snow-border-2x knbn-snow-shadow-1x")}>
+                    <div class="row px-2">
                         {this.props.children}
                     </div>
                 </div>

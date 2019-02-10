@@ -6,6 +6,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import Small from '../editor/Small';
 import Error from '../create/Error';
+import AddButton from '../editor/AddButton';
 
 class WorklogInsert extends React.Component{
     constructor(props){
@@ -62,13 +63,13 @@ class WorklogInsert extends React.Component{
                 <Label label="Adaugă raport muncă"/>
 
                 <div class={"input-group knbn-transition knbn-bg-transparent knbn-border d-flex flex-row" + 
-                    (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}>
-                    <div class={"d-flex flex-column col px-0 knbn-border-right" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}>
+                    (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-3x")}>
+                    <div class={"d-flex flex-column col px-0 knbn-border-right" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-3x")}>
                         <input  type="text" 
                                 class={"form-control knbn-bg-transparent knbn-transition knbn-no-border-radius knbn-no-border knbn-font-medium knbn-no-box-shadow knbn-border-bottom" + (this.props.themeToggled == true ? 
                                 " knbn-dark-color-4x knbn-dark-bg-2x-active knbn-dark-border-2x" 
                                 : 
-                                " knbn-snow-color-4x knbn-snow-bg-4x-active knbn-snow-border-2x")} 
+                                " knbn-snow-color-4x knbn-snow-bg-4x-active knbn-snow-border-3x")} 
                                 aria-describedby="knbnHelp" 
                                 placeholder={this.state.hours ? "" : "Introdu ore muncă"}
                                 value={this.state.hours}
@@ -81,8 +82,8 @@ class WorklogInsert extends React.Component{
                                     className={"w-100 h-100 knbn-bg-transparent knbn-no-border knbn-edit-no-border" + (this.props.themeToggled ? " knbn-dark-color-5x knbn-dark-edit-bd-2x" : " knbn-snow-color-5x knbn-snow-edit-bd-2x")}
                         />
                     </div>
-
-                    <EditButton edit={true} save={this.addComment}/>
+                    
+                    <AddButton save={this.add}/>
                 </div>
 
                 <Small>{this.props.description}</Small>

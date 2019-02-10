@@ -21,6 +21,7 @@ class ProjectSetup extends React.Component{
         this.state = {
             projectNames: [],
             name: '',
+            wip: 3,
             description: '',
             nameError: '',
             versions: [],
@@ -41,9 +42,10 @@ class ProjectSetup extends React.Component{
         this.removeCategory = this.removeCategory.bind(this);
         this.setCategoryName = this.setCategoryName.bind(this);
         this.resetError = this.resetError.bind(this);
+        this.setWip = this.setWip.bind(this);
     }
 
-    componentWillMount(){
+    componentDidMount(){
         this.getProjects();
     }
 
@@ -56,7 +58,7 @@ class ProjectSetup extends React.Component{
     }
 
     getProjects(){
-        axios.get('/get-projects').then(response => {
+        axios.get('/project/getall').then(response => {
             this.setState({projectNames: Array.from(response.data, item => item.name.toLowerCase())});
         })
     }
@@ -65,6 +67,7 @@ class ProjectSetup extends React.Component{
         this.setState({
             name: '',
             description: '',
+            wip: 3,
             nameError: '',
             currentVersion: '',
             currentCategory: '',
@@ -82,6 +85,10 @@ class ProjectSetup extends React.Component{
 
     setCategoryName(value){
         this.setState({currentCategory: value, errorCategory: ''});
+    }
+
+    setWip(wip){
+        this.setState({wip: wip});
     }
 
     addVersion(){
@@ -135,8 +142,9 @@ class ProjectSetup extends React.Component{
         event.preventDefault();
 
         this.validate(() => {
-            axios.post('/add-project', {
+            axios.post('/add/project', {
                 name: this.state.name,
+                wip: this.state.wip,
                 description: this.state.description,
                 startDate: new Date().getTime(),
                 categories: this.state.categories,
@@ -166,21 +174,24 @@ class ProjectSetup extends React.Component{
                 </div>
                 :
                 <div class="row mt-3 knbn-mandatory-margin">
-                    <div class="col-xl-4 offset-xl-4">
-                        <div class="row">
-                            <Header3>Creator Proiect</Header3>
-                        </div>
-                    </div>
-
                     <div class="col-xl-12">
                         <div class="row">
                             <div class="col-xl-4 offset-xl-4">
+                                <Header3>Creator Proiect</Header3>
+                                
                                 <Error>{this.state.nameError}</Error>
                                 <InputField 
                                     label="Nume"
                                     value={this.state.name}
                                     description="Numele proiectului"
                                     action={this.setName}
+                                />
+
+                                <InputField 
+                                    label="Limită de muncă"
+                                    value={this.state.wip}
+                                    description="Limita de tichete din coloana de progres"
+                                    action={this.setWip}
                                 />
                             </div>
                         </div>

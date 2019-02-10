@@ -25,7 +25,7 @@ class LoginForm extends React.Component{
         this.validate = this.validate.bind(this);
     }
 
-    componentWillMount(){
+    componentDidMount(){
         let email = cookies.get('knbn-email');
         if(email){
             this.setState({email: email})

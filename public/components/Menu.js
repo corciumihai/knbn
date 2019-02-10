@@ -29,7 +29,7 @@ class Menu extends React.Component{
     }
 
     getProjects(){
-        axios.get('/get-projects').then(response => {
+        axios.get('/project/getall').then(response => {
             this.setState({projects: response.data});
         });
     }
@@ -48,11 +48,13 @@ class Menu extends React.Component{
     render(){
         return(
             <div class="row">
-                <nav class={"position-fixed knbn-high-z-index knbn-navbar navbar knbn-border-bottom navbar-expand-xl navbar-expand-lg navbar-expand-md navbar-dark knbn-transition col-xl-12" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-border-2x")}>
+                <nav class={"position-fixed knbn-high-z-index knbn-navbar navbar knbn-border-bottom navbar-expand-lg navbar-dark knbn-transition col-xl-12" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-border-2x knbn-dark-shadow-1x" : " knbn-snow-bg-2x knbn-snow-border-2x knbn-snow-shadow-2x")}>
                     <a class={"knbn-navbar-brand navbar-brand knbn-transition" + (this.props.themeToggled ? " knbn-dark-color-2x knbn-dark-color-2x-active" : " knbn-snow-color-2x knbn-snow-color-2x-active")} href="/">Bord KNBN</a>
 
                     <div class="knbn-navbar-toggler navbar-toggler" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Comută navigație" onClick={this.toggle}>
-                        {this.state.toggle ? <img src="/images/menu-close.svg"/> : <img src="/images/menu.svg"/>}
+                        {this.state.toggle ? 
+                        <img src={(this.props.themeToggled ? "/images/menu-remove.svg" : "/images/bMenu-remove.svg")}/> : 
+                        <img src={(this.props.themeToggled ? "/images/menu.svg" : "/images/bMenu.svg")}/>}
                     </div>
 
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -63,8 +65,8 @@ class Menu extends React.Component{
                                 <DropdownMenu>
                                 {   this.state.projects.length > 0 ?
                                     this.state.projects.map(project => {
-                                        return  <NavLink key={project.id} to={"/view-project/" + project.id} onClick={() =>{this.setLastAccessedProject(project.id)}}>
-                                                    <DropdownItem imgSrc={'./images/project.svg'}>{project.name}</DropdownItem>
+                                        return  <NavLink key={project.id} to={"/view/project/" + project.id} onClick={() =>{this.setLastAccessedProject(project.id)}}>
+                                                    <DropdownItem imgSrc={this.props.themeToggled ? './images/project.svg' : './images/bProject.svg'}>{project.name}</DropdownItem>
                                                 </NavLink>
                                     })
                                     :
@@ -75,7 +77,7 @@ class Menu extends React.Component{
                             </li>
 
                             <li class={"knbn-nav-item nav-item"} title='Creează proiect nou'>
-                                <NavLink to='/create-project'>
+                                <NavLink to='/create/project'>
                                     <KNBNNavLink>Creează proiect nou</KNBNNavLink>
                                 </NavLink>
                             </li>
@@ -85,14 +87,14 @@ class Menu extends React.Component{
                                 <KNBNNavLink onClick={() => {}}>Creează</KNBNNavLink>
 
                                 <DropdownMenu>
-                                    <NavLink to="/create-ticket">
+                                    <NavLink to="/create/ticket">
                                         <DropdownItem imgSrc="./images/ticket.svg">Tichet</DropdownItem>
                                     </NavLink>
-                                    <NavLink to="/create-pr">
+                                    <NavLink to="/create/pr">
                                         <DropdownItem imgSrc="./images/pr.svg">Raport de problemă</DropdownItem>
                                     </NavLink>
-                                    <NavLink to="/create-cmp">
-                                        <DropdownItem imgSrc="./images/comp.svg">Modul</DropdownItem>
+                                    <NavLink to="/create/cmp">
+                                        <DropdownItem imgSrc="./images/module.svg">Modul</DropdownItem>
                                     </NavLink>
                                 </DropdownMenu>
 
@@ -101,7 +103,7 @@ class Menu extends React.Component{
                         </ul>
                         
                         <SearcBar/>
-                        <ProfileDrop user={this.props.currentUser}/>
+                        <ProfileDrop/>
                         <ThemeToggler/>
                     </div>
                 </nav>
