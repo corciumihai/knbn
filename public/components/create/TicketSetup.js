@@ -218,7 +218,7 @@ class TicketSetup extends React.Component{
                 reporter: this.state.reporter.email ? this.state.reporter.email : this.props.currentUser,
                 priority: this.state.priority.dbName,
                 releaseID: this.state.release.id,
-                dueDate: new Date(dateformat(this.state.dueDate, 'yyyy-mm-dd')),
+                dueDate: this.state.dueDate.toISOString(),
                 startDate: new Date(),
                 lane: 'backlog',
                 project: this.state.project.id
