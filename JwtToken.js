@@ -12,7 +12,7 @@ module.exports = class JwtToken{
             database.query('SELECT * FROM users WHERE email = ?', username, (error, result, fields) => {
                 if(error){
                     response.status(500);
-                    response.json({error: 'Eroare internă ' + error.code});
+                    response.json({error: 'Eroare internă ' + error.sqlMessage});
                 }
                 else{
                     let databaseData = result[0];
