@@ -5,7 +5,7 @@ import Header3 from './Header3';
 import axios from 'axios';
 import EditForm from './EditForm';
 import EditField from './EditField';
-import DismisableError from '../messages/DismisableError';
+import DismissableError from '../messages/DismissableError';
 import EditTextArea from './EditTextArea';
 import ImmutableField from './ImmutableField';
 import dateformat from 'dateformat';
@@ -208,7 +208,7 @@ class EditProject extends React.Component{
                     </div>
                 </div>
 
-                <DismisableError dismissError={() => {this.setState({error: ''})}}>{this.state.error}</DismisableError>
+                <DismissableError dismiss={() => {this.setState({error: ''})}}>{this.state.error}</DismissableError>
 
                 <div class="row">
                     <div class="col-xl-12 col-12">

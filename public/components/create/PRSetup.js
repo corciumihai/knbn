@@ -12,7 +12,7 @@ import Menu from '../Menu';
 import SubmitButton from './SubmitButton';
 import CancelButton from './CancelButton';
 import Success from '../messages/Success';
-import DismissableError from '../messages/DismisableError';
+import DismissableError from '../messages/DismissableError';
 import Label from '../editor/Label';
 import Small from '../editor/Small';
 import DatePicker from './DatePicker';
@@ -408,7 +408,7 @@ class PRSetup extends React.Component{
                                 {/* <Success>Raport de problemă adăugat cu succes</Success> */}
 
                                 <div class="col">
-                                    <DismissableError dismissError={() => {this.setState({error: ''})}}>{this.state.error}</DismissableError>
+                                    <DismissableError dismiss={() => {this.setState({error: ''})}}>{this.state.error}</DismissableError>
                                 </div>
                                 
                                 <div class="d-flex flex-row justify-content-center mb-3 ">

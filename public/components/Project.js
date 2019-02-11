@@ -9,7 +9,7 @@ import Menu from './Menu';
 import Filters from './Filters';
 import Filter from './filters/Filter';
 import { Link } from 'react-router-dom';
-import DissmisableError from './messages/DismisableError';
+import DismissableError from './messages/DismissableError';
 import {Redirect} from 'react-router-dom';
 
 class Project extends React.Component{
@@ -102,7 +102,7 @@ class Project extends React.Component{
                     
                     <div class="row mt-3 knbn-mandatory-margin">
                         <div class="col-xl-12">
-                            <DissmisableError dismissError={() => {this.setState({error: ''})}}>{this.state.error}</DissmisableError>
+                            <DismissableError dismiss={() => {this.setState({error: ''})}}>{this.state.error}</DismissableError>
 
                             <Filters>
                                 <Filter action={this.props.toggleTickets} trigger={this.props.filterTickets}>Arată doar tichete</Filter>

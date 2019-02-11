@@ -163,7 +163,6 @@ class CmpSetup extends React.Component{
                 description: this.state.description,
                 priority: this.state.priority.dbName,
                 releaseID: this.state.release.id,
-                startDate: new Date().getTime(),
                 project: this.state.project.id
             }).then(response => {
                 if(response.status == 200){

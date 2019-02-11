@@ -9,7 +9,7 @@ import { Redirect } from 'react-router-dom';
 import Header3 from './editor/Header3';
 import { connect } from 'react-redux';
 import Menu from './Menu';
-import DismisableError from './messages/DismisableError';
+import DismissableError from './messages/DismissableError';
 
 class EditComponent extends React.Component{
     constructor(props){
@@ -226,7 +226,7 @@ class EditComponent extends React.Component{
                     </div>
 
                     <div class="col-12">
-                        <DismisableError dismissError={() => {this.setState({error: ''})}}>{this.state.error}</DismisableError>
+                        <DismissableError dismiss={() => {this.setState({error: ''})}}>{this.state.error}</DismissableError>
                     </div>
                     
                     <div class="row ">

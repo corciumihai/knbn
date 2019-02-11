@@ -80,7 +80,7 @@ app.get('/profile', handlers.checkToken, (request, response) => {
 });
 
 app.get('/users/get', handlers.checkToken, function(request, response){
-    database.query('SELECT email, name from users', (error, result, fields) => {
+    database.query('SELECT email, name, role, isAdmin from users', (error, result, fields) => {
         if(error){
             response.statusCode = 500;
             response.json({error: 'Eroare interna' + error.code});
@@ -226,6 +226,8 @@ app.post('/ticket/add', handlers.checkToken, (request, response) => {
 app.post('/component/add', handlers.checkToken, (request, response) => {
     database.query('INSERT INTO components SET ?', request.body, (error, fields, result) => {
         if(error){
+            console.log(error);
+            
             response.statusCode = 500;
             response.json({error: 'Eroare interna ' + error.code});
         }
@@ -1305,8 +1307,21 @@ app.post('/user/set/company', handlers.checkToken, (request, response) => {
     })
 })
 
-app.post('/user/set/admin/', handlers.checkToken, (request, response) => {
-    database.query('UPDATE users SET isAdmin = 1 WHERE email = ?', [request.body.email], (error, result, fields) => {
+app.post('/user/set/role', handlers.checkToken, (request, response) => {
+    database.query('UPDATE users SET role = ? WHERE email = ?', [request.body.value, request.body.email], (error, result, fields) => {
+        if(error){
+            response.statusCode = 500;
+            response.json({error: 'Eroare interna ' + error.code});
+        }
+        else{
+            response.sendStatus(200);
+        }
+    })
+})
+
+app.post('/user/set/admin', handlers.checkToken, (request, response) => {
+    console.log(request.body)
+    database.query('UPDATE users SET isAdmin = ? WHERE email = ?', [request.body.isAdmin, request.body.email], (error, result, fields) => {
         if(error){
             response.statusCode = 500;
             response.json({error: 'Eroare interna ' + error.code});

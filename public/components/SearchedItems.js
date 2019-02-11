@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import axios from 'axios';
 import SearchItem from './SearchItem';
 import Header3 from './editor/Header3';
-import DismisableError from './messages/DismisableError';
+import DismissableError from './messages/DismissableError';
 import { Link } from 'react-router-dom';
 
 class SearchedItems extends React.Component{
@@ -76,7 +76,7 @@ class SearchedItems extends React.Component{
                     </div>
                 </div>
 
-                <DismisableError dismissError={()=>{this.setState({error: ''})}}>{this.state.error}</DismisableError>
+                <DismissableError dismiss={()=>{this.setState({error: ''})}}>{this.state.error}</DismissableError>
 
                 <div class={"knbn-border-top col-xl-6 offset-xl-3 pt-1" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}>
                     {

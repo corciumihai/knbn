@@ -17,7 +17,7 @@ import Worklog from '../comments/Worklog';
 import WorklogInsert from '../comments/WorklogInsert';
 import Comment from '../comments/Comment';
 import CommentInsert from '../comments/CommentInsert';
-import DismisableError from '../messages/DismisableError';
+import DismissableError from '../messages/DismissableError';
 
 class EditTicket extends React.Component{
     constructor(props){
@@ -428,7 +428,7 @@ class EditTicket extends React.Component{
                     </div>
                 </div>
 
-                <DismisableError dismissError={()=>{this.setState({error: ''})}}>{this.state.error}</DismisableError>
+                <DismissableError dismiss={()=>{this.setState({error: ''})}}>{this.state.error}</DismissableError>
 
                 {
                     loading? 

@@ -20,7 +20,8 @@ class EditUser extends React.Component{
             users: [],
             value: '',
             filteredUsers: [],
-            user: {}
+            user: {},
+            selfAssign: true
         }
 
         this.save = this.save.bind(this);
@@ -30,6 +31,10 @@ class EditUser extends React.Component{
     }
 
     componentDidMount(){
+        if(this.props.selfAlloc != undefined){
+            this.setState({selfAssign: this.props.selfAlloc})
+        }
+       
         axios.get('/users/get')
         .then(response =>{
             this.setState({users: response.data, filteredUsers: response.data});
@@ -45,6 +50,9 @@ class EditUser extends React.Component{
             .then(response => {
                 this.setState({user: response.data});
             });
+        }
+        else{
+            this.setState({user: {}});
         }
     }
 
@@ -74,7 +82,7 @@ class EditUser extends React.Component{
     selfAssign(event){
         event.preventDefault();
         this.setState({inEditMode: false}, () => {
-            this.props.save != undefined || this.props.save != null ? this.props.save({email: this.props.currentUser}) : null;
+            this.props.save ? this.props.save({email: this.props.currentUser}) : null;
         })
     }
 
@@ -84,7 +92,7 @@ class EditUser extends React.Component{
                 <div class={"d-flex flex-row"}>  
                     <Label label={this.props.label}/>
                 {
-                    this.props.canEdit ? 
+                    this.props.canEdit && this.state.selfAssign ? 
                     <div class="d-flex">
                         <div class={"ml-auto knbn-pointer knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")} onClick={this.selfAssign}>Aloca mie</div>
                     </div>
@@ -96,8 +104,12 @@ class EditUser extends React.Component{
                     !this.state.inEditMode ? 
                     <div class={"d-flex text-truncate"}>
                         <RemoveItem remove={this.setEditMode} canEdit={this.props.canEdit}>
-                            <img class="knbn-profile-pic mr-1 my-auto" src={this.state.user.email ? 'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(this.state.user.email).toLowerCase().trim()).digest('hex') : null}/>
-                            {!this.state.user.email ? "Niciun user setat" : this.state.user.name + " \u00B7 " + this.state.user.email}
+                            {
+                                this.state.user.email ? <img class="knbn-profile-pic mr-1 my-auto" src={this.state.user.email ? 'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(this.state.user.email).toLowerCase().trim()).digest('hex') : null}/> : null
+                            }
+                            {
+                                !this.state.user.email ? "Niciun utilizator" : this.state.user.name + " \u00B7 " + (this.state.user.isAdmin ? " Administrator \u00B7 " : "") + this.state.user.email
+                            }
                         </RemoveItem>
                     </div>                        
                     :
@@ -126,10 +138,13 @@ class EditUser extends React.Component{
                                                 return  <a href="#" key={user.email} onClick={(event)=>{event.preventDefault(); this.setUser(user)}}>
                                                             <DropdownItem>
                                                                 <div class="d-flex flex-row knbn-font-medium">
-                                                                    <div class="mx-1 d-flex my-auto">
-                                                                        <img class="knbn-profile-pic" src={'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(user.email).toLowerCase().trim()).digest('hex')}/>
-                                                                    </div>
-                                                                    <div class="d-flex w-100 knbn-font-medium"><div class="w-100 my-auto text-truncate">{user.name + " \u00B7 " + user.email}</div></div>
+                                                                {
+                                                                    user.email ? <div class="mx-1 d-flex my-auto">
+                                                                                    <img class="knbn-profile-pic" src={'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(user.email).toLowerCase().trim()).digest('hex')}/>
+                                                                                </div> : null
+                                                                }
+                                                                    
+                                                                    <div class="d-flex w-100 knbn-font-medium"><div class="w-100 my-auto text-truncate">{user.name + " \u00B7 " + (user.isAdmin ? " Administrator \u00B7 ": "") + user.email}</div></div>
                                                                 </div>
                                                             </DropdownItem>
                                                         </a>
