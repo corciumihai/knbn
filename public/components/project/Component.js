@@ -342,12 +342,14 @@ class Component extends React.Component{
 
                                     {
                                         this.state.owner.name ? 
-                                        <div class="knbn-transparent mr-3 knbn-transition" title="Proprietar">
-                                            <div class={"knbn-transition" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>
-                                                <img src={'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(this.props.data.owner).toLowerCase().trim()).digest('hex')} class="my-auto knbn-profile-pic-medium mr-2"/>
-                                                {this.state.owner.name ? this.state.owner.name : "Nicio persoană"}
+                                        <Link to={"/edit/profile/" +  this.state.owner.email}>
+                                            <div class="knbn-transparent mr-3 knbn-transition" title="Proprietar">
+                                                <div class={"knbn-transition" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>
+                                                    <img src={'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(this.props.data.owner).toLowerCase().trim()).digest('hex')} class="my-auto knbn-profile-pic-medium mr-2"/>
+                                                    {this.state.owner.name ? this.state.owner.name : "Nicio persoană"}
+                                                </div>
                                             </div>
-                                        </div>
+                                        </Link>
                                         :
                                         null
                                     }

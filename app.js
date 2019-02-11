@@ -46,15 +46,40 @@ app.post('/register', (request, response) => {
             delete newData.password;
             newData.password = hash;
 
-            database.query('INSERT INTO users SET ?', newData, function(error, result, fields){
+            database.query('SELECT COUNT(*) AS count FROM users', (error, result, fields) => {
                 if(error){
                     response.status(500);
                     response.json({error: 'Eroare internă ' + error.code});
                 }
                 else{
-                    response.sendStatus(200);
+                    if(result[0].count > 0){
+                        newData.role = "Administrator";
+                        database.query('INSERT INTO users SET ?', newData, function(error, result, fields){
+                            if(error){
+                                response.status(500);
+                                response.json({error: 'Eroare internă ' + error.code});
+                            }
+                            else{
+                                response.sendStatus(200);
+                            }
+                        });
+                    }
+                    else{
+                        let withAdmin = newData;
+                        withAdmin.isAdmin = 1;
+
+                        database.query('INSERT INTO users SET ?', withAdmin, function(error, result, fields){
+                            if(error){
+                                response.status(500);
+                                response.json({error: 'Eroare internă ' + error.code});
+                            }
+                            else{
+                                response.sendStatus(200);
+                            }
+                        });
+                    }
                 }
-            });
+            })
         }
     })
     
@@ -225,9 +250,7 @@ app.post('/ticket/add', handlers.checkToken, (request, response) => {
 
 app.post('/component/add', handlers.checkToken, (request, response) => {
     database.query('INSERT INTO components SET ?', request.body, (error, fields, result) => {
-        if(error){
-            console.log(error);
-            
+        if(error){            
             response.statusCode = 500;
             response.json({error: 'Eroare interna ' + error.code});
         }
@@ -949,7 +972,6 @@ app.get('/search/report/:term', handlers.checkToken, (request, response) => {
         })
     }
     else{
-        console.log('aa')
         database.query('SELECT * FROM reports', (error, result, fields) => {
             if(error){
                 response.statusCode = 500;
@@ -1320,16 +1342,42 @@ app.post('/user/set/role', handlers.checkToken, (request, response) => {
 })
 
 app.post('/user/set/admin', handlers.checkToken, (request, response) => {
-    console.log(request.body)
-    database.query('UPDATE users SET isAdmin = ? WHERE email = ?', [request.body.isAdmin, request.body.email], (error, result, fields) => {
-        if(error){
-            response.statusCode = 500;
-            response.json({error: 'Eroare interna ' + error.code});
-        }
-        else{
-            response.sendStatus(200);
-        }
-    })
+    if(!request.body.isAdmin){
+        database.query("SELECT COUNT(*) AS count FROM users WHERE isAdmin = ?", 1, (error, result, fields) => {
+            if(error){
+                response.statusCode = 500;
+                response.json({error: 'Eroare interna ' + error.code});
+            }
+            else{
+                if(result[0].count == 1){
+                    response.statusCode = 500;
+                    response.json({error: 'Trebuie să existe măcar un administrator în sistem'});
+                }
+                else{
+                    database.query('UPDATE users SET isAdmin = ? WHERE email = ?', [request.body.isAdmin, request.body.email], (error, result, fields) => {
+                        if(error){
+                            response.statusCode = 500;
+                            response.json({error: 'Eroare interna ' + error.code});
+                        }
+                        else{
+                            response.sendStatus(200);
+                        }
+                    })
+                }
+            }
+        })
+    }
+    else{
+        database.query('UPDATE users SET isAdmin = ? WHERE email = ?', [request.body.isAdmin, request.body.email], (error, result, fields) => {
+            if(error){
+                response.statusCode = 500;
+                response.json({error: 'Eroare interna ' + error.code});
+            }
+            else{
+                response.sendStatus(200);
+            }
+        })
+    }
 })
 
 app.post('/ticket/remove', handlers.checkToken, (request, response) => {

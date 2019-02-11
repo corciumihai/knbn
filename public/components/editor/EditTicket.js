@@ -382,9 +382,7 @@ class EditTicket extends React.Component{
         }
     }
 
-    saveDueDate(date){
-        console.log(date)
-        
+    saveDueDate(date){        
         axios.post('/ticket/set/dueDate', {
             id: this.state.id, 
             date: date

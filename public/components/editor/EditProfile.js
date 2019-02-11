@@ -30,6 +30,7 @@ class EditProfile extends React.Component{
         this.saveRole = this.saveRole.bind(this);
         this.saveUserRight = this.saveUserRight.bind(this);
         this.disableUserRight  = this.disableUserRight.bind(this);
+        this.refresh = this.refresh.bind(this);
     }
 
     componentDidMount(){
@@ -39,6 +40,7 @@ class EditProfile extends React.Component{
                 name: response.data.name,
                 company: response.data.company,
                 role: response.data.role,
+                isAdmin: response.data.isAdmin,
                 canEdit: this.props.currentUser == this.props.match.params.email
             })
         })
@@ -55,10 +57,23 @@ class EditProfile extends React.Component{
                     name: response.data.name,
                     company: response.data.company,
                     role: response.data.role,
+                    isAdmin: response.data.isAdmin,
                     canEdit: this.props.currentUser == nextProps.match.params.email
                 })
             })
         }
+    }
+
+    refresh(){
+        Axios.get('/user/' + this.props.match.params.email)
+        .then(response => {
+            this.setState({
+                isAdmin: response.data.isAdmin,
+            })
+        })
+        .catch(error => {
+            this.setState({error: error.response.data.error})
+        });
     }
 
     saveName(value){
@@ -99,15 +114,12 @@ class EditProfile extends React.Component{
         })
     }
 
-    saveUserRight(user){
-        let tempUser = user;
-        tempUser.isAdmin = true;
-
-        if(user.email){
-            Axios.post('/user/set/admin', tempUser)
+    saveUserRight(){        
+        if(this.props.match.params.email){
+            Axios.post('/user/set/admin', {email: this.props.match.params.email, isAdmin: 1})
             .then(response => {
                 if(response.status == 200){
-                    this.setState({success: "Drepturi oferite pentru " + (user.name ? user.name : user.email)});
+                    this.refresh();
                 }
             })
             .catch(error => {
@@ -116,15 +128,15 @@ class EditProfile extends React.Component{
         }
     }
 
-    disableUserRight(user){
-        let tempUser = user;
-        tempUser.isAdmin = false;
-
-        if(user.email){
-            Axios.post('/user/set/admin', tempUser)
+    disableUserRight(){
+        if(this.props.match.params.email){
+            Axios.post('/user/set/admin', {email: this.props.match.params.email, isAdmin: 0})
             .then(response => {
                 if(response.status == 200){
-                    this.setState({success: "Drepturi eliminate pentru " + (user.name ? user.name : user.email)})
+                    if(this.props.currentUser == this.props.match.params.email){
+                        this.props.setNoAdmin();
+                    }
+                    this.refresh();
                 }
             })
             .catch(error => {
@@ -132,7 +144,6 @@ class EditProfile extends React.Component{
             })
         }
     }
-
 
     render(){
         return(
@@ -152,9 +163,9 @@ class EditProfile extends React.Component{
                         </div>
                     </div>
 
-                    <div class={"col-xl-6" + (!this.props.isAdmin ? " offset-xl-3" : "")}>
+                    <div class={"col-xl-4 offset-xl-4 mt-3"}>
                         <div class="row">
-                            <div class="col-xl-8 offset-xl-2">
+                            <div class="col-xl-12">
                                 <div class="row">
                                     <div class="col-xl-12">
                                         <EditField
@@ -203,52 +214,44 @@ class EditProfile extends React.Component{
                         </div>
                     </div>
                     {
-                        this.props.isAdmin ? 
-                        <div class={"col-xl-6" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-3x")}>
+                        this.props.isAdmin && (this.props.currentUser != this.props.match.params.email) ? 
+                        <div class={"col-xl-4 offset-xl-4 mt-3" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-3x")}>
                             <div class="row">
-                                <div class="col-xl-12 text-center">
-                                    <Header3>
-                                        Panou administrator
-                                    </Header3>
+                                <div class="col-xl-8 offset-xl-2 d-flex">
+                                {
+                                    this.state.isAdmin ? 
+                                    <button type="button" class="btn btn-danger knbn-font-small mx-auto knbn-no-box-shadow knbn-border-radius-50" onClick={this.disableUserRight}>Elimină dreptul de administrator</button>
+                                    :
+                                    <button type="button" class="btn btn-success knbn-font-small mx-auto knbn-no-box-shadow knbn-border-radius-50" onClick={this.saveUserRight}>Oferă dreptul de administrator</button>
+                                }
                                 </div>
                             </div>
-
-                            <div class="row">
-                                <div class="col-xl-6 offset-xl-3">
-                                    <EditUser
-                                        selfAlloc={false}
-                                        label='Oferă drepturi administrator'
-                                        user={this.state.userToOffer}
-                                        save={this.saveUserRight}
-                                        description=""
-                                        canEdit={this.props.isAdmin}
-                                    />
-                                </div>
-
-                                <div class="col-xl-6 offset-xl-3">
-                                    <EditUser
-                                        selfAlloc={false}
-                                        label='Elimină drepturi administrator'
-                                        user={this.state.userToOffer}
-                                        save={this.disableUserRight}
-                                        description=""
-                                        canEdit={this.props.isAdmin}
-                                    />
-                                </div>
-                                <div class="col-xl-6 offset-xl-3">
-                                    <DismissableSuccess dismiss={() => {this.setState({success: ''})}}>{this.state.success}</DismissableSuccess>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                            </div>
-                           
                         </div>
-                        :null
+                        :
+                        (this.props.isAdmin && (this.props.currentUser == this.props.match.params.email)?
+                        <div class={"col-xl-4 offset-xl-4 mt-3" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-3x")}>
+                            <div class="row">
+                                <div class="col-xl-8 offset-xl-2 d-flex">
+                                    <button type="button" class="btn btn-danger knbn-font-small mx-auto knbn-no-box-shadow knbn-border-radius-50" onClick={this.disableUserRight}>Elimină-mi dreptul de administrator</button>
+                                </div>
+                            </div>
+                        </div>
+                        :null)
                     }
                 </div>
             </div>
         )
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setNoAdmin: () => {
+            dispatch({
+                type: 'KNBN_SET_ADMIN_DISABLED',
+                payload: 0
+            });
+        }       
     }
 }
 
@@ -260,4 +263,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps)(EditProfile);
+export default connect(mapStateToProps, mapDispatchToProps)(EditProfile);

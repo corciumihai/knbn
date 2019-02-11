@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import dateformat from 'dateformat';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import ReactHtmlParser from 'react-html-parser';
 import RemoveItem from '../create/RemoveItem';
 import ReactQuill from 'react-quill';
@@ -111,7 +112,10 @@ class Worklog extends React.Component{
                         <div class={"d-flex knbn-font-small text-truncate" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
                         {
                             this.state.userData && this.state.userData.name ?
-                            this.state.userData.name + " \u00B7 " + this.props.data.hours + " ore \u00B7 " + dateformat(this.props.data.created, "dd mmmm yyyy")
+                            <div>
+                                <Link to={"/edit/profile/" + this.state.userData.email}>{this.state.userData.name}</Link>
+                                {" \u00B7 " + this.props.data.hours + " ore \u00B7 " + dateformat(this.props.data.created, "dd mmmm yyyy")}
+                            </div>
                             :
                             this.props.data.hours + " ore \u00B7 " + dateformat(this.props.data.created, "dd mmmm yyyy")
                         }

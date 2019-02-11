@@ -83,6 +83,12 @@ const reducer = (state = initialState, action) => {
             }
         }
 
+        case 'KNBN_SET_ADMIN_DISABLED': {         
+            return Object.assign({}, state, {
+                isAdmin: action.payload,
+            });
+        }
+
         case 'KNBN_SET_TOKEN': {
             cookies.set('jwtToken', action.payload, {path: '/', maxAge: 1800});                        
             return Object.assign({}, state, {

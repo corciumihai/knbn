@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import dateformat from 'dateformat';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import ReactHtmlParser from 'react-html-parser';
 import RemoveItem from '../create/RemoveItem';
 import ReactQuill from 'react-quill';
@@ -92,33 +93,36 @@ class Comment extends React.Component{
                 <div class="row mt-2 mb-2">
                     <div class="col-xl-12 d-flex flex-row">
                         <div class={"d-flex knbn-font-small" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
-                            {
-                                this.state.userData && this.state.userData.name ?
-                                this.state.userData.name + " \u00B7 " + dateformat(this.props.data.created, "dd mmmm yyyy")
-                                :
-                                "Adăugat pe " + dateformat(this.props.data.created, "dd mmmm yyyy")
-                            }
+                        {
+                            this.state.userData && this.state.userData.name ?
+                            <div>
+                                <Link to={"/edit/profile/" + this.state.userData.email}>{this.state.userData.name}</Link>
+                                {" \u00B7 " + dateformat(this.props.data.created, "dd mmmm yyyy")}
+                            </div>
+                            :
+                            "Adăugat pe " + dateformat(this.props.data.created, "dd mmmm yyyy")
+                        }
                         </div>
 
                         <div class="ml-auto d-flex flex-row"> 
+                        {
+                            this.state.userData.email == this.props.currentUser || this.props.isAdmin ? 
+                            <div class={"knbn-font-small knbn-pointer px-2 py-1" + (this.props.themeToggled ? " knbn-dark-color-2x knbn-dark-onselect": " knbn-snow-color-2x knbn-snow-onselect")}
+                            onClick={this.remove}>
+                                Elimină
+                            </div>
+                            :null
+                        }
+                        {
+                            this.state.userData.email == this.props.currentUser || this.props.isAdmin ? 
+                            <div class={"knbn-font-small knbn-pointer px-2 py-1" + (this.props.themeToggled ? " knbn-dark-color-2x knbn-dark-onselect": " knbn-snow-color-2x knbn-snow-onselect")}
+                            onClick={this.state.editMode ? this.save : this.setEditMode}>
                             {
-                                this.state.userData.email == this.props.currentUser || this.props.isAdmin ? 
-                                <div class={"knbn-font-small knbn-pointer px-2 py-1" + (this.props.themeToggled ? " knbn-dark-color-2x knbn-dark-onselect": " knbn-snow-color-2x knbn-snow-onselect")}
-                                onClick={this.remove}>
-                                    Elimină
-                                </div>
-                                :null
+                                this.state.editMode ? "Salvează" : "Editează"
                             }
-                            {
-                                this.state.userData.email == this.props.currentUser || this.props.isAdmin ? 
-                                <div class={"knbn-font-small knbn-pointer px-2 py-1" + (this.props.themeToggled ? " knbn-dark-color-2x knbn-dark-onselect": " knbn-snow-color-2x knbn-snow-onselect")}
-                                onClick={this.state.editMode ? this.save : this.setEditMode}>
-                                {
-                                    this.state.editMode ? "Salvează" : "Editează"
-                                }
-                                </div>
-                                :null
-                            }
+                            </div>
+                            :null
+                        }
                         </div>
                     </div>
                         

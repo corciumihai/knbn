@@ -177,9 +177,7 @@ class Report extends React.Component{
 
     flip(){this.setState({flipped: !this.state.flipped});}
 
-    render(){
-        console.log(this.state);
-        
+    render(){        
         let remainingPercentage = (this.state.estimation - this.state.hours) < 0 ? -1 : (this.state.hours / this.state.estimation) * 100;
         const {connectDragSource, isDragging} = this.props;
 
