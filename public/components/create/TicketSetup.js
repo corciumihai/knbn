@@ -14,7 +14,6 @@ import CancelButton from './CancelButton';
 import Success from '../messages/Success';
 import DismissableError from '../messages/DismissableError';
 import DatePicker from './DatePicker';
-import ImutableField from '../editor/ImmutableField';
 import dateformat from 'dateformat';
 import Label from '../editor/Label';
 import Small from '../editor/Small';
@@ -219,7 +218,7 @@ class TicketSetup extends React.Component{
                 reporter: this.state.reporter.email ? this.state.reporter.email : this.props.currentUser,
                 priority: this.state.priority.dbName,
                 releaseID: this.state.release.id,
-                dueDate: this.state.dueDate,
+                dueDate: new Date(this.state.dueDate),
                 startDate: new Date(),
                 lane: 'backlog',
                 project: this.state.project.id
