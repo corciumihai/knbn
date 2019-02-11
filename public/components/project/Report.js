@@ -275,24 +275,30 @@ class Report extends React.Component{
                             </div>
 
                             <div class="pt-2 px-2 d-flex flex-column">
-                                <div class="mx-auto">
-                                { 
-                                   this.state.assignee.email ?
-                                    <img    class={"ml-auto knbn-transition knbn-border" + (this.state.flipped ? " knbn-profile-pic-medium" : " knbn-profile-pic-big") + (this.props.themeToggled ? " knbn-dark-border-3x" : " knbn-snow-border-3x")} 
-                                            src={'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(this.state.assignee.email).toLowerCase().trim()).digest('hex')} 
-                                            alt={this.state.assignee.name} title={'Asignat \u00B7 ' + this.state.assignee.name}/> 
-                                    : null
-                                }
-                                </div>
-                                <div class="mx-auto mt-2">
-                                {
-                                    this.state.reporter.email ?
-                                    <img    class={"ml-auto knbn-transition knbn-border" + (this.state.flipped ? " hide" : " knbn-profile-pic-medium") + (this.props.themeToggled ? " knbn-dark-border-3x" : " knbn-snow-border-3x")} 
-                                            src={'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(this.state.reporter.email).toLowerCase().trim()).digest('hex')} 
-                                            alt={this.state.reporter.name} title={'Supervizor \u00B7 ' + this.state.reporter.name}/> 
-                                    : null
-                                }
-                                </div>
+                                <Link to={"/edit/profile/" + this.state.assignee.email}>
+                                    <div class="mx-auto">
+                                    { 
+                                    this.state.assignee.email ?
+                                        <img    class={"ml-auto knbn-transition knbn-border" + (this.state.flipped ? " knbn-profile-pic-medium" : " knbn-profile-pic-big") + (this.props.themeToggled ? " knbn-dark-border-3x" : " knbn-snow-border-3x")} 
+                                                src={'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(this.state.assignee.email).toLowerCase().trim()).digest('hex')} 
+                                                alt={this.state.assignee.name} title={'Asignat \u00B7 ' + this.state.assignee.name}/> 
+                                        : null
+                                    }
+                                    </div>
+                                </Link>
+                                <Link to={"/edit/profile/" + this.state.reporter.email}>
+                                    <div class="d-flex">
+                                        <div class="mx-auto mt-2">
+                                        {
+                                            this.state.reporter.email ?
+                                            <img    class={"ml-auto knbn-transition knbn-border" + (this.state.flipped ? " hide" : " knbn-profile-pic-medium") + (this.props.themeToggled ? " knbn-dark-border-3x" : " knbn-snow-border-3x")} 
+                                                    src={'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(this.state.reporter.email).toLowerCase().trim()).digest('hex')} 
+                                                    alt={this.state.reporter.name} title={'Supervizor \u00B7 ' + this.state.reporter.name}/> 
+                                            : null
+                                        }
+                                        </div>
+                                    </div>
+                                </Link>
                             </div>
                         </div>
 
