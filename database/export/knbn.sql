@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Feb 10, 2019 at 09:06 PM
+-- Generation Time: Feb 11, 2019 at 11:42 PM
 -- Server version: 5.6.34-log
 -- PHP Version: 7.1.5
 
@@ -30,15 +30,11 @@ USE `knbn`;
 -- Table structure for table `categories`
 --
 
-DROP TABLE IF EXISTS `categories`;
-CREATE TABLE IF NOT EXISTS `categories` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `categories` (
+  `id` int(10) NOT NULL,
   `project` int(10) DEFAULT NULL,
-  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_romanian_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
-  UNIQUE KEY `unique on name and project` (`project`,`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_romanian_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -46,23 +42,23 @@ CREATE TABLE IF NOT EXISTS `categories` (
 -- Table structure for table `components`
 --
 
-DROP TABLE IF EXISTS `components`;
-CREATE TABLE IF NOT EXISTS `components` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `components` (
+  `id` int(10) NOT NULL,
   `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_romanian_ci DEFAULT NULL,
   `project` int(10) DEFAULT NULL,
   `category` int(10) DEFAULT NULL,
   `description` varchar(2000) CHARACTER SET utf8 COLLATE utf8_romanian_ci DEFAULT NULL,
   `releaseID` int(10) DEFAULT NULL,
   `priority` varchar(10) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL,
-  `owner` varchar(200) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
-  KEY `project_component_delete` (`project`),
-  KEY `category` (`category`),
-  KEY `release_null` (`releaseID`),
-  KEY `owner` (`owner`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+  `owner` varchar(200) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `components`
+--
+
+INSERT INTO `components` (`id`, `name`, `project`, `category`, `description`, `releaseID`, `priority`, `owner`) VALUES
+(1, 'asda', 3, NULL, '', NULL, 'low', 'free_roaming94@yahoo.com');
 
 -- --------------------------------------------------------
 
@@ -70,17 +66,13 @@ CREATE TABLE IF NOT EXISTS `components` (
 -- Table structure for table `projects`
 --
 
-DROP TABLE IF EXISTS `projects`;
-CREATE TABLE IF NOT EXISTS `projects` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `projects` (
+  `id` int(10) NOT NULL,
   `name` varchar(200) CHARACTER SET utf8 COLLATE utf8_romanian_ci DEFAULT NULL,
   `description` varchar(2000) CHARACTER SET utf8 COLLATE utf8_romanian_ci DEFAULT NULL,
   `startDate` date DEFAULT NULL,
-  `wip` int(10) NOT NULL DEFAULT '3',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+  `wip` int(10) NOT NULL DEFAULT '3'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `projects`
@@ -95,16 +87,11 @@ INSERT INTO `projects` (`id`, `name`, `description`, `startDate`, `wip`) VALUES
 -- Table structure for table `releases`
 --
 
-DROP TABLE IF EXISTS `releases`;
-CREATE TABLE IF NOT EXISTS `releases` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `releases` (
+  `id` int(10) NOT NULL,
   `name` varchar(200) CHARACTER SET utf8 COLLATE utf8_romanian_ci DEFAULT NULL,
-  `project` int(10) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
-  UNIQUE KEY `name` (`name`,`project`) USING BTREE,
-  KEY `project` (`project`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+  `project` int(10) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -112,9 +99,8 @@ CREATE TABLE IF NOT EXISTS `releases` (
 -- Table structure for table `reports`
 --
 
-DROP TABLE IF EXISTS `reports`;
-CREATE TABLE IF NOT EXISTS `reports` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `reports` (
+  `id` int(10) NOT NULL,
   `component` int(10) DEFAULT NULL,
   `name` varchar(200) CHARACTER SET utf8 COLLATE utf8_romanian_ci DEFAULT NULL,
   `description` varchar(2000) CHARACTER SET utf8 COLLATE utf8_romanian_ci DEFAULT NULL,
@@ -131,16 +117,17 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `observed` varchar(2000) CHARACTER SET utf8 COLLATE utf8_romanian_ci DEFAULT NULL,
   `project` int(10) DEFAULT NULL,
   `releaseID` int(10) DEFAULT NULL,
-  `blocked` int(10) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
-  KEY `blocked` (`blocked`),
-  KEY `releaseID` (`releaseID`),
-  KEY `assignee` (`assignee`),
-  KEY `reporter` (`reporter`),
-  KEY `category` (`category`),
-  KEY `component` (`component`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+  `blocked` int(10) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `reports`
+--
+
+INSERT INTO `reports` (`id`, `component`, `name`, `description`, `startDate`, `dueDate`, `category`, `reporter`, `assignee`, `estimation`, `priority`, `lane`, `testSteps`, `expected`, `observed`, `project`, `releaseID`, `blocked`) VALUES
+(1, 1, 'Raport', '', '2019-02-11', '2019-02-11', NULL, 'corciumihai@yahoo.com', 'free_roaming94@yahoo.com', 0, 'high', 'backlog', '', '', '', 3, NULL, 1),
+(2, 1, 'asdasd', '', '2019-02-11', '2019-02-11', NULL, 'corciumihai@yahoo.com', 'corciumihai@yahoo.com', 0, 'high', 'backlog', '', '', '', 3, NULL, NULL),
+(3, 1, 'sad', '', '2019-02-11', '2019-02-11', NULL, 'corciumihai@yahoo.com', 'corciumihai@yahoo.com', 0, 'high', 'backlog', '', '', '', 3, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -148,18 +135,13 @@ CREATE TABLE IF NOT EXISTS `reports` (
 -- Table structure for table `report_comments`
 --
 
-DROP TABLE IF EXISTS `report_comments`;
-CREATE TABLE IF NOT EXISTS `report_comments` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `report_comments` (
+  `id` int(10) NOT NULL,
   `owner` varchar(200) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL,
   `report` int(10) NOT NULL,
   `value` varchar(2000) CHARACTER SET utf8 COLLATE utf8_romanian_ci NOT NULL,
-  `created` date NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `report_comments` (`id`),
-  KEY `owner` (`owner`),
-  KEY `report` (`report`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+  `created` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -167,19 +149,14 @@ CREATE TABLE IF NOT EXISTS `report_comments` (
 -- Table structure for table `report_worklogs`
 --
 
-DROP TABLE IF EXISTS `report_worklogs`;
-CREATE TABLE IF NOT EXISTS `report_worklogs` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `report_worklogs` (
+  `id` int(10) NOT NULL,
   `comment` varchar(2000) CHARACTER SET utf8 COLLATE utf8_romanian_ci DEFAULT NULL,
   `hours` int(10) DEFAULT NULL,
   `owner` varchar(200) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL,
   `report` int(10) DEFAULT NULL,
-  `created` date DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `report_worklogs_id` (`id`),
-  KEY `owner` (`owner`),
-  KEY `report` (`report`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+  `created` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -187,9 +164,8 @@ CREATE TABLE IF NOT EXISTS `report_worklogs` (
 -- Table structure for table `tickets`
 --
 
-DROP TABLE IF EXISTS `tickets`;
-CREATE TABLE IF NOT EXISTS `tickets` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tickets` (
+  `id` int(10) NOT NULL,
   `component` int(10) DEFAULT NULL,
   `name` varchar(200) CHARACTER SET utf32 COLLATE utf32_romanian_ci DEFAULT NULL,
   `description` varchar(2000) CHARACTER SET utf8 COLLATE utf8_romanian_ci DEFAULT NULL,
@@ -202,15 +178,18 @@ CREATE TABLE IF NOT EXISTS `tickets` (
   `priority` varchar(10) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL,
   `lane` varchar(15) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL,
   `project` int(10) DEFAULT NULL,
-  `releaseID` int(10) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
-  KEY `releaseID` (`releaseID`),
-  KEY `assignee` (`assignee`),
-  KEY `reporter` (`reporter`),
-  KEY `category` (`category`),
-  KEY `component` (`component`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=latin1;
+  `releaseID` int(10) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tickets`
+--
+
+INSERT INTO `tickets` (`id`, `component`, `name`, `description`, `startDate`, `dueDate`, `category`, `reporter`, `assignee`, `estimation`, `priority`, `lane`, `project`, `releaseID`) VALUES
+(1, 1, 'asadad', '', '2019-02-11', '2019-02-11', NULL, 'corciumihai@yahoo.com', 'corciumihai@yahoo.com', 0, 'low', 'backlog', 3, NULL),
+(7, 1, 'asdad', '', '2019-02-11', '2019-02-11', NULL, 'corciumihai@yahoo.com', 'corciumihai@yahoo.com', 0, 'low', 'backlog', 3, NULL),
+(8, 1, 'asdad', '', '2019-02-11', '2019-02-12', NULL, 'corciumihai@yahoo.com', 'corciumihai@yahoo.com', 0, 'low', 'backlog', 3, NULL),
+(9, 1, 'asdasd', '', '2019-02-12', '2019-02-20', NULL, 'corciumihai@yahoo.com', 'corciumihai@yahoo.com', 0, 'low', 'backlog', 3, NULL);
 
 -- --------------------------------------------------------
 
@@ -218,19 +197,21 @@ CREATE TABLE IF NOT EXISTS `tickets` (
 -- Table structure for table `tickets_worklogs`
 --
 
-DROP TABLE IF EXISTS `tickets_worklogs`;
-CREATE TABLE IF NOT EXISTS `tickets_worklogs` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tickets_worklogs` (
+  `id` int(10) NOT NULL,
   `comment` varchar(2000) CHARACTER SET utf8 COLLATE utf8_romanian_ci DEFAULT NULL,
   `hours` int(10) DEFAULT '0',
   `ticket` int(10) DEFAULT NULL,
   `owner` varchar(200) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL,
-  `created` date DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
-  KEY `ticket` (`ticket`),
-  KEY `owner` (`owner`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+  `created` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tickets_worklogs`
+--
+
+INSERT INTO `tickets_worklogs` (`id`, `comment`, `hours`, `ticket`, `owner`, `created`) VALUES
+(1, '<p>asdad</p>', 2, 1, 'corciumihai@yahoo.com', '2019-02-11');
 
 -- --------------------------------------------------------
 
@@ -238,17 +219,20 @@ CREATE TABLE IF NOT EXISTS `tickets_worklogs` (
 -- Table structure for table `ticket_comments`
 --
 
-DROP TABLE IF EXISTS `ticket_comments`;
-CREATE TABLE IF NOT EXISTS `ticket_comments` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `ticket_comments` (
+  `id` int(10) NOT NULL,
   `owner` varchar(200) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL,
   `value` varchar(2000) CHARACTER SET utf8 COLLATE utf8_romanian_ci DEFAULT NULL,
   `ticket` int(10) DEFAULT NULL,
-  `created` date DEFAULT NULL,
-  UNIQUE KEY `id` (`id`),
-  KEY `ticket` (`ticket`),
-  KEY `owner` (`owner`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+  `created` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `ticket_comments`
+--
+
+INSERT INTO `ticket_comments` (`id`, `owner`, `value`, `ticket`, `created`) VALUES
+(1, 'corciumihai@yahoo.com', '<p>asdad</p>', 1, '2019-02-11');
 
 -- --------------------------------------------------------
 
@@ -256,26 +240,185 @@ CREATE TABLE IF NOT EXISTS `ticket_comments` (
 -- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE IF NOT EXISTS `users` (
+CREATE TABLE `users` (
   `email` varchar(200) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
   `password` varchar(100) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL,
   `name` varchar(200) CHARACTER SET utf8 COLLATE utf8_romanian_ci DEFAULT NULL,
   `company` varchar(150) CHARACTER SET utf32 COLLATE utf32_romanian_ci DEFAULT NULL,
   `isAdmin` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`email`),
-  UNIQUE KEY `email` (`email`)
+  `role` varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`email`, `password`, `name`, `company`, `isAdmin`) VALUES
-('corciumihai@yahoo.com', '$2a$10$xbxf30wugGBFdy6kbVag6OvvlTqQYGr3M6yzJKfXFAdWaoMnpIfFC', 'Corciu Mihai', '', 0),
-('free_roaming94@yahoo.com', '$2a$10$IGy1fugc/W/Tj6LJ6eQD5uxnQ9IRh/hnd4vT0QXg598GlpQZ/98pC', 'Mihai Corciu', '', 1),
-('mobile_user@yahoo.com', '$2a$10$INKyp2xjZOoyu.yR8k6syec2FSUwv3CQXwas8xBYkLnvKJQKwh7Fq', 'Mobil', '', 0);
+INSERT INTO `users` (`email`, `password`, `name`, `company`, `isAdmin`, `role`) VALUES
+('corciumihai@yahoo.com', '$2a$10$xbxf30wugGBFdy6kbVag6OvvlTqQYGr3M6yzJKfXFAdWaoMnpIfFC', 'Corciu Mihai', 'Facultatea de Informatică Iași', 0, 'Dezvoltator'),
+('free_roaming94@yahoo.com', '$2a$10$IGy1fugc/W/Tj6LJ6eQD5uxnQ9IRh/hnd4vT0QXg598GlpQZ/98pC', 'Mihai Corciu', 'Administrație', 1, 'Administrator'),
+('mobile_user@yahoo.com', '$2a$10$INKyp2xjZOoyu.yR8k6syec2FSUwv3CQXwas8xBYkLnvKJQKwh7Fq', 'Mobil', '', 0, NULL);
 
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `categories`
+--
+ALTER TABLE `categories`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`),
+  ADD UNIQUE KEY `unique on name and project` (`project`,`name`);
+
+--
+-- Indexes for table `components`
+--
+ALTER TABLE `components`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`),
+  ADD KEY `project_component_delete` (`project`),
+  ADD KEY `category` (`category`),
+  ADD KEY `release_null` (`releaseID`),
+  ADD KEY `owner` (`owner`);
+
+--
+-- Indexes for table `projects`
+--
+ALTER TABLE `projects`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`),
+  ADD UNIQUE KEY `name` (`name`);
+
+--
+-- Indexes for table `releases`
+--
+ALTER TABLE `releases`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`),
+  ADD UNIQUE KEY `name` (`name`,`project`) USING BTREE,
+  ADD KEY `project` (`project`);
+
+--
+-- Indexes for table `reports`
+--
+ALTER TABLE `reports`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`),
+  ADD KEY `blocked` (`blocked`),
+  ADD KEY `releaseID` (`releaseID`),
+  ADD KEY `assignee` (`assignee`),
+  ADD KEY `reporter` (`reporter`),
+  ADD KEY `category` (`category`),
+  ADD KEY `component` (`component`) USING BTREE;
+
+--
+-- Indexes for table `report_comments`
+--
+ALTER TABLE `report_comments`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `report_comments` (`id`),
+  ADD KEY `owner` (`owner`),
+  ADD KEY `report` (`report`);
+
+--
+-- Indexes for table `report_worklogs`
+--
+ALTER TABLE `report_worklogs`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `report_worklogs_id` (`id`),
+  ADD KEY `owner` (`owner`),
+  ADD KEY `report` (`report`);
+
+--
+-- Indexes for table `tickets`
+--
+ALTER TABLE `tickets`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`),
+  ADD KEY `releaseID` (`releaseID`),
+  ADD KEY `assignee` (`assignee`),
+  ADD KEY `reporter` (`reporter`),
+  ADD KEY `category` (`category`),
+  ADD KEY `component` (`component`) USING BTREE;
+
+--
+-- Indexes for table `tickets_worklogs`
+--
+ALTER TABLE `tickets_worklogs`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`),
+  ADD KEY `ticket` (`ticket`),
+  ADD KEY `owner` (`owner`);
+
+--
+-- Indexes for table `ticket_comments`
+--
+ALTER TABLE `ticket_comments`
+  ADD UNIQUE KEY `id` (`id`),
+  ADD KEY `ticket` (`ticket`),
+  ADD KEY `owner` (`owner`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`email`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `categories`
+--
+ALTER TABLE `categories`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `components`
+--
+ALTER TABLE `components`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `projects`
+--
+ALTER TABLE `projects`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `releases`
+--
+ALTER TABLE `releases`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `reports`
+--
+ALTER TABLE `reports`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `report_comments`
+--
+ALTER TABLE `report_comments`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `report_worklogs`
+--
+ALTER TABLE `report_worklogs`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `tickets`
+--
+ALTER TABLE `tickets`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+--
+-- AUTO_INCREMENT for table `tickets_worklogs`
+--
+ALTER TABLE `tickets_worklogs`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `ticket_comments`
+--
+ALTER TABLE `ticket_comments`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- Constraints for dumped tables
 --
