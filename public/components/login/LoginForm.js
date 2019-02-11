@@ -12,7 +12,7 @@ class LoginForm extends React.Component{
 
         this.state = {
             email: '', 
-            password: 'A12345678',
+            password: '',
             error: '',
             redirect: false,
         };
