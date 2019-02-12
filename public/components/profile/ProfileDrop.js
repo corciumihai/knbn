@@ -52,7 +52,9 @@ class ProfileDrop extends React.Component{
                     name: response.data.name,
                     isAdmin: response.data.isAdmin,
                     gravatar: 'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(response.data.email).toLowerCase().trim()).digest('hex')}, 
-                    () => {this.props.setAdmin(this.state.isAdmin)});
+                    () => {
+                        this.props.setAdmin(this.state.isAdmin)
+                    });
             });
         }
     }

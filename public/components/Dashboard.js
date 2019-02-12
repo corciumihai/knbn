@@ -2,26 +2,36 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Menu from './Menu';
 import Header3 from './editor/Header3';
-import Axios from 'axios';
+import { Redirect } from 'react-router-dom';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 
 class Dashboard extends React.Component{
     constructor(props){
         super(props);
 
         this.state = {
-            projects: []
+            projects: [],
+            redirect: false,
+            lastProject: 0
         }
     }
 
-    componentDidMount(){
-        Axios.get("/")
-        .catch(error => {
+    componentWillMount(){
+        let lastProject = cookies.get('knbn-lastProject');
+        if(lastProject){
+            this.setState({lastProject: lastProject, redirect: true})
+        }
+        else{
             
-        })
+        }
     }
 
     render(){
         return(
+            this.state.redirect ? 
+            <Redirect to={"/view/project/" + this.state.lastProject} />
+            :
             <div class={"container-fluid knbn-bg-transparent knbn-transition pb-3 knbn-container" + (this.props.themeToggled ? " knbn-dark-bg-1x" : " knbn-snow-bg-1x")}>
                 <Menu/>
 
@@ -31,11 +41,9 @@ class Dashboard extends React.Component{
                     </div>
                     
                 </div>
-                <div class="row my-auto">
-                    <div class={"col knbn-font-small d-flex" + (this.props.themeToggled ? " knbn-dark-color-2x" : " knbn-snow-color-2x")}>
-                        <iframe class="mx-auto" width="1000" height="563" src="https://www.youtube.com/embed/UWLr2va3hu0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                </div>
+                {
+
+                }
             </div>
         );
     }
