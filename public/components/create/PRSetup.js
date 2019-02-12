@@ -251,8 +251,8 @@ class PRSetup extends React.Component{
                 observed: this.state.observedBehavior,
                 priority: this.state.priority.dbName,
                 releaseID: this.state.release.id,
-                dueDate: new Date(new Date(this.state.dueDate) - (new Date()).getTimezoneOffset() * 60000).toISOString(),
-                startDate: new Date(new Date() - (new Date()).getTimezoneOffset() * 60000).toISOString(),
+                dueDate: this.state.dueDate,
+                startDate: new Date(),
                 testSteps: this.state.testSteps,
                 lane: 'backlog',
                 project: this.state.project.id

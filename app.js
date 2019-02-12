@@ -225,8 +225,28 @@ app.get('/category/get/:id', handlers.checkToken, (request, response) => {
 });
 
 app.post('/reports/add', handlers.checkToken, (request, response) => {    
-    database.query('INSERT INTO reports SET ?', request.body, (error, fields, result) => {
+    database.query('INSERT INTO reports (component, name, description, startDate, dueDate, category, reporter, assignee, estimation, testSteps, expected, observed, project, releaseID, blocked) \
+    VALUES (?, ?, ?, DATE(STR_TO_DATE(?, "%Y-%m-%dT%T.%fZ")), DATE(STR_TO_DATE(?, "%Y-%m-%dT%T.%fZ")), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+    [
+        request.body.component,
+        request.body.name, 
+        request.body.description,
+        request.body.startDate,
+        request.body.dueDate,
+        request.body.category,
+        request.body.reporter,
+        request.body.assignee,
+        request.body.estimation,
+        request.body.testSteps,
+        request.body.expected,
+        request.body.observed,
+        request.body.project,
+        request.body.releaseID,
+        request.body.blocked
+    ]
+    , (error, fields, result) => {
         if(error){
+            console.log(error)
             response.statusCode = 500;
             response.json({error: 'Eroare interna ' + error.sqlMessage});
         }
@@ -237,8 +257,23 @@ app.post('/reports/add', handlers.checkToken, (request, response) => {
 });
 
 app.post('/ticket/add', handlers.checkToken, (request, response) => {
-    database.query('INSERT INTO tickets SET ?', request.body, (error, fields, result) => {
+    database.query('INSERT INTO tickets (component, name, description, startDate, dueDate, category, reporter, assignee, estimation, project, releaseID) VALUES (?, ?, ?, DATE(STR_TO_DATE(?, "%Y-%m-%dT%T.%fZ")), DATE(STR_TO_DATE(?, "%Y-%m-%dT%T.%fZ")), ?, ?, ?, ?, ?, ?)', 
+    [
+        request.body.component,
+        request.body.name, 
+        request.body.description,
+        request.body.startDate,
+        request.body.dueDate,
+        request.body.category,
+        request.body.reporter,
+        request.body.assignee,
+        request.body.estimation,
+        request.body.project,
+        request.body.releaseID
+    ]
+    , (error, fields, result) => {
         if(error){
+            console.log(error)
             response.statusCode = 500;
             response.json({error: 'Eroare interna ' + error.sqlMessage});
         }
@@ -470,7 +505,7 @@ app.post('/ticket/set/dueDate', handlers.checkToken, (request, response) => {
 });
 
 app.post('/report/set/dueDate', handlers.checkToken, (request, response) => {
-    database.query('UPDATE reports SET dueDate = ? WHERE id = ?', [request.body.date, request.body.id], (error, result, fields) => {
+    database.query('UPDATE reports SET dueDate = DATE(STR_TO_DATE(?, "%Y-%m-%dT%T.%fZ")) WHERE id = ?', [request.body.date, request.body.id], (error, result, fields) => {
         if(error){
             response.statusCode = 500;
             response.json({error: 'Eroare interna ' + error.sqlMessage});
