@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Feb 11, 2019 at 11:45 PM
+-- Generation Time: Feb 12, 2019 at 09:33 AM
 -- Server version: 5.6.34-log
 -- PHP Version: 7.1.5
 
@@ -131,8 +131,8 @@ CREATE TABLE IF NOT EXISTS `reports` (
   `reporter` varchar(200) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL,
   `assignee` varchar(200) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL,
   `estimation` int(10) DEFAULT NULL,
-  `priority` varchar(10) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL,
-  `lane` varchar(20) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL,
+  `priority` varchar(10) CHARACTER SET ascii COLLATE ascii_bin DEFAULT 'high',
+  `lane` varchar(20) CHARACTER SET ascii COLLATE ascii_bin DEFAULT 'backlog',
   `testSteps` varchar(2000) CHARACTER SET utf8 COLLATE utf8_romanian_ci DEFAULT NULL,
   `expected` varchar(2000) CHARACTER SET utf8 COLLATE utf8_romanian_ci DEFAULT NULL,
   `observed` varchar(2000) CHARACTER SET utf8 COLLATE utf8_romanian_ci DEFAULT NULL,
@@ -147,16 +147,15 @@ CREATE TABLE IF NOT EXISTS `reports` (
   KEY `reporter` (`reporter`),
   KEY `category` (`category`),
   KEY `component` (`component`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `reports`
 --
 
 INSERT INTO `reports` (`id`, `component`, `name`, `description`, `startDate`, `dueDate`, `category`, `reporter`, `assignee`, `estimation`, `priority`, `lane`, `testSteps`, `expected`, `observed`, `project`, `releaseID`, `blocked`) VALUES
-(1, 1, 'Raport', '', '2019-02-11', '2019-02-11', NULL, 'corciumihai@yahoo.com', 'free_roaming94@yahoo.com', 0, 'high', 'backlog', '', '', '', 3, NULL, 1),
-(2, 1, 'asdasd', '', '2019-02-11', '2019-02-11', NULL, 'corciumihai@yahoo.com', 'corciumihai@yahoo.com', 0, 'high', 'backlog', '', '', '', 3, NULL, NULL),
-(3, 1, 'sad', '', '2019-02-11', '2019-02-11', NULL, 'corciumihai@yahoo.com', 'corciumihai@yahoo.com', 0, 'high', 'backlog', '', '', '', 3, NULL, NULL);
+(5, 1, 'sadad', '', '2019-02-12', '2019-02-28', NULL, 'free_roaming94@yahoo.com', 'free_roaming94@yahoo.com', 0, 'high', 'backlog', '', '', '', 3, NULL, 14),
+(6, 1, 'asdad', '', '2019-02-12', '2019-02-12', NULL, 'free_roaming94@yahoo.com', 'free_roaming94@yahoo.com', 0, 'high', 'backlog', '', '', '', 3, NULL, 15);
 
 -- --------------------------------------------------------
 
@@ -215,8 +214,8 @@ CREATE TABLE IF NOT EXISTS `tickets` (
   `reporter` varchar(200) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL,
   `assignee` varchar(200) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL,
   `estimation` float DEFAULT '0',
-  `priority` varchar(10) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL,
-  `lane` varchar(15) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL,
+  `priority` varchar(10) CHARACTER SET ascii COLLATE ascii_bin DEFAULT 'low',
+  `lane` varchar(15) CHARACTER SET ascii COLLATE ascii_bin DEFAULT 'backlog',
   `project` int(10) DEFAULT NULL,
   `releaseID` int(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -226,17 +225,15 @@ CREATE TABLE IF NOT EXISTS `tickets` (
   KEY `reporter` (`reporter`),
   KEY `category` (`category`),
   KEY `component` (`component`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tickets`
 --
 
 INSERT INTO `tickets` (`id`, `component`, `name`, `description`, `startDate`, `dueDate`, `category`, `reporter`, `assignee`, `estimation`, `priority`, `lane`, `project`, `releaseID`) VALUES
-(1, 1, 'asadad', '', '2019-02-11', '2019-02-11', NULL, 'corciumihai@yahoo.com', 'corciumihai@yahoo.com', 0, 'low', 'backlog', 3, NULL),
-(7, 1, 'asdad', '', '2019-02-11', '2019-02-11', NULL, 'corciumihai@yahoo.com', 'corciumihai@yahoo.com', 0, 'low', 'backlog', 3, NULL),
-(8, 1, 'asdad', '', '2019-02-11', '2019-02-12', NULL, 'corciumihai@yahoo.com', 'corciumihai@yahoo.com', 0, 'low', 'backlog', 3, NULL),
-(9, 1, 'asdasd', '', '2019-02-12', '2019-02-20', NULL, 'corciumihai@yahoo.com', 'corciumihai@yahoo.com', 0, 'low', 'backlog', 3, NULL);
+(14, 1, 'asda', '', '2019-02-12', '2019-02-24', NULL, 'free_roaming94@yahoo.com', 'free_roaming94@yahoo.com', 0, 'low', 'backlog', 3, NULL),
+(15, 1, 'aadasd', '', '2019-02-12', '2019-02-12', NULL, 'free_roaming94@yahoo.com', 'free_roaming94@yahoo.com', 0, 'low', 'backlog', 3, NULL);
 
 -- --------------------------------------------------------
 
@@ -258,13 +255,6 @@ CREATE TABLE IF NOT EXISTS `tickets_worklogs` (
   KEY `owner` (`owner`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `tickets_worklogs`
---
-
-INSERT INTO `tickets_worklogs` (`id`, `comment`, `hours`, `ticket`, `owner`, `created`) VALUES
-(1, '<p>asdad</p>', 2, 1, 'corciumihai@yahoo.com', '2019-02-11');
-
 -- --------------------------------------------------------
 
 --
@@ -282,13 +272,6 @@ CREATE TABLE IF NOT EXISTS `ticket_comments` (
   KEY `ticket` (`ticket`),
   KEY `owner` (`owner`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `ticket_comments`
---
-
-INSERT INTO `ticket_comments` (`id`, `owner`, `value`, `ticket`, `created`) VALUES
-(1, 'corciumihai@yahoo.com', '<p>asdad</p>', 1, '2019-02-11');
 
 -- --------------------------------------------------------
 
@@ -372,11 +355,11 @@ ALTER TABLE `report_worklogs`
 -- Constraints for table `tickets`
 --
 ALTER TABLE `tickets`
-  ADD CONSTRAINT `ticket_assignee_null` FOREIGN KEY (`assignee`) REFERENCES `users` (`email`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `ticket_comp_delete` FOREIGN KEY (`component`) REFERENCES `components` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `ticket_release_null` FOREIGN KEY (`releaseID`) REFERENCES `releases` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `ticket_reporter_null` FOREIGN KEY (`reporter`) REFERENCES `users` (`email`) ON DELETE SET NULL ON UPDATE CASCADE,
-  ADD CONSTRAINT `tikcet_category_null` FOREIGN KEY (`category`) REFERENCES `categories` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `ticket_assignee_null` FOREIGN KEY (`assignee`) REFERENCES `users` (`email`) ON DELETE SET NULL ON UPDATE NO ACTION,
+  ADD CONSTRAINT `ticket_comp_delete` FOREIGN KEY (`component`) REFERENCES `components` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  ADD CONSTRAINT `ticket_release_null` FOREIGN KEY (`releaseID`) REFERENCES `releases` (`id`) ON DELETE SET NULL ON UPDATE SET NULL,
+  ADD CONSTRAINT `ticket_reporter_null` FOREIGN KEY (`reporter`) REFERENCES `users` (`email`) ON DELETE SET NULL ON UPDATE NO ACTION,
+  ADD CONSTRAINT `tikcet_category_null` FOREIGN KEY (`category`) REFERENCES `categories` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `tickets_worklogs`
