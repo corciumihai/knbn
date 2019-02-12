@@ -458,7 +458,7 @@ app.post('/component/set/owner', handlers.checkToken, (request, response) => {
 });
 
 app.post('/ticket/set/dueDate', handlers.checkToken, (request, response) => {
-    database.query('UPDATE tickets SET dueDate = ? WHERE id = ?', [request.body.date, request.body.id], (error, result, fields) => {
+    database.query('UPDATE tickets SET dueDate = DATE(STR_TO_DATE(?, "%Y-%m-%dT%T.%fZ")) WHERE id = ?', [request.body.date, request.body.id], (error, result, fields) => {
         if(error){
             response.statusCode = 500;
             response.json({error: 'Eroare interna ' + error.sqlMessage});
