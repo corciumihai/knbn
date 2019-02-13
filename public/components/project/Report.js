@@ -202,7 +202,7 @@ class Report extends React.Component{
                                         <div title="Tichet" class="mr-2"><img src="./images/pr.svg" class={"mx-auto my-auto"}/></div>
 
                                         {
-                                            <div class={"col px-0 text-truncate knbn-font-16 mb-1 d-flex" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
+                                            <div class={"knbn-font-16 mb-1" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
                                             {
                                                 this.state.name
                                             }
