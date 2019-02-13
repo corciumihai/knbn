@@ -17,6 +17,7 @@ class Component extends React.Component{
         this.state = {
             flip: false,
             tickets: [],
+            reports: [],
             owner: {},
             category: {},
             release: {},
@@ -26,9 +27,12 @@ class Component extends React.Component{
 
         this.toggle = this.toggle.bind(this);
         this.toggleDesc = this.toggleDesc.bind(this);
-        this.push = this.push.bind(this);
-        this.shiftBackward = this.shiftBackward.bind(this);
-        this.shiftForward = this.shiftForward.bind(this);
+        this.pushTicket = this.pushTicket.bind(this);
+        this.pushReport = this.pushReport.bind(this);
+        this.shiftTicketForward = this.shiftTicketForward.bind(this);
+        this.shiftTicketBackward = this.shiftTicketBackward.bind(this);
+        this.shiftReportBackward = this.shiftReportBackward.bind(this);
+        this.shiftReportForward = this.shiftReportForward.bind(this);
         this.filterItems = this.filterItems.bind(this);
         this.refresh = this.refresh.bind(this);
         this.remove = this.remove.bind(this);
@@ -41,11 +45,12 @@ class Component extends React.Component{
                 axios.get('/component/get/reports/' + this.props.data.id)
             ])
             .then(axios.spread((tickets, reports) => {
-                let reportData = reports.data;
-                reportData.map(item => {item.isReport = true; return item});
-
-                this.setState({ tickets: tickets.data.concat(reportData).sort((a, b) => a.startDate > b.startDate),
+                this.setState({ 
+                    tickets: tickets.data,
+                    reports: reports.data
                 }, () => {
+                    this.filterItems();
+
                     if(this.props.data.owner){
                         axios.get('/user/' + this.props.data.owner)
                         .then(owner => {
@@ -114,26 +119,45 @@ class Component extends React.Component{
         }
     }
 
-    push(ticket){
-        if(ticket){            
-            this.setState({
-                tickets: update(this.state.tickets, {
-                    $splice: [[this.state.tickets.indexOf(this.state.tickets.find(item => item.id == ticket.id && item.isReport == ticket.isReport)), 1]],
-                    $push: [ticket],
-                })
-            }, () => {
-                axios.post(ticket.isReport ? '/report/update/lane' : '/ticket/update/lane', {lane: ticket.lane, id: ticket.id})
-                .catch(error => {
-                    this.props.setError(error.response.data.error);
-                })
-            });
-        }
-        else{
-            this.props.setError('Elementul selectat nu există')
+    pushTicket(ticket){
+        if(ticket){
+            axios.post('/ticket/update/lane', {lane: ticket.lane, id: ticket.id})
+            .then(response => {
+                if(response.status == 200){
+                    this.setState({
+                        tickets: update(this.state.tickets, {
+                            $splice: [[this.state.tickets.indexOf(this.state.tickets.find(item => item.id == ticket.id)), 1]],
+                            $push: [ticket],
+                        })
+                    })
+                }
+            })
+            .catch(error => {
+                this.props.setError(error.response.data.error);
+            })
         }
     }
 
-    shiftForward(ticket){
+    pushReport(report){
+        if(report){
+            axios.post('/report/update/lane', {lane: report.lane, id: report.id})
+            .then(response => {
+                if(response.status == 200){
+                    this.setState({
+                        reports: update(this.state.reports, {
+                            $splice: [[this.state.reports.indexOf(this.state.reports.find(item => item.id == report.id)), 1]],
+                            $push: [report],
+                        })
+                    })
+                }
+            })
+            .catch(error => {
+                this.props.setError(error.response.data.error);
+            })
+        }
+    }
+
+    shiftTicketForward(ticket){
         let data;
         switch(ticket.lane){
             case 'backlog':
@@ -141,7 +165,7 @@ class Component extends React.Component{
                     lane: 'in_progress'
                 });
 
-                this.push(data);
+                this.pushTicket(data);
 
                 break;
 
@@ -150,7 +174,7 @@ class Component extends React.Component{
                     lane: 'done'
                 });
 
-                this.push(data);
+                this.pushTicket(data);
 
                 break;
 
@@ -159,7 +183,7 @@ class Component extends React.Component{
                     lane: 'closed'
                 });
 
-                this.push(data);
+                this.pushTicket(data);
 
                 break;
 
@@ -168,7 +192,42 @@ class Component extends React.Component{
         }
     }
 
-    shiftBackward(ticket){
+    shiftReportForward(ticket){
+        let data;
+        switch(ticket.lane){
+            case 'backlog':
+                data = Object.assign({}, ticket, {
+                    lane: 'in_progress'
+                });
+
+                this.pushReport(data);
+
+                break;
+
+            case 'in_progress':
+                data = Object.assign({}, ticket, {
+                    lane: 'done'
+                });
+
+                this.pushReport(data);
+
+                break;
+
+            case 'done':
+                data = Object.assign({}, ticket, {
+                    lane: 'closed'
+                });
+
+                this.pushReport(data);
+
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    shiftTicketBackward(ticket){
         let data;
         switch(ticket.lane){
             case 'in_progress':
@@ -176,7 +235,7 @@ class Component extends React.Component{
                     lane: 'backlog'
                 });
 
-                this.push(data);
+                this.pushTicket(data);
 
                 break;
 
@@ -185,7 +244,33 @@ class Component extends React.Component{
                     lane: 'in_progress'
                 });
 
-                this.push(data);
+                this.pushTicket(data);
+
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    shiftReportBackward(ticket){
+        let data;
+        switch(ticket.lane){
+            case 'in_progress':
+                data = Object.assign({}, ticket, {
+                    lane: 'backlog'
+                });
+
+                this.pushReport(data);
+
+                break;
+
+            case 'done':
+            data = Object.assign({}, ticket, {
+                    lane: 'in_progress'
+                });
+
+                this.pushReport(data);
 
                 break;
 
@@ -197,18 +282,21 @@ class Component extends React.Component{
     filterItems(){
         if(this.props.userOnly && this.props.filterPR){
             this.state.tickets.forEach(item => {
-                item.hide = !((item.assignee == this.props.currentUser || item.reporter == this.props.currentUser) && item.isReport)
+                item.hide = !(item.assignee == this.props.currentUser || item.reporter == this.props.currentUser)
             });
-
-            this.state.tickets.sort((a, b) => a.startDate > b.startDate)
+            this.state.reports.forEach(item => {
+                item.hide = !(item.assignee == this.props.currentUser || item.reporter == this.props.currentUser)
+            });
         }
 
         else if(this.props.userOnly && this.props.filterTickets){
             this.state.tickets.forEach(item => {
-                item.hide = !((item.assignee == this.props.currentUser || item.reporter == this.props.currentUser) && !item.isReport)
+                item.hide = !(item.assignee == this.props.currentUser || item.reporter == this.props.currentUser)
             });
 
-            this.state.tickets.sort((a, b) => a.startDate > b.startDate)
+            this.state.reports.forEach(item => {
+                item.hide = !(item.assignee == this.props.currentUser || item.reporter == this.props.currentUser)
+            });
         }
 
         else if(this.props.userOnly){
@@ -216,23 +304,29 @@ class Component extends React.Component{
                 item.hide = !(item.assignee == this.props.currentUser || item.reporter == this.props.currentUser)
             });
 
-            this.state.tickets.sort((a, b) => a.startDate > b.startDate)
+            this.state.reports.forEach(item => {
+                item.hide = !(item.assignee == this.props.currentUser || item.reporter == this.props.currentUser)
+            });
         }
 
         else if(this.props.filterPR){
             this.state.tickets.forEach(item => {
-                item.hide = !item.isReport
+                item.hide = true
             });
 
-            this.state.tickets.sort((a, b) => a.startDate > b.startDate)
+            this.state.reports.forEach(item => {
+                item.hide = false;
+            });
         }
 
         else if(this.props.filterTickets){
             this.state.tickets.forEach(item => {
-                item.hide = item.isReport;
+                item.hide = false
             });
 
-            this.state.tickets.sort((a, b) => a.startDate > b.startDate)
+            this.state.reports.forEach(item => {
+                item.hide = true;
+            });
         }
 
         else{
@@ -240,7 +334,9 @@ class Component extends React.Component{
                 item.hide = false
             });
 
-            this.state.tickets.sort((a, b) => a.startDate > b.startDate)
+            this.state.reports.forEach(item =>{
+                item.hide = false
+            });
         }
         
     }
@@ -251,10 +347,10 @@ class Component extends React.Component{
             axios.get('/component/get/reports/' + this.props.data.id)
         ])
         .then(axios.spread((tickets, reports) => {
-            let reportData = reports.data;
-            reportData.map(item => {item.isReport = true; return item});
-
-            this.setState({ tickets: tickets.data.concat(reportData).sort((a, b) => a.startDate > b.startDate)})
+            this.setState({ 
+                tickets: tickets.data,
+                reports: reports.data
+            })
         }))
         .catch(error => {
             this.props.setError(error.response.data.error)
@@ -266,7 +362,7 @@ class Component extends React.Component{
     }
 
     render(){
-        let helpers = {forward: this.shiftForward, backward: this.shiftBackward}
+        let helpers = {ticketForward: this.shiftTicketForward, ticketBackward: this.shiftTicketBackward, reportForward: this.shiftReportForward, reportBackward: this.shiftReportBackward}
 
         return(
             <div class={'knbn-section col-xl-12 mb-2 knbn-transition knbn-border-top knbn-border-bottom' + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-shadow-1x knbn-dark-border-2x" : " knbn-snow-bg-2x knbn-snow-shadow-1x knbn-snow-border-2x")}>
@@ -280,7 +376,7 @@ class Component extends React.Component{
                                 <div class="row">
                                     <div class="d-flex flex-row mb-1">
                                         {
-                                            this.state.tickets.length ? 
+                                            this.state.tickets.length || this.state.reports.length ? 
                                             <div class={'toggle d-flex knbn-transition knbn-transition' + 
                                             (this.props.themeToggled ? 
                                                 " knbn-dark-bg-3x knbn-dark-bg-3x-active knbn-dark-shadow-3x" 
@@ -317,51 +413,51 @@ class Component extends React.Component{
                                     <div class="col">
                                         <div class="row">
                                             <div class={"d-flex knbn-transition ml-2"}><img src="./images/module.svg" class="my-auto" /></div>
-                                            <div class={"col text-truncate knbn-transition" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>{this.props.data.name}</div>
-                                        </div>
-                                    </div>
-                                    
-                                    {
-                                        this.state.release.name ? 
-                                        <div class="knbn-transition knbn-font-small">
-                                            <div title="Versiune" class={"mr-3 knbn-border knbn-border-radius-50 px-2 knbn-transition" + (this.props.themeToggled ? " knbn-dark-color-3x knbn-dark-border-3x" : " knbn-snow-color-3x knbn-snow-border-3x")}>
-                                                {this.state.release.name}
-                                            </div>
-                                        </div>
-                                        :null
-                                    }
-                                    {
-                                        this.state.category.name ? 
-                                        <div class="knbn-transition  knbn-font-small">
-                                            <div title="Categorie" class={"mr-3 knbn-border knbn-border-radius-50 px-2 knbn-transition" + (this.props.themeToggled ? " knbn-dark-color-3x knbn-dark-border-3x" : " knbn-snow-color-3x knbn-snow-border-3x")}>
-                                                {this.state.category.name}
-                                            </div>
-                                        </div>
-                                        :null
-                                    }
 
-                                    {
-                                        this.state.owner.name ? 
-                                        <Link to={"/edit/profile/" +  this.state.owner.email}>
-                                            <div class="knbn-transparent mr-3 knbn-transition" title="Proprietar">
-                                                <div class={"knbn-transition" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>
-                                                    <img src={'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(this.props.data.owner).toLowerCase().trim()).digest('hex')} class="my-auto knbn-profile-pic-medium mr-2"/>
-                                                    {this.state.owner.name ? this.state.owner.name : "Nicio persoană"}
+                                            <div class={"col text-truncate knbn-transition my-auto" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>{this.props.data.name}</div>
+                                        {
+                                            this.state.release.name ? 
+                                            <div class="knbn-transition knbn-font-small my-auto">
+                                                <div title="Versiune" class={"mr-3 knbn-border knbn-border-radius-50 px-2 knbn-transition" + (this.props.themeToggled ? " knbn-dark-color-3x knbn-dark-border-3x" : " knbn-snow-color-3x knbn-snow-border-3x")}>
+                                                    {this.state.release.name}
                                                 </div>
                                             </div>
-                                        </Link>
-                                        :
-                                        null
-                                    }
-                                    {
-                                        this.props.isAdmin?
-                                        <div>
-                                            <div onClick={this.remove} class={"mr-2 knbn-pointer knbn-border-left knbn-transition" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")} title="Elimină modul">
-                                                <img src="./images/adminRemove.svg" class="my-auto"/>
+                                            :null
+                                        }
+                                        {
+                                            this.state.category.name ? 
+                                            <div class="knbn-transition knbn-font-small my-auto">
+                                                <div title="Categorie" class={"mr-3 knbn-border knbn-border-radius-50 px-2 knbn-transition" + (this.props.themeToggled ? " knbn-dark-color-3x knbn-dark-border-3x" : " knbn-snow-color-3x knbn-snow-border-3x")}>
+                                                    {this.state.category.name}
+                                                </div>
                                             </div>
+                                            :null
+                                        }
+
+                                        {
+                                            this.state.owner.name ? 
+                                            <div class="knbn-transparent mr-3 knbn-transition my-auto ml-auto" title="Proprietar">
+                                                <Link to={"/edit/profile/" +  this.state.owner.email}>
+                                                    <div class={"knbn-transition my-auto" + (this.props.themeToggled ? " knbn-dark-color-3x" : " knbn-snow-color-3x")}>
+                                                        <img src={'https://www.gravatar.com/avatar/' + crypto.createHash('md5').update(String(this.props.data.owner).toLowerCase().trim()).digest('hex')} class="my-auto knbn-profile-pic-medium mr-2"/>
+                                                        {this.state.owner.name ? this.state.owner.name : "Nicio persoană"}
+                                                    </div>
+                                                </Link>
+                                            </div>
+                                            :
+                                            null
+                                        }
+                                        {
+                                            this.props.isAdmin?
+                                            <div class='d-flex'>
+                                                <div onClick={this.remove} class={"mr-2 knbn-pointer knbn-border-left knbn-transition my-auto ml-auto" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")} title="Elimină modul">
+                                                    <img src="./images/adminRemove.svg" class="my-auto"/>
+                                                </div>
+                                            </div>
+                                            :null
+                                        }
                                         </div>
-                                        :null
-                                    }
+                                    </div>
 
                                     <div class={"knbn-comp-desc comp-desc col-12" + (this.props.themeToggled ? " knbn-dark-color-2x" : " knbn-snow-color-2x") + (!this.state.showDesc ? " hide" : "")}>{ReactHtmlParser(this.props.data.description)}</div>
 
@@ -374,46 +470,54 @@ class Component extends React.Component{
                 {
                 <div class="row">
                     <div class={
-                        !this.state.flip && this.state.tickets.length ? "section-body col" : "section-body col reduce"}>
+                        !this.state.flip && (this.state.tickets.length || this.state.reports.length) ? "section-body col" : "section-body col reduce"}>
                         <div class="row">
                             {/* BACKLOG */}
                             <LaneBacklog 
-                                items={this.state.tickets.filter(item => item.lane == 'backlog')} 
+                                tickets={this.state.tickets.filter(item => item.lane == 'backlog')}
+                                reports={this.state.reports.filter(item => item.lane == 'backlog')} 
                                 compID={this.props.data.id} 
                                 helpers={helpers}
                                 setError={this.props.setError}
-                                push={this.push}
+                                pushTicket={this.pushTicket}
+                                pushReport={this.pushReport}
                                 refresh={this.refresh}
                             />
 
                             {/* IN PROGRESS */}
                             <LaneProgress 
-                                items={this.state.tickets.filter(item => item.lane == 'in_progress')} 
+                                tickets={this.state.tickets.filter(item => item.lane == 'in_progress')}
+                                reports={this.state.reports.filter(item => item.lane == 'in_progress')}
                                 compID={this.props.data.id} 
                                 wip={this.props.wip}
                                 helpers={helpers}
                                 setError={this.props.setError}
-                                push={this.push}
+                                pushTicket={this.pushTicket}
+                                pushReport={this.pushReport}
                                 refresh={this.refresh}
                             />
 
                             {/* DONE */}
                             <LaneDone 
-                                items={this.state.tickets.filter(item => item.lane == 'done')} 
+                                tickets={this.state.tickets.filter(item => item.lane == 'done')}
+                                reports={this.state.reports.filter(item => item.lane == 'done')}   
                                 compID={this.props.data.id}
                                 helpers={helpers}
                                 setError={this.props.setError}
-                                push={this.push}
+                                pushTicket={this.pushTicket}
+                                pushReport={this.pushReport}
                                 refresh={this.refresh}
                             />
 
                             {/* CLOSED */}
                             <LaneClosed 
-                                items={this.state.tickets.filter(item => item.lane == 'closed')} 
+                                tickets={this.state.tickets.filter(item => item.lane == 'closed')}
+                                reports={this.state.reports.filter(item => item.lane == 'closed')}
                                 compID={this.props.data.id}
                                 helpers={helpers}
                                 setError={this.props.setError}
-                                push={this.push}
+                                pushTicket={this.pushTicket}
+                                pushReport={this.pushReport}
                                 refresh={this.refresh}
                             />
                         </div>

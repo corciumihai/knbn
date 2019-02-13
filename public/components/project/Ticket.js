@@ -65,9 +65,6 @@ class Ticket extends React.Component{
         .then(axios.spread((data, hours) => {
             if(data.status == 200 && hours.status == 200){
                 this.setState({
-                    id: this.props.data.id,
-                    component: this.props.data.component,
-                    name: data.data.name ? data.data.name : '',
                     startDate: data.data.startDate ? data.data.startDate : (new Date()),
                     dueDate: data.data.dueDate ? data.data.dueDate : (new Date()),
                     estimation: data.data.estimation ? data.data.estimation : 0,
@@ -153,13 +150,13 @@ class Ticket extends React.Component{
         let data = this.props.data;
         data.flipped = this.state.flipped;
         
-        this.props.helpers.forward(data);
+        this.props.helpers.ticketForward(data);
     }
 
     shiftBackward(){
         let data = this.props.data;
         data.flipped = this.state.flipped;
-        this.props.helpers.backward(data);
+        this.props.helpers.ticketBackward(data);
     }
 
     flip(){this.setState({flipped: !this.state.flipped});}
@@ -189,10 +186,8 @@ class Ticket extends React.Component{
                                         <div title="Tichet" class="mr-2"><img src="./images/ticket.svg" class={"mx-auto my-auto"}/></div>
 
                                         {
-                                            <div class={"col px-0 text-truncate knbn-font-16 mb-1 d-flex" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
-                                            {
-                                                this.state.name
-                                            }
+                                            <div class={"knbn-font-16 mb-1" + (this.props.themeToggled ? " knbn-dark-color-5x" : " knbn-snow-color-5x")}>
+                                                {this.state.name}
                                             </div>
                                         }
                                     </div>

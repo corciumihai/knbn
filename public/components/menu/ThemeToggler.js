@@ -25,7 +25,7 @@ const ThemeToggler = (props) => {
                     " knbn-dark-color-2x" 
                     : 
                     " knbn-snow-color-3x")}>
-                    Mod întunecat
+                    Mod nocturn
             </div>
             <div    type="button" class={"mx-auto" + (props.themeToggled == false ? " knbn-toggler" : " knbn-toggler knbn-toggler-light knbn-toggler-toggled")} 
                     title={props.themeToggled ? "Comută modul luminos" : "Comută modul întunecat"} 

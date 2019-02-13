@@ -88,7 +88,7 @@ class SearchedItems extends React.Component{
                                 { 
                                     this.state.projects.length ? 
                                     this.state.projects.map(project => {
-                                        return  <Link to={"/edit/project/" + project.id} key={"proj" + project.id}>
+                                        return  <Link to={"/view/project/" + project.id} key={"proj" + project.id}>
                                                     <SearchItem key={"proj" + project.id} data={project} imgSrc="./images/project.svg"/>
                                                 </Link>
                                     })

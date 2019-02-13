@@ -24,6 +24,7 @@ dateformat.i18n = {
 const source = {
     beginDrag(props, monitor, component){
         let ticketData = component.state;
+        ticketData.isReport = true;
         ticketData = Object.assign({flipped: component.state.flipped}, ticketData);
         return ticketData;
     }
@@ -66,9 +67,6 @@ class Report extends React.Component{
         .then(axios.spread((data, hours) => {
             if(data.status == 200 && hours.status == 200){
                 this.setState({
-                    id: this.props.data.id,
-                    component: this.props.data.component,
-                    name: data.data.name ? data.data.name : '',
                     startDate: data.data.startDate ? data.data.startDate : (new Date()),
                     dueDate: data.data.dueDate ? data.data.dueDate : (new Date()),
                     estimation: data.data.estimation ? data.data.estimation : 0,
@@ -148,7 +146,7 @@ class Report extends React.Component{
             this.props.setError(error.response.data.error)
         })
     }
-
+    
     remove(){
         if(this.props.data.id){
             axios.post('/report/remove', {id: this.props.data.id})
@@ -166,13 +164,13 @@ class Report extends React.Component{
     shiftForward(){
         let data = this.props.data;
         data.flipped = this.state.flipped;
-        this.props.helpers.forward(data);
+        this.props.helpers.reportForward(data);
     }
 
     shiftBackward(){
         let data = this.props.data;
         data.flipped = this.state.flipped;
-        this.props.helpers.backward(data);
+        this.props.helpers.reportBackward(data);
     }
 
     flip(){this.setState({flipped: !this.state.flipped});}
@@ -180,6 +178,8 @@ class Report extends React.Component{
     render(){        
         let remainingPercentage = (this.state.estimation - this.state.hours) < 0 ? -1 : (this.state.hours / this.state.estimation) * 100;
         const {connectDragSource, isDragging} = this.props;
+
+        console.log(this.state)
 
         return connectDragSource(
             <div class={'col ticket-box mb-1 knbn-transition knbn-border' + (this.props.data.hide ? " hide" : "") +

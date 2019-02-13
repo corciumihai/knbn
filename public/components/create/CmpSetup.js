@@ -144,7 +144,6 @@ class CmpSetup extends React.Component{
             priority: this.props.priorities[0],
             release: {},
             nameError: '',
-            project: {}
         })
     }
 

@@ -5,7 +5,6 @@ import { ItemTypes } from './Constants';
 import { connect } from 'react-redux';
 import Report from './Report';
 
-
 class LaneClosed extends React.Component{
     constructor(props){
         super(props);
@@ -17,8 +16,8 @@ class LaneClosed extends React.Component{
         let data = Object.assign({}, ticket, {
             lane: 'closed'
         });
-
-        this.props.push(data);
+        
+        data.isReport ? this.props.pushReport(data) : this.props.pushTicket(data);
     }
 
     render(){
@@ -35,25 +34,28 @@ class LaneClosed extends React.Component{
                     this.props.hidden ? 
                     null
                     :
-                    this.props.items.map(ticket => {
-                        if(ticket.isReport){
-                            return  <Report 
-                            data={ticket} 
-                            key={this.props.items.indexOf(ticket)}
-                            helpers={this.props.helpers}
-                            setError={this.props.setError}
-                            refresh={this.props.refresh}
-                            />
-                        }
-                        else{
-                            return  <Ticket 
-                            data={ticket} 
-                            key={this.props.items.indexOf(ticket)}
-                            helpers={this.props.helpers}
-                            setError={this.props.setError}
-                            refresh={this.props.refresh}
-                            />
-                        }
+                    this.props.reports.map(report => {
+                        return <Report 
+                        data={report}
+                        key={report.id}
+                        helpers={this.props.helpers}
+                        setError={this.props.setError}
+                        refresh={this.props.refresh}
+                        />
+                    })
+                }
+                {
+                    this.props.hidden ? 
+                    null
+                    :
+                    this.props.tickets.map(ticket => {
+                        return <Ticket 
+                        data={ticket} 
+                        key={ticket.id}
+                        helpers={this.props.helpers}
+                        setError={this.props.setError}
+                        refresh={this.props.refresh}
+                        />
                     })
                 }
                 </div>

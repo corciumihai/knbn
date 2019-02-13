@@ -225,11 +225,12 @@ app.get('/category/get/:id', handlers.checkToken, (request, response) => {
 });
 
 app.post('/reports/add', handlers.checkToken, (request, response) => {    
-    database.query('INSERT INTO reports (component, name, description, startDate, dueDate, category, reporter, assignee, estimation, testSteps, expected, observed, project, releaseID, blocked) \
-    VALUES (?, ?, ?, DATE(STR_TO_DATE(?, "%Y-%m-%dT%T.%fZ")), DATE(STR_TO_DATE(?, "%Y-%m-%dT%T.%fZ")), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+    database.query('INSERT INTO reports (component, name, priority, description, startDate, dueDate, category, reporter, assignee, estimation, testSteps, expected, observed, project, releaseID, blocked) \
+    VALUES (?, ?, ?, ?, DATE(STR_TO_DATE(?, "%Y-%m-%dT%T.%fZ")), DATE(STR_TO_DATE(?, "%Y-%m-%dT%T.%fZ")), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
     [
         request.body.component,
         request.body.name, 
+        request.body.priority,
         request.body.description,
         request.body.startDate,
         request.body.dueDate,
@@ -257,10 +258,11 @@ app.post('/reports/add', handlers.checkToken, (request, response) => {
 });
 
 app.post('/ticket/add', handlers.checkToken, (request, response) => {
-    database.query('INSERT INTO tickets (component, name, description, startDate, dueDate, category, reporter, assignee, estimation, project, releaseID) VALUES (?, ?, ?, DATE(STR_TO_DATE(?, "%Y-%m-%dT%T.%fZ")), DATE(STR_TO_DATE(?, "%Y-%m-%dT%T.%fZ")), ?, ?, ?, ?, ?, ?)', 
+    database.query('INSERT INTO tickets (component, name, priority, description, startDate, dueDate, category, reporter, assignee, estimation, project, releaseID) VALUES (?, ?, ?, ?, DATE(STR_TO_DATE(?, "%Y-%m-%dT%T.%fZ")), DATE(STR_TO_DATE(?, "%Y-%m-%dT%T.%fZ")), ?, ?, ?, ?, ?, ?)', 
     [
         request.body.component,
         request.body.name, 
+        request.body.priority,
         request.body.description,
         request.body.startDate,
         request.body.dueDate,

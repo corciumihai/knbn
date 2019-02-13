@@ -111,7 +111,7 @@ class Project extends React.Component{
                                 <Filter action={this.props.hideClosed} trigger={this.props.hiddenClosed}>Ascunde tichetele închise</Filter>
                             </Filters>
                             
-                            <div class="row">
+                            <div class="row knbn-mandatory-margin">
                                 <div class="col">
                                     <div class="row">
                                         <div class="col-12 d-flex mb-3 px-2">
@@ -124,7 +124,14 @@ class Project extends React.Component{
                                                     </div>
                                                 </div>
                                             </Link>
-                                            :null
+                                            :
+                                            <Link to={"/edit/project/" + this.props.match.params.id}>
+                                                <div class={"h-100 knbn-pointer d-flex mr-2"}>
+                                                    <div class={"knbn-border-radius-5 knbn-border knbn-transition d-flex my-auto mb-1 knbn-padding-2" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}>
+                                                        <img class="mx-auto my-auto" src={(this.props.themeToggled ? "./images/view.svg" : "./images/bView.svg")}/>
+                                                    </div>
+                                                </div>
+                                            </Link>
                                         }
                                             <div class="d-flex">
                                                 <Header3>

@@ -13,6 +13,7 @@ import SubmitButton from './SubmitButton';
 import CancelButton from './CancelButton';
 import Success from '../messages/Success';
 import DismissableError from '../messages/DismissableError';
+import DismissableSuccess from '../messages/DismissableSuccess';
 import DatePicker from './DatePicker';
 import dateformat from 'dateformat';
 import Label from '../editor/Label';
@@ -189,7 +190,6 @@ class TicketSetup extends React.Component{
         this.setState({
             name: '',
             assignee: {},
-            component: {},
             category: {},
             dueDate: new Date(),
             estimation: 0,
@@ -199,7 +199,6 @@ class TicketSetup extends React.Component{
             observedBehavior: '',
             priority: this.props.priorities[0],
             release: {},
-            project: {},
             error: ''
         })
     }
@@ -224,7 +223,7 @@ class TicketSetup extends React.Component{
                 project: this.state.project.id
             }).then(response => {
                 if(response.status == 200){
-                    this.setState({success: true}, this.resetState);
+                    this.setState({success: 'Tichet adăugat cu succes'}, this.resetState);
                 }
             })
             .catch(error => {
@@ -344,6 +343,7 @@ class TicketSetup extends React.Component{
                                 {/* <Success>Raport de problemă adăugat cu succes</Success> */}
                                 <div class="col">
                                     <DismissableError dismiss={() => {this.setState({error: ''})}}>{this.state.error}</DismissableError>
+                                    <DismissableSuccess dismiss={() => {this.setState({success: ''})}}>{this.state.success}</DismissableSuccess>
                                 </div>
                                 
                                 <div class="d-flex flex-row justify-content-center mb-3 ">

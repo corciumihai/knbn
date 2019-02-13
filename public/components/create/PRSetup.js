@@ -13,6 +13,7 @@ import SubmitButton from './SubmitButton';
 import CancelButton from './CancelButton';
 import Success from '../messages/Success';
 import DismissableError from '../messages/DismissableError';
+import DismissableSuccess from '../messages/DismissableSuccess';
 import Label from '../editor/Label';
 import Small from '../editor/Small';
 import DatePicker from './DatePicker';
@@ -217,7 +218,6 @@ class PRSetup extends React.Component{
         this.setState({
             name: '',
             assignee: {},
-            component: {},
             blocker: {},
             category: {},
             dueDate: new Date(),
@@ -228,7 +228,6 @@ class PRSetup extends React.Component{
             observedBehavior: '',
             priority: this.props.priorities[2],
             release: {},
-            project: {},
             error: ''
         })
     }
@@ -258,7 +257,7 @@ class PRSetup extends React.Component{
                 project: this.state.project.id
             }).then(response => {
                 if(response.status == 200){
-                    this.setState({success: true}, this.resetState);
+                    this.setState({success: 'Raport problemă adăugat cu succes'}, this.resetState);
                 }
             })
             .catch(error => {
@@ -409,6 +408,7 @@ class PRSetup extends React.Component{
 
                                 <div class="col">
                                     <DismissableError dismiss={() => {this.setState({error: ''})}}>{this.state.error}</DismissableError>
+                                    <DismissableSuccess dismiss={() => {this.setState({success: ''})}}>{this.state.success}</DismissableSuccess>
                                 </div>
                                 
                                 <div class="d-flex flex-row justify-content-center mb-3 ">

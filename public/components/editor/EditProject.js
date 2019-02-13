@@ -240,7 +240,12 @@ class EditProject extends React.Component{
                                 <Label label="Versiuni"></Label>
                                 {
                                     <div class={"col knbn-border pt-3 pb-2 knbn-transition" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}>
-                                        <InputWithButton label="Adaugă versiune" action={this.addRelease}></InputWithButton>
+                                        {
+                                            this.props.isAdmin ? 
+                                            <InputWithButton label="Adaugă versiune" action={this.addRelease}></InputWithButton>
+                                            :
+                                            null
+                                        }
                                         <div class="knbn-max-h-200 knbn-overflow knbn-transition">
                                         {
                                             this.state.releases.map(item => {
@@ -266,7 +271,13 @@ class EditProject extends React.Component{
                             <Label label="Categorii"></Label>
                             {
                                 <div class={"col knbn-border pt-3 pb-2 knbn-transition" + (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}>
+                                {
+                                    this.props.isAdmin ? 
                                     <InputWithButton label="Adaugă categorie" action={this.addCategory}></InputWithButton>
+                                    :
+                                    null
+                                }
+                                    
                                     <div class="knbn-max-h-200 knbn-overflow knbn-transition">
                                     {
                                         this.state.categories.map(item => {

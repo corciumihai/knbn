@@ -48,9 +48,7 @@ class Menu extends React.Component{
     render(){
         return(
             <div class="row">
-                <nav class={"position-fixed knbn-high-z-index knbn-navbar navbar knbn-border-bottom navbar-expand-lg navbar-dark knbn-transition col-xl-12" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-border-2x knbn-dark-shadow-1x" : " knbn-snow-bg-2x knbn-snow-border-2x knbn-snow-shadow-2x")}>
-                    {/* <a class={"knbn-navbar-brand navbar-brand knbn-transition" + (this.props.themeToggled ? " knbn-dark-color-2x knbn-dark-color-2x-active" : " knbn-snow-color-2x knbn-snow-color-2x-active")} href="/">Bord KNBN</a> */}
-
+                <nav class={"position-fixed knbn-max-z-index knbn-navbar navbar knbn-border-bottom navbar-expand-lg navbar-dark knbn-transition col-xl-12" + (this.props.themeToggled ? " knbn-dark-bg-2x knbn-dark-border-2x knbn-dark-shadow-1x" : " knbn-snow-bg-2x knbn-snow-border-2x knbn-snow-shadow-2x")}>
                     <div class="knbn-navbar-toggler navbar-toggler" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Comută navigație" onClick={this.toggle}>
                         {this.state.toggle ? 
                         <img src={(this.props.themeToggled ? "/images/menu-remove.svg" : "/images/bMenu-remove.svg")}/> : 

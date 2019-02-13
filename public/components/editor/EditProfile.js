@@ -206,7 +206,7 @@ class EditProfile extends React.Component{
                                 <div class="row">
                                     <div class="col-xl-12 knbn-font-small">
                                         <Link to='/forgot'>
-                                            Parolă uitată
+                                            Schimbare parolă
                                         </Link>
                                     </div>
                                 </div>

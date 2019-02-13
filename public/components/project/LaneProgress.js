@@ -5,7 +5,6 @@ import { ItemTypes } from './Constants';
 import { connect } from 'react-redux';
 import Report from './Report';
 
-
 class LaneProgress extends React.Component{
     constructor(props){
         super(props);
@@ -18,7 +17,7 @@ class LaneProgress extends React.Component{
             lane: 'in_progress'
         });
         
-        this.props.push(data);
+        data.isReport ? this.props.pushReport(data) : this.props.pushTicket(data);
     }
 
     render(){
@@ -31,27 +30,27 @@ class LaneProgress extends React.Component{
                     ((this.props.classes == undefined || this.props.classes.length == 0) ? '' : ' ' + this.props.classes) + 
                     (canDrop ? (this.props.themeToggled ? ' knbn-dark-ondrop' : ' knbn-snow-ondrop') : "") +
                     (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x") + 
-                    (this.props.items.length >= this.props.wip ? " knbn-wip-limit" : "")}> 
+                    ((this.props.tickets.length + this.props.reports.length)>= this.props.wip ? " knbn-wip-limit" : "")}> 
                 {
-                    this.props.items.map(ticket => {
-                        if(ticket.isReport){
-                            return <Report 
-                            data={ticket} 
-                            key={this.props.items.indexOf(ticket)}
-                            helpers={this.props.helpers}
-                            setError={this.props.setError}
-                            refresh={this.props.refresh}
-                            />
-                        }
-                        else{
-                            return  <Ticket 
-                            data={ticket} 
-                            key={this.props.items.indexOf(ticket)}
-                            helpers={this.props.helpers}
-                            setError={this.props.setError}
-                            refresh={this.props.refresh}
-                            />
-                        }
+                    this.props.reports.map(report => {
+                        return <Report 
+                        data={report} 
+                        key={report.id}
+                        helpers={this.props.helpers}
+                        setError={this.props.setError}
+                        refresh={this.props.refresh}
+                        />
+                    })
+                }
+                {
+                    this.props.tickets.map(ticket => {
+                        return <Ticket 
+                        data={ticket} 
+                        key={ticket.id}
+                        helpers={this.props.helpers}
+                        setError={this.props.setError}
+                        refresh={this.props.refresh}
+                        />
                     })
                 }
                 </div>

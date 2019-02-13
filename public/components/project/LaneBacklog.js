@@ -17,11 +17,13 @@ class LaneBacklog extends React.Component{
             lane: 'backlog'
         });
         
-        this.props.push(data);
+        data.isReport ? this.props.pushReport(data) : this.props.pushTicket(data);
     }
 
     render(){
         const {canDrop, connectDropTarget} = this.props;
+
+        // console.log(this.props.reports)
 
         return connectDropTarget(
             <div class={'column col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12 d-flex flex-column px-0'} >
@@ -31,25 +33,26 @@ class LaneBacklog extends React.Component{
                     (canDrop ? (this.props.themeToggled ? ' knbn-dark-ondrop' : ' knbn-snow-ondrop') : "") +
                     (this.props.themeToggled ? " knbn-dark-border-2x" : " knbn-snow-border-2x")}> 
                 {
-                    this.props.items.map(ticket => {
-                        if(ticket.isReport){
-                            return  <Report 
-                            data={ticket} 
-                            key={this.props.items.indexOf(ticket)}
-                            helpers={this.props.helpers}
-                            setError={this.props.setError}
-                            refresh={this.props.refresh}
-                            />
-                        }
-                        else{
-                            return  <Ticket 
-                            data={ticket} 
-                            key={this.props.items.indexOf(ticket)}
-                            helpers={this.props.helpers}
-                            setError={this.props.setError}
-                            refresh={this.props.refresh}
-                            />
-                        }
+                    this.props.reports.map(report => {
+                        // console.log(report.name)
+                        return <Report 
+                        data={report} 
+                        key={report.id}
+                        helpers={this.props.helpers}
+                        setError={this.props.setError}
+                        refresh={this.props.refresh}
+                        />
+                    })
+                }
+                {
+                    this.props.tickets.map(ticket => {
+                        return <Ticket 
+                        data={ticket} 
+                        key={ticket.id}
+                        helpers={this.props.helpers}
+                        setError={this.props.setError}
+                        refresh={this.props.refresh}
+                        />
                     })
                 }
                 </div>

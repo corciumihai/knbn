@@ -357,13 +357,17 @@ html, body, #app{
 }
 
 .knbn-mandatory-margin{
-    margin-top: 80px !important;
+    margin-top: 70px !important;
 }
 .knbn-opacity-1{
     opacity: 1 !important;
 }
 
 .knbn-high-z-index{
+    z-index: 1000 !important;
+}
+
+.knbn-max-z-index{
     z-index: 2000 !important;
 }
 
